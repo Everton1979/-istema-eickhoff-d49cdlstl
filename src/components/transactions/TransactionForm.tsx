@@ -20,19 +20,38 @@ import {
 } from '@/components/ui/select'
 import { useFinanceStore } from '@/stores/financeStore'
 import { useToast } from '@/hooks/use-toast'
+import { useEffect } from 'react'
+import { cn } from '@/lib/utils'
 
-const formSchema = z.object({
-  date: z.string().min(1, 'Data é obrigatória'),
-  description: z.string().min(3, 'Descrição muito curta'),
-  amount: z.coerce.number().min(0.01, 'Valor deve ser maior que zero'),
-  type: z.enum(['INCOME', 'EXPENSE']),
-  categoryId: z.string().min(1, 'Categoria é obrigatória'),
-  accountId: z.string().min(1, 'Método de entrada é obrigatório'),
-  status: z.enum(['PREVISTO', 'REALIZADO', 'VENCIDO']),
-})
+const formSchema = z
+  .object({
+    date: z.string().min(1, 'Data é obrigatória'),
+    description: z.string().min(3, 'Descrição muito curta'),
+    amount: z.coerce.number().min(0.01, 'Valor deve ser maior que zero'),
+    type: z.enum(['INCOME', 'EXPENSE']),
+    categoryId: z.string().optional(),
+    accountId: z.string().optional(),
+    status: z.enum(['PREVISTO', 'REALIZADO', 'VENCIDO']),
+  })
+  .superRefine((data, ctx) => {
+    if (data.type === 'INCOME' && !data.accountId) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'Método de entrada é obrigatório para receitas',
+        path: ['accountId'],
+      })
+    }
+    if (data.type === 'EXPENSE' && !data.categoryId) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'Categoria é obrigatória para despesas',
+        path: ['categoryId'],
+      })
+    }
+  })
 
 export function TransactionForm({ onSuccess }: { onSuccess: () => void }) {
-  const { categories, accounts, addTransaction } = useFinanceStore()
+  const { accounts, addTransaction } = useFinanceStore()
   const { toast } = useToast()
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -43,18 +62,32 @@ export function TransactionForm({ onSuccess }: { onSuccess: () => void }) {
       amount: 0,
       type: 'EXPENSE',
       status: 'REALIZADO',
+      categoryId: '',
+      accountId: '',
     },
   })
 
+  const type = form.watch('type')
+
+  // Clear hidden fields when transaction type changes
+  useEffect(() => {
+    if (type === 'INCOME') {
+      form.setValue('categoryId', '')
+    } else {
+      form.setValue('accountId', '')
+    }
+  }, [type, form])
+
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    addTransaction(values)
+    addTransaction({
+      ...values,
+      categoryId: values.categoryId || '',
+      accountId: values.accountId || '',
+    } as any)
     toast({ title: 'Sucesso', description: 'Transação salva com sucesso!' })
     form.reset()
     onSuccess()
   }
-
-  const type = form.watch('type')
-  const filteredCategories = categories.filter((c) => c.type === type)
 
   return (
     <Form {...form}>
@@ -66,7 +99,7 @@ export function TransactionForm({ onSuccess }: { onSuccess: () => void }) {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Tipo</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <Select onValueChange={field.onChange} value={field.value || undefined}>
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Selecione o tipo" />
@@ -86,7 +119,7 @@ export function TransactionForm({ onSuccess }: { onSuccess: () => void }) {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Status</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <Select onValueChange={field.onChange} value={field.value || undefined}>
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Status" />
@@ -145,56 +178,61 @@ export function TransactionForm({ onSuccess }: { onSuccess: () => void }) {
           )}
         />
 
-        <div className="grid grid-cols-2 gap-4">
-          <FormField
-            control={form.control}
-            name="categoryId"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Categoria</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Categoria" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {filteredCategories.map((c) => (
-                      <SelectItem key={c.id} value={c.id}>
-                        {c.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+        <div className="grid grid-cols-1 gap-4 transition-all duration-300 min-h-[80px]">
+          {type === 'EXPENSE' && (
+            <div className="animate-in fade-in slide-in-from-top-2 duration-300">
+              <FormField
+                control={form.control}
+                name="categoryId"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Categoria</FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value || undefined}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Categoria" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="FIXA">Fixa</SelectItem>
+                        <SelectItem value="VARIAVEL">Variável</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          )}
 
-          <FormField
-            control={form.control}
-            name="accountId"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Método de Entrada</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Método" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {accounts.map((a) => (
-                      <SelectItem key={a.id} value={a.id}>
-                        {a.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          {type === 'INCOME' && (
+            <div className="animate-in fade-in slide-in-from-top-2 duration-300">
+              <FormField
+                control={form.control}
+                name="accountId"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Método de entrada</FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value || undefined}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Método" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {accounts.map((a) => (
+                          <SelectItem key={a.id} value={a.id}>
+                            {a.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          )}
         </div>
 
         <Button type="submit" className="w-full mt-4">

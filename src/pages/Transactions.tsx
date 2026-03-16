@@ -26,8 +26,17 @@ export default function Transactions() {
     t.description.toLowerCase().includes(search.toLowerCase()),
   )
 
-  const getCategoryName = (id: string) => categories.find((c) => c.id === id)?.name || id
-  const getAccountName = (id: string) => accounts.find((a) => a.id === id)?.name || id
+  const getCategoryName = (id: string) => {
+    if (!id) return '-'
+    if (id === 'FIXA') return 'Fixa'
+    if (id === 'VARIAVEL') return 'Variável'
+    return categories.find((c) => c.id === id)?.name || id
+  }
+
+  const getAccountName = (id: string) => {
+    if (!id) return '-'
+    return accounts.find((a) => a.id === id)?.name || id
+  }
 
   const formatCurrency = (val: number, type: string) => {
     const formatted = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(
