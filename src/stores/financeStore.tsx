@@ -1,19 +1,17 @@
 import React, { createContext, useContext, useState, useMemo } from 'react'
-import { Transaction, Account, Category, CostCenter } from '@/types/finance'
-import { ACCOUNTS, CATEGORIES, COST_CENTERS, INITIAL_TRANSACTIONS } from '@/lib/mockData'
+import { Transaction, Account, Category } from '@/types/finance'
+import { ACCOUNTS, CATEGORIES, INITIAL_TRANSACTIONS } from '@/lib/mockData'
 
 interface FinanceFilters {
   years: string[]
   months: string[]
   statuses: string[]
-  costCenters: string[]
 }
 
 interface FinanceContextType {
   transactions: Transaction[]
   accounts: Account[]
   categories: Category[]
-  costCenters: CostCenter[]
   filters: FinanceFilters
   setFilter: (key: keyof FinanceFilters, values: string[]) => void
   addTransaction: (tx: Omit<Transaction, 'id'>) => void
@@ -28,7 +26,6 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
     years: ['2023'],
     months: [],
     statuses: [],
-    costCenters: [],
   })
 
   const setFilter = (key: keyof FinanceFilters, values: string[]) => {
@@ -49,8 +46,6 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
       if (filters.years.length > 0 && !filters.years.includes(txYear)) return false
       if (filters.months.length > 0 && !filters.months.includes(txMonth)) return false
       if (filters.statuses.length > 0 && !filters.statuses.includes(tx.status)) return false
-      if (filters.costCenters.length > 0 && !filters.costCenters.includes(tx.costCenterId))
-        return false
 
       return true
     })
@@ -62,7 +57,6 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
         transactions,
         accounts: ACCOUNTS,
         categories: CATEGORIES,
-        costCenters: COST_CENTERS,
         filters,
         setFilter,
         addTransaction,

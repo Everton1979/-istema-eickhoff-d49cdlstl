@@ -18,7 +18,7 @@ import { Plus, Search, Download } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 export default function Transactions() {
-  const { transactions, categories, accounts, costCenters } = useFinanceStore()
+  const { transactions, categories, accounts } = useFinanceStore()
   const [search, setSearch] = useState('')
   const [isSheetOpen, setIsSheetOpen] = useState(false)
 
@@ -28,7 +28,6 @@ export default function Transactions() {
 
   const getCategoryName = (id: string) => categories.find((c) => c.id === id)?.name || id
   const getAccountName = (id: string) => accounts.find((a) => a.id === id)?.name || id
-  const getCostCenterName = (id: string) => costCenters.find((cc) => cc.id === id)?.name || id
 
   const formatCurrency = (val: number, type: string) => {
     const formatted = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(
@@ -83,8 +82,7 @@ export default function Transactions() {
               <TableHead>Data</TableHead>
               <TableHead>Descrição</TableHead>
               <TableHead>Categoria</TableHead>
-              <TableHead>Conta</TableHead>
-              <TableHead>C. Custo</TableHead>
+              <TableHead>Método</TableHead>
               <TableHead>Status</TableHead>
               <TableHead className="text-right">Valor</TableHead>
             </TableRow>
@@ -98,7 +96,6 @@ export default function Transactions() {
                 <TableCell className="font-medium">{tx.description}</TableCell>
                 <TableCell>{getCategoryName(tx.categoryId)}</TableCell>
                 <TableCell>{getAccountName(tx.accountId)}</TableCell>
-                <TableCell>{getCostCenterName(tx.costCenterId)}</TableCell>
                 <TableCell>
                   <Badge
                     variant={
@@ -128,7 +125,7 @@ export default function Transactions() {
             ))}
             {filteredData.length === 0 && (
               <TableRow>
-                <TableCell colSpan={7} className="h-24 text-center text-muted-foreground">
+                <TableCell colSpan={6} className="h-24 text-center text-muted-foreground">
                   Nenhuma transação encontrada.
                 </TableCell>
               </TableRow>

@@ -27,13 +27,12 @@ const formSchema = z.object({
   amount: z.coerce.number().min(0.01, 'Valor deve ser maior que zero'),
   type: z.enum(['INCOME', 'EXPENSE']),
   categoryId: z.string().min(1, 'Categoria é obrigatória'),
-  accountId: z.string().min(1, 'Conta é obrigatória'),
-  costCenterId: z.string().min(1, 'Centro de Custo é obrigatório'),
+  accountId: z.string().min(1, 'Método de entrada é obrigatório'),
   status: z.enum(['PREVISTO', 'REALIZADO', 'VENCIDO']),
 })
 
 export function TransactionForm({ onSuccess }: { onSuccess: () => void }) {
-  const { categories, accounts, costCenters, addTransaction } = useFinanceStore()
+  const { categories, accounts, addTransaction } = useFinanceStore()
   const { toast } = useToast()
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -146,48 +145,23 @@ export function TransactionForm({ onSuccess }: { onSuccess: () => void }) {
           )}
         />
 
-        <FormField
-          control={form.control}
-          name="categoryId"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Categoria</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Selecione a categoria" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {filteredCategories.map((c) => (
-                    <SelectItem key={c.id} value={c.id}>
-                      {c.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
         <div className="grid grid-cols-2 gap-4">
           <FormField
             control={form.control}
-            name="accountId"
+            name="categoryId"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Conta</FormLabel>
+                <FormLabel>Categoria</FormLabel>
                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl>
                     <SelectTrigger>
-                      <SelectValue placeholder="Conta" />
+                      <SelectValue placeholder="Categoria" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {accounts.map((a) => (
-                      <SelectItem key={a.id} value={a.id}>
-                        {a.name}
+                    {filteredCategories.map((c) => (
+                      <SelectItem key={c.id} value={c.id}>
+                        {c.name}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -196,22 +170,23 @@ export function TransactionForm({ onSuccess }: { onSuccess: () => void }) {
               </FormItem>
             )}
           />
+
           <FormField
             control={form.control}
-            name="costCenterId"
+            name="accountId"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Centro de Custo</FormLabel>
+                <FormLabel>Método de Entrada</FormLabel>
                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl>
                     <SelectTrigger>
-                      <SelectValue placeholder="C.Custo" />
+                      <SelectValue placeholder="Método" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {costCenters.map((cc) => (
-                      <SelectItem key={cc.id} value={cc.id}>
-                        {cc.name}
+                    {accounts.map((a) => (
+                      <SelectItem key={a.id} value={a.id}>
+                        {a.name}
                       </SelectItem>
                     ))}
                   </SelectContent>

@@ -14,11 +14,6 @@ export interface Account {
   initialBalance: number
 }
 
-export interface CostCenter {
-  id: string
-  name: string
-}
-
 export interface Transaction {
   id: string
   date: string
@@ -27,6 +22,5 @@ export interface Transaction {
   type: TransactionType
   categoryId: string
   accountId: string
-  costCenterId: string
   status: TransactionStatus
 }

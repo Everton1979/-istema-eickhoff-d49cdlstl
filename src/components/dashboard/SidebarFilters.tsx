@@ -4,7 +4,7 @@ import { cn } from '@/lib/utils'
 import { ListFilter } from 'lucide-react'
 
 export function SidebarFilters() {
-  const { filters, setFilter, costCenters } = useFinanceStore()
+  const { filters, setFilter } = useFinanceStore()
 
   const toggleFilter = (key: keyof typeof filters, value: string) => {
     const current = filters[key] as string[]
@@ -93,28 +93,6 @@ export function SidebarFilters() {
               )}
             >
               {status}
-            </button>
-          ))}
-        </div>
-      </FilterSection>
-
-      <FilterSection title="C.Custo">
-        <div className="flex flex-col gap-1">
-          {costCenters.map((cc) => (
-            <button
-              key={cc.id}
-              onClick={() => toggleFilter('costCenters', cc.id)}
-              className={cn(
-                'text-xs py-1 px-2 rounded-sm text-left transition-colors border flex justify-between items-center',
-                filters.costCenters.includes(cc.id)
-                  ? 'bg-[#5f9ea0] text-white font-medium'
-                  : 'bg-white hover:bg-gray-100',
-              )}
-            >
-              <span>{cc.name}</span>
-              <div className="w-6 h-1 bg-gray-300 rounded-full overflow-hidden">
-                <div className="h-full bg-blue-400 w-1/2"></div>
-              </div>
             </button>
           ))}
         </div>

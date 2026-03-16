@@ -1,19 +1,11 @@
-import { Account, Category, CostCenter, Transaction } from '@/types/finance'
+import { Account, Category, Transaction } from '@/types/finance'
 import { addDays, format, subMonths } from 'date-fns'
 
 export const ACCOUNTS: Account[] = [
-  { id: 'acc1', name: 'Itaú', initialBalance: 150635 },
-  { id: 'acc2', name: 'Caixa', initialBalance: 76266 },
-  { id: 'acc3', name: 'Nuconta', initialBalance: 41087 },
-  { id: 'acc4', name: 'SICOOB', initialBalance: 20282 },
-  { id: 'acc5', name: 'BB', initialBalance: -46126 },
-]
-
-export const COST_CENTERS: CostCenter[] = [
-  { id: 'cc1', name: 'Vendas' },
-  { id: 'cc2', name: 'R&D' },
-  { id: 'cc3', name: 'Lab' },
-  { id: 'cc4', name: 'Adm' },
+  { id: 'acc1', name: 'Dinheiro', initialBalance: 15000 },
+  { id: 'acc2', name: 'Stone', initialBalance: 25000 },
+  { id: 'acc3', name: 'Pagbank', initialBalance: 10000 },
+  { id: 'acc4', name: 'PIX', initialBalance: 50000 },
 ]
 
 export const CATEGORIES: Category[] = [
@@ -26,7 +18,7 @@ export const CATEGORIES: Category[] = [
   { id: 'cat7', name: 'Investimentos em Marketing', type: 'EXPENSE', isVariable: true },
 ]
 
-// Generate 200 random transactions for the last 12 months
+// Generate 300 random transactions for the last 24 months
 export const generateMockTransactions = (): Transaction[] => {
   const transactions: Transaction[] = []
   const today = new Date('2023-12-31') // Fixed end date to match 2023 data assumption
@@ -53,7 +45,6 @@ export const generateMockTransactions = (): Transaction[] => {
       type: isIncome ? 'INCOME' : 'EXPENSE',
       categoryId: category.id,
       accountId: ACCOUNTS[Math.floor(Math.random() * ACCOUNTS.length)].id,
-      costCenterId: COST_CENTERS[Math.floor(Math.random() * COST_CENTERS.length)].id,
       status,
     })
   }

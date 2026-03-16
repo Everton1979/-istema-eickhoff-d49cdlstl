@@ -26418,46 +26418,23 @@ function subMonths(date, amount, options) {
 var ACCOUNTS = [
 	{
 		id: "acc1",
-		name: "Itaú",
-		initialBalance: 150635
+		name: "Dinheiro",
+		initialBalance: 15e3
 	},
 	{
 		id: "acc2",
-		name: "Caixa",
-		initialBalance: 76266
+		name: "Stone",
+		initialBalance: 25e3
 	},
 	{
 		id: "acc3",
-		name: "Nuconta",
-		initialBalance: 41087
+		name: "Pagbank",
+		initialBalance: 1e4
 	},
 	{
 		id: "acc4",
-		name: "SICOOB",
-		initialBalance: 20282
-	},
-	{
-		id: "acc5",
-		name: "BB",
-		initialBalance: -46126
-	}
-];
-var COST_CENTERS = [
-	{
-		id: "cc1",
-		name: "Vendas"
-	},
-	{
-		id: "cc2",
-		name: "R&D"
-	},
-	{
-		id: "cc3",
-		name: "Lab"
-	},
-	{
-		id: "cc4",
-		name: "Adm"
+		name: "PIX",
+		initialBalance: 5e4
 	}
 ];
 var CATEGORIES = [
@@ -26522,7 +26499,6 @@ var generateMockTransactions = () => {
 			type: isIncome ? "INCOME" : "EXPENSE",
 			categoryId: category.id,
 			accountId: ACCOUNTS[Math.floor(Math.random() * ACCOUNTS.length)].id,
-			costCenterId: COST_CENTERS[Math.floor(Math.random() * COST_CENTERS.length)].id,
 			status
 		});
 	}
@@ -26537,8 +26513,7 @@ function FinanceProvider({ children }) {
 	const [filters, setFilters] = (0, import_react.useState)({
 		years: ["2023"],
 		months: [],
-		statuses: [],
-		costCenters: []
+		statuses: []
 	});
 	const setFilter = (key, values) => {
 		setFilters((prev) => ({
@@ -26561,18 +26536,16 @@ function FinanceProvider({ children }) {
 			if (filters.years.length > 0 && !filters.years.includes(txYear)) return false;
 			if (filters.months.length > 0 && !filters.months.includes(txMonth)) return false;
 			if (filters.statuses.length > 0 && !filters.statuses.includes(tx.status)) return false;
-			if (filters.costCenters.length > 0 && !filters.costCenters.includes(tx.costCenterId)) return false;
 			return true;
 		});
 	}, [transactions, filters]);
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(FinanceContext.Provider, {
-		"data-uid": "src/stores/financeStore.tsx:60:5",
+		"data-uid": "src/stores/financeStore.tsx:55:5",
 		"data-prohibitions": "[editContent]",
 		value: {
 			transactions,
 			accounts: ACCOUNTS,
 			categories: CATEGORIES,
-			costCenters: COST_CENTERS,
 			filters,
 			setFilter,
 			addTransaction,
@@ -27501,7 +27474,7 @@ ScrollBar.displayName = ScrollAreaScrollbar.displayName;
 //#endregion
 //#region src/components/dashboard/SidebarFilters.tsx
 function SidebarFilters() {
-	const { filters, setFilter, costCenters } = useFinanceStore();
+	const { filters, setFilter } = useFinanceStore();
 	const toggleFilter = (key, value) => {
 		const current = filters[key];
 		setFilter(key, current.includes(value) ? current.filter((v) => v !== value) : [...current, value]);
@@ -27611,36 +27584,6 @@ function SidebarFilters() {
 						className: cn$1("text-xs py-1 px-2 rounded-sm text-left transition-colors border", filters.statuses.includes(status.toUpperCase()) ? "bg-[#5f9ea0] text-white font-medium" : "bg-white hover:bg-gray-100"),
 						children: status
 					}, status))
-				})
-			}),
-			/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FilterSection, {
-				"data-uid": "src/components/dashboard/SidebarFilters.tsx:101:7",
-				"data-prohibitions": "[editContent]",
-				title: "C.Custo",
-				children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-					"data-uid": "src/components/dashboard/SidebarFilters.tsx:102:9",
-					"data-prohibitions": "[editContent]",
-					className: "flex flex-col gap-1",
-					children: costCenters.map((cc) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-						"data-uid": "src/components/dashboard/SidebarFilters.tsx:104:13",
-						"data-prohibitions": "[editContent]",
-						onClick: () => toggleFilter("costCenters", cc.id),
-						className: cn$1("text-xs py-1 px-2 rounded-sm text-left transition-colors border flex justify-between items-center", filters.costCenters.includes(cc.id) ? "bg-[#5f9ea0] text-white font-medium" : "bg-white hover:bg-gray-100"),
-						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-							"data-uid": "src/components/dashboard/SidebarFilters.tsx:114:15",
-							"data-prohibitions": "[editContent]",
-							children: cc.name
-						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-							"data-uid": "src/components/dashboard/SidebarFilters.tsx:115:15",
-							"data-prohibitions": "[]",
-							className: "w-6 h-1 bg-gray-300 rounded-full overflow-hidden",
-							children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-								"data-uid": "src/components/dashboard/SidebarFilters.tsx:116:17",
-								"data-prohibitions": "[]",
-								className: "h-full bg-blue-400 w-1/2"
-							})
-						})]
-					}, cc.id))
 				})
 			})
 		]
@@ -63021,8 +62964,7 @@ var formSchema = object({
 	amount: number().min(.01, "Valor deve ser maior que zero"),
 	type: _enum(["INCOME", "EXPENSE"]),
 	categoryId: string().min(1, "Categoria é obrigatória"),
-	accountId: string().min(1, "Conta é obrigatória"),
-	costCenterId: string().min(1, "Centro de Custo é obrigatório"),
+	accountId: string().min(1, "Método de entrada é obrigatório"),
 	status: _enum([
 		"PREVISTO",
 		"REALIZADO",
@@ -63030,7 +62972,7 @@ var formSchema = object({
 	])
 });
 function TransactionForm({ onSuccess }) {
-	const { categories, accounts, costCenters, addTransaction } = useFinanceStore();
+	const { categories, accounts, addTransaction } = useFinanceStore();
 	const { toast } = useToast();
 	const form = useForm({
 		resolver: a(formSchema),
@@ -63054,58 +62996,58 @@ function TransactionForm({ onSuccess }) {
 	const type = form.watch("type");
 	const filteredCategories = categories.filter((c) => c.type === type);
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Form, {
-		"data-uid": "src/components/transactions/TransactionForm.tsx:61:5",
+		"data-uid": "src/components/transactions/TransactionForm.tsx:60:5",
 		"data-prohibitions": "[]",
 		...form,
 		children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("form", {
-			"data-uid": "src/components/transactions/TransactionForm.tsx:62:7",
+			"data-uid": "src/components/transactions/TransactionForm.tsx:61:7",
 			"data-prohibitions": "[]",
 			onSubmit: form.handleSubmit(onSubmit),
 			className: "space-y-4 pt-4",
 			children: [
 				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-					"data-uid": "src/components/transactions/TransactionForm.tsx:63:9",
+					"data-uid": "src/components/transactions/TransactionForm.tsx:62:9",
 					"data-prohibitions": "[]",
 					className: "grid grid-cols-2 gap-4",
 					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormField, {
-						"data-uid": "src/components/transactions/TransactionForm.tsx:64:11",
+						"data-uid": "src/components/transactions/TransactionForm.tsx:63:11",
 						"data-prohibitions": "[editContent]",
 						control: form.control,
 						name: "type",
 						render: ({ field }) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(FormItem, {
-							"data-uid": "src/components/transactions/TransactionForm.tsx:68:15",
+							"data-uid": "src/components/transactions/TransactionForm.tsx:67:15",
 							"data-prohibitions": "[]",
 							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormLabel, {
-								"data-uid": "src/components/transactions/TransactionForm.tsx:69:17",
+								"data-uid": "src/components/transactions/TransactionForm.tsx:68:17",
 								"data-prohibitions": "[]",
 								children: "Tipo"
 							}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Select, {
-								"data-uid": "src/components/transactions/TransactionForm.tsx:70:17",
+								"data-uid": "src/components/transactions/TransactionForm.tsx:69:17",
 								"data-prohibitions": "[]",
 								onValueChange: field.onChange,
 								defaultValue: field.value,
 								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormControl, {
-									"data-uid": "src/components/transactions/TransactionForm.tsx:71:19",
+									"data-uid": "src/components/transactions/TransactionForm.tsx:70:19",
 									"data-prohibitions": "[]",
 									children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectTrigger, {
-										"data-uid": "src/components/transactions/TransactionForm.tsx:72:21",
+										"data-uid": "src/components/transactions/TransactionForm.tsx:71:21",
 										"data-prohibitions": "[]",
 										children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectValue, {
-											"data-uid": "src/components/transactions/TransactionForm.tsx:73:23",
+											"data-uid": "src/components/transactions/TransactionForm.tsx:72:23",
 											"data-prohibitions": "[editContent]",
 											placeholder: "Selecione o tipo"
 										})
 									})
 								}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(SelectContent, {
-									"data-uid": "src/components/transactions/TransactionForm.tsx:76:19",
+									"data-uid": "src/components/transactions/TransactionForm.tsx:75:19",
 									"data-prohibitions": "[]",
 									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectItem, {
-										"data-uid": "src/components/transactions/TransactionForm.tsx:77:21",
+										"data-uid": "src/components/transactions/TransactionForm.tsx:76:21",
 										"data-prohibitions": "[]",
 										value: "INCOME",
 										children: "Receita"
 									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectItem, {
-										"data-uid": "src/components/transactions/TransactionForm.tsx:78:21",
+										"data-uid": "src/components/transactions/TransactionForm.tsx:77:21",
 										"data-prohibitions": "[]",
 										value: "EXPENSE",
 										children: "Despesa"
@@ -63114,52 +63056,52 @@ function TransactionForm({ onSuccess }) {
 							})]
 						})
 					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormField, {
-						"data-uid": "src/components/transactions/TransactionForm.tsx:84:11",
+						"data-uid": "src/components/transactions/TransactionForm.tsx:83:11",
 						"data-prohibitions": "[editContent]",
 						control: form.control,
 						name: "status",
 						render: ({ field }) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(FormItem, {
-							"data-uid": "src/components/transactions/TransactionForm.tsx:88:15",
+							"data-uid": "src/components/transactions/TransactionForm.tsx:87:15",
 							"data-prohibitions": "[]",
 							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormLabel, {
-								"data-uid": "src/components/transactions/TransactionForm.tsx:89:17",
+								"data-uid": "src/components/transactions/TransactionForm.tsx:88:17",
 								"data-prohibitions": "[]",
 								children: "Status"
 							}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Select, {
-								"data-uid": "src/components/transactions/TransactionForm.tsx:90:17",
+								"data-uid": "src/components/transactions/TransactionForm.tsx:89:17",
 								"data-prohibitions": "[]",
 								onValueChange: field.onChange,
 								defaultValue: field.value,
 								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormControl, {
-									"data-uid": "src/components/transactions/TransactionForm.tsx:91:19",
+									"data-uid": "src/components/transactions/TransactionForm.tsx:90:19",
 									"data-prohibitions": "[]",
 									children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectTrigger, {
-										"data-uid": "src/components/transactions/TransactionForm.tsx:92:21",
+										"data-uid": "src/components/transactions/TransactionForm.tsx:91:21",
 										"data-prohibitions": "[]",
 										children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectValue, {
-											"data-uid": "src/components/transactions/TransactionForm.tsx:93:23",
+											"data-uid": "src/components/transactions/TransactionForm.tsx:92:23",
 											"data-prohibitions": "[editContent]",
 											placeholder: "Status"
 										})
 									})
 								}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(SelectContent, {
-									"data-uid": "src/components/transactions/TransactionForm.tsx:96:19",
+									"data-uid": "src/components/transactions/TransactionForm.tsx:95:19",
 									"data-prohibitions": "[]",
 									children: [
 										/* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectItem, {
-											"data-uid": "src/components/transactions/TransactionForm.tsx:97:21",
+											"data-uid": "src/components/transactions/TransactionForm.tsx:96:21",
 											"data-prohibitions": "[]",
 											value: "PREVISTO",
 											children: "Previsto"
 										}),
 										/* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectItem, {
-											"data-uid": "src/components/transactions/TransactionForm.tsx:98:21",
+											"data-uid": "src/components/transactions/TransactionForm.tsx:97:21",
 											"data-prohibitions": "[]",
 											value: "REALIZADO",
 											children: "Realizado"
 										}),
 										/* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectItem, {
-											"data-uid": "src/components/transactions/TransactionForm.tsx:99:21",
+											"data-uid": "src/components/transactions/TransactionForm.tsx:98:21",
 											"data-prohibitions": "[]",
 											value: "VENCIDO",
 											children: "Vencido"
@@ -63171,86 +63113,86 @@ function TransactionForm({ onSuccess }) {
 					})]
 				}),
 				/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormField, {
-					"data-uid": "src/components/transactions/TransactionForm.tsx:107:9",
+					"data-uid": "src/components/transactions/TransactionForm.tsx:106:9",
 					"data-prohibitions": "[editContent]",
 					control: form.control,
 					name: "date",
 					render: ({ field }) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(FormItem, {
-						"data-uid": "src/components/transactions/TransactionForm.tsx:111:13",
+						"data-uid": "src/components/transactions/TransactionForm.tsx:110:13",
 						"data-prohibitions": "[]",
 						children: [
 							/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormLabel, {
-								"data-uid": "src/components/transactions/TransactionForm.tsx:112:15",
+								"data-uid": "src/components/transactions/TransactionForm.tsx:111:15",
 								"data-prohibitions": "[]",
 								children: "Data"
 							}),
 							/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormControl, {
-								"data-uid": "src/components/transactions/TransactionForm.tsx:113:15",
+								"data-uid": "src/components/transactions/TransactionForm.tsx:112:15",
 								"data-prohibitions": "[]",
 								children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Input, {
-									"data-uid": "src/components/transactions/TransactionForm.tsx:114:17",
+									"data-uid": "src/components/transactions/TransactionForm.tsx:113:17",
 									"data-prohibitions": "[editContent]",
 									type: "date",
 									...field
 								})
 							}),
 							/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormMessage, {
-								"data-uid": "src/components/transactions/TransactionForm.tsx:116:15",
+								"data-uid": "src/components/transactions/TransactionForm.tsx:115:15",
 								"data-prohibitions": "[editContent]"
 							})
 						]
 					})
 				}),
 				/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormField, {
-					"data-uid": "src/components/transactions/TransactionForm.tsx:121:9",
+					"data-uid": "src/components/transactions/TransactionForm.tsx:120:9",
 					"data-prohibitions": "[editContent]",
 					control: form.control,
 					name: "description",
 					render: ({ field }) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(FormItem, {
-						"data-uid": "src/components/transactions/TransactionForm.tsx:125:13",
+						"data-uid": "src/components/transactions/TransactionForm.tsx:124:13",
 						"data-prohibitions": "[]",
 						children: [
 							/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormLabel, {
-								"data-uid": "src/components/transactions/TransactionForm.tsx:126:15",
+								"data-uid": "src/components/transactions/TransactionForm.tsx:125:15",
 								"data-prohibitions": "[]",
 								children: "Descrição"
 							}),
 							/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormControl, {
-								"data-uid": "src/components/transactions/TransactionForm.tsx:127:15",
+								"data-uid": "src/components/transactions/TransactionForm.tsx:126:15",
 								"data-prohibitions": "[]",
 								children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Input, {
-									"data-uid": "src/components/transactions/TransactionForm.tsx:128:17",
+									"data-uid": "src/components/transactions/TransactionForm.tsx:127:17",
 									"data-prohibitions": "[editContent]",
 									placeholder: "Ex: Conta de Luz",
 									...field
 								})
 							}),
 							/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormMessage, {
-								"data-uid": "src/components/transactions/TransactionForm.tsx:130:15",
+								"data-uid": "src/components/transactions/TransactionForm.tsx:129:15",
 								"data-prohibitions": "[editContent]"
 							})
 						]
 					})
 				}),
 				/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormField, {
-					"data-uid": "src/components/transactions/TransactionForm.tsx:135:9",
+					"data-uid": "src/components/transactions/TransactionForm.tsx:134:9",
 					"data-prohibitions": "[editContent]",
 					control: form.control,
 					name: "amount",
 					render: ({ field }) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(FormItem, {
-						"data-uid": "src/components/transactions/TransactionForm.tsx:139:13",
+						"data-uid": "src/components/transactions/TransactionForm.tsx:138:13",
 						"data-prohibitions": "[]",
 						children: [
 							/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormLabel, {
-								"data-uid": "src/components/transactions/TransactionForm.tsx:140:15",
+								"data-uid": "src/components/transactions/TransactionForm.tsx:139:15",
 								"data-prohibitions": "[]",
 								children: "Valor (R$)"
 							}),
 							/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormControl, {
-								"data-uid": "src/components/transactions/TransactionForm.tsx:141:15",
+								"data-uid": "src/components/transactions/TransactionForm.tsx:140:15",
 								"data-prohibitions": "[]",
 								children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Input, {
-									"data-uid": "src/components/transactions/TransactionForm.tsx:142:17",
+									"data-uid": "src/components/transactions/TransactionForm.tsx:141:17",
 									"data-prohibitions": "[editContent]",
 									type: "number",
 									step: "0.01",
@@ -63258,101 +63200,100 @@ function TransactionForm({ onSuccess }) {
 								})
 							}),
 							/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormMessage, {
-								"data-uid": "src/components/transactions/TransactionForm.tsx:144:15",
-								"data-prohibitions": "[editContent]"
-							})
-						]
-					})
-				}),
-				/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormField, {
-					"data-uid": "src/components/transactions/TransactionForm.tsx:149:9",
-					"data-prohibitions": "[editContent]",
-					control: form.control,
-					name: "categoryId",
-					render: ({ field }) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(FormItem, {
-						"data-uid": "src/components/transactions/TransactionForm.tsx:153:13",
-						"data-prohibitions": "[editContent]",
-						children: [
-							/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormLabel, {
-								"data-uid": "src/components/transactions/TransactionForm.tsx:154:15",
-								"data-prohibitions": "[]",
-								children: "Categoria"
-							}),
-							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Select, {
-								"data-uid": "src/components/transactions/TransactionForm.tsx:155:15",
-								"data-prohibitions": "[editContent]",
-								onValueChange: field.onChange,
-								defaultValue: field.value,
-								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormControl, {
-									"data-uid": "src/components/transactions/TransactionForm.tsx:156:17",
-									"data-prohibitions": "[]",
-									children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectTrigger, {
-										"data-uid": "src/components/transactions/TransactionForm.tsx:157:19",
-										"data-prohibitions": "[]",
-										children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectValue, {
-											"data-uid": "src/components/transactions/TransactionForm.tsx:158:21",
-											"data-prohibitions": "[editContent]",
-											placeholder: "Selecione a categoria"
-										})
-									})
-								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectContent, {
-									"data-uid": "src/components/transactions/TransactionForm.tsx:161:17",
-									"data-prohibitions": "[editContent]",
-									children: filteredCategories.map((c) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectItem, {
-										"data-uid": "src/components/transactions/TransactionForm.tsx:163:21",
-										"data-prohibitions": "[editContent]",
-										value: c.id,
-										children: c.name
-									}, c.id))
-								})]
-							}),
-							/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormMessage, {
-								"data-uid": "src/components/transactions/TransactionForm.tsx:169:15",
+								"data-uid": "src/components/transactions/TransactionForm.tsx:143:15",
 								"data-prohibitions": "[editContent]"
 							})
 						]
 					})
 				}),
 				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-					"data-uid": "src/components/transactions/TransactionForm.tsx:174:9",
+					"data-uid": "src/components/transactions/TransactionForm.tsx:148:9",
 					"data-prohibitions": "[]",
 					className: "grid grid-cols-2 gap-4",
 					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormField, {
-						"data-uid": "src/components/transactions/TransactionForm.tsx:175:11",
+						"data-uid": "src/components/transactions/TransactionForm.tsx:149:11",
 						"data-prohibitions": "[editContent]",
 						control: form.control,
-						name: "accountId",
+						name: "categoryId",
 						render: ({ field }) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(FormItem, {
-							"data-uid": "src/components/transactions/TransactionForm.tsx:179:15",
+							"data-uid": "src/components/transactions/TransactionForm.tsx:153:15",
 							"data-prohibitions": "[editContent]",
 							children: [
 								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormLabel, {
-									"data-uid": "src/components/transactions/TransactionForm.tsx:180:17",
+									"data-uid": "src/components/transactions/TransactionForm.tsx:154:17",
 									"data-prohibitions": "[]",
-									children: "Conta"
+									children: "Categoria"
 								}),
 								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Select, {
-									"data-uid": "src/components/transactions/TransactionForm.tsx:181:17",
+									"data-uid": "src/components/transactions/TransactionForm.tsx:155:17",
 									"data-prohibitions": "[editContent]",
 									onValueChange: field.onChange,
 									defaultValue: field.value,
 									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormControl, {
-										"data-uid": "src/components/transactions/TransactionForm.tsx:182:19",
+										"data-uid": "src/components/transactions/TransactionForm.tsx:156:19",
 										"data-prohibitions": "[]",
 										children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectTrigger, {
-											"data-uid": "src/components/transactions/TransactionForm.tsx:183:21",
+											"data-uid": "src/components/transactions/TransactionForm.tsx:157:21",
 											"data-prohibitions": "[]",
 											children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectValue, {
-												"data-uid": "src/components/transactions/TransactionForm.tsx:184:23",
+												"data-uid": "src/components/transactions/TransactionForm.tsx:158:23",
 												"data-prohibitions": "[editContent]",
-												placeholder: "Conta"
+												placeholder: "Categoria"
 											})
 										})
 									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectContent, {
-										"data-uid": "src/components/transactions/TransactionForm.tsx:187:19",
+										"data-uid": "src/components/transactions/TransactionForm.tsx:161:19",
+										"data-prohibitions": "[editContent]",
+										children: filteredCategories.map((c) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectItem, {
+											"data-uid": "src/components/transactions/TransactionForm.tsx:163:23",
+											"data-prohibitions": "[editContent]",
+											value: c.id,
+											children: c.name
+										}, c.id))
+									})]
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormMessage, {
+									"data-uid": "src/components/transactions/TransactionForm.tsx:169:17",
+									"data-prohibitions": "[editContent]"
+								})
+							]
+						})
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormField, {
+						"data-uid": "src/components/transactions/TransactionForm.tsx:174:11",
+						"data-prohibitions": "[editContent]",
+						control: form.control,
+						name: "accountId",
+						render: ({ field }) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(FormItem, {
+							"data-uid": "src/components/transactions/TransactionForm.tsx:178:15",
+							"data-prohibitions": "[editContent]",
+							children: [
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormLabel, {
+									"data-uid": "src/components/transactions/TransactionForm.tsx:179:17",
+									"data-prohibitions": "[]",
+									children: "Método de Entrada"
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Select, {
+									"data-uid": "src/components/transactions/TransactionForm.tsx:180:17",
+									"data-prohibitions": "[editContent]",
+									onValueChange: field.onChange,
+									defaultValue: field.value,
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormControl, {
+										"data-uid": "src/components/transactions/TransactionForm.tsx:181:19",
+										"data-prohibitions": "[]",
+										children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectTrigger, {
+											"data-uid": "src/components/transactions/TransactionForm.tsx:182:21",
+											"data-prohibitions": "[]",
+											children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectValue, {
+												"data-uid": "src/components/transactions/TransactionForm.tsx:183:23",
+												"data-prohibitions": "[editContent]",
+												placeholder: "Método"
+											})
+										})
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectContent, {
+										"data-uid": "src/components/transactions/TransactionForm.tsx:186:19",
 										"data-prohibitions": "[editContent]",
 										children: accounts.map((a) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectItem, {
-											"data-uid": "src/components/transactions/TransactionForm.tsx:189:23",
+											"data-uid": "src/components/transactions/TransactionForm.tsx:188:23",
 											"data-prohibitions": "[editContent]",
 											value: a.id,
 											children: a.name
@@ -63360,55 +63301,7 @@ function TransactionForm({ onSuccess }) {
 									})]
 								}),
 								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormMessage, {
-									"data-uid": "src/components/transactions/TransactionForm.tsx:195:17",
-									"data-prohibitions": "[editContent]"
-								})
-							]
-						})
-					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormField, {
-						"data-uid": "src/components/transactions/TransactionForm.tsx:199:11",
-						"data-prohibitions": "[editContent]",
-						control: form.control,
-						name: "costCenterId",
-						render: ({ field }) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(FormItem, {
-							"data-uid": "src/components/transactions/TransactionForm.tsx:203:15",
-							"data-prohibitions": "[editContent]",
-							children: [
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormLabel, {
-									"data-uid": "src/components/transactions/TransactionForm.tsx:204:17",
-									"data-prohibitions": "[]",
-									children: "Centro de Custo"
-								}),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Select, {
-									"data-uid": "src/components/transactions/TransactionForm.tsx:205:17",
-									"data-prohibitions": "[editContent]",
-									onValueChange: field.onChange,
-									defaultValue: field.value,
-									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormControl, {
-										"data-uid": "src/components/transactions/TransactionForm.tsx:206:19",
-										"data-prohibitions": "[]",
-										children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectTrigger, {
-											"data-uid": "src/components/transactions/TransactionForm.tsx:207:21",
-											"data-prohibitions": "[]",
-											children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectValue, {
-												"data-uid": "src/components/transactions/TransactionForm.tsx:208:23",
-												"data-prohibitions": "[editContent]",
-												placeholder: "C.Custo"
-											})
-										})
-									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectContent, {
-										"data-uid": "src/components/transactions/TransactionForm.tsx:211:19",
-										"data-prohibitions": "[editContent]",
-										children: costCenters.map((cc) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectItem, {
-											"data-uid": "src/components/transactions/TransactionForm.tsx:213:23",
-											"data-prohibitions": "[editContent]",
-											value: cc.id,
-											children: cc.name
-										}, cc.id))
-									})]
-								}),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormMessage, {
-									"data-uid": "src/components/transactions/TransactionForm.tsx:219:17",
+									"data-uid": "src/components/transactions/TransactionForm.tsx:194:17",
 									"data-prohibitions": "[editContent]"
 								})
 							]
@@ -63416,7 +63309,7 @@ function TransactionForm({ onSuccess }) {
 					})]
 				}),
 				/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, {
-					"data-uid": "src/components/transactions/TransactionForm.tsx:225:9",
+					"data-uid": "src/components/transactions/TransactionForm.tsx:200:9",
 					"data-prohibitions": "[]",
 					type: "submit",
 					className: "w-full mt-4",
@@ -63429,13 +63322,12 @@ function TransactionForm({ onSuccess }) {
 //#endregion
 //#region src/pages/Transactions.tsx
 function Transactions() {
-	const { transactions, categories, accounts, costCenters } = useFinanceStore();
+	const { transactions, categories, accounts } = useFinanceStore();
 	const [search, setSearch] = (0, import_react.useState)("");
 	const [isSheetOpen, setIsSheetOpen] = (0, import_react.useState)(false);
 	const filteredData = transactions.filter((t) => t.description.toLowerCase().includes(search.toLowerCase()));
 	const getCategoryName = (id) => categories.find((c) => c.id === id)?.name || id;
 	const getAccountName = (id) => accounts.find((a) => a.id === id)?.name || id;
-	const getCostCenterName = (id) => costCenters.find((cc) => cc.id === id)?.name || id;
 	const formatCurrency = (val, type) => {
 		const formatted = new Intl.NumberFormat("pt-BR", {
 			style: "currency",
@@ -63444,75 +63336,75 @@ function Transactions() {
 		return type === "EXPENSE" ? `- ${formatted}` : formatted;
 	};
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-		"data-uid": "src/pages/Transactions.tsx:41:5",
+		"data-uid": "src/pages/Transactions.tsx:40:5",
 		"data-prohibitions": "[editContent]",
 		className: "flex flex-col h-full bg-white rounded-md shadow-md border overflow-hidden p-6 animate-fade-in-up",
 		children: [
 			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-				"data-uid": "src/pages/Transactions.tsx:42:7",
+				"data-uid": "src/pages/Transactions.tsx:41:7",
 				"data-prohibitions": "[]",
 				className: "flex justify-between items-center mb-6",
 				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-					"data-uid": "src/pages/Transactions.tsx:43:9",
+					"data-uid": "src/pages/Transactions.tsx:42:9",
 					"data-prohibitions": "[]",
 					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h1", {
-						"data-uid": "src/pages/Transactions.tsx:44:11",
+						"data-uid": "src/pages/Transactions.tsx:43:11",
 						"data-prohibitions": "[]",
 						className: "text-2xl font-bold text-primary",
 						children: "Transações"
 					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-						"data-uid": "src/pages/Transactions.tsx:45:11",
+						"data-uid": "src/pages/Transactions.tsx:44:11",
 						"data-prohibitions": "[]",
 						className: "text-sm text-muted-foreground",
 						children: "Gerencie seus lançamentos financeiros"
 					})]
 				}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-					"data-uid": "src/pages/Transactions.tsx:47:9",
+					"data-uid": "src/pages/Transactions.tsx:46:9",
 					"data-prohibitions": "[]",
 					className: "flex gap-2",
 					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Button, {
-						"data-uid": "src/pages/Transactions.tsx:48:11",
+						"data-uid": "src/pages/Transactions.tsx:47:11",
 						"data-prohibitions": "[]",
 						variant: "outline",
 						className: "hidden sm:flex gap-2",
 						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Download, {
-							"data-uid": "src/pages/Transactions.tsx:49:13",
+							"data-uid": "src/pages/Transactions.tsx:48:13",
 							"data-prohibitions": "[editContent]",
 							className: "h-4 w-4"
 						}), " Exportar CSV"]
 					}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Sheet, {
-						"data-uid": "src/pages/Transactions.tsx:51:11",
+						"data-uid": "src/pages/Transactions.tsx:50:11",
 						"data-prohibitions": "[]",
 						open: isSheetOpen,
 						onOpenChange: setIsSheetOpen,
 						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(SheetTrigger, {
-							"data-uid": "src/pages/Transactions.tsx:52:13",
+							"data-uid": "src/pages/Transactions.tsx:51:13",
 							"data-prohibitions": "[]",
 							asChild: true,
 							children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Button, {
-								"data-uid": "src/pages/Transactions.tsx:53:15",
+								"data-uid": "src/pages/Transactions.tsx:52:15",
 								"data-prohibitions": "[]",
 								className: "gap-2 bg-green-600 hover:bg-green-700",
 								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Plus, {
-									"data-uid": "src/pages/Transactions.tsx:54:17",
+									"data-uid": "src/pages/Transactions.tsx:53:17",
 									"data-prohibitions": "[editContent]",
 									className: "h-4 w-4"
 								}), " Novo Lançamento"]
 							})
 						}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(SheetContent, {
-							"data-uid": "src/pages/Transactions.tsx:57:13",
+							"data-uid": "src/pages/Transactions.tsx:56:13",
 							"data-prohibitions": "[]",
 							className: "overflow-y-auto",
 							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(SheetHeader, {
-								"data-uid": "src/pages/Transactions.tsx:58:15",
+								"data-uid": "src/pages/Transactions.tsx:57:15",
 								"data-prohibitions": "[]",
 								children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SheetTitle, {
-									"data-uid": "src/pages/Transactions.tsx:59:17",
+									"data-uid": "src/pages/Transactions.tsx:58:17",
 									"data-prohibitions": "[]",
 									children: "Adicionar Transação"
 								})
 							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TransactionForm, {
-								"data-uid": "src/pages/Transactions.tsx:61:15",
+								"data-uid": "src/pages/Transactions.tsx:60:15",
 								"data-prohibitions": "[editContent]",
 								onSuccess: () => setIsSheetOpen(false)
 							})]
@@ -63521,19 +63413,19 @@ function Transactions() {
 				})]
 			}),
 			/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-				"data-uid": "src/pages/Transactions.tsx:67:7",
+				"data-uid": "src/pages/Transactions.tsx:66:7",
 				"data-prohibitions": "[]",
 				className: "flex items-center gap-2 mb-4",
 				children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-					"data-uid": "src/pages/Transactions.tsx:68:9",
+					"data-uid": "src/pages/Transactions.tsx:67:9",
 					"data-prohibitions": "[]",
 					className: "relative flex-1 max-w-sm",
 					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Search, {
-						"data-uid": "src/pages/Transactions.tsx:69:11",
+						"data-uid": "src/pages/Transactions.tsx:68:11",
 						"data-prohibitions": "[editContent]",
 						className: "absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground"
 					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Input, {
-						"data-uid": "src/pages/Transactions.tsx:70:11",
+						"data-uid": "src/pages/Transactions.tsx:69:11",
 						"data-prohibitions": "[editContent]",
 						placeholder: "Buscar por descrição...",
 						className: "pl-8",
@@ -63543,52 +63435,47 @@ function Transactions() {
 				})
 			}),
 			/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-				"data-uid": "src/pages/Transactions.tsx:79:7",
+				"data-uid": "src/pages/Transactions.tsx:78:7",
 				"data-prohibitions": "[editContent]",
 				className: "rounded-md border flex-1 overflow-auto",
 				children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Table, {
-					"data-uid": "src/pages/Transactions.tsx:80:9",
+					"data-uid": "src/pages/Transactions.tsx:79:9",
 					"data-prohibitions": "[editContent]",
 					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TableHeader, {
-						"data-uid": "src/pages/Transactions.tsx:81:11",
+						"data-uid": "src/pages/Transactions.tsx:80:11",
 						"data-prohibitions": "[]",
 						className: "bg-gray-50 sticky top-0 z-10",
 						children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(TableRow, {
-							"data-uid": "src/pages/Transactions.tsx:82:13",
+							"data-uid": "src/pages/Transactions.tsx:81:13",
 							"data-prohibitions": "[]",
 							children: [
 								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TableHead, {
-									"data-uid": "src/pages/Transactions.tsx:83:15",
+									"data-uid": "src/pages/Transactions.tsx:82:15",
 									"data-prohibitions": "[]",
 									children: "Data"
 								}),
 								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TableHead, {
-									"data-uid": "src/pages/Transactions.tsx:84:15",
+									"data-uid": "src/pages/Transactions.tsx:83:15",
 									"data-prohibitions": "[]",
 									children: "Descrição"
 								}),
 								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TableHead, {
-									"data-uid": "src/pages/Transactions.tsx:85:15",
+									"data-uid": "src/pages/Transactions.tsx:84:15",
 									"data-prohibitions": "[]",
 									children: "Categoria"
 								}),
 								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TableHead, {
+									"data-uid": "src/pages/Transactions.tsx:85:15",
+									"data-prohibitions": "[]",
+									children: "Método"
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TableHead, {
 									"data-uid": "src/pages/Transactions.tsx:86:15",
-									"data-prohibitions": "[]",
-									children: "Conta"
-								}),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TableHead, {
-									"data-uid": "src/pages/Transactions.tsx:87:15",
-									"data-prohibitions": "[]",
-									children: "C. Custo"
-								}),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TableHead, {
-									"data-uid": "src/pages/Transactions.tsx:88:15",
 									"data-prohibitions": "[]",
 									children: "Status"
 								}),
 								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TableHead, {
-									"data-uid": "src/pages/Transactions.tsx:89:15",
+									"data-uid": "src/pages/Transactions.tsx:87:15",
 									"data-prohibitions": "[]",
 									className: "text-right",
 									children: "Valor"
@@ -63596,44 +63483,39 @@ function Transactions() {
 							]
 						})
 					}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(TableBody, {
-						"data-uid": "src/pages/Transactions.tsx:92:11",
+						"data-uid": "src/pages/Transactions.tsx:90:11",
 						"data-prohibitions": "[editContent]",
 						children: [filteredData.slice(0, 50).map((tx) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(TableRow, {
-							"data-uid": "src/pages/Transactions.tsx:94:15",
+							"data-uid": "src/pages/Transactions.tsx:92:15",
 							"data-prohibitions": "[editContent]",
 							children: [
 								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TableCell, {
-									"data-uid": "src/pages/Transactions.tsx:95:17",
+									"data-uid": "src/pages/Transactions.tsx:93:17",
 									"data-prohibitions": "[editContent]",
 									className: "whitespace-nowrap",
 									children: format$1(new Date(tx.date), "dd/MM/yyyy")
 								}),
 								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TableCell, {
-									"data-uid": "src/pages/Transactions.tsx:98:17",
+									"data-uid": "src/pages/Transactions.tsx:96:17",
 									"data-prohibitions": "[editContent]",
 									className: "font-medium",
 									children: tx.description
 								}),
 								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TableCell, {
-									"data-uid": "src/pages/Transactions.tsx:99:17",
+									"data-uid": "src/pages/Transactions.tsx:97:17",
 									"data-prohibitions": "[editContent]",
 									children: getCategoryName(tx.categoryId)
 								}),
 								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TableCell, {
-									"data-uid": "src/pages/Transactions.tsx:100:17",
+									"data-uid": "src/pages/Transactions.tsx:98:17",
 									"data-prohibitions": "[editContent]",
 									children: getAccountName(tx.accountId)
 								}),
 								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TableCell, {
-									"data-uid": "src/pages/Transactions.tsx:101:17",
-									"data-prohibitions": "[editContent]",
-									children: getCostCenterName(tx.costCenterId)
-								}),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TableCell, {
-									"data-uid": "src/pages/Transactions.tsx:102:17",
+									"data-uid": "src/pages/Transactions.tsx:99:17",
 									"data-prohibitions": "[editContent]",
 									children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Badge, {
-										"data-uid": "src/pages/Transactions.tsx:103:19",
+										"data-uid": "src/pages/Transactions.tsx:100:19",
 										"data-prohibitions": "[editContent]",
 										variant: tx.status === "REALIZADO" ? "default" : tx.status === "PREVISTO" ? "secondary" : "destructive",
 										className: cn$1("text-[10px]", tx.status === "REALIZADO" && "bg-emerald-500 hover:bg-emerald-600"),
@@ -63641,19 +63523,19 @@ function Transactions() {
 									})
 								}),
 								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TableCell, {
-									"data-uid": "src/pages/Transactions.tsx:119:17",
+									"data-uid": "src/pages/Transactions.tsx:116:17",
 									"data-prohibitions": "[editContent]",
 									className: cn$1("text-right font-medium", tx.type === "INCOME" ? "text-emerald-600" : "text-red-500"),
 									children: formatCurrency(tx.amount, tx.type)
 								})
 							]
 						}, tx.id)), filteredData.length === 0 && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TableRow, {
-							"data-uid": "src/pages/Transactions.tsx:130:15",
+							"data-uid": "src/pages/Transactions.tsx:127:15",
 							"data-prohibitions": "[]",
 							children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TableCell, {
-								"data-uid": "src/pages/Transactions.tsx:131:17",
+								"data-uid": "src/pages/Transactions.tsx:128:17",
 								"data-prohibitions": "[]",
-								colSpan: 7,
+								colSpan: 6,
 								className: "h-24 text-center text-muted-foreground",
 								children: "Nenhuma transação encontrada."
 							})
@@ -63662,7 +63544,7 @@ function Transactions() {
 				})
 			}),
 			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-				"data-uid": "src/pages/Transactions.tsx:139:7",
+				"data-uid": "src/pages/Transactions.tsx:136:7",
 				"data-prohibitions": "[editContent]",
 				className: "text-xs text-muted-foreground mt-2 text-right",
 				children: [
@@ -63905,4 +63787,4 @@ var App = () => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(BrowserRouter, {
 }));
 //#endregion
 
-//# sourceMappingURL=index-Doz_nbu3.js.map
+//# sourceMappingURL=index-CfysM1xx.js.map
