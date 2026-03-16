@@ -41,25 +41,6 @@ export function SidebarFilters() {
 
   return (
     <ScrollArea className="h-full bg-blue-50/50 p-3 rounded-bl-md border-r min-w-[180px]">
-      <FilterSection title="Ano">
-        <div className="flex flex-col gap-1">
-          {['2022', '2023'].map((year) => (
-            <button
-              key={year}
-              onClick={() => toggleFilter('years', year)}
-              className={cn(
-                'text-xs py-1 px-2 rounded-sm text-left transition-colors',
-                filters.years.includes(year)
-                  ? 'bg-[#5f9ea0] text-white font-medium'
-                  : 'bg-white hover:bg-gray-100 border',
-              )}
-            >
-              {year}
-            </button>
-          ))}
-        </div>
-      </FilterSection>
-
       <FilterSection title="Mês">
         <div className="grid grid-cols-3 gap-1">
           {months.map((m, i) => (

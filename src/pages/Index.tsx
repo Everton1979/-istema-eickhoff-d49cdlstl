@@ -4,7 +4,6 @@ import { KpiCards } from '@/components/dashboard/KpiCards'
 import { CashFlowChart } from '@/components/dashboard/CashFlowChart'
 import { TopCategoriesChart } from '@/components/dashboard/TopCategoriesChart'
 import { ProfitabilityChart } from '@/components/dashboard/ProfitabilityChart'
-import { CapCarChart } from '@/components/dashboard/CapCarChart'
 import { AccountBalances } from '@/components/dashboard/AccountBalances'
 
 export default function Index() {
@@ -38,9 +37,6 @@ export default function Index() {
               <div className="grid grid-cols-2 gap-2 h-[160px]">
                 <TopCategoriesChart type="INCOME" title="Top 5 - Entradas" color="#10b981" />
                 <TopCategoriesChart type="EXPENSE" title="Top 5 - Saídas" color="#ef4444" />
-              </div>
-              <div className="h-[120px]">
-                <CapCarChart />
               </div>
               <div className="flex-1 min-h-[150px]">
                 <AccountBalances />

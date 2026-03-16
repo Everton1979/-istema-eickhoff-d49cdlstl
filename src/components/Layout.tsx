@@ -10,7 +10,7 @@ export default function Layout() {
   const navItems = [
     { name: 'Dashboard', path: '/', icon: LayoutDashboard },
     { name: 'Transações', path: '/transacoes', icon: ReceiptText },
-    { name: 'Configurações', path: '#', icon: Settings },
+    { name: 'Configurações', path: '/configuracoes', icon: Settings },
   ]
 
   const NavLinks = () => (
