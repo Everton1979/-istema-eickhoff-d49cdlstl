@@ -1,11 +1,13 @@
 import { Outlet, Link, useLocation } from 'react-router-dom'
-import { LayoutDashboard, ReceiptText, Settings, Menu } from 'lucide-react'
+import { LayoutDashboard, ReceiptText, Settings, Menu, LogOut } from 'lucide-react'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
+import { useAuth } from '@/hooks/use-auth'
 
 export default function Layout() {
   const location = useLocation()
+  const { user, signOut } = useAuth()
 
   const navItems = [
     { name: 'Dashboard', path: '/', icon: LayoutDashboard },
@@ -50,18 +52,32 @@ export default function Layout() {
             <NavLinks />
           </nav>
 
-          <Sheet>
-            <SheetTrigger asChild className="md:hidden">
-              <Button variant="ghost" size="icon" className="text-white hover:bg-primary/80">
-                <Menu className="h-5 w-5" />
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="left" className="w-[240px] bg-primary text-white border-none pt-10">
-              <div className="flex flex-col gap-4">
-                <NavLinks />
-              </div>
-            </SheetContent>
-          </Sheet>
+          <div className="flex items-center gap-4">
+            <span className="text-sm hidden sm:block text-blue-200">{user?.email}</span>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => signOut()}
+              className="text-white hover:bg-primary/80"
+            >
+              <LogOut className="h-4 w-4" />
+            </Button>
+            <Sheet>
+              <SheetTrigger asChild className="md:hidden">
+                <Button variant="ghost" size="icon" className="text-white hover:bg-primary/80">
+                  <Menu className="h-5 w-5" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent
+                side="left"
+                className="w-[240px] bg-primary text-white border-none pt-10"
+              >
+                <div className="flex flex-col gap-4">
+                  <NavLinks />
+                </div>
+              </SheetContent>
+            </Sheet>
+          </div>
         </div>
       </header>
 

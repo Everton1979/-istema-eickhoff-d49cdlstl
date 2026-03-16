@@ -20,7 +20,7 @@ import {
 } from '@/components/ui/select'
 import { useFinanceStore } from '@/stores/financeStore'
 import { useToast } from '@/hooks/use-toast'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { cn } from '@/lib/utils'
 
 const formSchema = z
@@ -53,6 +53,7 @@ const formSchema = z
 export function TransactionForm({ onSuccess }: { onSuccess: () => void }) {
   const { accounts, addTransaction } = useFinanceStore()
   const { toast } = useToast()
+  const [loading, setLoading] = useState(false)
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -69,7 +70,6 @@ export function TransactionForm({ onSuccess }: { onSuccess: () => void }) {
 
   const type = form.watch('type')
 
-  // Clear hidden fields when transaction type changes
   useEffect(() => {
     if (type === 'INCOME') {
       form.setValue('categoryId', '')
@@ -78,15 +78,22 @@ export function TransactionForm({ onSuccess }: { onSuccess: () => void }) {
     }
   }, [type, form])
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    addTransaction({
-      ...values,
-      categoryId: values.categoryId || '',
-      accountId: values.accountId || '',
-    } as any)
-    toast({ title: 'Sucesso', description: 'Transação salva com sucesso!' })
-    form.reset()
-    onSuccess()
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    try {
+      setLoading(true)
+      await addTransaction({
+        ...values,
+        categoryId: values.type === 'EXPENSE' ? values.categoryId || 'FIXA' : '',
+        accountId: values.type === 'INCOME' ? values.accountId || 'acc1' : '',
+      } as any)
+      toast({ title: 'Sucesso', description: 'Transação salva com sucesso!' })
+      form.reset()
+      onSuccess()
+    } catch (error) {
+      toast({ title: 'Erro', description: 'Ocorreu um erro ao salvar.', variant: 'destructive' })
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -235,8 +242,8 @@ export function TransactionForm({ onSuccess }: { onSuccess: () => void }) {
           )}
         </div>
 
-        <Button type="submit" className="w-full mt-4">
-          Salvar Lançamento
+        <Button type="submit" className="w-full mt-4" disabled={loading}>
+          {loading ? 'Salvando...' : 'Salvar Lançamento'}
         </Button>
       </form>
     </Form>

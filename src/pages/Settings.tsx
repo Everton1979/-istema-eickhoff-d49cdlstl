@@ -8,9 +8,9 @@ import { toast } from 'sonner'
 import { Save } from 'lucide-react'
 
 export default function Settings() {
-  const { accounts, updateAccountInitialBalance } = useFinanceStore()
-
+  const { accounts, updateAccountInitialBalances } = useFinanceStore()
   const [balances, setBalances] = useState<Record<string, string>>({})
+  const [saving, setSaving] = useState(false)
 
   useEffect(() => {
     const initial: Record<string, string> = {}
@@ -24,21 +24,31 @@ export default function Settings() {
     setBalances((prev) => ({ ...prev, [id]: value }))
   }
 
-  const handleSave = () => {
+  const handleSave = async () => {
+    setSaving(true)
     let success = true
+    const parsedBalances: Record<string, number> = {}
+
     Object.entries(balances).forEach(([id, value]) => {
       const numValue = parseFloat(value)
       if (!isNaN(numValue)) {
-        updateAccountInitialBalance(id, numValue)
+        parsedBalances[id] = numValue
       } else {
         success = false
       }
     })
+
     if (success) {
-      toast.success('Configurações salvas com sucesso!')
+      const { error } = await updateAccountInitialBalances(parsedBalances)
+      if (error) {
+        toast.error('Erro ao salvar as configurações.')
+      } else {
+        toast.success('Configurações salvas com sucesso!')
+      }
     } else {
       toast.error('Alguns valores não são válidos.')
     }
+    setSaving(false)
   }
 
   return (
@@ -81,8 +91,12 @@ export default function Settings() {
               </div>
             ))}
             <div className="pt-4 flex justify-end">
-              <Button onClick={handleSave} className="gap-2 bg-primary hover:bg-primary/90">
-                <Save className="h-4 w-4" /> Salvar Alterações
+              <Button
+                onClick={handleSave}
+                disabled={saving}
+                className="gap-2 bg-primary hover:bg-primary/90"
+              >
+                <Save className="h-4 w-4" /> {saving ? 'Salvando...' : 'Salvar Alterações'}
               </Button>
             </div>
           </CardContent>

@@ -12,25 +12,33 @@ export function TopCategoriesChart({
   title: string
   color: string
 }) {
-  const { filteredTransactions, categories } = useFinanceStore()
+  const { filteredTransactions, categories, accounts } = useFinanceStore()
 
   const data = useMemo(() => {
     const sums: Record<string, number> = {}
     filteredTransactions
       .filter((t) => t.type === type)
       .forEach((tx) => {
-        sums[tx.categoryId] = (sums[tx.categoryId] || 0) + tx.amount
+        const key = type === 'INCOME' ? tx.accountId : tx.categoryId
+        if (key) {
+          sums[key] = (sums[key] || 0) + tx.amount
+        }
       })
 
     return Object.entries(sums)
-      .map(([id, amount]) => ({
-        name: categories.find((c) => c.id === id)?.name || 'Outros',
-        amount,
-      }))
+      .map(([id, amount]) => {
+        let name = 'Outros'
+        if (type === 'INCOME') {
+          name = accounts.find((a) => a.id === id)?.name || id
+        } else {
+          name = categories.find((c) => c.id === id)?.name || id
+        }
+        return { name, amount }
+      })
       .sort((a, b) => b.amount - a.amount)
       .slice(0, 5)
       .reverse() // For horizontal bar chart, reverse to show largest on top
-  }, [filteredTransactions, type, categories])
+  }, [filteredTransactions, type, categories, accounts])
 
   return (
     <div className="bg-white p-2 rounded-sm border shadow-sm flex flex-col h-full">
