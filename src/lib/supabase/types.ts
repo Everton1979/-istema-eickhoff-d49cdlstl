@@ -9,6 +9,42 @@ export type Database = {
   }
   public: {
     Tables: {
+      monthly_metrics: {
+        Row: {
+          created_at: string
+          id: string
+          month: number
+          orders_count: number
+          raw_material_costs: number
+          total_system_sales: number
+          updated_at: string
+          user_id: string
+          year: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          month: number
+          orders_count?: number
+          raw_material_costs?: number
+          total_system_sales?: number
+          updated_at?: string
+          user_id: string
+          year: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          month?: number
+          orders_count?: number
+          raw_material_costs?: number
+          total_system_sales?: number
+          updated_at?: string
+          user_id?: string
+          year?: number
+        }
+        Relationships: []
+      }
       transactions: {
         Row: {
           account: string | null
@@ -225,6 +261,16 @@ export const Constants = {
 // --- COLUMN TYPES (actual PostgreSQL types) ---
 // Use this to know the real database type when writing migrations.
 // "string" in TypeScript types above may be uuid, text, varchar, timestamptz, etc.
+// Table: monthly_metrics
+//   id: uuid (not null, default: gen_random_uuid())
+//   user_id: uuid (not null)
+//   month: integer (not null)
+//   year: integer (not null)
+//   orders_count: integer (not null, default: 0)
+//   total_system_sales: numeric (not null, default: 0)
+//   raw_material_costs: numeric (not null, default: 0)
+//   created_at: timestamp with time zone (not null, default: now())
+//   updated_at: timestamp with time zone (not null, default: now())
 // Table: transactions
 //   id: uuid (not null, default: gen_random_uuid())
 //   user_id: uuid (not null)
@@ -246,6 +292,10 @@ export const Constants = {
 //   updated_at: timestamp with time zone (not null, default: now())
 
 // --- CONSTRAINTS ---
+// Table: monthly_metrics
+//   PRIMARY KEY monthly_metrics_pkey: PRIMARY KEY (id)
+//   FOREIGN KEY monthly_metrics_user_id_fkey: FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE
+//   UNIQUE monthly_metrics_user_id_month_year_key: UNIQUE (user_id, month, year)
 // Table: transactions
 //   PRIMARY KEY transactions_pkey: PRIMARY KEY (id)
 //   FOREIGN KEY transactions_user_id_fkey: FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE
@@ -254,9 +304,16 @@ export const Constants = {
 //   FOREIGN KEY user_settings_user_id_fkey: FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE
 
 // --- ROW LEVEL SECURITY POLICIES ---
+// Table: monthly_metrics
+//   Policy "Users can manage their own monthly metrics" (ALL, PERMISSIVE) roles={public}
+//     USING: (auth.uid() = user_id)
 // Table: transactions
 //   Policy "Users can manage their own transactions" (ALL, PERMISSIVE) roles={public}
 //     USING: (auth.uid() = user_id)
 // Table: user_settings
 //   Policy "Users can manage their own settings" (ALL, PERMISSIVE) roles={public}
 //     USING: (auth.uid() = user_id)
+
+// --- INDEXES ---
+// Table: monthly_metrics
+//   CREATE UNIQUE INDEX monthly_metrics_user_id_month_year_key ON public.monthly_metrics USING btree (user_id, month, year)

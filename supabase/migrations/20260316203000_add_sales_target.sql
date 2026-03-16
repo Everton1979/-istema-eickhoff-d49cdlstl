@@ -1,0 +1,1 @@
+ALTER TABLE public.monthly_metrics ADD COLUMN IF NOT EXISTS sales_target NUMERIC NOT NULL DEFAULT 0;

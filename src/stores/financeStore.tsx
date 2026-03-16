@@ -69,6 +69,11 @@ const mapAccountFromDB = (acc: string | null) => {
   return ''
 }
 
+const ensureUtcNoon = (dateStr: string) => {
+  if (dateStr.includes('T')) return dateStr
+  return new Date(`${dateStr}T12:00:00Z`).toISOString()
+}
+
 export function FinanceProvider({ children }: { children: React.ReactNode }) {
   const { user } = useAuth()
   const [transactions, setTransactions] = useState<Transaction[]>([])
@@ -126,6 +131,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
           orders_count: Number(m.orders_count),
           total_system_sales: Number(m.total_system_sales),
           raw_material_costs: Number(m.raw_material_costs),
+          sales_target: Number(m.sales_target || 0),
         })),
       )
     }
@@ -157,6 +163,8 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
   const addTransaction = async (tx: Omit<Transaction, 'id'>) => {
     if (!user) return
     const dbType = mapTypeToDB(tx.type)
+    const formattedDate = ensureUtcNoon(tx.date)
+
     const { data, error } = await supabase
       .from('transactions')
       .insert({
@@ -167,7 +175,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
         category: dbType === 'despesa' ? mapCategoryToDB(tx.categoryId) : null,
         account: dbType === 'receita' ? mapAccountToDB(tx.accountId) : null,
         status: tx.status,
-        date: new Date(tx.date).toISOString(),
+        date: formattedDate,
       })
       .select()
       .single()
@@ -196,7 +204,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
     if (tx.categoryId !== undefined) updateData.category = mapCategoryToDB(tx.categoryId)
     if (tx.accountId !== undefined) updateData.account = mapAccountToDB(tx.accountId)
     if (tx.status !== undefined) updateData.status = tx.status
-    if (tx.date !== undefined) updateData.date = new Date(tx.date).toISOString()
+    if (tx.date !== undefined) updateData.date = ensureUtcNoon(tx.date)
 
     const { data, error } = await supabase
       .from('transactions')
@@ -245,6 +253,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
           orders_count: metric.orders_count,
           total_system_sales: metric.total_system_sales,
           raw_material_costs: metric.raw_material_costs,
+          sales_target: metric.sales_target || 0,
           updated_at: new Date().toISOString(),
         },
         { onConflict: 'user_id,month,year' },
@@ -266,6 +275,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
             orders_count: Number(data.orders_count),
             total_system_sales: Number(data.total_system_sales),
             raw_material_costs: Number(data.raw_material_costs),
+            sales_target: Number(data.sales_target || 0),
           },
         ]
       })

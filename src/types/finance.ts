@@ -32,4 +32,5 @@ export interface MonthlyMetric {
   orders_count: number
   total_system_sales: number
   raw_material_costs: number
+  sales_target: number
 }

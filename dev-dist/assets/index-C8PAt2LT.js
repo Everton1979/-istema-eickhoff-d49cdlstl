@@ -17681,7 +17681,7 @@ function createContext2(rootComponentName, defaultContext) {
 	}
 	return [Provider, useContext2];
 }
-function createContextScope(scopeName, createContextScopeDeps = []) {
+function createContextScope$1(scopeName, createContextScopeDeps = []) {
 	let defaultContexts = [];
 	function createContext3(rootComponentName, defaultContext) {
 		const BaseContext = import_react.createContext(defaultContext);
@@ -17719,9 +17719,9 @@ function createContextScope(scopeName, createContextScopeDeps = []) {
 		};
 	};
 	createScope.scopeName = scopeName;
-	return [createContext3, composeContextScopes(createScope, ...createContextScopeDeps)];
+	return [createContext3, composeContextScopes$1(createScope, ...createContextScopeDeps)];
 }
-function composeContextScopes(...scopes) {
+function composeContextScopes$1(...scopes) {
 	const baseScope = scopes[0];
 	if (scopes.length === 1) return baseScope;
 	const createScope = () => {
@@ -17839,7 +17839,7 @@ function getElementRef$2(element) {
 //#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/@radix-ui+react-collection@1.1.7_@types+react-dom@19.2.3_@types+react@19.2.14__@types+r_161926fa2509d0b7370b60b8bb4eb8b0/node_modules/@radix-ui/react-collection/dist/index.mjs
 function createCollection(name) {
 	const PROVIDER_NAME = name + "CollectionProvider";
-	const [createCollectionContext, createCollectionScope] = createContextScope(PROVIDER_NAME);
+	const [createCollectionContext, createCollectionScope] = createContextScope$1(PROVIDER_NAME);
 	const [CollectionProviderImpl, useCollectionContext] = createCollectionContext(PROVIDER_NAME, {
 		collectionRef: { current: null },
 		itemMap: /* @__PURE__ */ new Map()
@@ -18142,7 +18142,7 @@ function handleAndDispatchCustomEvent$1(name, handler, detail, { discrete }) {
 	if (discrete) dispatchDiscreteCustomEvent(target, event);
 	else target.dispatchEvent(event);
 }
-var Root$5 = DismissableLayer;
+var Root$6 = DismissableLayer;
 var Branch = DismissableLayerBranch;
 //#endregion
 //#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/@radix-ui+react-use-layout-effect@1.1.1_@types+react@19.2.14_react@19.2.4/node_modules/@radix-ui/react-use-layout-effect/dist/index.mjs
@@ -18342,12 +18342,12 @@ var VisuallyHidden = import_react.forwardRef((props, forwardedRef) => {
 	});
 });
 VisuallyHidden.displayName = NAME$2;
-var Root$4 = VisuallyHidden;
+var Root$5 = VisuallyHidden;
 //#endregion
 //#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/@radix-ui+react-toast@1.2.15_@types+react-dom@19.2.3_@types+react@19.2.14__@types+react_4581e89c6ba13e4159ce65546c8b2a16/node_modules/@radix-ui/react-toast/dist/index.mjs
 var PROVIDER_NAME$1 = "ToastProvider";
 var [Collection$1, useCollection$1, createCollectionScope$1] = createCollection("Toast");
-var [createToastContext, createToastScope] = createContextScope("Toast", [createCollectionScope$1]);
+var [createToastContext, createToastScope] = createContextScope$1("Toast", [createCollectionScope$1]);
 var [ToastProviderProvider, useToastProviderContext] = createToastContext(PROVIDER_NAME$1);
 var ToastProvider$1 = (props) => {
 	const { __scopeToast, label = "Notification", duration = 5e3, swipeDirection = "right", swipeThreshold = 50, children } = props;
@@ -18642,7 +18642,7 @@ var ToastImpl = import_react.forwardRef((props, forwardedRef) => {
 		onClose: handleClose,
 		children: import_react_dom.createPortal(/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Collection$1.ItemSlot, {
 			scope: __scopeToast,
-			children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Root$5, {
+			children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Root$6, {
 				asChild: true,
 				onEscapeKeyDown: composeEventHandlers(onEscapeKeyDown, () => {
 					if (!context.isFocusedToastEscapeKeyDownRef.current) handleClose();
@@ -19054,6 +19054,65 @@ var createLucideIcon = (iconName, iconNode) => {
 	Component.displayName = toPascalCase(iconName);
 	return Component;
 };
+var ArrowRight = createLucideIcon("arrow-right", [["path", {
+	d: "M5 12h14",
+	key: "1ays0h"
+}], ["path", {
+	d: "m12 5 7 7-7 7",
+	key: "xquz4c"
+}]]);
+var Calculator = createLucideIcon("calculator", [
+	["rect", {
+		width: "16",
+		height: "20",
+		x: "4",
+		y: "2",
+		rx: "2",
+		key: "1nb95v"
+	}],
+	["line", {
+		x1: "8",
+		x2: "16",
+		y1: "6",
+		y2: "6",
+		key: "x4nwl0"
+	}],
+	["line", {
+		x1: "16",
+		x2: "16",
+		y1: "14",
+		y2: "18",
+		key: "wjye3r"
+	}],
+	["path", {
+		d: "M16 10h.01",
+		key: "1m94wz"
+	}],
+	["path", {
+		d: "M12 10h.01",
+		key: "1nrarc"
+	}],
+	["path", {
+		d: "M8 10h.01",
+		key: "19clt8"
+	}],
+	["path", {
+		d: "M12 14h.01",
+		key: "1etili"
+	}],
+	["path", {
+		d: "M8 14h.01",
+		key: "6423bh"
+	}],
+	["path", {
+		d: "M12 18h.01",
+		key: "mhygvu"
+	}],
+	["path", {
+		d: "M8 18h.01",
+		key: "lrp35t"
+	}]
+]);
 var Check = createLucideIcon("check", [["path", {
 	d: "M20 6 9 17l-5-5",
 	key: "1gmf2c"
@@ -19283,6 +19342,26 @@ var Settings$1 = createLucideIcon("settings", [["path", {
 	r: "3",
 	key: "1v7zrd"
 }]]);
+var Target = createLucideIcon("target", [
+	["circle", {
+		cx: "12",
+		cy: "12",
+		r: "10",
+		key: "1mglay"
+	}],
+	["circle", {
+		cx: "12",
+		cy: "12",
+		r: "6",
+		key: "1vlfrh"
+	}],
+	["circle", {
+		cx: "12",
+		cy: "12",
+		r: "2",
+		key: "1c9p78"
+	}]
+]);
 var Trash2 = createLucideIcon("trash-2", [
 	["path", {
 		d: "M10 11v6",
@@ -19625,12 +19704,12 @@ var lengthUnitRegex = /\d+(%|px|r?em|[sdl]?v([hwib]|min|max)|pt|pc|in|cm|mm|cap|
 var colorFunctionRegex = /^(rgba?|hsla?|hwb|(ok)?(lab|lch)|color-mix)\(.+\)$/;
 var shadowRegex = /^(inset_)?-?((\d+)?\.?(\d+)[a-z]+|0)_-?((\d+)?\.?(\d+)[a-z]+|0)/;
 var imageRegex = /^(url|image|image-set|cross-fade|element|(repeating-)?(linear|radial|conic)-gradient)\(.+\)$/;
-var isLength = (value) => isNumber$1(value) || stringLengths.has(value) || fractionRegex.test(value);
+var isLength = (value) => isNumber$2(value) || stringLengths.has(value) || fractionRegex.test(value);
 var isArbitraryLength = (value) => getIsArbitraryValue(value, "length", isLengthOnly);
-var isNumber$1 = (value) => Boolean(value) && !Number.isNaN(Number(value));
-var isArbitraryNumber = (value) => getIsArbitraryValue(value, "number", isNumber$1);
+var isNumber$2 = (value) => Boolean(value) && !Number.isNaN(Number(value));
+var isArbitraryNumber = (value) => getIsArbitraryValue(value, "number", isNumber$2);
 var isInteger = (value) => Boolean(value) && Number.isInteger(Number(value));
-var isPercent$1 = (value) => value.endsWith("%") && isNumber$1(value.slice(0, -1));
+var isPercent$1 = (value) => value.endsWith("%") && isNumber$2(value.slice(0, -1));
 var isArbitraryValue = (value) => arbitraryValueRegex.test(value);
 var isTshirtSize = (value) => tshirtUnitRegex.test(value);
 var sizeLabels = /* @__PURE__ */ new Set([
@@ -19707,7 +19786,7 @@ var getDefaultConfig = () => {
 	];
 	const getNumberWithAutoAndArbitrary = () => [
 		"auto",
-		isNumber$1,
+		isNumber$2,
 		isArbitraryValue
 	];
 	const getPositions = () => [
@@ -19770,7 +19849,7 @@ var getDefaultConfig = () => {
 		"right",
 		"column"
 	];
-	const getNumberAndArbitrary = () => [isNumber$1, isArbitraryValue];
+	const getNumberAndArbitrary = () => [isNumber$2, isArbitraryValue];
 	return {
 		cacheSize: 500,
 		separator: ":",
@@ -20159,7 +20238,7 @@ var getDefaultConfig = () => {
 			] }],
 			"line-clamp": [{ "line-clamp": [
 				"none",
-				isNumber$1,
+				isNumber$2,
 				isArbitraryNumber
 			] }],
 			leading: [{ leading: [
@@ -23486,7 +23565,7 @@ var Arrow$1 = import_react.forwardRef((props, forwardedRef) => {
 	});
 });
 Arrow$1.displayName = NAME$1;
-var Root$3 = Arrow$1;
+var Root$4 = Arrow$1;
 //#endregion
 //#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/@radix-ui+react-use-size@1.1.1_@types+react@19.2.14_react@19.2.4/node_modules/@radix-ui/react-use-size/dist/index.mjs
 function useSize(element) {
@@ -23526,7 +23605,7 @@ function useSize(element) {
 //#endregion
 //#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/@radix-ui+react-popper@1.2.8_@types+react-dom@19.2.3_@types+react@19.2.14__@types+react_13e0521d8aea7ebfbfb8bee1fb615c05/node_modules/@radix-ui/react-popper/dist/index.mjs
 var POPPER_NAME = "Popper";
-var [createPopperContext, createPopperScope] = createContextScope(POPPER_NAME);
+var [createPopperContext, createPopperScope] = createContextScope$1(POPPER_NAME);
 var [PopperProvider, usePopperContext] = createPopperContext(POPPER_NAME);
 var Popper = (props) => {
 	const { __scopePopper, children } = props;
@@ -23707,7 +23786,7 @@ var PopperArrow = import_react.forwardRef(function PopperArrow2(props, forwarded
 			}[contentContext.placedSide],
 			visibility: contentContext.shouldHideArrow ? "hidden" : void 0
 		},
-		children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Root$3, {
+		children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Root$4, {
 			...arrowProps,
 			ref: forwardedRef,
 			style: {
@@ -23768,7 +23847,7 @@ var Content$1 = PopperContent;
 var Arrow = PopperArrow;
 //#endregion
 //#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/@radix-ui+react-tooltip@1.2.8_@types+react-dom@19.2.3_@types+react@19.2.14__@types+reac_9074d9fb06315b089b2bee17c4c65951/node_modules/@radix-ui/react-tooltip/dist/index.mjs
-var [createTooltipContext, createTooltipScope] = createContextScope("Tooltip", [createPopperScope]);
+var [createTooltipContext, createTooltipScope] = createContextScope$1("Tooltip", [createPopperScope]);
 var usePopperScope$1 = createPopperScope();
 var PROVIDER_NAME = "TooltipProvider";
 var DEFAULT_DELAY_DURATION = 700;
@@ -24091,7 +24170,7 @@ var TooltipContentImpl = import_react.forwardRef((props, forwardedRef) => {
 			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Slottable$1, { children }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(VisuallyHiddenContentContextProvider, {
 				scope: __scopeTooltip,
 				isInside: true,
-				children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Root$4, {
+				children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Root$5, {
 					id: context.contentId,
 					role: "tooltip",
 					children: ariaLabel || children
@@ -38043,6 +38122,10 @@ var mapAccountFromDB = (acc) => {
 	if (acc === "pix") return "acc4";
 	return "";
 };
+var ensureUtcNoon = (dateStr) => {
+	if (dateStr.includes("T")) return dateStr;
+	return (/* @__PURE__ */ new Date(`${dateStr}T12:00:00Z`)).toISOString();
+};
 function FinanceProvider({ children }) {
 	const { user } = useAuth();
 	const [transactions, setTransactions] = (0, import_react.useState)([]);
@@ -38087,7 +38170,8 @@ function FinanceProvider({ children }) {
 			year: m.year,
 			orders_count: Number(m.orders_count),
 			total_system_sales: Number(m.total_system_sales),
-			raw_material_costs: Number(m.raw_material_costs)
+			raw_material_costs: Number(m.raw_material_costs),
+			sales_target: Number(m.sales_target || 0)
 		})));
 		let accBalances = {
 			acc1: 0,
@@ -38134,6 +38218,7 @@ function FinanceProvider({ children }) {
 	const addTransaction = async (tx) => {
 		if (!user) return;
 		const dbType = mapTypeToDB(tx.type);
+		const formattedDate = ensureUtcNoon(tx.date);
 		const { data, error } = await supabase.from("transactions").insert({
 			user_id: user.id,
 			description: tx.description,
@@ -38142,7 +38227,7 @@ function FinanceProvider({ children }) {
 			category: dbType === "despesa" ? mapCategoryToDB(tx.categoryId) : null,
 			account: dbType === "receita" ? mapAccountToDB(tx.accountId) : null,
 			status: tx.status,
-			date: new Date(tx.date).toISOString()
+			date: formattedDate
 		}).select().single();
 		if (!error && data) {
 			const newTx = {
@@ -38167,7 +38252,7 @@ function FinanceProvider({ children }) {
 		if (tx.categoryId !== void 0) updateData.category = mapCategoryToDB(tx.categoryId);
 		if (tx.accountId !== void 0) updateData.account = mapAccountToDB(tx.accountId);
 		if (tx.status !== void 0) updateData.status = tx.status;
-		if (tx.date !== void 0) updateData.date = new Date(tx.date).toISOString();
+		if (tx.date !== void 0) updateData.date = ensureUtcNoon(tx.date);
 		const { data, error } = await supabase.from("transactions").update(updateData).eq("id", id).select().single();
 		if (!error && data) setTransactions((prev) => prev.map((t) => t.id === id ? {
 			...t,
@@ -38196,6 +38281,7 @@ function FinanceProvider({ children }) {
 			orders_count: metric.orders_count,
 			total_system_sales: metric.total_system_sales,
 			raw_material_costs: metric.raw_material_costs,
+			sales_target: metric.sales_target || 0,
 			updated_at: (/* @__PURE__ */ new Date()).toISOString()
 		}, { onConflict: "user_id,month,year" }).select().single();
 		if (!error && data) setMonthlyMetrics((prev) => {
@@ -38205,7 +38291,8 @@ function FinanceProvider({ children }) {
 				year: data.year,
 				orders_count: Number(data.orders_count),
 				total_system_sales: Number(data.total_system_sales),
-				raw_material_costs: Number(data.raw_material_costs)
+				raw_material_costs: Number(data.raw_material_costs),
+				sales_target: Number(data.sales_target || 0)
 			}];
 		});
 		else if (error) throw error;
@@ -38244,7 +38331,7 @@ function FinanceProvider({ children }) {
 		});
 	}, [monthlyMetrics, filters]);
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(FinanceContext.Provider, {
-		"data-uid": "src/stores/financeStore.tsx:323:5",
+		"data-uid": "src/stores/financeStore.tsx:333:5",
 		"data-prohibitions": "[editContent]",
 		value: {
 			transactions,
@@ -39444,7 +39531,7 @@ var OPEN_KEYS = [
 var SELECTION_KEYS = [" ", "Enter"];
 var SELECT_NAME = "Select";
 var [Collection, useCollection, createCollectionScope] = createCollection(SELECT_NAME);
-var [createSelectContext, createSelectScope] = createContextScope(SELECT_NAME, [createCollectionScope, createPopperScope]);
+var [createSelectContext, createSelectScope] = createContextScope$1(SELECT_NAME, [createCollectionScope, createPopperScope]);
 var usePopperScope = createPopperScope();
 var [SelectProvider, useSelectContext] = createSelectContext(SELECT_NAME);
 var [SelectNativeOptionsProvider, useSelectNativeOptionsContext] = createSelectContext(SELECT_NAME);
@@ -40506,7 +40593,7 @@ SelectSeparator.displayName = Separator.displayName;
 //#endregion
 //#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/@radix-ui+react-dialog@1.1.15_@types+react-dom@19.2.3_@types+react@19.2.14__@types+reac_779045218dc2799d336e7197abef9d38/node_modules/@radix-ui/react-dialog/dist/index.mjs
 var DIALOG_NAME = "Dialog";
-var [createDialogContext, createDialogScope] = createContextScope(DIALOG_NAME);
+var [createDialogContext, createDialogScope] = createContextScope$1(DIALOG_NAME);
 var [DialogProvider, useDialogContext] = createDialogContext(DIALOG_NAME);
 var Dialog$1 = (props) => {
 	const { __scopeDialog, children, open: openProp, defaultOpen, onOpenChange, modal = true } = props;
@@ -40773,7 +40860,7 @@ var DescriptionWarning$1 = ({ contentRef, descriptionId }) => {
 	]);
 	return null;
 };
-var Root$2 = Dialog$1;
+var Root$3 = Dialog$1;
 var Trigger = DialogTrigger$1;
 var Portal = DialogPortal$1;
 var Overlay = DialogOverlay$1;
@@ -40783,7 +40870,7 @@ var Description = DialogDescription$1;
 var Close = DialogClose$1;
 //#endregion
 //#region src/components/ui/dialog.tsx
-var Dialog = Root$2;
+var Dialog = Root$3;
 var DialogTrigger = Trigger;
 var DialogPortal = Portal;
 var DialogOverlay = import_react.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Overlay, {
@@ -40919,18 +41006,18 @@ var Label$2 = import_react.forwardRef((props, forwardedRef) => {
 	});
 });
 Label$2.displayName = NAME;
-var Root$1 = Label$2;
+var Root$2 = Label$2;
 //#endregion
 //#region src/components/ui/label.tsx
 var labelVariants = cva("text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70");
-var Label$1 = import_react.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Root$1, {
+var Label$1 = import_react.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Root$2, {
 	"data-uid": "src/components/ui/label.tsx:16:3",
 	"data-prohibitions": "[editContent]",
 	ref,
 	className: cn$1(labelVariants(), className),
 	...props
 }));
-Label$1.displayName = Root$1.displayName;
+Label$1.displayName = Root$2.displayName;
 //#endregion
 //#region src/components/dashboard/MonthlyClosingDialog.tsx
 function MonthlyClosingDialog() {
@@ -41355,7 +41442,7 @@ function useStateMachine(initialState, machine) {
 	}, initialState);
 }
 var SCROLL_AREA_NAME = "ScrollArea";
-var [createScrollAreaContext, createScrollAreaScope] = createContextScope(SCROLL_AREA_NAME);
+var [createScrollAreaContext, createScrollAreaScope] = createContextScope$1(SCROLL_AREA_NAME);
 var [ScrollAreaProvider, useScrollAreaContext] = createScrollAreaContext(SCROLL_AREA_NAME);
 var ScrollArea$1 = import_react.forwardRef((props, forwardedRef) => {
 	const { __scopeScrollArea, type = "hover", dir, scrollHideDelay = 600, ...scrollAreaProps } = props;
@@ -42001,12 +42088,12 @@ function useResizeObserver(element, onResize) {
 		}
 	}, [element, handleResize]);
 }
-var Root = ScrollArea$1;
+var Root$1 = ScrollArea$1;
 var Viewport = ScrollAreaViewport;
 var Corner = ScrollAreaCorner;
 //#endregion
 //#region src/components/ui/scroll-area.tsx
-var ScrollArea = import_react.forwardRef(({ className, children, ...props }, ref) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Root, {
+var ScrollArea = import_react.forwardRef(({ className, children, ...props }, ref) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Root$1, {
 	"data-uid": "src/components/ui/scroll-area.tsx:11:3",
 	"data-prohibitions": "[editContent]",
 	ref,
@@ -42029,7 +42116,7 @@ var ScrollArea = import_react.forwardRef(({ className, children, ...props }, ref
 		})
 	]
 }));
-ScrollArea.displayName = Root.displayName;
+ScrollArea.displayName = Root$1.displayName;
 var ScrollBar = import_react.forwardRef(({ className, orientation = "vertical", ...props }, ref) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ScrollAreaScrollbar, {
 	"data-uid": "src/components/ui/scroll-area.tsx:29:3",
 	"data-prohibitions": "[editContent]",
@@ -43724,14 +43811,14 @@ var mathSign = function mathSign(value) {
 var isPercent = function isPercent(value) {
 	return (0, import_isString.default)(value) && value.indexOf("%") === value.length - 1;
 };
-var isNumber = function isNumber(value) {
+var isNumber$1 = function isNumber(value) {
 	return (0, import_isNumber.default)(value) && !(0, import_isNaN.default)(value);
 };
 var isNullish = function isNullish(value) {
 	return (0, import_isNil.default)(value);
 };
 var isNumOrStr = function isNumOrStr(value) {
-	return isNumber(value) || (0, import_isString.default)(value);
+	return isNumber$1(value) || (0, import_isString.default)(value);
 };
 var idCounter = 0;
 var uniqueId = function uniqueId(prefix) {
@@ -43749,7 +43836,7 @@ var uniqueId = function uniqueId(prefix) {
 var getPercentValue = function getPercentValue(percent, totalValue) {
 	var defaultValue = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : 0;
 	var validate = arguments.length > 3 && arguments[3] !== void 0 ? arguments[3] : false;
-	if (!isNumber(percent) && !(0, import_isString.default)(percent)) return defaultValue;
+	if (!isNumber$1(percent) && !(0, import_isString.default)(percent)) return defaultValue;
 	var value;
 	if (isPercent(percent)) {
 		var index = percent.indexOf("%");
@@ -43774,7 +43861,7 @@ var hasDuplicate = function hasDuplicate(ary) {
 	return false;
 };
 var interpolateNumber$1 = function interpolateNumber(numberA, numberB) {
-	if (isNumber(numberA) && isNumber(numberB)) return function(t) {
+	if (isNumber$1(numberA) && isNumber$1(numberB)) return function(t) {
 		return numberA + t * (numberB - numberA);
 	};
 	return function() {
@@ -43836,7 +43923,7 @@ var getLinearRegression = function getLinearRegression(data) {
 * @return {number} A negative number if a < b, a positive number if a > b, 0 if equal
 */
 var compareValues = function compareValues(a, b) {
-	if (isNumber(a) && isNumber(b)) return a - b;
+	if (isNumber$1(a) && isNumber$1(b)) return a - b;
 	if ((0, import_isString.default)(a) && (0, import_isString.default)(b)) return a.localeCompare(b);
 	if (a instanceof Date && b instanceof Date) return a.getTime() - b.getTime();
 	return String(a).localeCompare(String(b));
@@ -44514,7 +44601,7 @@ function findChildByType(children, type) {
 var validateWidthHeight = function validateWidthHeight(el) {
 	if (!el || !el.props) return false;
 	var _el$props = el.props, width = _el$props.width, height = _el$props.height;
-	if (!isNumber(width) || width <= 0 || !isNumber(height) || height <= 0) return false;
+	if (!isNumber$1(width) || width <= 0 || !isNumber$1(height) || height <= 0) return false;
 	return true;
 };
 var SVG_TAGS = [
@@ -48133,7 +48220,7 @@ var Legend = /* @__PURE__ */ function(_PureComponent) {
 		key: "getWithHeight",
 		value: function getWithHeight(item, chartWidth) {
 			var layout = _objectSpread$35(_objectSpread$35({}, this.defaultProps), item.props).layout;
-			if (layout === "vertical" && isNumber(item.props.height)) return { height: item.props.height };
+			if (layout === "vertical" && isNumber$1(item.props.height)) return { height: item.props.height };
 			if (layout === "horizontal") return { width: item.props.width || chartWidth };
 			return null;
 		}
@@ -48809,11 +48896,11 @@ var CSS_CLASS_PREFIX = "recharts-tooltip-wrapper";
 var TOOLTIP_HIDDEN = { visibility: "hidden" };
 function getTooltipCSSClassName(_ref) {
 	var coordinate = _ref.coordinate, translateX = _ref.translateX, translateY = _ref.translateY;
-	return clsx(CSS_CLASS_PREFIX, _defineProperty$39(_defineProperty$39(_defineProperty$39(_defineProperty$39({}, "".concat(CSS_CLASS_PREFIX, "-right"), isNumber(translateX) && coordinate && isNumber(coordinate.x) && translateX >= coordinate.x), "".concat(CSS_CLASS_PREFIX, "-left"), isNumber(translateX) && coordinate && isNumber(coordinate.x) && translateX < coordinate.x), "".concat(CSS_CLASS_PREFIX, "-bottom"), isNumber(translateY) && coordinate && isNumber(coordinate.y) && translateY >= coordinate.y), "".concat(CSS_CLASS_PREFIX, "-top"), isNumber(translateY) && coordinate && isNumber(coordinate.y) && translateY < coordinate.y));
+	return clsx(CSS_CLASS_PREFIX, _defineProperty$39(_defineProperty$39(_defineProperty$39(_defineProperty$39({}, "".concat(CSS_CLASS_PREFIX, "-right"), isNumber$1(translateX) && coordinate && isNumber$1(coordinate.x) && translateX >= coordinate.x), "".concat(CSS_CLASS_PREFIX, "-left"), isNumber$1(translateX) && coordinate && isNumber$1(coordinate.x) && translateX < coordinate.x), "".concat(CSS_CLASS_PREFIX, "-bottom"), isNumber$1(translateY) && coordinate && isNumber$1(coordinate.y) && translateY >= coordinate.y), "".concat(CSS_CLASS_PREFIX, "-top"), isNumber$1(translateY) && coordinate && isNumber$1(coordinate.y) && translateY < coordinate.y));
 }
 function getTooltipTranslateXY(_ref2) {
 	var allowEscapeViewBox = _ref2.allowEscapeViewBox, coordinate = _ref2.coordinate, key = _ref2.key, offsetTopLeft = _ref2.offsetTopLeft, position = _ref2.position, reverseDirection = _ref2.reverseDirection, tooltipDimension = _ref2.tooltipDimension, viewBox = _ref2.viewBox, viewBoxDimension = _ref2.viewBoxDimension;
-	if (position && isNumber(position[key])) return position[key];
+	if (position && isNumber$1(position[key])) return position[key];
 	var negative = coordinate[key] - tooltipDimension - offsetTopLeft;
 	var positive = coordinate[key] + offsetTopLeft;
 	if (allowEscapeViewBox[key]) return reverseDirection[key] ? negative : positive;
@@ -50289,7 +50376,7 @@ var calculateWordWidths = function calculateWordWidths(_ref) {
 };
 var calculateWordsByLines = function calculateWordsByLines(_ref2, initialWordsWithComputedWith, spaceWidth, lineWidth, scaleToFit) {
 	var maxLines = _ref2.maxLines, children = _ref2.children, style = _ref2.style, breakAll = _ref2.breakAll;
-	var shouldLimitLines = isNumber(maxLines);
+	var shouldLimitLines = isNumber$1(maxLines);
 	var text = children;
 	var calculate = function calculate() {
 		return (arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : []).reduce(function(result, _ref3) {
@@ -50391,8 +50478,8 @@ var Text = function Text(_ref5) {
 	]);
 	var dx = props.dx, dy = props.dy, angle = props.angle, className = props.className, breakAll = props.breakAll, textProps = _objectWithoutProperties$14(props, _excluded2$6);
 	if (!isNumOrStr(propsX) || !isNumOrStr(propsY)) return null;
-	var x = propsX + (isNumber(dx) ? dx : 0);
-	var y = propsY + (isNumber(dy) ? dy : 0);
+	var x = propsX + (isNumber$1(dx) ? dx : 0);
+	var y = propsY + (isNumber$1(dy) ? dy : 0);
 	var startDy;
 	switch (verticalAnchor) {
 		case "start":
@@ -50409,7 +50496,7 @@ var Text = function Text(_ref5) {
 	if (scaleToFit) {
 		var lineWidth = wordsByLines[0].width;
 		var width = props.width;
-		transforms.push("scale(".concat((isNumber(width) ? width / lineWidth : 1) / lineWidth, ")"));
+		transforms.push("scale(".concat((isNumber$1(width) ? width / lineWidth : 1) / lineWidth, ")"));
 	}
 	if (angle) transforms.push("rotate(".concat(angle, ", ").concat(x, ", ").concat(y, ")"));
 	if (transforms.length) textProps.transform = transforms.join(" ");
@@ -55385,7 +55472,7 @@ function getDomainOfDataByKey(data, key, type, filterNil) {
 	});
 	if (type === "number") {
 		var domain = flattenData.filter(function(entry) {
-			return isNumber(entry) || parseFloat(entry);
+			return isNumber$1(entry) || parseFloat(entry);
 		});
 		return domain.length ? [(0, import_min.default)(domain), (0, import_max.default)(domain)] : [Infinity, -Infinity];
 	}
@@ -55594,8 +55681,8 @@ var appendOffsetOfLegend = function appendOffsetOfLegend(offset, _unused, props,
 	if (legendProps) {
 		var _ref4 = legendBox || {}, boxWidth = _ref4.width, boxHeight = _ref4.height;
 		var align = legendProps.align, verticalAlign = legendProps.verticalAlign, layout = legendProps.layout;
-		if ((layout === "vertical" || layout === "horizontal" && verticalAlign === "middle") && align !== "center" && isNumber(offset[align])) return _objectSpread$28(_objectSpread$28({}, offset), {}, _defineProperty$32({}, align, offset[align] + (boxWidth || 0)));
-		if ((layout === "horizontal" || layout === "vertical" && align === "center") && verticalAlign !== "middle" && isNumber(offset[verticalAlign])) return _objectSpread$28(_objectSpread$28({}, offset), {}, _defineProperty$32({}, verticalAlign, offset[verticalAlign] + (boxHeight || 0)));
+		if ((layout === "vertical" || layout === "horizontal" && verticalAlign === "middle") && align !== "center" && isNumber$1(offset[align])) return _objectSpread$28(_objectSpread$28({}, offset), {}, _defineProperty$32({}, align, offset[align] + (boxWidth || 0)));
+		if ((layout === "horizontal" || layout === "vertical" && align === "center") && verticalAlign !== "middle" && isNumber$1(offset[verticalAlign])) return _objectSpread$28(_objectSpread$28({}, offset), {}, _defineProperty$32({}, verticalAlign, offset[verticalAlign] + (boxHeight || 0)));
 	}
 	return offset;
 };
@@ -55828,12 +55915,12 @@ var findPositionOfBar = function findPositionOfBar(barPosition, child) {
 * @returns {Array} tuple of two numbers
 */
 var truncateByDomain = function truncateByDomain(value, domain) {
-	if (!domain || domain.length !== 2 || !isNumber(domain[0]) || !isNumber(domain[1])) return value;
+	if (!domain || domain.length !== 2 || !isNumber$1(domain[0]) || !isNumber$1(domain[1])) return value;
 	var minValue = Math.min(domain[0], domain[1]);
 	var maxValue = Math.max(domain[0], domain[1]);
 	var result = [value[0], value[1]];
-	if (!isNumber(value[0]) || value[0] < minValue) result[0] = minValue;
-	if (!isNumber(value[1]) || value[1] > maxValue) result[1] = maxValue;
+	if (!isNumber$1(value[0]) || value[0] < minValue) result[0] = minValue;
+	if (!isNumber$1(value[1]) || value[1] > maxValue) result[1] = maxValue;
 	if (result[0] > maxValue) result[0] = maxValue;
 	if (result[1] < minValue) result[1] = minValue;
 	return result;
@@ -56011,7 +56098,7 @@ var getStackedDataOfItem = function getStackedDataOfItem(item, stackGroups) {
 };
 var getDomainOfSingle = function getDomainOfSingle(data) {
 	return data.reduce(function(result, entry) {
-		return [(0, import_min.default)(entry.concat([result[0]]).filter(isNumber)), (0, import_max.default)(entry.concat([result[1]]).filter(isNumber))];
+		return [(0, import_min.default)(entry.concat([result[0]]).filter(isNumber$1)), (0, import_max.default)(entry.concat([result[1]]).filter(isNumber$1))];
 	}, [Infinity, -Infinity]);
 };
 var getDomainOfStackGroups = function getDomainOfStackGroups(stackGroups, startIndex, endIndex) {
@@ -56031,13 +56118,13 @@ var parseSpecifiedDomain = function parseSpecifiedDomain(specifiedDomain, dataDo
 	if ((0, import_isFunction.default)(specifiedDomain)) return specifiedDomain(dataDomain, allowDataOverflow);
 	if (!Array.isArray(specifiedDomain)) return dataDomain;
 	var domain = [];
-	if (isNumber(specifiedDomain[0])) domain[0] = allowDataOverflow ? specifiedDomain[0] : Math.min(specifiedDomain[0], dataDomain[0]);
+	if (isNumber$1(specifiedDomain[0])) domain[0] = allowDataOverflow ? specifiedDomain[0] : Math.min(specifiedDomain[0], dataDomain[0]);
 	else if (MIN_VALUE_REG.test(specifiedDomain[0])) {
 		var value = +MIN_VALUE_REG.exec(specifiedDomain[0])[1];
 		domain[0] = dataDomain[0] - value;
 	} else if ((0, import_isFunction.default)(specifiedDomain[0])) domain[0] = specifiedDomain[0](dataDomain[0]);
 	else domain[0] = dataDomain[0];
-	if (isNumber(specifiedDomain[1])) domain[1] = allowDataOverflow ? specifiedDomain[1] : Math.max(specifiedDomain[1], dataDomain[1]);
+	if (isNumber$1(specifiedDomain[1])) domain[1] = allowDataOverflow ? specifiedDomain[1] : Math.max(specifiedDomain[1], dataDomain[1]);
 	else if (MAX_VALUE_REG.test(specifiedDomain[1])) {
 		var _value = +MAX_VALUE_REG.exec(specifiedDomain[1])[1];
 		domain[1] = dataDomain[1] + _value;
@@ -56532,7 +56619,7 @@ var getAttrsOfCartesianLabel = function getAttrsOfCartesianLabel(props) {
 		textAnchor: horizontalEnd,
 		verticalAnchor: verticalEnd
 	}, sizeAttrs);
-	if ((0, import_isObject.default)(position) && (isNumber(position.x) || isPercent(position.x)) && (isNumber(position.y) || isPercent(position.y))) return _objectSpread$26({
+	if ((0, import_isObject.default)(position) && (isNumber$1(position.x) || isPercent(position.x)) && (isNumber$1(position.y) || isPercent(position.y))) return _objectSpread$26({
 		x: x + getPercentValue(position.x, width),
 		y: y + getPercentValue(position.y, height),
 		textAnchor: "end",
@@ -56546,7 +56633,7 @@ var getAttrsOfCartesianLabel = function getAttrsOfCartesianLabel(props) {
 	}, sizeAttrs);
 };
 var isPolar = function isPolar(viewBox) {
-	return "cx" in viewBox && isNumber(viewBox.cx);
+	return "cx" in viewBox && isNumber$1(viewBox.cx);
 };
 function Label(_ref4) {
 	var _ref4$offset = _ref4.offset, offset = _ref4$offset === void 0 ? 5 : _ref4$offset, restProps = _objectWithoutProperties$12(_ref4, _excluded$12);
@@ -56569,27 +56656,27 @@ Label.displayName = "Label";
 var parseViewBox = function parseViewBox(props) {
 	var cx = props.cx, cy = props.cy, angle = props.angle, startAngle = props.startAngle, endAngle = props.endAngle, r = props.r, radius = props.radius, innerRadius = props.innerRadius, outerRadius = props.outerRadius, x = props.x, y = props.y, top = props.top, left = props.left, width = props.width, height = props.height, clockWise = props.clockWise, labelViewBox = props.labelViewBox;
 	if (labelViewBox) return labelViewBox;
-	if (isNumber(width) && isNumber(height)) {
-		if (isNumber(x) && isNumber(y)) return {
+	if (isNumber$1(width) && isNumber$1(height)) {
+		if (isNumber$1(x) && isNumber$1(y)) return {
 			x,
 			y,
 			width,
 			height
 		};
-		if (isNumber(top) && isNumber(left)) return {
+		if (isNumber$1(top) && isNumber$1(left)) return {
 			x: top,
 			y: left,
 			width,
 			height
 		};
 	}
-	if (isNumber(x) && isNumber(y)) return {
+	if (isNumber$1(x) && isNumber$1(y)) return {
 		x,
 		y,
 		width: 0,
 		height: 0
 	};
-	if (isNumber(cx) && isNumber(cy)) return {
+	if (isNumber$1(cx) && isNumber$1(cy)) return {
 		cx,
 		cy,
 		startAngle: startAngle || angle || 0,
@@ -57171,8 +57258,8 @@ var getPath$1 = function getPath(_ref) {
 		lineFunction.defined(defined).curve(curveFactory);
 		return lineFunction(areaPoints);
 	}
-	if (layout === "vertical" && isNumber(baseLine)) lineFunction = area_default().y(getY).x1(getX).x0(baseLine);
-	else if (isNumber(baseLine)) lineFunction = area_default().x(getX).y1(getY).y0(baseLine);
+	if (layout === "vertical" && isNumber$1(baseLine)) lineFunction = area_default().y(getY).x1(getX).x0(baseLine);
+	else if (isNumber$1(baseLine)) lineFunction = area_default().x(getX).y1(getY).y0(baseLine);
 	else lineFunction = line_default().x(getX).y(getY);
 	lineFunction.defined(defined).curve(curveFactory);
 	return lineFunction(formatPoints);
@@ -59674,7 +59761,7 @@ var Cross = function Cross(_ref) {
 		width,
 		height
 	}, rest);
-	if (!isNumber(x) || !isNumber(y) || !isNumber(width) || !isNumber(height) || !isNumber(top) || !isNumber(left)) return null;
+	if (!isNumber$1(x) || !isNumber$1(y) || !isNumber$1(width) || !isNumber$1(height) || !isNumber$1(top) || !isNumber$1(left)) return null;
 	return /* @__PURE__ */ import_react.createElement("path", _extends$16({}, filterProps(props, true), {
 		className: clsx("recharts-cross", className),
 		d: getPath(x, y, width, height, top, left)
@@ -60801,7 +60888,7 @@ var Brush = /* @__PURE__ */ function(_PureComponent) {
 			value: function render() {
 				var _this$props11 = this.props, data = _this$props11.data, className = _this$props11.className, children = _this$props11.children, x = _this$props11.x, y = _this$props11.y, width = _this$props11.width, height = _this$props11.height, alwaysShowText = _this$props11.alwaysShowText;
 				var _this$state5 = this.state, startX = _this$state5.startX, endX = _this$state5.endX, isTextActive = _this$state5.isTextActive, isSlideMoving = _this$state5.isSlideMoving, isTravellerMoving = _this$state5.isTravellerMoving, isTravellerFocused = _this$state5.isTravellerFocused;
-				if (!data || !data.length || !isNumber(x) || !isNumber(y) || !isNumber(width) || !isNumber(height) || width <= 0 || height <= 0) return null;
+				if (!data || !data.length || !isNumber$1(x) || !isNumber$1(y) || !isNumber$1(width) || !isNumber$1(height) || width <= 0 || height <= 0) return null;
 				var layerClass = clsx("recharts-brush", className);
 				var isPanoramic = import_react.Children.count(children) === 1;
 				var style = generatePrefixStyle("userSelect", "none");
@@ -61289,7 +61376,7 @@ var minPointSizeCallback = function minPointSizeCallback(minPointSize) {
 	var defaultValue = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : 0;
 	return function(value, index) {
 		if (typeof minPointSize === "number") return minPointSize;
-		var isValueNumberOrNil = isNumber(value) || isNullish(value);
+		var isValueNumberOrNil = isNumber$1(value) || isNullish(value);
 		if (isValueNumberOrNil) return minPointSize(value, index);
 		!isValueNumberOrNil && invariant(false, "minPointSize callback function received a value with type of ".concat(_typeof$18(value), ". Currently only numbers or null/undefined are supported."));
 		return defaultValue;
@@ -63169,7 +63256,7 @@ function getTicksStart(sign, boundaries, getTickSize, ticks, minTickGap, preserv
 function getTicks(props, fontSize, letterSpacing) {
 	var tick = props.tick, ticks = props.ticks, viewBox = props.viewBox, minTickGap = props.minTickGap, orientation = props.orientation, interval = props.interval, tickFormatter = props.tickFormatter, unit = props.unit, angle = props.angle;
 	if (!ticks || !ticks.length || !tick) return [];
-	if (isNumber(interval) || Global.isSsr) return getNumberIntervalTicks(ticks, typeof interval === "number" && isNumber(interval) ? interval : 0);
+	if (isNumber$1(interval) || Global.isSsr) return getNumberIntervalTicks(ticks, typeof interval === "number" && isNumber$1(interval) ? interval : 0);
 	var candidates = [];
 	var sizeKey = orientation === "top" || orientation === "bottom" ? "width" : "height";
 	var unitSize = unit && sizeKey === "width" ? getStringSize(unit, {
@@ -63396,7 +63483,7 @@ var CartesianAxis = /* @__PURE__ */ function(_Component) {
 				var x1, x2, y1, y2, tx, ty;
 				var sign = mirror ? -1 : 1;
 				var finalTickSize = data.tickSize || tickSize;
-				var tickCoord = isNumber(data.tickCoord) ? data.tickCoord : data.coordinate;
+				var tickCoord = isNumber$1(data.tickCoord) ? data.tickCoord : data.coordinate;
 				switch (orientation) {
 					case "top":
 						x1 = x2 = data.coordinate;
@@ -63860,15 +63947,15 @@ function CartesianGrid(props) {
 		horizontalFill: (_props$horizontalFill = props.horizontalFill) !== null && _props$horizontalFill !== void 0 ? _props$horizontalFill : defaultProps.horizontalFill,
 		vertical: (_props$vertical3 = props.vertical) !== null && _props$vertical3 !== void 0 ? _props$vertical3 : defaultProps.vertical,
 		verticalFill: (_props$verticalFill = props.verticalFill) !== null && _props$verticalFill !== void 0 ? _props$verticalFill : defaultProps.verticalFill,
-		x: isNumber(props.x) ? props.x : offset.left,
-		y: isNumber(props.y) ? props.y : offset.top,
-		width: isNumber(props.width) ? props.width : offset.width,
-		height: isNumber(props.height) ? props.height : offset.height
+		x: isNumber$1(props.x) ? props.x : offset.left,
+		y: isNumber$1(props.y) ? props.y : offset.top,
+		width: isNumber$1(props.width) ? props.width : offset.width,
+		height: isNumber$1(props.height) ? props.height : offset.height
 	});
 	var x = propsIncludingDefaults.x, y = propsIncludingDefaults.y, width = propsIncludingDefaults.width, height = propsIncludingDefaults.height, syncWithTicks = propsIncludingDefaults.syncWithTicks, horizontalValues = propsIncludingDefaults.horizontalValues, verticalValues = propsIncludingDefaults.verticalValues;
 	var xAxis = useArbitraryXAxis();
 	var yAxis = useYAxisWithFiniteDomainOrRandom();
-	if (!isNumber(width) || width <= 0 || !isNumber(height) || height <= 0 || !isNumber(x) || x !== +x || !isNumber(y) || y !== +y) return null;
+	if (!isNumber$1(width) || width <= 0 || !isNumber$1(height) || height <= 0 || !isNumber$1(x) || x !== +x || !isNumber$1(y) || y !== +y) return null;
 	var verticalCoordinatesGenerator = propsIncludingDefaults.verticalCoordinatesGenerator || defaultVerticalCoordinatesGenerator;
 	var horizontalCoordinatesGenerator = propsIncludingDefaults.horizontalCoordinatesGenerator || defaultHorizontalCoordinatesGenerator;
 	var horizontalPoints = propsIncludingDefaults.horizontalPoints, verticalPoints = propsIncludingDefaults.verticalPoints;
@@ -64671,11 +64758,11 @@ var Area = /* @__PURE__ */ function(_PureComponent) {
 				var maxY = (0, import_max.default)(points.map(function(entry) {
 					return entry.y || 0;
 				}));
-				if (isNumber(baseLine) && typeof baseLine === "number") maxY = Math.max(baseLine, maxY);
+				if (isNumber$1(baseLine) && typeof baseLine === "number") maxY = Math.max(baseLine, maxY);
 				else if (baseLine && Array.isArray(baseLine) && baseLine.length) maxY = Math.max((0, import_max.default)(baseLine.map(function(entry) {
 					return entry.y || 0;
 				})), maxY);
-				if (isNumber(maxY)) return /* @__PURE__ */ import_react.createElement("rect", {
+				if (isNumber$1(maxY)) return /* @__PURE__ */ import_react.createElement("rect", {
 					x: startX < endX ? startX : startX - width,
 					y: 0,
 					width,
@@ -64694,11 +64781,11 @@ var Area = /* @__PURE__ */ function(_PureComponent) {
 				var maxX = (0, import_max.default)(points.map(function(entry) {
 					return entry.x || 0;
 				}));
-				if (isNumber(baseLine) && typeof baseLine === "number") maxX = Math.max(baseLine, maxX);
+				if (isNumber$1(baseLine) && typeof baseLine === "number") maxX = Math.max(baseLine, maxX);
 				else if (baseLine && Array.isArray(baseLine) && baseLine.length) maxX = Math.max((0, import_max.default)(baseLine.map(function(entry) {
 					return entry.x || 0;
 				})), maxX);
-				if (isNumber(maxX)) return /* @__PURE__ */ import_react.createElement("rect", {
+				if (isNumber$1(maxX)) return /* @__PURE__ */ import_react.createElement("rect", {
 					x: 0,
 					y: startY < endY ? startY : startY - height,
 					width: maxX + (strokeWidth ? parseInt("".concat(strokeWidth), 10) : 1),
@@ -64779,7 +64866,7 @@ var Area = /* @__PURE__ */ function(_PureComponent) {
 							return entry;
 						});
 						var stepBaseLine;
-						if (isNumber(baseLine) && typeof baseLine === "number") stepBaseLine = interpolateNumber$1(prevBaseLine, baseLine)(t);
+						if (isNumber$1(baseLine) && typeof baseLine === "number") stepBaseLine = interpolateNumber$1(prevBaseLine, baseLine)(t);
 						else if ((0, import_isNil.default)(baseLine) || (0, import_isNaN.default)(baseLine)) stepBaseLine = interpolateNumber$1(prevBaseLine, 0)(t);
 						else stepBaseLine = baseLine.map(function(entry, index) {
 							var prevPointIndex = Math.floor(index * prevPointsDiffFactor);
@@ -64882,7 +64969,7 @@ _defineProperty$7(Area, "getBaseValue", function(props, item, xAxis, yAxis) {
 	var layout = props.layout, chartBaseValue = props.baseValue;
 	var itemBaseValue = item.props.baseValue;
 	var baseValue = itemBaseValue !== null && itemBaseValue !== void 0 ? itemBaseValue : chartBaseValue;
-	if (isNumber(baseValue) && typeof baseValue === "number") return baseValue;
+	if (isNumber$1(baseValue) && typeof baseValue === "number") return baseValue;
 	var numericAxis = layout === "horizontal" ? yAxis : xAxis;
 	var domain = numericAxis.scale.domain();
 	if (numericAxis.type === "number") {
@@ -65919,7 +66006,7 @@ var detectReferenceElementsDomain = function detectReferenceElementsDomain(child
 	var valueKey = axisType[0];
 	var finalDomain = domain;
 	if (elements.length) finalDomain = elements.reduce(function(result, el) {
-		if (el.props[idKey] === axisId && ifOverflowMatches(el.props, "extendDomain") && isNumber(el.props[valueKey])) {
+		if (el.props[idKey] === axisId && ifOverflowMatches(el.props, "extendDomain") && isNumber$1(el.props[valueKey])) {
 			var value = el.props[valueKey];
 			return [Math.min(result[0], value), Math.max(result[1], value)];
 		}
@@ -65929,7 +66016,7 @@ var detectReferenceElementsDomain = function detectReferenceElementsDomain(child
 		var key1 = "".concat(valueKey, "1");
 		var key2 = "".concat(valueKey, "2");
 		finalDomain = areas.reduce(function(result, el) {
-			if (el.props[idKey] === axisId && ifOverflowMatches(el.props, "extendDomain") && isNumber(el.props[key1]) && isNumber(el.props[key2])) {
+			if (el.props[idKey] === axisId && ifOverflowMatches(el.props, "extendDomain") && isNumber$1(el.props[key1]) && isNumber$1(el.props[key2])) {
 				var value1 = el.props[key1];
 				var value2 = el.props[key2];
 				return [Math.min(result[0], value1, value2), Math.max(result[1], value1, value2)];
@@ -65938,7 +66025,7 @@ var detectReferenceElementsDomain = function detectReferenceElementsDomain(child
 		}, finalDomain);
 	}
 	if (specifiedTicks && specifiedTicks.length) finalDomain = specifiedTicks.reduce(function(result, tick) {
-		if (isNumber(tick)) return [Math.min(result[0], tick), Math.max(result[1], tick)];
+		if (isNumber$1(tick)) return [Math.min(result[0], tick), Math.max(result[1], tick)];
 		return result;
 	}, finalDomain);
 	return finalDomain;
@@ -66315,7 +66402,7 @@ function isDomainSpecifiedByUser(domain, allowDataOverflow, axisType) {
 	if (axisType === "number" && allowDataOverflow === true && Array.isArray(domain)) {
 		var domainStart = domain === null || domain === void 0 ? void 0 : domain[0];
 		var domainEnd = domain === null || domain === void 0 ? void 0 : domain[1];
-		if (!!domainStart && !!domainEnd && isNumber(domainStart) && isNumber(domainEnd)) return true;
+		if (!!domainStart && !!domainEnd && isNumber$1(domainStart) && isNumber$1(domainEnd)) return true;
 	}
 	return false;
 }
@@ -66762,7 +66849,7 @@ var getDisplayedData = function getDisplayedData(data, _ref) {
 		return result;
 	}, []);
 	if (itemsData.length > 0) return itemsData;
-	if (data && data.length && isNumber(dataStartIndex) && isNumber(dataEndIndex)) return data.slice(dataStartIndex, dataEndIndex + 1);
+	if (data && data.length && isNumber$1(dataStartIndex) && isNumber$1(dataEndIndex)) return data.slice(dataStartIndex, dataEndIndex + 1);
 	return [];
 };
 function getDefaultDomainByAxisType(axisType) {
@@ -67568,9 +67655,9 @@ var generateCategoricalChart = function generateCategoricalChart(_ref6) {
 					key: element.key || "_recharts-brush",
 					onChange: combineEventHandlers(_this.handleBrushChange, element.props.onChange),
 					data,
-					x: isNumber(element.props.x) ? element.props.x : offset.left,
-					y: isNumber(element.props.y) ? element.props.y : offset.top + offset.height + offset.brushBottom - (margin.bottom || 0),
-					width: isNumber(element.props.width) ? element.props.width : offset.width,
+					x: isNumber$1(element.props.x) ? element.props.x : offset.left,
+					y: isNumber$1(element.props.y) ? element.props.y : offset.top + offset.height + offset.brushBottom - (margin.bottom || 0),
+					width: isNumber$1(element.props.width) ? element.props.width : offset.width,
 					startIndex: dataStartIndex,
 					endIndex: dataEndIndex,
 					updateId: "brush-".concat(updateId)
@@ -69072,110 +69159,820 @@ function ExpenseDistribution() {
 	});
 }
 //#endregion
+//#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/@radix-ui+react-context@1.1.3_@types+react@19.2.14_react@19.2.4/node_modules/@radix-ui/react-context/dist/index.mjs
+function createContextScope(scopeName, createContextScopeDeps = []) {
+	let defaultContexts = [];
+	function createContext3(rootComponentName, defaultContext) {
+		const BaseContext = import_react.createContext(defaultContext);
+		BaseContext.displayName = rootComponentName + "Context";
+		const index = defaultContexts.length;
+		defaultContexts = [...defaultContexts, defaultContext];
+		const Provider = (props) => {
+			const { scope, children, ...context } = props;
+			const Context = scope?.[scopeName]?.[index] || BaseContext;
+			const value = import_react.useMemo(() => context, Object.values(context));
+			return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Context.Provider, {
+				value,
+				children
+			});
+		};
+		Provider.displayName = rootComponentName + "Provider";
+		function useContext2(consumerName, scope) {
+			const Context = scope?.[scopeName]?.[index] || BaseContext;
+			const context = import_react.useContext(Context);
+			if (context) return context;
+			if (defaultContext !== void 0) return defaultContext;
+			throw new Error(`\`${consumerName}\` must be used within \`${rootComponentName}\``);
+		}
+		return [Provider, useContext2];
+	}
+	const createScope = () => {
+		const scopeContexts = defaultContexts.map((defaultContext) => {
+			return import_react.createContext(defaultContext);
+		});
+		return function useScope(scope) {
+			const contexts = scope?.[scopeName] || scopeContexts;
+			return import_react.useMemo(() => ({ [`__scope${scopeName}`]: {
+				...scope,
+				[scopeName]: contexts
+			} }), [scope, contexts]);
+		};
+	};
+	createScope.scopeName = scopeName;
+	return [createContext3, composeContextScopes(createScope, ...createContextScopeDeps)];
+}
+function composeContextScopes(...scopes) {
+	const baseScope = scopes[0];
+	if (scopes.length === 1) return baseScope;
+	const createScope = () => {
+		const scopeHooks = scopes.map((createScope2) => ({
+			useScope: createScope2(),
+			scopeName: createScope2.scopeName
+		}));
+		return function useComposedScopes(overrideScopes) {
+			const nextScopes = scopeHooks.reduce((nextScopes2, { useScope, scopeName }) => {
+				const currentScope = useScope(overrideScopes)[`__scope${scopeName}`];
+				return {
+					...nextScopes2,
+					...currentScope
+				};
+			}, {});
+			return import_react.useMemo(() => ({ [`__scope${baseScope.scopeName}`]: nextScopes }), [nextScopes]);
+		};
+	};
+	createScope.scopeName = baseScope.scopeName;
+	return createScope;
+}
+//#endregion
+//#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/@radix-ui+react-progress@1.1.8_@types+react-dom@19.2.3_@types+react@19.2.14__@types+rea_7258c0b550570cef5cd6f2d2227aa6b9/node_modules/@radix-ui/react-progress/dist/index.mjs
+var PROGRESS_NAME = "Progress";
+var DEFAULT_MAX = 100;
+var [createProgressContext, createProgressScope] = createContextScope(PROGRESS_NAME);
+var [ProgressProvider, useProgressContext] = createProgressContext(PROGRESS_NAME);
+var Progress$1 = import_react.forwardRef((props, forwardedRef) => {
+	const { __scopeProgress, value: valueProp = null, max: maxProp, getValueLabel = defaultGetValueLabel, ...progressProps } = props;
+	if ((maxProp || maxProp === 0) && !isValidMaxNumber(maxProp)) console.error(getInvalidMaxError(`${maxProp}`, "Progress"));
+	const max = isValidMaxNumber(maxProp) ? maxProp : DEFAULT_MAX;
+	if (valueProp !== null && !isValidValueNumber(valueProp, max)) console.error(getInvalidValueError(`${valueProp}`, "Progress"));
+	const value = isValidValueNumber(valueProp, max) ? valueProp : null;
+	const valueLabel = isNumber(value) ? getValueLabel(value, max) : void 0;
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ProgressProvider, {
+		scope: __scopeProgress,
+		value,
+		max,
+		children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Primitive.div, {
+			"aria-valuemax": max,
+			"aria-valuemin": 0,
+			"aria-valuenow": isNumber(value) ? value : void 0,
+			"aria-valuetext": valueLabel,
+			role: "progressbar",
+			"data-state": getProgressState(value, max),
+			"data-value": value ?? void 0,
+			"data-max": max,
+			...progressProps,
+			ref: forwardedRef
+		})
+	});
+});
+Progress$1.displayName = PROGRESS_NAME;
+var INDICATOR_NAME = "ProgressIndicator";
+var ProgressIndicator = import_react.forwardRef((props, forwardedRef) => {
+	const { __scopeProgress, ...indicatorProps } = props;
+	const context = useProgressContext(INDICATOR_NAME, __scopeProgress);
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Primitive.div, {
+		"data-state": getProgressState(context.value, context.max),
+		"data-value": context.value ?? void 0,
+		"data-max": context.max,
+		...indicatorProps,
+		ref: forwardedRef
+	});
+});
+ProgressIndicator.displayName = INDICATOR_NAME;
+function defaultGetValueLabel(value, max) {
+	return `${Math.round(value / max * 100)}%`;
+}
+function getProgressState(value, maxValue) {
+	return value == null ? "indeterminate" : value === maxValue ? "complete" : "loading";
+}
+function isNumber(value) {
+	return typeof value === "number";
+}
+function isValidMaxNumber(max) {
+	return isNumber(max) && !isNaN(max) && max > 0;
+}
+function isValidValueNumber(value, max) {
+	return isNumber(value) && !isNaN(value) && value <= max && value >= 0;
+}
+function getInvalidMaxError(propValue, componentName) {
+	return `Invalid prop \`max\` of value \`${propValue}\` supplied to \`${componentName}\`. Only numbers greater than 0 are valid max values. Defaulting to \`${DEFAULT_MAX}\`.`;
+}
+function getInvalidValueError(propValue, componentName) {
+	return `Invalid prop \`value\` of value \`${propValue}\` supplied to \`${componentName}\`. The \`value\` prop must be:
+  - a positive number
+  - less than the value passed to \`max\` (or ${DEFAULT_MAX} if no \`max\` prop is set)
+  - \`null\` or \`undefined\` if the progress is indeterminate.
+
+Defaulting to \`null\`.`;
+}
+var Root = Progress$1;
+var Indicator = ProgressIndicator;
+//#endregion
+//#region src/components/ui/progress.tsx
+var Progress = import_react.forwardRef(({ className, value, ...props }, ref) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Root, {
+	"data-uid": "src/components/ui/progress.tsx:11:3",
+	"data-prohibitions": "[editContent]",
+	ref,
+	className: cn$1("relative h-4 w-full overflow-hidden rounded-full bg-secondary", className),
+	...props,
+	children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Indicator, {
+		"data-uid": "src/components/ui/progress.tsx:16:5",
+		"data-prohibitions": "[editContent]",
+		className: "h-full w-full flex-1 bg-primary transition-all",
+		style: { transform: `translateX(-${100 - (value || 0)}%)` }
+	})
+}));
+Progress.displayName = Root.displayName;
+//#endregion
+//#region src/components/dashboard/SalesTargetProgress.tsx
+function SalesTargetProgress() {
+	const { monthlyMetrics, saveMonthlyMetric, filters } = useFinanceStore();
+	const [isEditing, setIsEditing] = (0, import_react.useState)(false);
+	const [tempValue, setTempValue] = (0, import_react.useState)("");
+	const { metric, monthName } = (0, import_react.useMemo)(() => {
+		const currentYear = parseInt(filters.years[0] || (/* @__PURE__ */ new Date()).getFullYear().toString());
+		const currentMonth = filters.months.length > 0 ? parseInt(filters.months[0]) : (/* @__PURE__ */ new Date()).getMonth() + 1;
+		return {
+			metric: monthlyMetrics.find((m) => m.year === currentYear && m.month === currentMonth) || {
+				month: currentMonth,
+				year: currentYear,
+				sales_target: 0,
+				total_system_sales: 0,
+				raw_material_costs: 0,
+				orders_count: 0,
+				id: ""
+			},
+			monthName: `${[
+				"Jan",
+				"Fev",
+				"Mar",
+				"Abr",
+				"Mai",
+				"Jun",
+				"Jul",
+				"Ago",
+				"Set",
+				"Out",
+				"Nov",
+				"Dez"
+			][currentMonth - 1]}/${currentYear}`
+		};
+	}, [monthlyMetrics, filters]);
+	const target = metric.sales_target;
+	const sales = metric.total_system_sales;
+	const percentage = target > 0 ? Math.min(sales / target * 100, 100) : 0;
+	const handleEdit = () => {
+		setTempValue(target.toString());
+		setIsEditing(true);
+	};
+	const handleSave = async () => {
+		const val = parseFloat(tempValue);
+		if (!isNaN(val) && val >= 0) await saveMonthlyMetric({
+			...metric,
+			sales_target: val
+		});
+		setIsEditing(false);
+	};
+	const formatCurrency = (val) => new Intl.NumberFormat("pt-BR", {
+		style: "currency",
+		currency: "BRL",
+		maximumFractionDigits: 0
+	}).format(val);
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Card, {
+		"data-uid": "src/components/dashboard/SalesTargetProgress.tsx:73:5",
+		"data-prohibitions": "[editContent]",
+		className: "rounded-sm shadow-sm h-full flex flex-col justify-center border-t-4 border-t-emerald-500",
+		children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(CardContent, {
+			"data-uid": "src/components/dashboard/SalesTargetProgress.tsx:74:7",
+			"data-prohibitions": "[editContent]",
+			className: "p-3",
+			children: [
+				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					"data-uid": "src/components/dashboard/SalesTargetProgress.tsx:75:9",
+					"data-prohibitions": "[editContent]",
+					className: "flex justify-between items-center mb-2",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						"data-uid": "src/components/dashboard/SalesTargetProgress.tsx:76:11",
+						"data-prohibitions": "[editContent]",
+						className: "flex items-center gap-1.5 text-emerald-600",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Target, {
+							"data-uid": "src/components/dashboard/SalesTargetProgress.tsx:77:13",
+							"data-prohibitions": "[editContent]",
+							className: "w-4 h-4"
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("h3", {
+							"data-uid": "src/components/dashboard/SalesTargetProgress.tsx:78:13",
+							"data-prohibitions": "[editContent]",
+							className: "text-xs font-bold uppercase tracking-wide",
+							children: [
+								"Meta de Vendas (",
+								monthName,
+								")"
+							]
+						})]
+					}), !isEditing && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, {
+						"data-uid": "src/components/dashboard/SalesTargetProgress.tsx:83:13",
+						"data-prohibitions": "[]",
+						variant: "ghost",
+						size: "icon",
+						className: "h-5 w-5 text-gray-400 hover:text-emerald-600",
+						onClick: handleEdit,
+						children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Pencil, {
+							"data-uid": "src/components/dashboard/SalesTargetProgress.tsx:89:15",
+							"data-prohibitions": "[editContent]",
+							className: "h-3 w-3"
+						})
+					})]
+				}),
+				isEditing ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					"data-uid": "src/components/dashboard/SalesTargetProgress.tsx:95:11",
+					"data-prohibitions": "[]",
+					className: "flex items-center gap-2 mb-2",
+					children: [
+						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							"data-uid": "src/components/dashboard/SalesTargetProgress.tsx:96:13",
+							"data-prohibitions": "[]",
+							className: "relative flex-1",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+								"data-uid": "src/components/dashboard/SalesTargetProgress.tsx:97:15",
+								"data-prohibitions": "[]",
+								className: "absolute left-2 top-1.5 text-xs text-gray-500",
+								children: "R$"
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Input, {
+								"data-uid": "src/components/dashboard/SalesTargetProgress.tsx:98:15",
+								"data-prohibitions": "[editContent]",
+								type: "number",
+								className: "h-7 text-xs pl-6",
+								value: tempValue,
+								onChange: (e) => setTempValue(e.target.value),
+								autoFocus: true,
+								onKeyDown: (e) => e.key === "Enter" && handleSave()
+							})]
+						}),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, {
+							"data-uid": "src/components/dashboard/SalesTargetProgress.tsx:107:13",
+							"data-prohibitions": "[]",
+							size: "icon",
+							className: "h-7 w-7 bg-emerald-500 hover:bg-emerald-600",
+							onClick: handleSave,
+							children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Check, {
+								"data-uid": "src/components/dashboard/SalesTargetProgress.tsx:112:15",
+								"data-prohibitions": "[editContent]",
+								className: "h-3 w-3"
+							})
+						}),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, {
+							"data-uid": "src/components/dashboard/SalesTargetProgress.tsx:114:13",
+							"data-prohibitions": "[]",
+							variant: "ghost",
+							size: "icon",
+							className: "h-7 w-7 text-gray-500",
+							onClick: () => setIsEditing(false),
+							children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(X, {
+								"data-uid": "src/components/dashboard/SalesTargetProgress.tsx:120:15",
+								"data-prohibitions": "[editContent]",
+								className: "h-3 w-3"
+							})
+						})
+					]
+				}) : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					"data-uid": "src/components/dashboard/SalesTargetProgress.tsx:124:11",
+					"data-prohibitions": "[editContent]",
+					className: "flex justify-between items-end mb-1",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						"data-uid": "src/components/dashboard/SalesTargetProgress.tsx:125:13",
+						"data-prohibitions": "[editContent]",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+							"data-uid": "src/components/dashboard/SalesTargetProgress.tsx:126:15",
+							"data-prohibitions": "[]",
+							className: "text-[10px] text-gray-500 font-medium",
+							children: "Realizado"
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+							"data-uid": "src/components/dashboard/SalesTargetProgress.tsx:127:15",
+							"data-prohibitions": "[editContent]",
+							className: "text-sm font-bold text-gray-800",
+							children: formatCurrency(sales)
+						})]
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						"data-uid": "src/components/dashboard/SalesTargetProgress.tsx:129:13",
+						"data-prohibitions": "[editContent]",
+						className: "text-right",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+							"data-uid": "src/components/dashboard/SalesTargetProgress.tsx:130:15",
+							"data-prohibitions": "[]",
+							className: "text-[10px] text-gray-500 font-medium",
+							children: "Objetivo"
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+							"data-uid": "src/components/dashboard/SalesTargetProgress.tsx:131:15",
+							"data-prohibitions": "[editContent]",
+							className: "text-sm font-bold text-emerald-600",
+							children: formatCurrency(target)
+						})]
+					})]
+				}),
+				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					"data-uid": "src/components/dashboard/SalesTargetProgress.tsx:136:9",
+					"data-prohibitions": "[editContent]",
+					className: "space-y-1 mt-1",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Progress, {
+						"data-uid": "src/components/dashboard/SalesTargetProgress.tsx:137:11",
+						"data-prohibitions": "[editContent]",
+						value: percentage,
+						className: "h-2 bg-gray-100"
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
+						"data-uid": "src/components/dashboard/SalesTargetProgress.tsx:138:11",
+						"data-prohibitions": "[editContent]",
+						className: "text-[10px] text-right font-medium text-emerald-600",
+						children: [percentage.toFixed(1), "% alcançado"]
+					})]
+				})
+			]
+		})
+	});
+}
+//#endregion
+//#region src/components/dashboard/PricingAssistant.tsx
+function PricingAssistant() {
+	const { monthlyMetrics, transactions } = useFinanceStore();
+	const [cost, setCost] = (0, import_react.useState)("");
+	const markupMultiplier = (0, import_react.useMemo)(() => {
+		if (monthlyMetrics.length === 0) return 1;
+		const latest = [...monthlyMetrics].sort((a, b) => b.year !== a.year ? b.year - a.year : b.month - a.month)[0];
+		let cfa = 0;
+		let varExp = 0;
+		transactions.forEach((t) => {
+			const d = new Date(t.date);
+			if (d.getMonth() + 1 === latest.month && d.getFullYear() === latest.year && t.type === "EXPENSE") {
+				if (t.categoryId === "FIXA") cfa += t.amount;
+				if (t.categoryId === "VARIAVEL") varExp += t.amount;
+			}
+		});
+		const sales = latest.total_system_sales;
+		const raw = latest.raw_material_costs;
+		const divisor = sales > 0 ? (sales - (cfa + varExp + raw)) / sales : 0;
+		return divisor > 0 ? 1 / divisor : 1;
+	}, [monthlyMetrics, transactions]);
+	const numericCost = parseFloat(cost);
+	const suggestedPrice = !isNaN(numericCost) && numericCost > 0 ? numericCost * markupMultiplier : 0;
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Card, {
+		"data-uid": "src/components/dashboard/PricingAssistant.tsx:45:5",
+		"data-prohibitions": "[editContent]",
+		className: "rounded-sm shadow-sm h-full flex flex-col justify-center border-t-4 border-t-purple-500 bg-gradient-to-br from-white to-purple-50/30",
+		children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(CardContent, {
+			"data-uid": "src/components/dashboard/PricingAssistant.tsx:46:7",
+			"data-prohibitions": "[editContent]",
+			className: "p-3",
+			children: [
+				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					"data-uid": "src/components/dashboard/PricingAssistant.tsx:47:9",
+					"data-prohibitions": "[]",
+					className: "flex items-center gap-1.5 text-purple-700 mb-3",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Calculator, {
+						"data-uid": "src/components/dashboard/PricingAssistant.tsx:48:11",
+						"data-prohibitions": "[editContent]",
+						className: "w-4 h-4"
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h3", {
+						"data-uid": "src/components/dashboard/PricingAssistant.tsx:49:11",
+						"data-prohibitions": "[]",
+						className: "text-xs font-bold uppercase tracking-wide",
+						children: "Assistente de Precificação"
+					})]
+				}),
+				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					"data-uid": "src/components/dashboard/PricingAssistant.tsx:52:9",
+					"data-prohibitions": "[editContent]",
+					className: "flex items-center gap-3",
+					children: [
+						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							"data-uid": "src/components/dashboard/PricingAssistant.tsx:53:11",
+							"data-prohibitions": "[]",
+							className: "flex-1",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Label$1, {
+								"data-uid": "src/components/dashboard/PricingAssistant.tsx:54:13",
+								"data-prohibitions": "[]",
+								className: "text-[10px] text-gray-500 uppercase tracking-wider mb-1 block",
+								children: "Custo (MP + Emb)"
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								"data-uid": "src/components/dashboard/PricingAssistant.tsx:57:13",
+								"data-prohibitions": "[]",
+								className: "relative",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+									"data-uid": "src/components/dashboard/PricingAssistant.tsx:58:15",
+									"data-prohibitions": "[]",
+									className: "absolute left-2 top-1.5 text-xs text-gray-500 font-medium",
+									children: "R$"
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Input, {
+									"data-uid": "src/components/dashboard/PricingAssistant.tsx:59:15",
+									"data-prohibitions": "[editContent]",
+									type: "number",
+									step: "0.01",
+									className: "h-7 text-xs pl-7 bg-white shadow-inner",
+									value: cost,
+									onChange: (e) => setCost(e.target.value),
+									placeholder: "0.00"
+								})]
+							})]
+						}),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+							"data-uid": "src/components/dashboard/PricingAssistant.tsx:70:11",
+							"data-prohibitions": "[]",
+							className: "text-purple-400 mt-4 shrink-0",
+							children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ArrowRight, {
+								"data-uid": "src/components/dashboard/PricingAssistant.tsx:71:13",
+								"data-prohibitions": "[editContent]",
+								className: "w-4 h-4"
+							})
+						}),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							"data-uid": "src/components/dashboard/PricingAssistant.tsx:74:11",
+							"data-prohibitions": "[editContent]",
+							className: "flex-1 text-right bg-white p-1.5 rounded-sm border border-purple-100 shadow-sm",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Label$1, {
+								"data-uid": "src/components/dashboard/PricingAssistant.tsx:75:13",
+								"data-prohibitions": "[]",
+								className: "text-[10px] text-purple-600/70 uppercase tracking-wider block",
+								children: "Preço Sugerido"
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
+								"data-uid": "src/components/dashboard/PricingAssistant.tsx:78:13",
+								"data-prohibitions": "[editContent]",
+								className: "text-sm font-bold text-purple-700 font-mono tracking-tight mt-0.5",
+								children: ["R$ ", suggestedPrice.toFixed(2)]
+							})]
+						})
+					]
+				}),
+				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					"data-uid": "src/components/dashboard/PricingAssistant.tsx:83:9",
+					"data-prohibitions": "[editContent]",
+					className: "mt-2 text-[9px] text-gray-400 text-center",
+					children: [
+						"Baseado no Markup atual:",
+						" ",
+						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+							"data-uid": "src/components/dashboard/PricingAssistant.tsx:85:11",
+							"data-prohibitions": "[editContent]",
+							className: "font-semibold text-purple-600",
+							children: [markupMultiplier.toFixed(2), "x"]
+						})
+					]
+				})
+			]
+		})
+	});
+}
+//#endregion
+//#region src/components/dashboard/PerformanceEvolutionChart.tsx
+function PerformanceEvolutionChart() {
+	const { monthlyMetrics, transactions } = useFinanceStore();
+	const [monthsCount, setMonthsCount] = (0, import_react.useState)(6);
+	const data = (0, import_react.useMemo)(() => {
+		const result = [];
+		const now = /* @__PURE__ */ new Date();
+		for (let i = monthsCount - 1; i >= 0; i--) {
+			const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+			const m = d.getMonth() + 1;
+			const y = d.getFullYear();
+			const metric = monthlyMetrics.find((x) => x.year === y && x.month === m);
+			let cfa = 0;
+			let varExp = 0;
+			transactions.forEach((t) => {
+				const td = new Date(t.date);
+				if (td.getMonth() + 1 === m && td.getFullYear() === y && t.type === "EXPENSE") {
+					if (t.categoryId === "FIXA") cfa += t.amount;
+					if (t.categoryId === "VARIAVEL") varExp += t.amount;
+				}
+			});
+			const sales = metric?.total_system_sales || 0;
+			const raw = metric?.raw_material_costs || 0;
+			const margem = sales - (raw + varExp);
+			const divisor = sales > 0 ? (sales - (cfa + varExp + raw)) / sales : 0;
+			const markup = divisor > 0 ? 1 / divisor : 1;
+			result.push({
+				name: `${m.toString().padStart(2, "0")}/${y.toString().slice(-2)}`,
+				Margem: margem,
+				Markup: parseFloat(markup.toFixed(2))
+			});
+		}
+		return result;
+	}, [
+		monthlyMetrics,
+		transactions,
+		monthsCount
+	]);
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+		"data-uid": "src/components/dashboard/PerformanceEvolutionChart.tsx:66:5",
+		"data-prohibitions": "[]",
+		className: "bg-white p-2 rounded-sm border shadow-sm flex flex-col h-full",
+		children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+			"data-uid": "src/components/dashboard/PerformanceEvolutionChart.tsx:67:7",
+			"data-prohibitions": "[]",
+			className: "flex items-center justify-between mb-2",
+			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h3", {
+				"data-uid": "src/components/dashboard/PerformanceEvolutionChart.tsx:68:9",
+				"data-prohibitions": "[]",
+				className: "text-xs font-bold text-gray-600 uppercase tracking-wide",
+				children: "Evolução de Performance"
+			}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Select, {
+				"data-uid": "src/components/dashboard/PerformanceEvolutionChart.tsx:71:9",
+				"data-prohibitions": "[]",
+				value: monthsCount.toString(),
+				onValueChange: (v) => setMonthsCount(parseInt(v)),
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectTrigger, {
+					"data-uid": "src/components/dashboard/PerformanceEvolutionChart.tsx:72:11",
+					"data-prohibitions": "[]",
+					className: "h-6 w-[100px] text-[10px]",
+					children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectValue, {
+						"data-uid": "src/components/dashboard/PerformanceEvolutionChart.tsx:73:13",
+						"data-prohibitions": "[editContent]"
+					})
+				}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(SelectContent, {
+					"data-uid": "src/components/dashboard/PerformanceEvolutionChart.tsx:75:11",
+					"data-prohibitions": "[]",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectItem, {
+						"data-uid": "src/components/dashboard/PerformanceEvolutionChart.tsx:76:13",
+						"data-prohibitions": "[]",
+						value: "6",
+						children: "Últimos 6 meses"
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectItem, {
+						"data-uid": "src/components/dashboard/PerformanceEvolutionChart.tsx:77:13",
+						"data-prohibitions": "[]",
+						value: "12",
+						children: "Últimos 12 meses"
+					})]
+				})]
+			})]
+		}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ChartContainer, {
+			"data-uid": "src/components/dashboard/PerformanceEvolutionChart.tsx:82:7",
+			"data-prohibitions": "[]",
+			config: {
+				Margem: {
+					label: "Margem Contrib. (R$)",
+					color: "#10b981"
+				},
+				Markup: {
+					label: "Markup (Multiplicador)",
+					color: "#8b5cf6"
+				}
+			},
+			className: "h-full min-h-[220px] w-full",
+			children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ResponsiveContainer, {
+				"data-uid": "src/components/dashboard/PerformanceEvolutionChart.tsx:89:9",
+				"data-prohibitions": "[]",
+				width: "100%",
+				height: "100%",
+				children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(LineChart, {
+					"data-uid": "src/components/dashboard/PerformanceEvolutionChart.tsx:90:11",
+					"data-prohibitions": "[]",
+					data,
+					margin: {
+						top: 10,
+						right: 10,
+						left: -10,
+						bottom: 0
+					},
+					children: [
+						/* @__PURE__ */ (0, import_jsx_runtime.jsx)(CartesianGrid, {
+							"data-uid": "src/components/dashboard/PerformanceEvolutionChart.tsx:91:13",
+							"data-prohibitions": "[editContent]",
+							strokeDasharray: "3 3",
+							vertical: false,
+							stroke: "#e5e7eb"
+						}),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsx)(XAxis, {
+							"data-uid": "src/components/dashboard/PerformanceEvolutionChart.tsx:92:13",
+							"data-prohibitions": "[editContent]",
+							dataKey: "name",
+							axisLine: false,
+							tickLine: false,
+							tick: {
+								fontSize: 9,
+								fill: "#6b7280"
+							}
+						}),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsx)(YAxis, {
+							"data-uid": "src/components/dashboard/PerformanceEvolutionChart.tsx:98:13",
+							"data-prohibitions": "[editContent]",
+							yAxisId: "left",
+							axisLine: false,
+							tickLine: false,
+							tick: {
+								fontSize: 9,
+								fill: "#10b981"
+							},
+							tickFormatter: (val) => `${val / 1e3}k`
+						}),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsx)(YAxis, {
+							"data-uid": "src/components/dashboard/PerformanceEvolutionChart.tsx:105:13",
+							"data-prohibitions": "[editContent]",
+							yAxisId: "right",
+							orientation: "right",
+							axisLine: false,
+							tickLine: false,
+							tick: {
+								fontSize: 9,
+								fill: "#8b5cf6"
+							}
+						}),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Tooltip, {
+							"data-uid": "src/components/dashboard/PerformanceEvolutionChart.tsx:112:13",
+							"data-prohibitions": "[editContent]",
+							content: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ChartTooltipContent, {
+								"data-uid": "src/components/dashboard/PerformanceEvolutionChart.tsx:112:31",
+								"data-prohibitions": "[editContent]"
+							})
+						}),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Legend, {
+							"data-uid": "src/components/dashboard/PerformanceEvolutionChart.tsx:113:13",
+							"data-prohibitions": "[editContent]",
+							wrapperStyle: {
+								fontSize: "9px",
+								marginTop: "10px"
+							},
+							iconType: "plainline"
+						}),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Line, {
+							"data-uid": "src/components/dashboard/PerformanceEvolutionChart.tsx:115:13",
+							"data-prohibitions": "[editContent]",
+							yAxisId: "left",
+							type: "monotone",
+							dataKey: "Margem",
+							name: "Margem Contrib.",
+							stroke: "#10b981",
+							strokeWidth: 2,
+							dot: {
+								r: 3,
+								fill: "#10b981"
+							},
+							activeDot: { r: 5 }
+						}),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Line, {
+							"data-uid": "src/components/dashboard/PerformanceEvolutionChart.tsx:125:13",
+							"data-prohibitions": "[editContent]",
+							yAxisId: "right",
+							type: "monotone",
+							dataKey: "Markup",
+							name: "Markup Mult.",
+							stroke: "#8b5cf6",
+							strokeWidth: 2,
+							dot: {
+								r: 3,
+								fill: "#8b5cf6"
+							},
+							activeDot: { r: 5 }
+						})
+					]
+				})
+			})
+		})]
+	});
+}
+//#endregion
 //#region src/pages/Index.tsx
 function Index() {
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-		"data-uid": "src/pages/Index.tsx:13:5",
+		"data-uid": "src/pages/Index.tsx:16:5",
 		"data-prohibitions": "[editContent]",
 		className: "flex flex-col h-[calc(100vh-5rem)] bg-white rounded-md shadow-md border overflow-hidden animate-fade-in",
 		children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(DashboardHeader, {
-			"data-uid": "src/pages/Index.tsx:14:7",
+			"data-uid": "src/pages/Index.tsx:17:7",
 			"data-prohibitions": "[editContent]"
 		}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-			"data-uid": "src/pages/Index.tsx:16:7",
+			"data-uid": "src/pages/Index.tsx:19:7",
 			"data-prohibitions": "[editContent]",
 			className: "flex flex-1 overflow-hidden",
 			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-				"data-uid": "src/pages/Index.tsx:18:9",
+				"data-uid": "src/pages/Index.tsx:21:9",
 				"data-prohibitions": "[]",
 				className: "w-[180px] hidden md:block",
 				children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SidebarFilters, {
-					"data-uid": "src/pages/Index.tsx:19:11",
+					"data-uid": "src/pages/Index.tsx:22:11",
 					"data-prohibitions": "[editContent]"
 				})
 			}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-				"data-uid": "src/pages/Index.tsx:23:9",
+				"data-uid": "src/pages/Index.tsx:26:9",
 				"data-prohibitions": "[editContent]",
 				className: "flex-1 bg-[#f1f5f9] p-2 flex flex-col gap-2 overflow-y-auto",
 				children: [
 					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-						"data-uid": "src/pages/Index.tsx:24:11",
+						"data-uid": "src/pages/Index.tsx:27:11",
 						"data-prohibitions": "[]",
 						className: "flex flex-col xl:flex-row gap-2",
-						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-							"data-uid": "src/pages/Index.tsx:25:13",
-							"data-prohibitions": "[]",
-							className: "flex-1",
-							children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(KpiCards, {
-								"data-uid": "src/pages/Index.tsx:26:15",
-								"data-prohibitions": "[editContent]"
-							})
-						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 							"data-uid": "src/pages/Index.tsx:28:13",
+							"data-prohibitions": "[]",
+							className: "flex-1 flex flex-col gap-2",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(KpiCards, {
+								"data-uid": "src/pages/Index.tsx:29:15",
+								"data-prohibitions": "[editContent]"
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								"data-uid": "src/pages/Index.tsx:30:15",
+								"data-prohibitions": "[]",
+								className: "grid grid-cols-1 md:grid-cols-2 gap-2 h-auto min-h-[90px]",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(SalesTargetProgress, {
+									"data-uid": "src/pages/Index.tsx:31:17",
+									"data-prohibitions": "[editContent]"
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(PricingAssistant, {
+									"data-uid": "src/pages/Index.tsx:32:17",
+									"data-prohibitions": "[editContent]"
+								})]
+							})]
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+							"data-uid": "src/pages/Index.tsx:35:13",
 							"data-prohibitions": "[]",
 							className: "xl:w-[250px] shrink-0",
 							children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ExpenseDistribution, {
-								"data-uid": "src/pages/Index.tsx:29:15",
+								"data-uid": "src/pages/Index.tsx:36:15",
 								"data-prohibitions": "[editContent]"
 							})
 						})]
 					}),
 					/* @__PURE__ */ (0, import_jsx_runtime.jsx)(PharmacyMetrics, {
-						"data-uid": "src/pages/Index.tsx:33:11",
+						"data-uid": "src/pages/Index.tsx:40:11",
 						"data-prohibitions": "[editContent]"
 					}),
 					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-						"data-uid": "src/pages/Index.tsx:35:11",
+						"data-uid": "src/pages/Index.tsx:42:11",
 						"data-prohibitions": "[editContent]",
 						className: "grid grid-cols-1 lg:grid-cols-3 gap-2 flex-1 min-h-[400px]",
 						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-							"data-uid": "src/pages/Index.tsx:37:13",
+							"data-uid": "src/pages/Index.tsx:44:13",
 							"data-prohibitions": "[]",
 							className: "lg:col-span-2 flex flex-col gap-2",
 							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-								"data-uid": "src/pages/Index.tsx:38:15",
+								"data-uid": "src/pages/Index.tsx:45:15",
 								"data-prohibitions": "[]",
-								className: "flex-1 min-h-[200px]",
-								children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CashFlowChart, {
-									"data-uid": "src/pages/Index.tsx:39:17",
+								className: "flex-1 min-h-[220px]",
+								children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(PerformanceEvolutionChart, {
+									"data-uid": "src/pages/Index.tsx:46:17",
 									"data-prohibitions": "[editContent]"
 								})
-							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-								"data-uid": "src/pages/Index.tsx:41:15",
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								"data-uid": "src/pages/Index.tsx:48:15",
 								"data-prohibitions": "[]",
-								className: "flex-1 min-h-[200px]",
-								children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ProfitabilityChart, {
-									"data-uid": "src/pages/Index.tsx:42:17",
+								className: "grid grid-cols-1 md:grid-cols-2 gap-2 flex-1 min-h-[200px]",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(CashFlowChart, {
+									"data-uid": "src/pages/Index.tsx:49:17",
 									"data-prohibitions": "[editContent]"
-								})
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ProfitabilityChart, {
+									"data-uid": "src/pages/Index.tsx:50:17",
+									"data-prohibitions": "[editContent]"
+								})]
 							})]
 						}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-							"data-uid": "src/pages/Index.tsx:47:13",
+							"data-uid": "src/pages/Index.tsx:55:13",
 							"data-prohibitions": "[]",
 							className: "flex flex-col gap-2",
 							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-								"data-uid": "src/pages/Index.tsx:48:15",
+								"data-uid": "src/pages/Index.tsx:56:15",
 								"data-prohibitions": "[]",
 								className: "grid grid-cols-2 gap-2 h-[160px]",
 								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TopCategoriesChart, {
-									"data-uid": "src/pages/Index.tsx:49:17",
+									"data-uid": "src/pages/Index.tsx:57:17",
 									"data-prohibitions": "[editContent]",
 									type: "INCOME",
 									title: "Top 5 - Entradas",
 									color: "#10b981"
 								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TopCategoriesChart, {
-									"data-uid": "src/pages/Index.tsx:50:17",
+									"data-uid": "src/pages/Index.tsx:58:17",
 									"data-prohibitions": "[editContent]",
 									type: "EXPENSE",
 									title: "Top 5 - Saídas",
 									color: "#ef4444"
 								})]
 							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-								"data-uid": "src/pages/Index.tsx:52:15",
+								"data-uid": "src/pages/Index.tsx:60:15",
 								"data-prohibitions": "[]",
 								className: "flex-1 min-h-[150px]",
 								children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(AccountBalances, {
-									"data-uid": "src/pages/Index.tsx:53:17",
+									"data-uid": "src/pages/Index.tsx:61:17",
 									"data-prohibitions": "[editContent]"
 								})
 							})]
@@ -69278,7 +70075,7 @@ function Badge({ className, variant, ...props }) {
 }
 //#endregion
 //#region src/components/ui/sheet.tsx
-var Sheet = Root$2;
+var Sheet = Root$3;
 var SheetTrigger = Trigger;
 var SheetPortal = Portal;
 var SheetOverlay = import_react.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Overlay, {
@@ -75143,7 +75940,7 @@ FormMessage.displayName = "FormMessage";
 //#region src/components/transactions/TransactionForm.tsx
 var formSchema = object({
 	date: string().min(1, "Data é obrigatória"),
-	description: string().min(3, "Descrição muito curta"),
+	description: string().optional(),
 	amount: number().min(.01, "Valor deve ser maior que zero"),
 	type: _enum(["INCOME", "EXPENSE"]),
 	categoryId: string().optional(),
@@ -75163,6 +75960,11 @@ var formSchema = object({
 		code: ZodIssueCode.custom,
 		message: "Categoria é obrigatória para despesas",
 		path: ["categoryId"]
+	});
+	if (data.type === "EXPENSE" && (!data.description || data.description.trim().length < 2)) ctx.addIssue({
+		code: ZodIssueCode.custom,
+		message: "Descrição é obrigatória para despesas",
+		path: ["description"]
 	});
 });
 function TransactionForm({ onSuccess, initialData }) {
@@ -75192,8 +75994,10 @@ function TransactionForm({ onSuccess, initialData }) {
 	});
 	const type = form.watch("type");
 	(0, import_react.useEffect)(() => {
-		if (!initialData) if (type === "INCOME") form.setValue("categoryId", "");
-		else form.setValue("accountId", "");
+		if (!initialData) if (type === "INCOME") {
+			form.setValue("categoryId", "");
+			form.setValue("status", "REALIZADO");
+		} else form.setValue("accountId", "");
 	}, [
 		type,
 		form,
@@ -75204,6 +76008,8 @@ function TransactionForm({ onSuccess, initialData }) {
 			setLoading(true);
 			const payload = {
 				...values,
+				description: values.type === "INCOME" ? "Receita Registrada" : values.description || "Despesa",
+				status: values.type === "INCOME" ? "REALIZADO" : values.status,
 				categoryId: values.type === "EXPENSE" ? values.categoryId || "FIXA" : "",
 				accountId: values.type === "INCOME" ? values.accountId || "acc1" : ""
 			};
@@ -75233,58 +76039,59 @@ function TransactionForm({ onSuccess, initialData }) {
 		}
 	};
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Form, {
-		"data-uid": "src/components/transactions/TransactionForm.tsx:123:5",
+		"data-uid": "src/components/transactions/TransactionForm.tsx:137:5",
 		"data-prohibitions": "[editContent]",
 		...form,
 		children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("form", {
-			"data-uid": "src/components/transactions/TransactionForm.tsx:124:7",
+			"data-uid": "src/components/transactions/TransactionForm.tsx:138:7",
 			"data-prohibitions": "[editContent]",
 			onSubmit: form.handleSubmit(onSubmit),
 			className: "space-y-4 pt-4",
 			children: [
 				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-					"data-uid": "src/components/transactions/TransactionForm.tsx:125:9",
-					"data-prohibitions": "[]",
+					"data-uid": "src/components/transactions/TransactionForm.tsx:139:9",
+					"data-prohibitions": "[editContent]",
 					className: "grid grid-cols-2 gap-4",
 					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormField, {
-						"data-uid": "src/components/transactions/TransactionForm.tsx:126:11",
+						"data-uid": "src/components/transactions/TransactionForm.tsx:140:11",
 						"data-prohibitions": "[editContent]",
 						control: form.control,
 						name: "type",
 						render: ({ field }) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(FormItem, {
-							"data-uid": "src/components/transactions/TransactionForm.tsx:130:15",
-							"data-prohibitions": "[]",
+							"data-uid": "src/components/transactions/TransactionForm.tsx:144:15",
+							"data-prohibitions": "[editContent]",
+							className: type === "INCOME" ? "col-span-2" : "",
 							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormLabel, {
-								"data-uid": "src/components/transactions/TransactionForm.tsx:131:17",
+								"data-uid": "src/components/transactions/TransactionForm.tsx:145:17",
 								"data-prohibitions": "[]",
 								children: "Tipo"
 							}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Select, {
-								"data-uid": "src/components/transactions/TransactionForm.tsx:132:17",
+								"data-uid": "src/components/transactions/TransactionForm.tsx:146:17",
 								"data-prohibitions": "[]",
 								onValueChange: field.onChange,
 								value: field.value || void 0,
 								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormControl, {
-									"data-uid": "src/components/transactions/TransactionForm.tsx:133:19",
+									"data-uid": "src/components/transactions/TransactionForm.tsx:147:19",
 									"data-prohibitions": "[]",
 									children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectTrigger, {
-										"data-uid": "src/components/transactions/TransactionForm.tsx:134:21",
+										"data-uid": "src/components/transactions/TransactionForm.tsx:148:21",
 										"data-prohibitions": "[]",
 										children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectValue, {
-											"data-uid": "src/components/transactions/TransactionForm.tsx:135:23",
+											"data-uid": "src/components/transactions/TransactionForm.tsx:149:23",
 											"data-prohibitions": "[editContent]",
 											placeholder: "Selecione o tipo"
 										})
 									})
 								}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(SelectContent, {
-									"data-uid": "src/components/transactions/TransactionForm.tsx:138:19",
+									"data-uid": "src/components/transactions/TransactionForm.tsx:152:19",
 									"data-prohibitions": "[]",
 									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectItem, {
-										"data-uid": "src/components/transactions/TransactionForm.tsx:139:21",
+										"data-uid": "src/components/transactions/TransactionForm.tsx:153:21",
 										"data-prohibitions": "[]",
 										value: "INCOME",
 										children: "Receita"
 									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectItem, {
-										"data-uid": "src/components/transactions/TransactionForm.tsx:140:21",
+										"data-uid": "src/components/transactions/TransactionForm.tsx:154:21",
 										"data-prohibitions": "[]",
 										value: "EXPENSE",
 										children: "Despesa"
@@ -75292,53 +76099,53 @@ function TransactionForm({ onSuccess, initialData }) {
 								})]
 							})]
 						})
-					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormField, {
-						"data-uid": "src/components/transactions/TransactionForm.tsx:146:11",
+					}), type === "EXPENSE" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormField, {
+						"data-uid": "src/components/transactions/TransactionForm.tsx:161:13",
 						"data-prohibitions": "[editContent]",
 						control: form.control,
 						name: "status",
 						render: ({ field }) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(FormItem, {
-							"data-uid": "src/components/transactions/TransactionForm.tsx:150:15",
+							"data-uid": "src/components/transactions/TransactionForm.tsx:165:17",
 							"data-prohibitions": "[]",
 							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormLabel, {
-								"data-uid": "src/components/transactions/TransactionForm.tsx:151:17",
+								"data-uid": "src/components/transactions/TransactionForm.tsx:166:19",
 								"data-prohibitions": "[]",
 								children: "Status"
 							}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Select, {
-								"data-uid": "src/components/transactions/TransactionForm.tsx:152:17",
+								"data-uid": "src/components/transactions/TransactionForm.tsx:167:19",
 								"data-prohibitions": "[]",
 								onValueChange: field.onChange,
 								value: field.value || void 0,
 								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormControl, {
-									"data-uid": "src/components/transactions/TransactionForm.tsx:153:19",
+									"data-uid": "src/components/transactions/TransactionForm.tsx:168:21",
 									"data-prohibitions": "[]",
 									children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectTrigger, {
-										"data-uid": "src/components/transactions/TransactionForm.tsx:154:21",
+										"data-uid": "src/components/transactions/TransactionForm.tsx:169:23",
 										"data-prohibitions": "[]",
 										children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectValue, {
-											"data-uid": "src/components/transactions/TransactionForm.tsx:155:23",
+											"data-uid": "src/components/transactions/TransactionForm.tsx:170:25",
 											"data-prohibitions": "[editContent]",
 											placeholder: "Status"
 										})
 									})
 								}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(SelectContent, {
-									"data-uid": "src/components/transactions/TransactionForm.tsx:158:19",
+									"data-uid": "src/components/transactions/TransactionForm.tsx:173:21",
 									"data-prohibitions": "[]",
 									children: [
 										/* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectItem, {
-											"data-uid": "src/components/transactions/TransactionForm.tsx:159:21",
+											"data-uid": "src/components/transactions/TransactionForm.tsx:174:23",
 											"data-prohibitions": "[]",
 											value: "PREVISTO",
 											children: "Previsto"
 										}),
 										/* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectItem, {
-											"data-uid": "src/components/transactions/TransactionForm.tsx:160:21",
+											"data-uid": "src/components/transactions/TransactionForm.tsx:175:23",
 											"data-prohibitions": "[]",
 											value: "REALIZADO",
 											children: "Realizado"
 										}),
 										/* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectItem, {
-											"data-uid": "src/components/transactions/TransactionForm.tsx:161:21",
+											"data-uid": "src/components/transactions/TransactionForm.tsx:176:23",
 											"data-prohibitions": "[]",
 											value: "VENCIDO",
 											children: "Vencido"
@@ -75350,86 +76157,86 @@ function TransactionForm({ onSuccess, initialData }) {
 					})]
 				}),
 				/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormField, {
-					"data-uid": "src/components/transactions/TransactionForm.tsx:169:9",
+					"data-uid": "src/components/transactions/TransactionForm.tsx:185:9",
 					"data-prohibitions": "[editContent]",
 					control: form.control,
 					name: "date",
 					render: ({ field }) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(FormItem, {
-						"data-uid": "src/components/transactions/TransactionForm.tsx:173:13",
+						"data-uid": "src/components/transactions/TransactionForm.tsx:189:13",
 						"data-prohibitions": "[]",
 						children: [
 							/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormLabel, {
-								"data-uid": "src/components/transactions/TransactionForm.tsx:174:15",
+								"data-uid": "src/components/transactions/TransactionForm.tsx:190:15",
 								"data-prohibitions": "[]",
 								children: "Data"
 							}),
 							/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormControl, {
-								"data-uid": "src/components/transactions/TransactionForm.tsx:175:15",
+								"data-uid": "src/components/transactions/TransactionForm.tsx:191:15",
 								"data-prohibitions": "[]",
 								children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Input, {
-									"data-uid": "src/components/transactions/TransactionForm.tsx:176:17",
+									"data-uid": "src/components/transactions/TransactionForm.tsx:192:17",
 									"data-prohibitions": "[editContent]",
 									type: "date",
 									...field
 								})
 							}),
 							/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormMessage, {
-								"data-uid": "src/components/transactions/TransactionForm.tsx:178:15",
+								"data-uid": "src/components/transactions/TransactionForm.tsx:194:15",
 								"data-prohibitions": "[editContent]"
 							})
 						]
 					})
 				}),
-				/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormField, {
-					"data-uid": "src/components/transactions/TransactionForm.tsx:183:9",
+				type === "EXPENSE" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormField, {
+					"data-uid": "src/components/transactions/TransactionForm.tsx:200:11",
 					"data-prohibitions": "[editContent]",
 					control: form.control,
 					name: "description",
 					render: ({ field }) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(FormItem, {
-						"data-uid": "src/components/transactions/TransactionForm.tsx:187:13",
+						"data-uid": "src/components/transactions/TransactionForm.tsx:204:15",
 						"data-prohibitions": "[]",
 						children: [
 							/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormLabel, {
-								"data-uid": "src/components/transactions/TransactionForm.tsx:188:15",
+								"data-uid": "src/components/transactions/TransactionForm.tsx:205:17",
 								"data-prohibitions": "[]",
 								children: "Descrição"
 							}),
 							/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormControl, {
-								"data-uid": "src/components/transactions/TransactionForm.tsx:189:15",
+								"data-uid": "src/components/transactions/TransactionForm.tsx:206:17",
 								"data-prohibitions": "[]",
 								children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Input, {
-									"data-uid": "src/components/transactions/TransactionForm.tsx:190:17",
+									"data-uid": "src/components/transactions/TransactionForm.tsx:207:19",
 									"data-prohibitions": "[editContent]",
 									placeholder: "Ex: Conta de Luz",
 									...field
 								})
 							}),
 							/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormMessage, {
-								"data-uid": "src/components/transactions/TransactionForm.tsx:192:15",
+								"data-uid": "src/components/transactions/TransactionForm.tsx:209:17",
 								"data-prohibitions": "[editContent]"
 							})
 						]
 					})
 				}),
 				/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormField, {
-					"data-uid": "src/components/transactions/TransactionForm.tsx:197:9",
+					"data-uid": "src/components/transactions/TransactionForm.tsx:215:9",
 					"data-prohibitions": "[editContent]",
 					control: form.control,
 					name: "amount",
 					render: ({ field }) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(FormItem, {
-						"data-uid": "src/components/transactions/TransactionForm.tsx:201:13",
+						"data-uid": "src/components/transactions/TransactionForm.tsx:219:13",
 						"data-prohibitions": "[]",
 						children: [
 							/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormLabel, {
-								"data-uid": "src/components/transactions/TransactionForm.tsx:202:15",
+								"data-uid": "src/components/transactions/TransactionForm.tsx:220:15",
 								"data-prohibitions": "[]",
 								children: "Valor (R$)"
 							}),
 							/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormControl, {
-								"data-uid": "src/components/transactions/TransactionForm.tsx:203:15",
+								"data-uid": "src/components/transactions/TransactionForm.tsx:221:15",
 								"data-prohibitions": "[]",
 								children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Input, {
-									"data-uid": "src/components/transactions/TransactionForm.tsx:204:17",
+									"data-uid": "src/components/transactions/TransactionForm.tsx:222:17",
 									"data-prohibitions": "[editContent]",
 									type: "number",
 									step: "0.01",
@@ -75437,61 +76244,61 @@ function TransactionForm({ onSuccess, initialData }) {
 								})
 							}),
 							/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormMessage, {
-								"data-uid": "src/components/transactions/TransactionForm.tsx:206:15",
+								"data-uid": "src/components/transactions/TransactionForm.tsx:224:15",
 								"data-prohibitions": "[editContent]"
 							})
 						]
 					})
 				}),
 				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-					"data-uid": "src/components/transactions/TransactionForm.tsx:211:9",
+					"data-uid": "src/components/transactions/TransactionForm.tsx:229:9",
 					"data-prohibitions": "[editContent]",
 					className: "grid grid-cols-1 gap-4 transition-all duration-300 min-h-[80px]",
 					children: [type === "EXPENSE" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-						"data-uid": "src/components/transactions/TransactionForm.tsx:213:13",
+						"data-uid": "src/components/transactions/TransactionForm.tsx:231:13",
 						"data-prohibitions": "[]",
 						className: "animate-in fade-in slide-in-from-top-2 duration-300",
 						children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormField, {
-							"data-uid": "src/components/transactions/TransactionForm.tsx:214:15",
+							"data-uid": "src/components/transactions/TransactionForm.tsx:232:15",
 							"data-prohibitions": "[editContent]",
 							control: form.control,
 							name: "categoryId",
 							render: ({ field }) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(FormItem, {
-								"data-uid": "src/components/transactions/TransactionForm.tsx:218:19",
+								"data-uid": "src/components/transactions/TransactionForm.tsx:236:19",
 								"data-prohibitions": "[]",
 								children: [
 									/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormLabel, {
-										"data-uid": "src/components/transactions/TransactionForm.tsx:219:21",
+										"data-uid": "src/components/transactions/TransactionForm.tsx:237:21",
 										"data-prohibitions": "[]",
 										children: "Categoria"
 									}),
 									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Select, {
-										"data-uid": "src/components/transactions/TransactionForm.tsx:220:21",
+										"data-uid": "src/components/transactions/TransactionForm.tsx:238:21",
 										"data-prohibitions": "[]",
 										onValueChange: field.onChange,
 										value: field.value || void 0,
 										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormControl, {
-											"data-uid": "src/components/transactions/TransactionForm.tsx:221:23",
+											"data-uid": "src/components/transactions/TransactionForm.tsx:239:23",
 											"data-prohibitions": "[]",
 											children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectTrigger, {
-												"data-uid": "src/components/transactions/TransactionForm.tsx:222:25",
+												"data-uid": "src/components/transactions/TransactionForm.tsx:240:25",
 												"data-prohibitions": "[]",
 												children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectValue, {
-													"data-uid": "src/components/transactions/TransactionForm.tsx:223:27",
+													"data-uid": "src/components/transactions/TransactionForm.tsx:241:27",
 													"data-prohibitions": "[editContent]",
 													placeholder: "Categoria"
 												})
 											})
 										}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(SelectContent, {
-											"data-uid": "src/components/transactions/TransactionForm.tsx:226:23",
+											"data-uid": "src/components/transactions/TransactionForm.tsx:244:23",
 											"data-prohibitions": "[]",
 											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectItem, {
-												"data-uid": "src/components/transactions/TransactionForm.tsx:227:25",
+												"data-uid": "src/components/transactions/TransactionForm.tsx:245:25",
 												"data-prohibitions": "[]",
 												value: "FIXA",
 												children: "Fixa"
 											}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectItem, {
-												"data-uid": "src/components/transactions/TransactionForm.tsx:228:25",
+												"data-uid": "src/components/transactions/TransactionForm.tsx:246:25",
 												"data-prohibitions": "[]",
 												value: "VARIAVEL",
 												children: "Variável"
@@ -75499,52 +76306,52 @@ function TransactionForm({ onSuccess, initialData }) {
 										})]
 									}),
 									/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormMessage, {
-										"data-uid": "src/components/transactions/TransactionForm.tsx:231:21",
+										"data-uid": "src/components/transactions/TransactionForm.tsx:249:21",
 										"data-prohibitions": "[editContent]"
 									})
 								]
 							})
 						})
 					}), type === "INCOME" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-						"data-uid": "src/components/transactions/TransactionForm.tsx:239:13",
+						"data-uid": "src/components/transactions/TransactionForm.tsx:257:13",
 						"data-prohibitions": "[]",
 						className: "animate-in fade-in slide-in-from-top-2 duration-300",
 						children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormField, {
-							"data-uid": "src/components/transactions/TransactionForm.tsx:240:15",
+							"data-uid": "src/components/transactions/TransactionForm.tsx:258:15",
 							"data-prohibitions": "[editContent]",
 							control: form.control,
 							name: "accountId",
 							render: ({ field }) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(FormItem, {
-								"data-uid": "src/components/transactions/TransactionForm.tsx:244:19",
+								"data-uid": "src/components/transactions/TransactionForm.tsx:262:19",
 								"data-prohibitions": "[editContent]",
 								children: [
 									/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormLabel, {
-										"data-uid": "src/components/transactions/TransactionForm.tsx:245:21",
+										"data-uid": "src/components/transactions/TransactionForm.tsx:263:21",
 										"data-prohibitions": "[]",
 										children: "Método de entrada"
 									}),
 									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Select, {
-										"data-uid": "src/components/transactions/TransactionForm.tsx:246:21",
+										"data-uid": "src/components/transactions/TransactionForm.tsx:264:21",
 										"data-prohibitions": "[editContent]",
 										onValueChange: field.onChange,
 										value: field.value || void 0,
 										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormControl, {
-											"data-uid": "src/components/transactions/TransactionForm.tsx:247:23",
+											"data-uid": "src/components/transactions/TransactionForm.tsx:265:23",
 											"data-prohibitions": "[]",
 											children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectTrigger, {
-												"data-uid": "src/components/transactions/TransactionForm.tsx:248:25",
+												"data-uid": "src/components/transactions/TransactionForm.tsx:266:25",
 												"data-prohibitions": "[]",
 												children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectValue, {
-													"data-uid": "src/components/transactions/TransactionForm.tsx:249:27",
+													"data-uid": "src/components/transactions/TransactionForm.tsx:267:27",
 													"data-prohibitions": "[editContent]",
 													placeholder: "Método"
 												})
 											})
 										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectContent, {
-											"data-uid": "src/components/transactions/TransactionForm.tsx:252:23",
+											"data-uid": "src/components/transactions/TransactionForm.tsx:270:23",
 											"data-prohibitions": "[editContent]",
 											children: accounts.map((a) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectItem, {
-												"data-uid": "src/components/transactions/TransactionForm.tsx:254:27",
+												"data-uid": "src/components/transactions/TransactionForm.tsx:272:27",
 												"data-prohibitions": "[editContent]",
 												value: a.id,
 												children: a.name
@@ -75552,7 +76359,7 @@ function TransactionForm({ onSuccess, initialData }) {
 										})]
 									}),
 									/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormMessage, {
-										"data-uid": "src/components/transactions/TransactionForm.tsx:260:21",
+										"data-uid": "src/components/transactions/TransactionForm.tsx:278:21",
 										"data-prohibitions": "[editContent]"
 									})
 								]
@@ -75561,7 +76368,7 @@ function TransactionForm({ onSuccess, initialData }) {
 					})]
 				}),
 				/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, {
-					"data-uid": "src/components/transactions/TransactionForm.tsx:268:9",
+					"data-uid": "src/components/transactions/TransactionForm.tsx:286:9",
 					"data-prohibitions": "[editContent]",
 					type: "submit",
 					className: "w-full mt-4",
@@ -75575,12 +76382,12 @@ function TransactionForm({ onSuccess, initialData }) {
 //#endregion
 //#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/@radix-ui+react-alert-dialog@1.1.15_@types+react-dom@19.2.3_@types+react@19.2.14__@type_d492cfbed6c88f7a3980b921a627d48d/node_modules/@radix-ui/react-alert-dialog/dist/index.mjs
 var ROOT_NAME = "AlertDialog";
-var [createAlertDialogContext, createAlertDialogScope] = createContextScope(ROOT_NAME, [createDialogScope]);
+var [createAlertDialogContext, createAlertDialogScope] = createContextScope$1(ROOT_NAME, [createDialogScope]);
 var useDialogScope = createDialogScope();
 var AlertDialog$1 = (props) => {
 	const { __scopeAlertDialog, ...alertDialogProps } = props;
 	const dialogScope = useDialogScope(__scopeAlertDialog);
-	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Root$2, {
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Root$3, {
 		...dialogScope,
 		...alertDialogProps,
 		modal: true
@@ -78015,10 +78822,20 @@ function cleanEscapedString(input) {
 function Transactions() {
 	const { transactions, categories, accounts, loadingData } = useFinanceStore();
 	const [search, setSearch] = (0, import_react.useState)("");
+	const [quickFilter, setQuickFilter] = (0, import_react.useState)("ALL");
 	const [isSheetOpen, setIsSheetOpen] = (0, import_react.useState)(false);
 	const [editingTx, setEditingTx] = (0, import_react.useState)(null);
 	const [deletingId, setDeletingId] = (0, import_react.useState)(null);
-	const filteredData = transactions.filter((t) => t.description.toLowerCase().includes(search.toLowerCase()));
+	const today = /* @__PURE__ */ new Date();
+	today.setHours(0, 0, 0, 0);
+	const filteredData = transactions.filter((t) => {
+		if (!t.description.toLowerCase().includes(search.toLowerCase())) return false;
+		const tDate = new Date(t.date);
+		tDate.setHours(0, 0, 0, 0);
+		if (quickFilter === "PREVISTO") return t.status === "PREVISTO" || tDate > today;
+		if (quickFilter === "VENCIDO") return tDate < today && t.status !== "REALIZADO";
+		return true;
+	});
 	const getCategoryName = (id, type) => {
 		if (type === "INCOME") return "-";
 		if (!id) return "-";
@@ -78047,76 +78864,76 @@ function Transactions() {
 		if (!open) setEditingTx(null);
 	};
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-		"data-uid": "src/pages/Transactions.tsx:65:5",
+		"data-uid": "src/pages/Transactions.tsx:81:5",
 		"data-prohibitions": "[editContent]",
 		className: "flex flex-col h-full bg-white rounded-md shadow-md border overflow-hidden p-6 animate-fade-in-up",
 		children: [
 			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-				"data-uid": "src/pages/Transactions.tsx:66:7",
+				"data-uid": "src/pages/Transactions.tsx:82:7",
 				"data-prohibitions": "[editContent]",
 				className: "flex justify-between items-center mb-6",
 				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-					"data-uid": "src/pages/Transactions.tsx:67:9",
+					"data-uid": "src/pages/Transactions.tsx:83:9",
 					"data-prohibitions": "[]",
 					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h1", {
-						"data-uid": "src/pages/Transactions.tsx:68:11",
+						"data-uid": "src/pages/Transactions.tsx:84:11",
 						"data-prohibitions": "[]",
 						className: "text-2xl font-bold text-primary",
 						children: "Transações"
 					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-						"data-uid": "src/pages/Transactions.tsx:69:11",
+						"data-uid": "src/pages/Transactions.tsx:85:11",
 						"data-prohibitions": "[]",
 						className: "text-sm text-muted-foreground",
 						children: "Gerencie seus lançamentos financeiros"
 					})]
 				}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-					"data-uid": "src/pages/Transactions.tsx:71:9",
+					"data-uid": "src/pages/Transactions.tsx:87:9",
 					"data-prohibitions": "[editContent]",
 					className: "flex gap-2",
 					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Button, {
-						"data-uid": "src/pages/Transactions.tsx:72:11",
+						"data-uid": "src/pages/Transactions.tsx:88:11",
 						"data-prohibitions": "[]",
 						variant: "outline",
 						className: "hidden sm:flex gap-2",
 						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Download, {
-							"data-uid": "src/pages/Transactions.tsx:73:13",
+							"data-uid": "src/pages/Transactions.tsx:89:13",
 							"data-prohibitions": "[editContent]",
 							className: "h-4 w-4"
 						}), " Exportar CSV"]
 					}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Sheet, {
-						"data-uid": "src/pages/Transactions.tsx:75:11",
+						"data-uid": "src/pages/Transactions.tsx:91:11",
 						"data-prohibitions": "[editContent]",
 						open: isSheetOpen,
 						onOpenChange: handleSheetChange,
 						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(SheetTrigger, {
-							"data-uid": "src/pages/Transactions.tsx:76:13",
+							"data-uid": "src/pages/Transactions.tsx:92:13",
 							"data-prohibitions": "[]",
 							asChild: true,
 							children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Button, {
-								"data-uid": "src/pages/Transactions.tsx:77:15",
+								"data-uid": "src/pages/Transactions.tsx:93:15",
 								"data-prohibitions": "[]",
 								className: "gap-2 bg-green-600 hover:bg-green-700",
 								onClick: () => setEditingTx(null),
 								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Plus, {
-									"data-uid": "src/pages/Transactions.tsx:81:17",
+									"data-uid": "src/pages/Transactions.tsx:97:17",
 									"data-prohibitions": "[editContent]",
 									className: "h-4 w-4"
 								}), " Novo Lançamento"]
 							})
 						}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(SheetContent, {
-							"data-uid": "src/pages/Transactions.tsx:84:13",
+							"data-uid": "src/pages/Transactions.tsx:100:13",
 							"data-prohibitions": "[editContent]",
 							className: "overflow-y-auto",
 							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(SheetHeader, {
-								"data-uid": "src/pages/Transactions.tsx:85:15",
+								"data-uid": "src/pages/Transactions.tsx:101:15",
 								"data-prohibitions": "[editContent]",
 								children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SheetTitle, {
-									"data-uid": "src/pages/Transactions.tsx:86:17",
+									"data-uid": "src/pages/Transactions.tsx:102:17",
 									"data-prohibitions": "[editContent]",
 									children: editingTx ? "Editar Transação" : "Adicionar Transação"
 								})
 							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TransactionForm, {
-								"data-uid": "src/pages/Transactions.tsx:88:15",
+								"data-uid": "src/pages/Transactions.tsx:104:15",
 								"data-prohibitions": "[editContent]",
 								onSuccess: () => handleSheetChange(false),
 								initialData: editingTx
@@ -78125,76 +78942,109 @@ function Transactions() {
 					})]
 				})]
 			}),
-			/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-				"data-uid": "src/pages/Transactions.tsx:94:7",
-				"data-prohibitions": "[]",
-				className: "flex items-center gap-2 mb-4",
-				children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-					"data-uid": "src/pages/Transactions.tsx:95:9",
+			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+				"data-uid": "src/pages/Transactions.tsx:110:7",
+				"data-prohibitions": "[editContent]",
+				className: "flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4",
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					"data-uid": "src/pages/Transactions.tsx:111:9",
 					"data-prohibitions": "[]",
-					className: "relative flex-1 max-w-sm",
+					className: "relative w-full max-w-sm",
 					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Search, {
-						"data-uid": "src/pages/Transactions.tsx:96:11",
+						"data-uid": "src/pages/Transactions.tsx:112:11",
 						"data-prohibitions": "[editContent]",
 						className: "absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground"
 					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Input, {
-						"data-uid": "src/pages/Transactions.tsx:97:11",
+						"data-uid": "src/pages/Transactions.tsx:113:11",
 						"data-prohibitions": "[editContent]",
 						placeholder: "Buscar por descrição...",
 						className: "pl-8",
 						value: search,
 						onChange: (e) => setSearch(e.target.value)
 					})]
-				})
+				}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					"data-uid": "src/pages/Transactions.tsx:121:9",
+					"data-prohibitions": "[editContent]",
+					className: "flex items-center bg-slate-100 p-1 rounded-md border shadow-sm",
+					children: [
+						/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, {
+							"data-uid": "src/pages/Transactions.tsx:122:11",
+							"data-prohibitions": "[editContent]",
+							variant: quickFilter === "ALL" ? "default" : "ghost",
+							size: "sm",
+							className: cn$1("text-xs h-8 px-4", quickFilter === "ALL" && "shadow-sm"),
+							onClick: () => setQuickFilter("ALL"),
+							children: "Todos"
+						}),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, {
+							"data-uid": "src/pages/Transactions.tsx:130:11",
+							"data-prohibitions": "[editContent]",
+							variant: quickFilter === "PREVISTO" ? "default" : "ghost",
+							size: "sm",
+							className: cn$1("text-xs h-8 px-4", quickFilter === "PREVISTO" && "bg-blue-600 text-white hover:bg-blue-700 shadow-sm"),
+							onClick: () => setQuickFilter("PREVISTO"),
+							children: "Previstos"
+						}),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, {
+							"data-uid": "src/pages/Transactions.tsx:141:11",
+							"data-prohibitions": "[editContent]",
+							variant: quickFilter === "VENCIDO" ? "default" : "ghost",
+							size: "sm",
+							className: cn$1("text-xs h-8 px-4", quickFilter === "VENCIDO" && "bg-red-600 text-white hover:bg-red-700 shadow-sm"),
+							onClick: () => setQuickFilter("VENCIDO"),
+							children: "Vencidos"
+						})
+					]
+				})]
 			}),
 			/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-				"data-uid": "src/pages/Transactions.tsx:106:7",
+				"data-uid": "src/pages/Transactions.tsx:155:7",
 				"data-prohibitions": "[editContent]",
 				className: "rounded-md border flex-1 overflow-auto",
 				children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Table, {
-					"data-uid": "src/pages/Transactions.tsx:107:9",
+					"data-uid": "src/pages/Transactions.tsx:156:9",
 					"data-prohibitions": "[editContent]",
 					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TableHeader, {
-						"data-uid": "src/pages/Transactions.tsx:108:11",
+						"data-uid": "src/pages/Transactions.tsx:157:11",
 						"data-prohibitions": "[]",
 						className: "bg-gray-50 sticky top-0 z-10",
 						children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(TableRow, {
-							"data-uid": "src/pages/Transactions.tsx:109:13",
+							"data-uid": "src/pages/Transactions.tsx:158:13",
 							"data-prohibitions": "[]",
 							children: [
 								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TableHead, {
-									"data-uid": "src/pages/Transactions.tsx:110:15",
+									"data-uid": "src/pages/Transactions.tsx:159:15",
 									"data-prohibitions": "[]",
 									children: "Data"
 								}),
 								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TableHead, {
-									"data-uid": "src/pages/Transactions.tsx:111:15",
+									"data-uid": "src/pages/Transactions.tsx:160:15",
 									"data-prohibitions": "[]",
 									children: "Descrição"
 								}),
 								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TableHead, {
-									"data-uid": "src/pages/Transactions.tsx:112:15",
+									"data-uid": "src/pages/Transactions.tsx:161:15",
 									"data-prohibitions": "[]",
 									children: "Categoria"
 								}),
 								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TableHead, {
-									"data-uid": "src/pages/Transactions.tsx:113:15",
+									"data-uid": "src/pages/Transactions.tsx:162:15",
 									"data-prohibitions": "[]",
 									children: "Conta"
 								}),
 								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TableHead, {
-									"data-uid": "src/pages/Transactions.tsx:114:15",
+									"data-uid": "src/pages/Transactions.tsx:163:15",
 									"data-prohibitions": "[]",
 									children: "Status"
 								}),
 								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TableHead, {
-									"data-uid": "src/pages/Transactions.tsx:115:15",
+									"data-uid": "src/pages/Transactions.tsx:164:15",
 									"data-prohibitions": "[]",
 									className: "text-right",
 									children: "Valor"
 								}),
 								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TableHead, {
-									"data-uid": "src/pages/Transactions.tsx:116:15",
+									"data-uid": "src/pages/Transactions.tsx:165:15",
 									"data-prohibitions": "[]",
 									className: "text-center w-24",
 									children: "Ações"
@@ -78202,59 +79052,59 @@ function Transactions() {
 							]
 						})
 					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TableBody, {
-						"data-uid": "src/pages/Transactions.tsx:119:11",
+						"data-uid": "src/pages/Transactions.tsx:168:11",
 						"data-prohibitions": "[editContent]",
 						children: loadingData ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TableRow, {
-							"data-uid": "src/pages/Transactions.tsx:121:15",
+							"data-uid": "src/pages/Transactions.tsx:170:15",
 							"data-prohibitions": "[]",
 							children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TableCell, {
-								"data-uid": "src/pages/Transactions.tsx:122:17",
+								"data-uid": "src/pages/Transactions.tsx:171:17",
 								"data-prohibitions": "[]",
 								colSpan: 7,
 								className: "h-24 text-center text-muted-foreground",
 								children: "Carregando transações..."
 							})
 						}) : filteredData.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TableRow, {
-							"data-uid": "src/pages/Transactions.tsx:127:15",
+							"data-uid": "src/pages/Transactions.tsx:176:15",
 							"data-prohibitions": "[]",
 							children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TableCell, {
-								"data-uid": "src/pages/Transactions.tsx:128:17",
+								"data-uid": "src/pages/Transactions.tsx:177:17",
 								"data-prohibitions": "[]",
 								colSpan: 7,
 								className: "h-24 text-center text-muted-foreground",
 								children: "Nenhuma transação encontrada."
 							})
 						}) : filteredData.slice(0, 50).map((tx) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(TableRow, {
-							"data-uid": "src/pages/Transactions.tsx:134:17",
+							"data-uid": "src/pages/Transactions.tsx:183:17",
 							"data-prohibitions": "[editContent]",
 							children: [
 								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TableCell, {
-									"data-uid": "src/pages/Transactions.tsx:135:19",
+									"data-uid": "src/pages/Transactions.tsx:184:19",
 									"data-prohibitions": "[editContent]",
 									className: "whitespace-nowrap",
 									children: format(new Date(tx.date), "dd/MM/yyyy")
 								}),
 								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TableCell, {
-									"data-uid": "src/pages/Transactions.tsx:138:19",
+									"data-uid": "src/pages/Transactions.tsx:187:19",
 									"data-prohibitions": "[editContent]",
 									className: "font-medium",
 									children: tx.description
 								}),
 								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TableCell, {
-									"data-uid": "src/pages/Transactions.tsx:139:19",
+									"data-uid": "src/pages/Transactions.tsx:188:19",
 									"data-prohibitions": "[editContent]",
 									children: getCategoryName(tx.categoryId, tx.type)
 								}),
 								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TableCell, {
-									"data-uid": "src/pages/Transactions.tsx:140:19",
+									"data-uid": "src/pages/Transactions.tsx:189:19",
 									"data-prohibitions": "[editContent]",
 									children: getAccountName(tx.accountId, tx.type)
 								}),
 								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TableCell, {
-									"data-uid": "src/pages/Transactions.tsx:141:19",
+									"data-uid": "src/pages/Transactions.tsx:190:19",
 									"data-prohibitions": "[editContent]",
 									children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Badge, {
-										"data-uid": "src/pages/Transactions.tsx:142:21",
+										"data-uid": "src/pages/Transactions.tsx:191:21",
 										"data-prohibitions": "[editContent]",
 										variant: tx.status === "REALIZADO" ? "default" : tx.status === "PREVISTO" ? "secondary" : "destructive",
 										className: cn$1("text-[10px]", tx.status === "REALIZADO" && "bg-emerald-500 hover:bg-emerald-600"),
@@ -78262,40 +79112,40 @@ function Transactions() {
 									})
 								}),
 								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TableCell, {
-									"data-uid": "src/pages/Transactions.tsx:158:19",
+									"data-uid": "src/pages/Transactions.tsx:207:19",
 									"data-prohibitions": "[editContent]",
 									className: cn$1("text-right font-medium", tx.type === "INCOME" ? "text-emerald-600" : "text-red-500"),
 									children: formatCurrency(tx.amount, tx.type)
 								}),
 								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TableCell, {
-									"data-uid": "src/pages/Transactions.tsx:166:19",
+									"data-uid": "src/pages/Transactions.tsx:215:19",
 									"data-prohibitions": "[]",
 									className: "text-center",
 									children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-										"data-uid": "src/pages/Transactions.tsx:167:21",
+										"data-uid": "src/pages/Transactions.tsx:216:21",
 										"data-prohibitions": "[]",
 										className: "flex justify-center gap-2",
 										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, {
-											"data-uid": "src/pages/Transactions.tsx:168:23",
+											"data-uid": "src/pages/Transactions.tsx:217:23",
 											"data-prohibitions": "[]",
 											variant: "ghost",
 											size: "icon",
 											className: "h-8 w-8 text-slate-500 hover:text-blue-600",
 											onClick: () => handleEdit(tx),
 											children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Pencil, {
-												"data-uid": "src/pages/Transactions.tsx:174:25",
+												"data-uid": "src/pages/Transactions.tsx:223:25",
 												"data-prohibitions": "[editContent]",
 												className: "h-4 w-4"
 											})
 										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, {
-											"data-uid": "src/pages/Transactions.tsx:176:23",
+											"data-uid": "src/pages/Transactions.tsx:225:23",
 											"data-prohibitions": "[]",
 											variant: "ghost",
 											size: "icon",
 											className: "h-8 w-8 text-slate-500 hover:text-red-600",
 											onClick: () => setDeletingId(tx.id),
 											children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Trash2, {
-												"data-uid": "src/pages/Transactions.tsx:182:25",
+												"data-uid": "src/pages/Transactions.tsx:231:25",
 												"data-prohibitions": "[editContent]",
 												className: "h-4 w-4"
 											})
@@ -78308,7 +79158,7 @@ function Transactions() {
 				})
 			}),
 			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-				"data-uid": "src/pages/Transactions.tsx:192:7",
+				"data-uid": "src/pages/Transactions.tsx:241:7",
 				"data-prohibitions": "[editContent]",
 				className: "text-xs text-muted-foreground mt-2 text-right",
 				children: [
@@ -78320,7 +79170,7 @@ function Transactions() {
 				]
 			}),
 			/* @__PURE__ */ (0, import_jsx_runtime.jsx)(DeleteTransactionDialog, {
-				"data-uid": "src/pages/Transactions.tsx:196:7",
+				"data-uid": "src/pages/Transactions.tsx:245:7",
 				"data-prohibitions": "[editContent]",
 				id: deletingId,
 				open: !!deletingId,
@@ -78892,4 +79742,4 @@ var App = () => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(BrowserRouter, {
 }));
 //#endregion
 
-//# sourceMappingURL=index-Crra5bLW.js.map
+//# sourceMappingURL=index-C8PAt2LT.js.map

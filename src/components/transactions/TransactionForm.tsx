@@ -26,7 +26,7 @@ import { Transaction } from '@/types/finance'
 const formSchema = z
   .object({
     date: z.string().min(1, 'Data é obrigatória'),
-    description: z.string().min(3, 'Descrição muito curta'),
+    description: z.string().optional(),
     amount: z.coerce.number().min(0.01, 'Valor deve ser maior que zero'),
     type: z.enum(['INCOME', 'EXPENSE']),
     categoryId: z.string().optional(),
@@ -46,6 +46,13 @@ const formSchema = z
         code: z.ZodIssueCode.custom,
         message: 'Categoria é obrigatória para despesas',
         path: ['categoryId'],
+      })
+    }
+    if (data.type === 'EXPENSE' && (!data.description || data.description.trim().length < 2)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'Descrição é obrigatória para despesas',
+        path: ['description'],
       })
     }
   })
@@ -89,8 +96,12 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
 
   useEffect(() => {
     if (!initialData) {
-      if (type === 'INCOME') form.setValue('categoryId', '')
-      else form.setValue('accountId', '')
+      if (type === 'INCOME') {
+        form.setValue('categoryId', '')
+        form.setValue('status', 'REALIZADO')
+      } else {
+        form.setValue('accountId', '')
+      }
     }
   }, [type, form, initialData])
 
@@ -99,6 +110,9 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
       setLoading(true)
       const payload = {
         ...values,
+        description:
+          values.type === 'INCOME' ? 'Receita Registrada' : values.description || 'Despesa',
+        status: values.type === 'INCOME' ? 'REALIZADO' : values.status,
         categoryId: values.type === 'EXPENSE' ? values.categoryId || 'FIXA' : '',
         accountId: values.type === 'INCOME' ? values.accountId || 'acc1' : '',
       }
@@ -127,7 +141,7 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
             control={form.control}
             name="type"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className={type === 'INCOME' ? 'col-span-2' : ''}>
                 <FormLabel>Tipo</FormLabel>
                 <Select onValueChange={field.onChange} value={field.value || undefined}>
                   <FormControl>
@@ -143,27 +157,29 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
               </FormItem>
             )}
           />
-          <FormField
-            control={form.control}
-            name="status"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Status</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value || undefined}>
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Status" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectItem value="PREVISTO">Previsto</SelectItem>
-                    <SelectItem value="REALIZADO">Realizado</SelectItem>
-                    <SelectItem value="VENCIDO">Vencido</SelectItem>
-                  </SelectContent>
-                </Select>
-              </FormItem>
-            )}
-          />
+          {type === 'EXPENSE' && (
+            <FormField
+              control={form.control}
+              name="status"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Status</FormLabel>
+                  <Select onValueChange={field.onChange} value={field.value || undefined}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Status" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="PREVISTO">Previsto</SelectItem>
+                      <SelectItem value="REALIZADO">Realizado</SelectItem>
+                      <SelectItem value="VENCIDO">Vencido</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </FormItem>
+              )}
+            />
+          )}
         </div>
 
         <FormField
@@ -180,19 +196,21 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
           )}
         />
 
-        <FormField
-          control={form.control}
-          name="description"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Descrição</FormLabel>
-              <FormControl>
-                <Input placeholder="Ex: Conta de Luz" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        {type === 'EXPENSE' && (
+          <FormField
+            control={form.control}
+            name="description"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Descrição</FormLabel>
+                <FormControl>
+                  <Input placeholder="Ex: Conta de Luz" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
 
         <FormField
           control={form.control}

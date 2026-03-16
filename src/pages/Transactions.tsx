@@ -22,13 +22,29 @@ import { Transaction } from '@/types/finance'
 export default function Transactions() {
   const { transactions, categories, accounts, loadingData } = useFinanceStore()
   const [search, setSearch] = useState('')
+  const [quickFilter, setQuickFilter] = useState<'ALL' | 'PREVISTO' | 'VENCIDO'>('ALL')
   const [isSheetOpen, setIsSheetOpen] = useState(false)
   const [editingTx, setEditingTx] = useState<Transaction | null>(null)
   const [deletingId, setDeletingId] = useState<string | null>(null)
 
-  const filteredData = transactions.filter((t) =>
-    t.description.toLowerCase().includes(search.toLowerCase()),
-  )
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+
+  const filteredData = transactions.filter((t) => {
+    if (!t.description.toLowerCase().includes(search.toLowerCase())) return false
+
+    const tDate = new Date(t.date)
+    tDate.setHours(0, 0, 0, 0)
+
+    if (quickFilter === 'PREVISTO') {
+      return t.status === 'PREVISTO' || tDate > today
+    }
+    if (quickFilter === 'VENCIDO') {
+      return tDate < today && t.status !== 'REALIZADO'
+    }
+
+    return true
+  })
 
   const getCategoryName = (id: string, type: string) => {
     if (type === 'INCOME') return '-'
@@ -91,8 +107,8 @@ export default function Transactions() {
         </div>
       </div>
 
-      <div className="flex items-center gap-2 mb-4">
-        <div className="relative flex-1 max-w-sm">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4">
+        <div className="relative w-full max-w-sm">
           <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder="Buscar por descrição..."
@@ -100,6 +116,39 @@ export default function Transactions() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
+        </div>
+
+        <div className="flex items-center bg-slate-100 p-1 rounded-md border shadow-sm">
+          <Button
+            variant={quickFilter === 'ALL' ? 'default' : 'ghost'}
+            size="sm"
+            className={cn('text-xs h-8 px-4', quickFilter === 'ALL' && 'shadow-sm')}
+            onClick={() => setQuickFilter('ALL')}
+          >
+            Todos
+          </Button>
+          <Button
+            variant={quickFilter === 'PREVISTO' ? 'default' : 'ghost'}
+            size="sm"
+            className={cn(
+              'text-xs h-8 px-4',
+              quickFilter === 'PREVISTO' && 'bg-blue-600 text-white hover:bg-blue-700 shadow-sm',
+            )}
+            onClick={() => setQuickFilter('PREVISTO')}
+          >
+            Previstos
+          </Button>
+          <Button
+            variant={quickFilter === 'VENCIDO' ? 'default' : 'ghost'}
+            size="sm"
+            className={cn(
+              'text-xs h-8 px-4',
+              quickFilter === 'VENCIDO' && 'bg-red-600 text-white hover:bg-red-700 shadow-sm',
+            )}
+            onClick={() => setQuickFilter('VENCIDO')}
+          >
+            Vencidos
+          </Button>
         </div>
       </div>
 
