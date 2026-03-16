@@ -24,3 +24,12 @@ export interface Transaction {
   accountId: string
   status: TransactionStatus
 }
+
+export interface MonthlyMetric {
+  id: string
+  month: number
+  year: number
+  orders_count: number
+  total_system_sales: number
+  raw_material_costs: number
+}

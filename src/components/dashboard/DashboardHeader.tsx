@@ -10,6 +10,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { useMemo } from 'react'
+import { MonthlyClosingDialog } from './MonthlyClosingDialog'
 
 export function DashboardHeader() {
   const { filters, setFilter, transactions } = useFinanceStore()
@@ -33,6 +34,8 @@ export function DashboardHeader() {
       </div>
 
       <div className="flex items-center gap-2 sm:gap-4">
+        <MonthlyClosingDialog />
+
         <div className="flex items-center gap-2">
           <span className="text-xs font-medium text-blue-200">Ano:</span>
           <Select value={selectedYear} onValueChange={(val) => setFilter('years', [val])}>

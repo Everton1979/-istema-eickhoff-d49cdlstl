@@ -9,7 +9,75 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      transactions: {
+        Row: {
+          account: string | null
+          amount: number
+          category: string | null
+          created_at: string
+          date: string
+          description: string
+          id: string
+          status: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          account?: string | null
+          amount: number
+          category?: string | null
+          created_at?: string
+          date: string
+          description: string
+          id?: string
+          status?: string
+          type: string
+          user_id: string
+        }
+        Update: {
+          account?: string | null
+          amount?: number
+          category?: string | null
+          created_at?: string
+          date?: string
+          description?: string
+          id?: string
+          status?: string
+          type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_settings: {
+        Row: {
+          created_at: string
+          initial_balance_dinheiro: number | null
+          initial_balance_pagbank: number | null
+          initial_balance_pix: number | null
+          initial_balance_stone: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          initial_balance_dinheiro?: number | null
+          initial_balance_pagbank?: number | null
+          initial_balance_pix?: number | null
+          initial_balance_stone?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          initial_balance_dinheiro?: number | null
+          initial_balance_pagbank?: number | null
+          initial_balance_pix?: number | null
+          initial_balance_stone?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -153,3 +221,42 @@ export const Constants = {
 // IMPORTANT: The TypeScript types above map UUID, TEXT, VARCHAR all to "string".
 // Use the COLUMN TYPES section below to know the real PostgreSQL type for each column.
 // Always use the correct PostgreSQL type when writing SQL migrations.
+
+// --- COLUMN TYPES (actual PostgreSQL types) ---
+// Use this to know the real database type when writing migrations.
+// "string" in TypeScript types above may be uuid, text, varchar, timestamptz, etc.
+// Table: transactions
+//   id: uuid (not null, default: gen_random_uuid())
+//   user_id: uuid (not null)
+//   description: text (not null)
+//   amount: numeric (not null)
+//   type: text (not null)
+//   category: text (nullable)
+//   account: text (nullable)
+//   status: text (not null, default: 'REALIZADO'::text)
+//   date: timestamp with time zone (not null)
+//   created_at: timestamp with time zone (not null, default: now())
+// Table: user_settings
+//   user_id: uuid (not null)
+//   initial_balance_dinheiro: numeric (nullable, default: 0)
+//   initial_balance_stone: numeric (nullable, default: 0)
+//   initial_balance_pagbank: numeric (nullable, default: 0)
+//   initial_balance_pix: numeric (nullable, default: 0)
+//   created_at: timestamp with time zone (not null, default: now())
+//   updated_at: timestamp with time zone (not null, default: now())
+
+// --- CONSTRAINTS ---
+// Table: transactions
+//   PRIMARY KEY transactions_pkey: PRIMARY KEY (id)
+//   FOREIGN KEY transactions_user_id_fkey: FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE
+// Table: user_settings
+//   PRIMARY KEY user_settings_pkey: PRIMARY KEY (user_id)
+//   FOREIGN KEY user_settings_user_id_fkey: FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE
+
+// --- ROW LEVEL SECURITY POLICIES ---
+// Table: transactions
+//   Policy "Users can manage their own transactions" (ALL, PERMISSIVE) roles={public}
+//     USING: (auth.uid() = user_id)
+// Table: user_settings
+//   Policy "Users can manage their own settings" (ALL, PERMISSIVE) roles={public}
+//     USING: (auth.uid() = user_id)

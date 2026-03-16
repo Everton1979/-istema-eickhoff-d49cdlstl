@@ -18149,7 +18149,7 @@ var Branch = DismissableLayerBranch;
 var useLayoutEffect2 = globalThis?.document ? import_react.useLayoutEffect : () => {};
 //#endregion
 //#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/@radix-ui+react-portal@1.1.9_@types+react-dom@19.2.3_@types+react@19.2.14__@types+react_7668895bec2444446faa4e0f4eb5244b/node_modules/@radix-ui/react-portal/dist/index.mjs
-var PORTAL_NAME$3 = "Portal";
+var PORTAL_NAME$4 = "Portal";
 var Portal$2 = import_react.forwardRef((props, forwardedRef) => {
 	const { container: containerProp, ...portalProps } = props;
 	const [mounted, setMounted] = import_react.useState(false);
@@ -18160,7 +18160,7 @@ var Portal$2 = import_react.forwardRef((props, forwardedRef) => {
 		ref: forwardedRef
 	}), container) : null;
 });
-Portal$2.displayName = PORTAL_NAME$3;
+Portal$2.displayName = PORTAL_NAME$4;
 //#endregion
 //#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/@radix-ui+react-presence@1.1.5_@types+react-dom@19.2.3_@types+react@19.2.14__@types+rea_c01c26c80b5ab5e3ecefbda6eca51ad1/node_modules/@radix-ui/react-presence/dist/index.mjs
 function useStateMachine$1(initialState, machine) {
@@ -18745,7 +18745,7 @@ var ToastAnnounce = (props) => {
 		})
 	});
 };
-var TITLE_NAME$1 = "ToastTitle";
+var TITLE_NAME$2 = "ToastTitle";
 var ToastTitle$1 = import_react.forwardRef((props, forwardedRef) => {
 	const { __scopeToast, ...titleProps } = props;
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Primitive$1.div, {
@@ -18753,8 +18753,8 @@ var ToastTitle$1 = import_react.forwardRef((props, forwardedRef) => {
 		ref: forwardedRef
 	});
 });
-ToastTitle$1.displayName = TITLE_NAME$1;
-var DESCRIPTION_NAME$1 = "ToastDescription";
+ToastTitle$1.displayName = TITLE_NAME$2;
+var DESCRIPTION_NAME$2 = "ToastDescription";
 var ToastDescription$1 = import_react.forwardRef((props, forwardedRef) => {
 	const { __scopeToast, ...descriptionProps } = props;
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Primitive$1.div, {
@@ -18762,12 +18762,12 @@ var ToastDescription$1 = import_react.forwardRef((props, forwardedRef) => {
 		ref: forwardedRef
 	});
 });
-ToastDescription$1.displayName = DESCRIPTION_NAME$1;
-var ACTION_NAME = "ToastAction";
+ToastDescription$1.displayName = DESCRIPTION_NAME$2;
+var ACTION_NAME$1 = "ToastAction";
 var ToastAction$1 = import_react.forwardRef((props, forwardedRef) => {
 	const { altText, ...actionProps } = props;
 	if (!altText.trim()) {
-		console.error(`Invalid prop \`altText\` supplied to \`${ACTION_NAME}\`. Expected non-empty \`string\`.`);
+		console.error(`Invalid prop \`altText\` supplied to \`${ACTION_NAME$1}\`. Expected non-empty \`string\`.`);
 		return null;
 	}
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ToastAnnounceExclude, {
@@ -18779,7 +18779,7 @@ var ToastAction$1 = import_react.forwardRef((props, forwardedRef) => {
 		})
 	});
 });
-ToastAction$1.displayName = ACTION_NAME;
+ToastAction$1.displayName = ACTION_NAME$1;
 var CLOSE_NAME$1 = "ToastClose";
 var ToastClose$1 = import_react.forwardRef((props, forwardedRef) => {
 	const { __scopeToast, ...closeProps } = props;
@@ -18872,10 +18872,10 @@ function focusFirst$1(candidates) {
 }
 var Provider$1 = ToastProvider$1;
 var Viewport$2 = ToastViewport$1;
-var Root2$2 = Toast$2;
+var Root2$3 = Toast$2;
 var Title$1 = ToastTitle$1;
 var Description$1 = ToastDescription$1;
-var Action = ToastAction$1;
+var Action$1 = ToastAction$1;
 var Close$1 = ToastClose$1;
 //#endregion
 //#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/clsx@2.1.1/node_modules/clsx/dist/clsx.mjs
@@ -19096,6 +19096,28 @@ var Download = createLucideIcon("download", [
 		key: "brsn70"
 	}]
 ]);
+var FileChartColumnIncreasing = createLucideIcon("file-chart-column-increasing", [
+	["path", {
+		d: "M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z",
+		key: "1oefj6"
+	}],
+	["path", {
+		d: "M14 2v5a1 1 0 0 0 1 1h5",
+		key: "wfsgrz"
+	}],
+	["path", {
+		d: "M8 18v-2",
+		key: "qcmpov"
+	}],
+	["path", {
+		d: "M12 18v-4",
+		key: "q1q25u"
+	}],
+	["path", {
+		d: "M16 18v-6",
+		key: "15y0np"
+	}]
+]);
 var House = createLucideIcon("house", [["path", {
 	d: "M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8",
 	key: "5wwlr5"
@@ -19179,6 +19201,13 @@ var Menu = createLucideIcon("menu", [
 		key: "1djgab"
 	}]
 ]);
+var Pencil = createLucideIcon("pencil", [["path", {
+	d: "M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z",
+	key: "1a8usu"
+}], ["path", {
+	d: "m15 5 4 4",
+	key: "1mk7zo"
+}]]);
 var Plus = createLucideIcon("plus", [["path", {
 	d: "M5 12h14",
 	key: "1ays0h"
@@ -19254,6 +19283,28 @@ var Settings$1 = createLucideIcon("settings", [["path", {
 	r: "3",
 	key: "1v7zrd"
 }]]);
+var Trash2 = createLucideIcon("trash-2", [
+	["path", {
+		d: "M10 11v6",
+		key: "nco0om"
+	}],
+	["path", {
+		d: "M14 11v6",
+		key: "outv1u"
+	}],
+	["path", {
+		d: "M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6",
+		key: "miytrc"
+	}],
+	["path", {
+		d: "M3 6h18",
+		key: "d0wm0j"
+	}],
+	["path", {
+		d: "M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2",
+		key: "e791ji"
+	}]
+]);
 var X = createLucideIcon("x", [["path", {
 	d: "M18 6 6 18",
 	key: "1bl5f8"
@@ -20701,7 +20752,7 @@ var toastVariants = cva("group pointer-events-auto relative flex w-full items-ce
 	defaultVariants: { variant: "default" }
 });
 var Toast$1 = import_react.forwardRef(({ className, variant, ...props }, ref) => {
-	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Root2$2, {
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Root2$3, {
 		"data-uid": "src/components/ui/toast.tsx:47:5",
 		"data-prohibitions": "[editContent]",
 		ref,
@@ -20709,15 +20760,15 @@ var Toast$1 = import_react.forwardRef(({ className, variant, ...props }, ref) =>
 		...props
 	});
 });
-Toast$1.displayName = Root2$2.displayName;
-var ToastAction = import_react.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Action, {
+Toast$1.displayName = Root2$3.displayName;
+var ToastAction = import_react.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Action$1, {
 	"data-uid": "src/components/ui/toast.tsx:60:3",
 	"data-prohibitions": "[editContent]",
 	ref,
 	className: cn$1("inline-flex h-8 shrink-0 items-center justify-center rounded-md border bg-transparent px-3 text-sm font-medium ring-offset-background transition-colors hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 group-[.destructive]:border-muted/40 group-[.destructive]:hover:border-destructive/30 group-[.destructive]:hover:bg-destructive group-[.destructive]:hover:text-destructive-foreground group-[.destructive]:focus:ring-destructive", className),
 	...props
 }));
-ToastAction.displayName = Action.displayName;
+ToastAction.displayName = Action$1.displayName;
 var ToastClose = import_react.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Close$1, {
 	"data-uid": "src/components/ui/toast.tsx:75:3",
 	"data-prohibitions": "[editContent]",
@@ -23506,11 +23557,11 @@ var PopperAnchor = import_react.forwardRef((props, forwardedRef) => {
 	});
 });
 PopperAnchor.displayName = ANCHOR_NAME;
-var CONTENT_NAME$3 = "PopperContent";
-var [PopperContentProvider, useContentContext] = createPopperContext(CONTENT_NAME$3);
+var CONTENT_NAME$4 = "PopperContent";
+var [PopperContentProvider, useContentContext] = createPopperContext(CONTENT_NAME$4);
 var PopperContent = import_react.forwardRef((props, forwardedRef) => {
 	const { __scopePopper, side = "bottom", sideOffset = 0, align = "center", alignOffset = 0, arrowPadding = 0, avoidCollisions = true, collisionBoundary = [], collisionPadding: collisionPaddingProp = 0, sticky = "partial", hideWhenDetached = false, updatePositionStrategy = "optimized", onPlaced, ...contentProps } = props;
-	const context = usePopperContext(CONTENT_NAME$3, __scopePopper);
+	const context = usePopperContext(CONTENT_NAME$4, __scopePopper);
 	const [content, setContent] = import_react.useState(null);
 	const composedRefs = useComposedRefs(forwardedRef, (node) => setContent(node));
 	const [arrow$4, setArrow] = import_react.useState(null);
@@ -23623,7 +23674,7 @@ var PopperContent = import_react.forwardRef((props, forwardedRef) => {
 		})
 	});
 });
-PopperContent.displayName = CONTENT_NAME$3;
+PopperContent.displayName = CONTENT_NAME$4;
 var ARROW_NAME$2 = "PopperArrow";
 var OPPOSITE_SIDE = {
 	top: "bottom",
@@ -23711,7 +23762,7 @@ function getSideAndAlignFromPlacement(placement) {
 	const [side, align = "center"] = placement.split("-");
 	return [side, align];
 }
-var Root2$1 = Popper;
+var Root2$2 = Popper;
 var Anchor = PopperAnchor;
 var Content$1 = PopperContent;
 var Arrow = PopperArrow;
@@ -23807,7 +23858,7 @@ var Tooltip$2 = (props) => {
 			}
 		};
 	}, []);
-	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Root2$1, {
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Root2$2, {
 		...popperScope,
 		children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TooltipContextProvider, {
 			scope: __scopeTooltip,
@@ -23839,11 +23890,11 @@ var Tooltip$2 = (props) => {
 	});
 };
 Tooltip$2.displayName = TOOLTIP_NAME;
-var TRIGGER_NAME$2 = "TooltipTrigger";
+var TRIGGER_NAME$3 = "TooltipTrigger";
 var TooltipTrigger$1 = import_react.forwardRef((props, forwardedRef) => {
 	const { __scopeTooltip, ...triggerProps } = props;
-	const context = useTooltipContext(TRIGGER_NAME$2, __scopeTooltip);
-	const providerContext = useTooltipProviderContext(TRIGGER_NAME$2, __scopeTooltip);
+	const context = useTooltipContext(TRIGGER_NAME$3, __scopeTooltip);
+	const providerContext = useTooltipProviderContext(TRIGGER_NAME$3, __scopeTooltip);
 	const popperScope = usePopperScope$1(__scopeTooltip);
 	const composedRefs = useComposedRefs(forwardedRef, import_react.useRef(null), context.onTriggerChange);
 	const isPointerDownRef = import_react.useRef(false);
@@ -23884,12 +23935,12 @@ var TooltipTrigger$1 = import_react.forwardRef((props, forwardedRef) => {
 		})
 	});
 });
-TooltipTrigger$1.displayName = TRIGGER_NAME$2;
-var PORTAL_NAME$2 = "TooltipPortal";
-var [PortalProvider$1, usePortalContext$1] = createTooltipContext(PORTAL_NAME$2, { forceMount: void 0 });
+TooltipTrigger$1.displayName = TRIGGER_NAME$3;
+var PORTAL_NAME$3 = "TooltipPortal";
+var [PortalProvider$1, usePortalContext$1] = createTooltipContext(PORTAL_NAME$3, { forceMount: void 0 });
 var TooltipPortal = (props) => {
 	const { __scopeTooltip, forceMount, children, container } = props;
-	const context = useTooltipContext(PORTAL_NAME$2, __scopeTooltip);
+	const context = useTooltipContext(PORTAL_NAME$3, __scopeTooltip);
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(PortalProvider$1, {
 		scope: __scopeTooltip,
 		forceMount,
@@ -23903,12 +23954,12 @@ var TooltipPortal = (props) => {
 		})
 	});
 };
-TooltipPortal.displayName = PORTAL_NAME$2;
-var CONTENT_NAME$2 = "TooltipContent";
+TooltipPortal.displayName = PORTAL_NAME$3;
+var CONTENT_NAME$3 = "TooltipContent";
 var TooltipContent$1 = import_react.forwardRef((props, forwardedRef) => {
-	const portalContext = usePortalContext$1(CONTENT_NAME$2, props.__scopeTooltip);
+	const portalContext = usePortalContext$1(CONTENT_NAME$3, props.__scopeTooltip);
 	const { forceMount = portalContext.forceMount, side = "top", ...contentProps } = props;
-	const context = useTooltipContext(CONTENT_NAME$2, props.__scopeTooltip);
+	const context = useTooltipContext(CONTENT_NAME$3, props.__scopeTooltip);
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Presence, {
 		present: forceMount || context.open,
 		children: context.disableHoverableContent ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TooltipContentImpl, {
@@ -23923,8 +23974,8 @@ var TooltipContent$1 = import_react.forwardRef((props, forwardedRef) => {
 	});
 });
 var TooltipContentHoverable = import_react.forwardRef((props, forwardedRef) => {
-	const context = useTooltipContext(CONTENT_NAME$2, props.__scopeTooltip);
-	const providerContext = useTooltipProviderContext(CONTENT_NAME$2, props.__scopeTooltip);
+	const context = useTooltipContext(CONTENT_NAME$3, props.__scopeTooltip);
+	const providerContext = useTooltipProviderContext(CONTENT_NAME$3, props.__scopeTooltip);
 	const ref = import_react.useRef(null);
 	const composedRefs = useComposedRefs(forwardedRef, ref);
 	const [pointerGraceArea, setPointerGraceArea] = import_react.useState(null);
@@ -23998,10 +24049,10 @@ var TooltipContentHoverable = import_react.forwardRef((props, forwardedRef) => {
 	});
 });
 var [VisuallyHiddenContentContextProvider, useVisuallyHiddenContentContext] = createTooltipContext(TOOLTIP_NAME, { isInside: false });
-var Slottable = /* @__PURE__ */ createSlottable("TooltipContent");
+var Slottable$1 = /* @__PURE__ */ createSlottable("TooltipContent");
 var TooltipContentImpl = import_react.forwardRef((props, forwardedRef) => {
 	const { __scopeTooltip, children, "aria-label": ariaLabel, onEscapeKeyDown, onPointerDownOutside, ...contentProps } = props;
-	const context = useTooltipContext(CONTENT_NAME$2, __scopeTooltip);
+	const context = useTooltipContext(CONTENT_NAME$3, __scopeTooltip);
 	const popperScope = usePopperScope$1(__scopeTooltip);
 	const { onClose } = context;
 	import_react.useEffect(() => {
@@ -24037,7 +24088,7 @@ var TooltipContentImpl = import_react.forwardRef((props, forwardedRef) => {
 				"--radix-tooltip-trigger-width": "var(--radix-popper-anchor-width)",
 				"--radix-tooltip-trigger-height": "var(--radix-popper-anchor-height)"
 			},
-			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Slottable, { children }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(VisuallyHiddenContentContextProvider, {
+			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Slottable$1, { children }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(VisuallyHiddenContentContextProvider, {
 				scope: __scopeTooltip,
 				isInside: true,
 				children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Root$4, {
@@ -24049,7 +24100,7 @@ var TooltipContentImpl = import_react.forwardRef((props, forwardedRef) => {
 		})
 	});
 });
-TooltipContent$1.displayName = CONTENT_NAME$2;
+TooltipContent$1.displayName = CONTENT_NAME$3;
 var ARROW_NAME$1 = "TooltipArrow";
 var TooltipArrow = import_react.forwardRef((props, forwardedRef) => {
 	const { __scopeTooltip, ...arrowProps } = props;
@@ -24192,11 +24243,11 @@ function getHullPresorted(points) {
 	else return upperHull.concat(lowerHull);
 }
 var Provider = TooltipProvider$1;
-var Content2$1 = TooltipContent$1;
+var Content2$2 = TooltipContent$1;
 //#endregion
 //#region src/components/ui/tooltip.tsx
 var TooltipProvider = Provider;
-var TooltipContent = import_react.forwardRef(({ className, sideOffset = 4, ...props }, ref) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Content2$1, {
+var TooltipContent = import_react.forwardRef(({ className, sideOffset = 4, ...props }, ref) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Content2$2, {
 	"data-uid": "src/components/ui/tooltip.tsx:17:3",
 	"data-prohibitions": "[editContent]",
 	ref,
@@ -24204,7 +24255,7 @@ var TooltipContent = import_react.forwardRef(({ className, sideOffset = 4, ...pr
 	className: cn$1("z-50 overflow-hidden rounded-md border bg-popover px-3 py-1.5 text-sm text-popover-foreground shadow-md animate-in fade-in-0 zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 origin-[--radix-tooltip-content-transform-origin]", className),
 	...props
 }));
-TooltipContent.displayName = Content2$1.displayName;
+TooltipContent.displayName = Content2$2.displayName;
 //#endregion
 //#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/tslib@2.8.1/node_modules/tslib/tslib.es6.mjs
 var __assign = function() {
@@ -37996,6 +38047,7 @@ function FinanceProvider({ children }) {
 	const { user } = useAuth();
 	const [transactions, setTransactions] = (0, import_react.useState)([]);
 	const [accounts, setAccounts] = (0, import_react.useState)(ACCOUNTS);
+	const [monthlyMetrics, setMonthlyMetrics] = (0, import_react.useState)([]);
 	const [loadingData, setLoadingData] = (0, import_react.useState)(true);
 	const [filters, setFilters] = (0, import_react.useState)({
 		years: [(/* @__PURE__ */ new Date()).getFullYear().toString()],
@@ -38006,6 +38058,7 @@ function FinanceProvider({ children }) {
 		if (user) fetchData();
 		else {
 			setTransactions([]);
+			setMonthlyMetrics([]);
 			setAccounts(ACCOUNTS);
 			setLoadingData(false);
 		}
@@ -38013,7 +38066,11 @@ function FinanceProvider({ children }) {
 	const fetchData = async () => {
 		setLoadingData(true);
 		if (!user) return;
-		const [txRes, settingsRes] = await Promise.all([supabase.from("transactions").select("*").order("date", { ascending: false }), supabase.from("user_settings").select("*").eq("user_id", user.id).maybeSingle()]);
+		const [txRes, settingsRes, metricsRes] = await Promise.all([
+			supabase.from("transactions").select("*").order("date", { ascending: false }),
+			supabase.from("user_settings").select("*").eq("user_id", user.id).maybeSingle(),
+			supabase.from("monthly_metrics").select("*")
+		]);
 		if (txRes.data) setTransactions(txRes.data.map((d) => ({
 			id: d.id,
 			date: d.date,
@@ -38023,6 +38080,14 @@ function FinanceProvider({ children }) {
 			categoryId: mapCategoryFromDB(d.category),
 			accountId: mapAccountFromDB(d.account),
 			status: d.status
+		})));
+		if (metricsRes.data) setMonthlyMetrics(metricsRes.data.map((m) => ({
+			id: m.id,
+			month: m.month,
+			year: m.year,
+			orders_count: Number(m.orders_count),
+			total_system_sales: Number(m.total_system_sales),
+			raw_material_costs: Number(m.raw_material_costs)
 		})));
 		let accBalances = {
 			acc1: 0,
@@ -38069,15 +38134,13 @@ function FinanceProvider({ children }) {
 	const addTransaction = async (tx) => {
 		if (!user) return;
 		const dbType = mapTypeToDB(tx.type);
-		const dbCategory = dbType === "despesa" ? mapCategoryToDB(tx.categoryId) : null;
-		const dbAccount = dbType === "receita" ? mapAccountToDB(tx.accountId) : null;
 		const { data, error } = await supabase.from("transactions").insert({
 			user_id: user.id,
 			description: tx.description,
 			amount: tx.amount,
 			type: dbType,
-			category: dbCategory,
-			account: dbAccount,
+			category: dbType === "despesa" ? mapCategoryToDB(tx.categoryId) : null,
+			account: dbType === "receita" ? mapAccountToDB(tx.accountId) : null,
 			status: tx.status,
 			date: new Date(tx.date).toISOString()
 		}).select().single();
@@ -38094,6 +38157,58 @@ function FinanceProvider({ children }) {
 			};
 			setTransactions((prev) => [newTx, ...prev]);
 		} else if (error) throw error;
+	};
+	const updateTransaction = async (id, tx) => {
+		if (!user) return;
+		const updateData = {};
+		if (tx.description !== void 0) updateData.description = tx.description;
+		if (tx.amount !== void 0) updateData.amount = tx.amount;
+		if (tx.type !== void 0) updateData.type = mapTypeToDB(tx.type);
+		if (tx.categoryId !== void 0) updateData.category = mapCategoryToDB(tx.categoryId);
+		if (tx.accountId !== void 0) updateData.account = mapAccountToDB(tx.accountId);
+		if (tx.status !== void 0) updateData.status = tx.status;
+		if (tx.date !== void 0) updateData.date = new Date(tx.date).toISOString();
+		const { data, error } = await supabase.from("transactions").update(updateData).eq("id", id).select().single();
+		if (!error && data) setTransactions((prev) => prev.map((t) => t.id === id ? {
+			...t,
+			date: data.date,
+			description: data.description,
+			amount: Number(data.amount),
+			type: mapTypeFromDB(data.type),
+			categoryId: mapCategoryFromDB(data.category),
+			accountId: mapAccountFromDB(data.account),
+			status: data.status
+		} : t));
+		else if (error) throw error;
+	};
+	const deleteTransaction = async (id) => {
+		if (!user) return;
+		const { error } = await supabase.from("transactions").delete().eq("id", id);
+		if (!error) setTransactions((prev) => prev.filter((t) => t.id !== id));
+		else throw error;
+	};
+	const saveMonthlyMetric = async (metric) => {
+		if (!user) return;
+		const { data, error } = await supabase.from("monthly_metrics").upsert({
+			user_id: user.id,
+			month: metric.month,
+			year: metric.year,
+			orders_count: metric.orders_count,
+			total_system_sales: metric.total_system_sales,
+			raw_material_costs: metric.raw_material_costs,
+			updated_at: (/* @__PURE__ */ new Date()).toISOString()
+		}, { onConflict: "user_id,month,year" }).select().single();
+		if (!error && data) setMonthlyMetrics((prev) => {
+			return [...prev.filter((m) => m.id !== data.id && (m.month !== metric.month || m.year !== metric.year)), {
+				id: data.id,
+				month: data.month,
+				year: data.year,
+				orders_count: Number(data.orders_count),
+				total_system_sales: Number(data.total_system_sales),
+				raw_material_costs: Number(data.raw_material_costs)
+			}];
+		});
+		else if (error) throw error;
 	};
 	const updateAccountInitialBalances = async (balances) => {
 		if (!user) return { error: "Not authenticated" };
@@ -38121,17 +38236,29 @@ function FinanceProvider({ children }) {
 			return true;
 		});
 	}, [transactions, filters]);
+	const filteredMonthlyMetrics = (0, import_react.useMemo)(() => {
+		return monthlyMetrics.filter((m) => {
+			if (filters.years.length > 0 && !filters.years.includes(m.year.toString())) return false;
+			if (filters.months.length > 0 && !filters.months.includes(m.month.toString().padStart(2, "0"))) return false;
+			return true;
+		});
+	}, [monthlyMetrics, filters]);
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(FinanceContext.Provider, {
-		"data-uid": "src/stores/financeStore.tsx:210:5",
+		"data-uid": "src/stores/financeStore.tsx:323:5",
 		"data-prohibitions": "[editContent]",
 		value: {
 			transactions,
 			accounts,
 			categories: CATEGORIES,
+			monthlyMetrics,
 			filters,
 			setFilter,
 			addTransaction,
+			updateTransaction,
+			deleteTransaction,
+			saveMonthlyMetric,
 			filteredTransactions,
+			filteredMonthlyMetrics,
 			updateAccountInitialBalances,
 			loadingData
 		},
@@ -39344,7 +39471,7 @@ var Select$1 = (props) => {
 	const isFormControl = trigger ? form || !!trigger.closest("form") : true;
 	const [nativeOptionsSet, setNativeOptionsSet] = import_react.useState(/* @__PURE__ */ new Set());
 	const nativeSelectKey = Array.from(nativeOptionsSet).map((option) => option.props.value).join(";");
-	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Root2$1, {
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Root2$2, {
 		...popperScope,
 		children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(SelectProvider, {
 			required,
@@ -39395,11 +39522,11 @@ var Select$1 = (props) => {
 	});
 };
 Select$1.displayName = SELECT_NAME;
-var TRIGGER_NAME$1 = "SelectTrigger";
+var TRIGGER_NAME$2 = "SelectTrigger";
 var SelectTrigger$1 = import_react.forwardRef((props, forwardedRef) => {
 	const { __scopeSelect, disabled = false, ...triggerProps } = props;
 	const popperScope = usePopperScope(__scopeSelect);
-	const context = useSelectContext(TRIGGER_NAME$1, __scopeSelect);
+	const context = useSelectContext(TRIGGER_NAME$2, __scopeSelect);
 	const isDisabled = context.disabled || disabled;
 	const composedRefs = useComposedRefs(forwardedRef, context.onTriggerChange);
 	const getItems = useCollection(__scopeSelect);
@@ -39461,7 +39588,7 @@ var SelectTrigger$1 = import_react.forwardRef((props, forwardedRef) => {
 		})
 	});
 });
-SelectTrigger$1.displayName = TRIGGER_NAME$1;
+SelectTrigger$1.displayName = TRIGGER_NAME$2;
 var VALUE_NAME = "SelectValue";
 var SelectValue$1 = import_react.forwardRef((props, forwardedRef) => {
 	const { __scopeSelect, className, style, children, placeholder = "", ...valueProps } = props;
@@ -39491,17 +39618,17 @@ var SelectIcon = import_react.forwardRef((props, forwardedRef) => {
 	});
 });
 SelectIcon.displayName = ICON_NAME;
-var PORTAL_NAME$1 = "SelectPortal";
+var PORTAL_NAME$2 = "SelectPortal";
 var SelectPortal = (props) => {
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Portal$2, {
 		asChild: true,
 		...props
 	});
 };
-SelectPortal.displayName = PORTAL_NAME$1;
-var CONTENT_NAME$1 = "SelectContent";
+SelectPortal.displayName = PORTAL_NAME$2;
+var CONTENT_NAME$2 = "SelectContent";
 var SelectContent$1 = import_react.forwardRef((props, forwardedRef) => {
-	const context = useSelectContext(CONTENT_NAME$1, props.__scopeSelect);
+	const context = useSelectContext(CONTENT_NAME$2, props.__scopeSelect);
 	const [fragment, setFragment] = import_react.useState();
 	useLayoutEffect2(() => {
 		setFragment(new DocumentFragment());
@@ -39521,14 +39648,14 @@ var SelectContent$1 = import_react.forwardRef((props, forwardedRef) => {
 		ref: forwardedRef
 	});
 });
-SelectContent$1.displayName = CONTENT_NAME$1;
+SelectContent$1.displayName = CONTENT_NAME$2;
 var CONTENT_MARGIN = 10;
-var [SelectContentProvider, useSelectContentContext] = createSelectContext(CONTENT_NAME$1);
+var [SelectContentProvider, useSelectContentContext] = createSelectContext(CONTENT_NAME$2);
 var CONTENT_IMPL_NAME = "SelectContentImpl";
 var Slot$1 = /* @__PURE__ */ createSlot$1("SelectContent.RemoveScroll");
 var SelectContentImpl = import_react.forwardRef((props, forwardedRef) => {
 	const { __scopeSelect, position = "item-aligned", onCloseAutoFocus, onEscapeKeyDown, onPointerDownOutside, side, sideOffset, align, alignOffset, arrowPadding, collisionBoundary, collisionPadding, sticky, hideWhenDetached, avoidCollisions, ...contentProps } = props;
-	const context = useSelectContext(CONTENT_NAME$1, __scopeSelect);
+	const context = useSelectContext(CONTENT_NAME$2, __scopeSelect);
 	const [content, setContent] = import_react.useState(null);
 	const [viewport, setViewport] = import_react.useState(null);
 	const composedRefs = useComposedRefs(forwardedRef, (node) => setContent(node));
@@ -39718,8 +39845,8 @@ SelectContentImpl.displayName = CONTENT_IMPL_NAME;
 var ITEM_ALIGNED_POSITION_NAME = "SelectItemAlignedPosition";
 var SelectItemAlignedPosition = import_react.forwardRef((props, forwardedRef) => {
 	const { __scopeSelect, onPlaced, ...popperProps } = props;
-	const context = useSelectContext(CONTENT_NAME$1, __scopeSelect);
-	const contentContext = useSelectContentContext(CONTENT_NAME$1, __scopeSelect);
+	const context = useSelectContext(CONTENT_NAME$2, __scopeSelect);
+	const contentContext = useSelectContentContext(CONTENT_NAME$2, __scopeSelect);
 	const [contentWrapper, setContentWrapper] = import_react.useState(null);
 	const [content, setContent] = import_react.useState(null);
 	const composedRefs = useComposedRefs(forwardedRef, (node) => setContent(node));
@@ -39863,7 +39990,7 @@ var SelectPopperPosition = import_react.forwardRef((props, forwardedRef) => {
 	});
 });
 SelectPopperPosition.displayName = POPPER_POSITION_NAME;
-var [SelectViewportProvider, useSelectViewportContext] = createSelectContext(CONTENT_NAME$1, {});
+var [SelectViewportProvider, useSelectViewportContext] = createSelectContext(CONTENT_NAME$2, {});
 var VIEWPORT_NAME$1 = "SelectViewport";
 var SelectViewport = import_react.forwardRef((props, forwardedRef) => {
 	const { __scopeSelect, nonce, ...viewportProps } = props;
@@ -40243,12 +40370,12 @@ function findNextItem(items, search, currentItem) {
 function wrapArray(array, startIndex) {
 	return array.map((_, index) => array[(startIndex + index) % array.length]);
 }
-var Root2 = Select$1;
+var Root2$1 = Select$1;
 var Trigger$1 = SelectTrigger$1;
 var Value = SelectValue$1;
 var Icon = SelectIcon;
 var Portal$1 = SelectPortal;
-var Content2 = SelectContent$1;
+var Content2$1 = SelectContent$1;
 var Viewport$1 = SelectViewport;
 var Label$3 = SelectLabel$1;
 var Item = SelectItem$1;
@@ -40259,7 +40386,7 @@ var ScrollDownButton = SelectScrollDownButton$1;
 var Separator = SelectSeparator$1;
 //#endregion
 //#region src/components/ui/select.tsx
-var Select = Root2;
+var Select = Root2$1;
 var SelectValue = Value;
 var SelectTrigger = import_react.forwardRef(({ className, children, ...props }, ref) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Trigger$1, {
 	"data-uid": "src/components/ui/select.tsx:18:3",
@@ -40308,7 +40435,7 @@ SelectScrollDownButton.displayName = ScrollDownButton.displayName;
 var SelectContent = import_react.forwardRef(({ className, children, position = "popper", ...props }, ref) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Portal$1, {
 	"data-uid": "src/components/ui/select.tsx:66:3",
 	"data-prohibitions": "[editContent]",
-	children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Content2, {
+	children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Content2$1, {
 		"data-uid": "src/components/ui/select.tsx:67:5",
 		"data-prohibitions": "[editContent]",
 		ref,
@@ -40333,7 +40460,7 @@ var SelectContent = import_react.forwardRef(({ className, children, position = "
 		]
 	})
 }));
-SelectContent.displayName = Content2.displayName;
+SelectContent.displayName = Content2$1.displayName;
 var SelectLabel = import_react.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Label$3, {
 	"data-uid": "src/components/ui/select.tsx:98:3",
 	"data-prohibitions": "[editContent]",
@@ -40377,6 +40504,715 @@ var SelectSeparator = import_react.forwardRef(({ className, ...props }, ref) => 
 }));
 SelectSeparator.displayName = Separator.displayName;
 //#endregion
+//#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/@radix-ui+react-dialog@1.1.15_@types+react-dom@19.2.3_@types+react@19.2.14__@types+reac_779045218dc2799d336e7197abef9d38/node_modules/@radix-ui/react-dialog/dist/index.mjs
+var DIALOG_NAME = "Dialog";
+var [createDialogContext, createDialogScope] = createContextScope(DIALOG_NAME);
+var [DialogProvider, useDialogContext] = createDialogContext(DIALOG_NAME);
+var Dialog$1 = (props) => {
+	const { __scopeDialog, children, open: openProp, defaultOpen, onOpenChange, modal = true } = props;
+	const triggerRef = import_react.useRef(null);
+	const contentRef = import_react.useRef(null);
+	const [open, setOpen] = useControllableState({
+		prop: openProp,
+		defaultProp: defaultOpen ?? false,
+		onChange: onOpenChange,
+		caller: DIALOG_NAME
+	});
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(DialogProvider, {
+		scope: __scopeDialog,
+		triggerRef,
+		contentRef,
+		contentId: useId(),
+		titleId: useId(),
+		descriptionId: useId(),
+		open,
+		onOpenChange: setOpen,
+		onOpenToggle: import_react.useCallback(() => setOpen((prevOpen) => !prevOpen), [setOpen]),
+		modal,
+		children
+	});
+};
+Dialog$1.displayName = DIALOG_NAME;
+var TRIGGER_NAME$1 = "DialogTrigger";
+var DialogTrigger$1 = import_react.forwardRef((props, forwardedRef) => {
+	const { __scopeDialog, ...triggerProps } = props;
+	const context = useDialogContext(TRIGGER_NAME$1, __scopeDialog);
+	const composedTriggerRef = useComposedRefs(forwardedRef, context.triggerRef);
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Primitive$1.button, {
+		type: "button",
+		"aria-haspopup": "dialog",
+		"aria-expanded": context.open,
+		"aria-controls": context.contentId,
+		"data-state": getState(context.open),
+		...triggerProps,
+		ref: composedTriggerRef,
+		onClick: composeEventHandlers(props.onClick, context.onOpenToggle)
+	});
+});
+DialogTrigger$1.displayName = TRIGGER_NAME$1;
+var PORTAL_NAME$1 = "DialogPortal";
+var [PortalProvider, usePortalContext] = createDialogContext(PORTAL_NAME$1, { forceMount: void 0 });
+var DialogPortal$1 = (props) => {
+	const { __scopeDialog, forceMount, children, container } = props;
+	const context = useDialogContext(PORTAL_NAME$1, __scopeDialog);
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(PortalProvider, {
+		scope: __scopeDialog,
+		forceMount,
+		children: import_react.Children.map(children, (child) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Presence, {
+			present: forceMount || context.open,
+			children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Portal$2, {
+				asChild: true,
+				container,
+				children: child
+			})
+		}))
+	});
+};
+DialogPortal$1.displayName = PORTAL_NAME$1;
+var OVERLAY_NAME$1 = "DialogOverlay";
+var DialogOverlay$1 = import_react.forwardRef((props, forwardedRef) => {
+	const portalContext = usePortalContext(OVERLAY_NAME$1, props.__scopeDialog);
+	const { forceMount = portalContext.forceMount, ...overlayProps } = props;
+	const context = useDialogContext(OVERLAY_NAME$1, props.__scopeDialog);
+	return context.modal ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Presence, {
+		present: forceMount || context.open,
+		children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(DialogOverlayImpl, {
+			...overlayProps,
+			ref: forwardedRef
+		})
+	}) : null;
+});
+DialogOverlay$1.displayName = OVERLAY_NAME$1;
+var Slot = /* @__PURE__ */ createSlot$1("DialogOverlay.RemoveScroll");
+var DialogOverlayImpl = import_react.forwardRef((props, forwardedRef) => {
+	const { __scopeDialog, ...overlayProps } = props;
+	const context = useDialogContext(OVERLAY_NAME$1, __scopeDialog);
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ReactRemoveScroll, {
+		as: Slot,
+		allowPinchZoom: true,
+		shards: [context.contentRef],
+		children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Primitive$1.div, {
+			"data-state": getState(context.open),
+			...overlayProps,
+			ref: forwardedRef,
+			style: {
+				pointerEvents: "auto",
+				...overlayProps.style
+			}
+		})
+	});
+});
+var CONTENT_NAME$1 = "DialogContent";
+var DialogContent$1 = import_react.forwardRef((props, forwardedRef) => {
+	const portalContext = usePortalContext(CONTENT_NAME$1, props.__scopeDialog);
+	const { forceMount = portalContext.forceMount, ...contentProps } = props;
+	const context = useDialogContext(CONTENT_NAME$1, props.__scopeDialog);
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Presence, {
+		present: forceMount || context.open,
+		children: context.modal ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(DialogContentModal, {
+			...contentProps,
+			ref: forwardedRef
+		}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(DialogContentNonModal, {
+			...contentProps,
+			ref: forwardedRef
+		})
+	});
+});
+DialogContent$1.displayName = CONTENT_NAME$1;
+var DialogContentModal = import_react.forwardRef((props, forwardedRef) => {
+	const context = useDialogContext(CONTENT_NAME$1, props.__scopeDialog);
+	const contentRef = import_react.useRef(null);
+	const composedRefs = useComposedRefs(forwardedRef, context.contentRef, contentRef);
+	import_react.useEffect(() => {
+		const content = contentRef.current;
+		if (content) return hideOthers(content);
+	}, []);
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(DialogContentImpl, {
+		...props,
+		ref: composedRefs,
+		trapFocus: context.open,
+		disableOutsidePointerEvents: true,
+		onCloseAutoFocus: composeEventHandlers(props.onCloseAutoFocus, (event) => {
+			event.preventDefault();
+			context.triggerRef.current?.focus();
+		}),
+		onPointerDownOutside: composeEventHandlers(props.onPointerDownOutside, (event) => {
+			const originalEvent = event.detail.originalEvent;
+			const ctrlLeftClick = originalEvent.button === 0 && originalEvent.ctrlKey === true;
+			if (originalEvent.button === 2 || ctrlLeftClick) event.preventDefault();
+		}),
+		onFocusOutside: composeEventHandlers(props.onFocusOutside, (event) => event.preventDefault())
+	});
+});
+var DialogContentNonModal = import_react.forwardRef((props, forwardedRef) => {
+	const context = useDialogContext(CONTENT_NAME$1, props.__scopeDialog);
+	const hasInteractedOutsideRef = import_react.useRef(false);
+	const hasPointerDownOutsideRef = import_react.useRef(false);
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(DialogContentImpl, {
+		...props,
+		ref: forwardedRef,
+		trapFocus: false,
+		disableOutsidePointerEvents: false,
+		onCloseAutoFocus: (event) => {
+			props.onCloseAutoFocus?.(event);
+			if (!event.defaultPrevented) {
+				if (!hasInteractedOutsideRef.current) context.triggerRef.current?.focus();
+				event.preventDefault();
+			}
+			hasInteractedOutsideRef.current = false;
+			hasPointerDownOutsideRef.current = false;
+		},
+		onInteractOutside: (event) => {
+			props.onInteractOutside?.(event);
+			if (!event.defaultPrevented) {
+				hasInteractedOutsideRef.current = true;
+				if (event.detail.originalEvent.type === "pointerdown") hasPointerDownOutsideRef.current = true;
+			}
+			const target = event.target;
+			if (context.triggerRef.current?.contains(target)) event.preventDefault();
+			if (event.detail.originalEvent.type === "focusin" && hasPointerDownOutsideRef.current) event.preventDefault();
+		}
+	});
+});
+var DialogContentImpl = import_react.forwardRef((props, forwardedRef) => {
+	const { __scopeDialog, trapFocus, onOpenAutoFocus, onCloseAutoFocus, ...contentProps } = props;
+	const context = useDialogContext(CONTENT_NAME$1, __scopeDialog);
+	const contentRef = import_react.useRef(null);
+	const composedRefs = useComposedRefs(forwardedRef, contentRef);
+	useFocusGuards();
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FocusScope, {
+		asChild: true,
+		loop: true,
+		trapped: trapFocus,
+		onMountAutoFocus: onOpenAutoFocus,
+		onUnmountAutoFocus: onCloseAutoFocus,
+		children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(DismissableLayer, {
+			role: "dialog",
+			id: context.contentId,
+			"aria-describedby": context.descriptionId,
+			"aria-labelledby": context.titleId,
+			"data-state": getState(context.open),
+			...contentProps,
+			ref: composedRefs,
+			onDismiss: () => context.onOpenChange(false)
+		})
+	}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TitleWarning, { titleId: context.titleId }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(DescriptionWarning$1, {
+		contentRef,
+		descriptionId: context.descriptionId
+	})] })] });
+});
+var TITLE_NAME$1 = "DialogTitle";
+var DialogTitle$1 = import_react.forwardRef((props, forwardedRef) => {
+	const { __scopeDialog, ...titleProps } = props;
+	const context = useDialogContext(TITLE_NAME$1, __scopeDialog);
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Primitive$1.h2, {
+		id: context.titleId,
+		...titleProps,
+		ref: forwardedRef
+	});
+});
+DialogTitle$1.displayName = TITLE_NAME$1;
+var DESCRIPTION_NAME$1 = "DialogDescription";
+var DialogDescription$1 = import_react.forwardRef((props, forwardedRef) => {
+	const { __scopeDialog, ...descriptionProps } = props;
+	const context = useDialogContext(DESCRIPTION_NAME$1, __scopeDialog);
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Primitive$1.p, {
+		id: context.descriptionId,
+		...descriptionProps,
+		ref: forwardedRef
+	});
+});
+DialogDescription$1.displayName = DESCRIPTION_NAME$1;
+var CLOSE_NAME = "DialogClose";
+var DialogClose$1 = import_react.forwardRef((props, forwardedRef) => {
+	const { __scopeDialog, ...closeProps } = props;
+	const context = useDialogContext(CLOSE_NAME, __scopeDialog);
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Primitive$1.button, {
+		type: "button",
+		...closeProps,
+		ref: forwardedRef,
+		onClick: composeEventHandlers(props.onClick, () => context.onOpenChange(false))
+	});
+});
+DialogClose$1.displayName = CLOSE_NAME;
+function getState(open) {
+	return open ? "open" : "closed";
+}
+var TITLE_WARNING_NAME = "DialogTitleWarning";
+var [WarningProvider, useWarningContext] = createContext2(TITLE_WARNING_NAME, {
+	contentName: CONTENT_NAME$1,
+	titleName: TITLE_NAME$1,
+	docsSlug: "dialog"
+});
+var TitleWarning = ({ titleId }) => {
+	const titleWarningContext = useWarningContext(TITLE_WARNING_NAME);
+	const MESSAGE = `\`${titleWarningContext.contentName}\` requires a \`${titleWarningContext.titleName}\` for the component to be accessible for screen reader users.
+
+If you want to hide the \`${titleWarningContext.titleName}\`, you can wrap it with our VisuallyHidden component.
+
+For more information, see https://radix-ui.com/primitives/docs/components/${titleWarningContext.docsSlug}`;
+	import_react.useEffect(() => {
+		if (titleId) {
+			if (!document.getElementById(titleId)) console.error(MESSAGE);
+		}
+	}, [MESSAGE, titleId]);
+	return null;
+};
+var DESCRIPTION_WARNING_NAME = "DialogDescriptionWarning";
+var DescriptionWarning$1 = ({ contentRef, descriptionId }) => {
+	const MESSAGE = `Warning: Missing \`Description\` or \`aria-describedby={undefined}\` for {${useWarningContext(DESCRIPTION_WARNING_NAME).contentName}}.`;
+	import_react.useEffect(() => {
+		const describedById = contentRef.current?.getAttribute("aria-describedby");
+		if (descriptionId && describedById) {
+			if (!document.getElementById(descriptionId)) console.warn(MESSAGE);
+		}
+	}, [
+		MESSAGE,
+		contentRef,
+		descriptionId
+	]);
+	return null;
+};
+var Root$2 = Dialog$1;
+var Trigger = DialogTrigger$1;
+var Portal = DialogPortal$1;
+var Overlay = DialogOverlay$1;
+var Content = DialogContent$1;
+var Title = DialogTitle$1;
+var Description = DialogDescription$1;
+var Close = DialogClose$1;
+//#endregion
+//#region src/components/ui/dialog.tsx
+var Dialog = Root$2;
+var DialogTrigger = Trigger;
+var DialogPortal = Portal;
+var DialogOverlay = import_react.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Overlay, {
+	"data-uid": "src/components/ui/dialog.tsx:20:3",
+	"data-prohibitions": "[editContent]",
+	ref,
+	className: cn$1("fixed inset-0 z-50 bg-black/80 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0", className),
+	...props
+}));
+DialogOverlay.displayName = Overlay.displayName;
+var DialogContent = import_react.forwardRef(({ className, children, ...props }, ref) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(DialogPortal, {
+	"data-uid": "src/components/ui/dialog.tsx:35:3",
+	"data-prohibitions": "[editContent]",
+	children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(DialogOverlay, {
+		"data-uid": "src/components/ui/dialog.tsx:36:5",
+		"data-prohibitions": "[editContent]"
+	}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Content, {
+		"data-uid": "src/components/ui/dialog.tsx:37:5",
+		"data-prohibitions": "[editContent]",
+		ref,
+		className: cn$1("fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background p-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] sm:rounded-lg overflow-y-auto max-h-screen", className),
+		...props,
+		children: [children, /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Close, {
+			"data-uid": "src/components/ui/dialog.tsx:46:7",
+			"data-prohibitions": "[]",
+			className: "absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground",
+			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(X, {
+				"data-uid": "src/components/ui/dialog.tsx:47:9",
+				"data-prohibitions": "[editContent]",
+				className: "h-4 w-4"
+			}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+				"data-uid": "src/components/ui/dialog.tsx:48:9",
+				"data-prohibitions": "[]",
+				className: "sr-only",
+				children: "Close"
+			})]
+		})]
+	})]
+}));
+DialogContent.displayName = Content.displayName;
+var DialogHeader = ({ className, ...props }) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+	"data-uid": "src/components/ui/dialog.tsx:56:3",
+	"data-prohibitions": "[editContent]",
+	className: cn$1("flex flex-col space-y-1.5 text-center sm:text-left", className),
+	...props
+});
+DialogHeader.displayName = "DialogHeader";
+var DialogFooter = ({ className, ...props }) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+	"data-uid": "src/components/ui/dialog.tsx:61:3",
+	"data-prohibitions": "[editContent]",
+	className: cn$1("flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2", className),
+	...props
+});
+DialogFooter.displayName = "DialogFooter";
+var DialogTitle = import_react.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Title, {
+	"data-uid": "src/components/ui/dialog.tsx:72:3",
+	"data-prohibitions": "[editContent]",
+	ref,
+	className: cn$1("text-lg font-semibold leading-none tracking-tight", className),
+	...props
+}));
+DialogTitle.displayName = Title.displayName;
+var DialogDescription = import_react.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Description, {
+	"data-uid": "src/components/ui/dialog.tsx:84:3",
+	"data-prohibitions": "[editContent]",
+	ref,
+	className: cn$1("text-sm text-muted-foreground", className),
+	...props
+}));
+DialogDescription.displayName = Description.displayName;
+//#endregion
+//#region src/components/ui/input.tsx
+var Input = import_react.forwardRef(({ className, type, ...props }, ref) => {
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+		"data-uid": "src/components/ui/input.tsx:9:7",
+		"data-prohibitions": "[editContent]",
+		type,
+		className: cn$1("flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm", className),
+		ref,
+		...props
+	});
+});
+Input.displayName = "Input";
+//#endregion
+//#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/@radix-ui+react-primitive@2.1.4_@types+react-dom@19.2.3_@types+react@19.2.14__@types+re_0243fb2db8a1fb85ca77b8d9e5c2d650/node_modules/@radix-ui/react-primitive/dist/index.mjs
+var Primitive = [
+	"a",
+	"button",
+	"div",
+	"form",
+	"h2",
+	"h3",
+	"img",
+	"input",
+	"label",
+	"li",
+	"nav",
+	"ol",
+	"p",
+	"select",
+	"span",
+	"svg",
+	"ul"
+].reduce((primitive, node) => {
+	const Slot = /* @__PURE__ */ createSlot(`Primitive.${node}`);
+	const Node = import_react.forwardRef((props, forwardedRef) => {
+		const { asChild, ...primitiveProps } = props;
+		const Comp = asChild ? Slot : node;
+		if (typeof window !== "undefined") window[Symbol.for("radix-ui")] = true;
+		return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Comp, {
+			...primitiveProps,
+			ref: forwardedRef
+		});
+	});
+	Node.displayName = `Primitive.${node}`;
+	return {
+		...primitive,
+		[node]: Node
+	};
+}, {});
+//#endregion
+//#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/@radix-ui+react-label@2.1.8_@types+react-dom@19.2.3_@types+react@19.2.14__@types+react@_55fa612a976b7bdfbf4dcdd93d861aab/node_modules/@radix-ui/react-label/dist/index.mjs
+var NAME = "Label";
+var Label$2 = import_react.forwardRef((props, forwardedRef) => {
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Primitive.label, {
+		...props,
+		ref: forwardedRef,
+		onMouseDown: (event) => {
+			if (event.target.closest("button, input, select, textarea")) return;
+			props.onMouseDown?.(event);
+			if (!event.defaultPrevented && event.detail > 1) event.preventDefault();
+		}
+	});
+});
+Label$2.displayName = NAME;
+var Root$1 = Label$2;
+//#endregion
+//#region src/components/ui/label.tsx
+var labelVariants = cva("text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70");
+var Label$1 = import_react.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Root$1, {
+	"data-uid": "src/components/ui/label.tsx:16:3",
+	"data-prohibitions": "[editContent]",
+	ref,
+	className: cn$1(labelVariants(), className),
+	...props
+}));
+Label$1.displayName = Root$1.displayName;
+//#endregion
+//#region src/components/dashboard/MonthlyClosingDialog.tsx
+function MonthlyClosingDialog() {
+	const { monthlyMetrics, saveMonthlyMetric, filters } = useFinanceStore();
+	const { toast } = useToast();
+	const currentMonth = filters.months[0] || ((/* @__PURE__ */ new Date()).getMonth() + 1).toString().padStart(2, "0");
+	const currentYear = filters.years[0] || (/* @__PURE__ */ new Date()).getFullYear().toString();
+	const [open, setOpen] = (0, import_react.useState)(false);
+	const [loading, setLoading] = (0, import_react.useState)(false);
+	const [month, setMonth] = (0, import_react.useState)(currentMonth);
+	const [year, setYear] = (0, import_react.useState)(currentYear);
+	const [orders, setOrders] = (0, import_react.useState)("");
+	const [sales, setSales] = (0, import_react.useState)("");
+	const [costs, setCosts] = (0, import_react.useState)("");
+	(0, import_react.useEffect)(() => {
+		if (open) {
+			const existing = monthlyMetrics.find((m) => m.month.toString().padStart(2, "0") === month && m.year.toString() === year);
+			if (existing) {
+				setOrders(existing.orders_count.toString());
+				setSales(existing.total_system_sales.toString());
+				setCosts(existing.raw_material_costs.toString());
+			} else {
+				setOrders("");
+				setSales("");
+				setCosts("");
+			}
+		}
+	}, [
+		month,
+		year,
+		monthlyMetrics,
+		open
+	]);
+	const handleSave = async () => {
+		try {
+			setLoading(true);
+			await saveMonthlyMetric({
+				month: parseInt(month, 10),
+				year: parseInt(year, 10),
+				orders_count: parseInt(orders || "0", 10),
+				total_system_sales: parseFloat(sales || "0"),
+				raw_material_costs: parseFloat(costs || "0")
+			});
+			toast({
+				title: "Sucesso",
+				description: "Fechamento mensal salvo com sucesso."
+			});
+			setOpen(false);
+		} catch (error) {
+			toast({
+				title: "Erro",
+				description: "Erro ao salvar os dados.",
+				variant: "destructive"
+			});
+		} finally {
+			setLoading(false);
+		}
+	};
+	const monthsList = [
+		{
+			value: "01",
+			label: "Janeiro"
+		},
+		{
+			value: "02",
+			label: "Fevereiro"
+		},
+		{
+			value: "03",
+			label: "Março"
+		},
+		{
+			value: "04",
+			label: "Abril"
+		},
+		{
+			value: "05",
+			label: "Maio"
+		},
+		{
+			value: "06",
+			label: "Junho"
+		},
+		{
+			value: "07",
+			label: "Julho"
+		},
+		{
+			value: "08",
+			label: "Agosto"
+		},
+		{
+			value: "09",
+			label: "Setembro"
+		},
+		{
+			value: "10",
+			label: "Outubro"
+		},
+		{
+			value: "11",
+			label: "Novembro"
+		},
+		{
+			value: "12",
+			label: "Dezembro"
+		}
+	];
+	const yearsList = Array.from({ length: 5 }, (_, i) => ((/* @__PURE__ */ new Date()).getFullYear() - i).toString());
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Dialog, {
+		"data-uid": "src/components/dashboard/MonthlyClosingDialog.tsx:93:5",
+		"data-prohibitions": "[editContent]",
+		open,
+		onOpenChange: setOpen,
+		children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(DialogTrigger, {
+			"data-uid": "src/components/dashboard/MonthlyClosingDialog.tsx:94:7",
+			"data-prohibitions": "[]",
+			asChild: true,
+			children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Button, {
+				"data-uid": "src/components/dashboard/MonthlyClosingDialog.tsx:95:9",
+				"data-prohibitions": "[]",
+				size: "sm",
+				variant: "outline",
+				className: "h-7 text-xs bg-white text-blue-900 border-none hover:bg-gray-100 hidden sm:flex gap-1",
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FileChartColumnIncreasing, {
+					"data-uid": "src/components/dashboard/MonthlyClosingDialog.tsx:100:11",
+					"data-prohibitions": "[editContent]",
+					className: "w-3 h-3"
+				}), " Fechamento Mensal"]
+			})
+		}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(DialogContent, {
+			"data-uid": "src/components/dashboard/MonthlyClosingDialog.tsx:103:7",
+			"data-prohibitions": "[editContent]",
+			className: "sm:max-w-[425px]",
+			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(DialogHeader, {
+				"data-uid": "src/components/dashboard/MonthlyClosingDialog.tsx:104:9",
+				"data-prohibitions": "[]",
+				children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(DialogTitle, {
+					"data-uid": "src/components/dashboard/MonthlyClosingDialog.tsx:105:11",
+					"data-prohibitions": "[]",
+					children: "Lançar Fechamento Mensal"
+				})
+			}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+				"data-uid": "src/components/dashboard/MonthlyClosingDialog.tsx:107:9",
+				"data-prohibitions": "[editContent]",
+				className: "grid gap-4 py-4",
+				children: [
+					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						"data-uid": "src/components/dashboard/MonthlyClosingDialog.tsx:108:11",
+						"data-prohibitions": "[editContent]",
+						className: "grid grid-cols-2 gap-4",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							"data-uid": "src/components/dashboard/MonthlyClosingDialog.tsx:109:13",
+							"data-prohibitions": "[editContent]",
+							className: "space-y-2",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Label$1, {
+								"data-uid": "src/components/dashboard/MonthlyClosingDialog.tsx:110:15",
+								"data-prohibitions": "[]",
+								children: "Mês"
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Select, {
+								"data-uid": "src/components/dashboard/MonthlyClosingDialog.tsx:111:15",
+								"data-prohibitions": "[editContent]",
+								value: month,
+								onValueChange: setMonth,
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectTrigger, {
+									"data-uid": "src/components/dashboard/MonthlyClosingDialog.tsx:112:17",
+									"data-prohibitions": "[]",
+									children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectValue, {
+										"data-uid": "src/components/dashboard/MonthlyClosingDialog.tsx:113:19",
+										"data-prohibitions": "[editContent]"
+									})
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectContent, {
+									"data-uid": "src/components/dashboard/MonthlyClosingDialog.tsx:115:17",
+									"data-prohibitions": "[editContent]",
+									children: monthsList.map((m) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectItem, {
+										"data-uid": "src/components/dashboard/MonthlyClosingDialog.tsx:117:21",
+										"data-prohibitions": "[editContent]",
+										value: m.value,
+										children: m.label
+									}, m.value))
+								})]
+							})]
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							"data-uid": "src/components/dashboard/MonthlyClosingDialog.tsx:124:13",
+							"data-prohibitions": "[editContent]",
+							className: "space-y-2",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Label$1, {
+								"data-uid": "src/components/dashboard/MonthlyClosingDialog.tsx:125:15",
+								"data-prohibitions": "[]",
+								children: "Ano"
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Select, {
+								"data-uid": "src/components/dashboard/MonthlyClosingDialog.tsx:126:15",
+								"data-prohibitions": "[editContent]",
+								value: year,
+								onValueChange: setYear,
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectTrigger, {
+									"data-uid": "src/components/dashboard/MonthlyClosingDialog.tsx:127:17",
+									"data-prohibitions": "[]",
+									children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectValue, {
+										"data-uid": "src/components/dashboard/MonthlyClosingDialog.tsx:128:19",
+										"data-prohibitions": "[editContent]"
+									})
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectContent, {
+									"data-uid": "src/components/dashboard/MonthlyClosingDialog.tsx:130:17",
+									"data-prohibitions": "[editContent]",
+									children: yearsList.map((y) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectItem, {
+										"data-uid": "src/components/dashboard/MonthlyClosingDialog.tsx:132:21",
+										"data-prohibitions": "[editContent]",
+										value: y,
+										children: y
+									}, y))
+								})]
+							})]
+						})]
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						"data-uid": "src/components/dashboard/MonthlyClosingDialog.tsx:141:11",
+						"data-prohibitions": "[]",
+						className: "space-y-2",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Label$1, {
+							"data-uid": "src/components/dashboard/MonthlyClosingDialog.tsx:142:13",
+							"data-prohibitions": "[]",
+							children: "Número de pedidos / Fórmulas"
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Input, {
+							"data-uid": "src/components/dashboard/MonthlyClosingDialog.tsx:143:13",
+							"data-prohibitions": "[editContent]",
+							type: "number",
+							value: orders,
+							onChange: (e) => setOrders(e.target.value),
+							placeholder: "Ex: 450"
+						})]
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						"data-uid": "src/components/dashboard/MonthlyClosingDialog.tsx:151:11",
+						"data-prohibitions": "[]",
+						className: "space-y-2",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Label$1, {
+							"data-uid": "src/components/dashboard/MonthlyClosingDialog.tsx:152:13",
+							"data-prohibitions": "[]",
+							children: "Vendas Mensais do Sistema (R$)"
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Input, {
+							"data-uid": "src/components/dashboard/MonthlyClosingDialog.tsx:153:13",
+							"data-prohibitions": "[editContent]",
+							type: "number",
+							step: "0.01",
+							value: sales,
+							onChange: (e) => setSales(e.target.value),
+							placeholder: "Ex: 75000.00"
+						})]
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						"data-uid": "src/components/dashboard/MonthlyClosingDialog.tsx:162:11",
+						"data-prohibitions": "[]",
+						className: "space-y-2",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Label$1, {
+							"data-uid": "src/components/dashboard/MonthlyClosingDialog.tsx:163:13",
+							"data-prohibitions": "[]",
+							children: "Custo de Matérias Primas/Embalagem (R$)"
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Input, {
+							"data-uid": "src/components/dashboard/MonthlyClosingDialog.tsx:164:13",
+							"data-prohibitions": "[editContent]",
+							type: "number",
+							step: "0.01",
+							value: costs,
+							onChange: (e) => setCosts(e.target.value),
+							placeholder: "Ex: 15000.00"
+						})]
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, {
+						"data-uid": "src/components/dashboard/MonthlyClosingDialog.tsx:173:11",
+						"data-prohibitions": "[editContent]",
+						onClick: handleSave,
+						disabled: loading,
+						className: "w-full mt-2",
+						children: loading ? "Salvando..." : "Salvar Dados"
+					})
+				]
+			})]
+		})]
+	});
+}
+//#endregion
 //#region src/components/dashboard/DashboardHeader.tsx
 function DashboardHeader() {
 	const { filters, setFilter, transactions } = useFinanceStore();
@@ -40389,118 +41225,125 @@ function DashboardHeader() {
 	}, [transactions]);
 	const selectedYear = filters.years[0] || (/* @__PURE__ */ new Date()).getFullYear().toString();
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-		"data-uid": "src/components/dashboard/DashboardHeader.tsx:28:5",
+		"data-uid": "src/components/dashboard/DashboardHeader.tsx:29:5",
 		"data-prohibitions": "[editContent]",
 		className: "bg-[#1e3a5f] text-white rounded-t-md px-4 py-2 flex items-center justify-between shadow-sm",
 		children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-			"data-uid": "src/components/dashboard/DashboardHeader.tsx:29:7",
+			"data-uid": "src/components/dashboard/DashboardHeader.tsx:30:7",
 			"data-prohibitions": "[]",
 			className: "flex items-center gap-2",
 			children: [
 				/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-					"data-uid": "src/components/dashboard/DashboardHeader.tsx:30:9",
+					"data-uid": "src/components/dashboard/DashboardHeader.tsx:31:9",
 					"data-prohibitions": "[editContent]",
 					className: "w-4 h-4 bg-blue-400 rounded-sm"
 				}),
 				/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
-					"data-uid": "src/components/dashboard/DashboardHeader.tsx:31:9",
+					"data-uid": "src/components/dashboard/DashboardHeader.tsx:32:9",
 					"data-prohibitions": "[]",
 					className: "font-bold text-sm tracking-wide hidden sm:block",
 					children: "DASHBOARD FINANCEIRO"
 				}),
 				/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
-					"data-uid": "src/components/dashboard/DashboardHeader.tsx:32:9",
+					"data-uid": "src/components/dashboard/DashboardHeader.tsx:33:9",
 					"data-prohibitions": "[]",
 					className: "font-bold text-sm tracking-wide sm:hidden",
 					children: "DASHBOARD"
 				})
 			]
 		}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-			"data-uid": "src/components/dashboard/DashboardHeader.tsx:35:7",
+			"data-uid": "src/components/dashboard/DashboardHeader.tsx:36:7",
 			"data-prohibitions": "[editContent]",
 			className: "flex items-center gap-2 sm:gap-4",
-			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-				"data-uid": "src/components/dashboard/DashboardHeader.tsx:36:9",
-				"data-prohibitions": "[editContent]",
-				className: "flex items-center gap-2",
-				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-					"data-uid": "src/components/dashboard/DashboardHeader.tsx:37:11",
-					"data-prohibitions": "[]",
-					className: "text-xs font-medium text-blue-200",
-					children: "Ano:"
-				}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Select, {
-					"data-uid": "src/components/dashboard/DashboardHeader.tsx:38:11",
+			children: [
+				/* @__PURE__ */ (0, import_jsx_runtime.jsx)(MonthlyClosingDialog, {
+					"data-uid": "src/components/dashboard/DashboardHeader.tsx:37:9",
+					"data-prohibitions": "[editContent]"
+				}),
+				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					"data-uid": "src/components/dashboard/DashboardHeader.tsx:39:9",
 					"data-prohibitions": "[editContent]",
-					value: selectedYear,
-					onValueChange: (val) => setFilter("years", [val]),
-					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectTrigger, {
-						"data-uid": "src/components/dashboard/DashboardHeader.tsx:39:13",
+					className: "flex items-center gap-2",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+						"data-uid": "src/components/dashboard/DashboardHeader.tsx:40:11",
 						"data-prohibitions": "[]",
-						className: "h-7 w-[80px] sm:w-[100px] bg-[#152943] border-none text-white focus:ring-1 focus:ring-blue-400 text-xs",
-						children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectValue, {
-							"data-uid": "src/components/dashboard/DashboardHeader.tsx:40:15",
-							"data-prohibitions": "[editContent]",
-							placeholder: "Selecione..."
-						})
-					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectContent, {
-						"data-uid": "src/components/dashboard/DashboardHeader.tsx:42:13",
+						className: "text-xs font-medium text-blue-200",
+						children: "Ano:"
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Select, {
+						"data-uid": "src/components/dashboard/DashboardHeader.tsx:41:11",
 						"data-prohibitions": "[editContent]",
-						children: years.map((y) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectItem, {
-							"data-uid": "src/components/dashboard/DashboardHeader.tsx:44:17",
+						value: selectedYear,
+						onValueChange: (val) => setFilter("years", [val]),
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectTrigger, {
+							"data-uid": "src/components/dashboard/DashboardHeader.tsx:42:13",
+							"data-prohibitions": "[]",
+							className: "h-7 w-[80px] sm:w-[100px] bg-[#152943] border-none text-white focus:ring-1 focus:ring-blue-400 text-xs",
+							children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectValue, {
+								"data-uid": "src/components/dashboard/DashboardHeader.tsx:43:15",
+								"data-prohibitions": "[editContent]",
+								placeholder: "Selecione..."
+							})
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectContent, {
+							"data-uid": "src/components/dashboard/DashboardHeader.tsx:45:13",
 							"data-prohibitions": "[editContent]",
-							value: y,
-							children: y
-						}, y))
+							children: years.map((y) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectItem, {
+								"data-uid": "src/components/dashboard/DashboardHeader.tsx:47:17",
+								"data-prohibitions": "[editContent]",
+								value: y,
+								children: y
+							}, y))
+						})]
 					})]
-				})]
-			}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-				"data-uid": "src/components/dashboard/DashboardHeader.tsx:52:9",
-				"data-prohibitions": "[]",
-				className: "flex items-center gap-1",
-				children: [
-					/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, {
-						"data-uid": "src/components/dashboard/DashboardHeader.tsx:53:11",
-						"data-prohibitions": "[]",
-						variant: "ghost",
-						size: "icon",
-						className: "h-6 w-6 text-white hover:bg-white/20",
-						children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(RefreshCw, {
-							"data-uid": "src/components/dashboard/DashboardHeader.tsx:54:13",
-							"data-prohibitions": "[editContent]",
-							className: "h-3 w-3"
-						})
-					}),
-					/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Link, {
-						"data-uid": "src/components/dashboard/DashboardHeader.tsx:56:11",
-						"data-prohibitions": "[]",
-						to: "/",
-						children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, {
-							"data-uid": "src/components/dashboard/DashboardHeader.tsx:57:13",
+				}),
+				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					"data-uid": "src/components/dashboard/DashboardHeader.tsx:55:9",
+					"data-prohibitions": "[]",
+					className: "flex items-center gap-1",
+					children: [
+						/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, {
+							"data-uid": "src/components/dashboard/DashboardHeader.tsx:56:11",
 							"data-prohibitions": "[]",
 							variant: "ghost",
 							size: "icon",
 							className: "h-6 w-6 text-white hover:bg-white/20",
-							children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(House, {
-								"data-uid": "src/components/dashboard/DashboardHeader.tsx:58:15",
+							children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(RefreshCw, {
+								"data-uid": "src/components/dashboard/DashboardHeader.tsx:57:13",
+								"data-prohibitions": "[editContent]",
+								className: "h-3 w-3"
+							})
+						}),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Link, {
+							"data-uid": "src/components/dashboard/DashboardHeader.tsx:59:11",
+							"data-prohibitions": "[]",
+							to: "/",
+							children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, {
+								"data-uid": "src/components/dashboard/DashboardHeader.tsx:60:13",
+								"data-prohibitions": "[]",
+								variant: "ghost",
+								size: "icon",
+								className: "h-6 w-6 text-white hover:bg-white/20",
+								children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(House, {
+									"data-uid": "src/components/dashboard/DashboardHeader.tsx:61:15",
+									"data-prohibitions": "[editContent]",
+									className: "h-3 w-3"
+								})
+							})
+						}),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, {
+							"data-uid": "src/components/dashboard/DashboardHeader.tsx:64:11",
+							"data-prohibitions": "[]",
+							variant: "ghost",
+							size: "icon",
+							className: "h-6 w-6 text-white hover:bg-white/20 hidden sm:flex",
+							children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CircleX, {
+								"data-uid": "src/components/dashboard/DashboardHeader.tsx:69:13",
 								"data-prohibitions": "[editContent]",
 								className: "h-3 w-3"
 							})
 						})
-					}),
-					/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, {
-						"data-uid": "src/components/dashboard/DashboardHeader.tsx:61:11",
-						"data-prohibitions": "[]",
-						variant: "ghost",
-						size: "icon",
-						className: "h-6 w-6 text-white hover:bg-white/20 hidden sm:flex",
-						children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CircleX, {
-							"data-uid": "src/components/dashboard/DashboardHeader.tsx:66:13",
-							"data-prohibitions": "[editContent]",
-							className: "h-3 w-3"
-						})
-					})
-				]
-			})]
+					]
+				})
+			]
 		})]
 	});
 }
@@ -41158,12 +42001,12 @@ function useResizeObserver(element, onResize) {
 		}
 	}, [element, handleResize]);
 }
-var Root$2 = ScrollArea$1;
+var Root = ScrollArea$1;
 var Viewport = ScrollAreaViewport;
 var Corner = ScrollAreaCorner;
 //#endregion
 //#region src/components/ui/scroll-area.tsx
-var ScrollArea = import_react.forwardRef(({ className, children, ...props }, ref) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Root$2, {
+var ScrollArea = import_react.forwardRef(({ className, children, ...props }, ref) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Root, {
 	"data-uid": "src/components/ui/scroll-area.tsx:11:3",
 	"data-prohibitions": "[editContent]",
 	ref,
@@ -41186,7 +42029,7 @@ var ScrollArea = import_react.forwardRef(({ className, children, ...props }, ref
 		})
 	]
 }));
-ScrollArea.displayName = Root$2.displayName;
+ScrollArea.displayName = Root.displayName;
 var ScrollBar = import_react.forwardRef(({ className, orientation = "vertical", ...props }, ref) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ScrollAreaScrollbar, {
 	"data-uid": "src/components/ui/scroll-area.tsx:29:3",
 	"data-prohibitions": "[editContent]",
@@ -55705,7 +56548,7 @@ var getAttrsOfCartesianLabel = function getAttrsOfCartesianLabel(props) {
 var isPolar = function isPolar(viewBox) {
 	return "cx" in viewBox && isNumber(viewBox.cx);
 };
-function Label$2(_ref4) {
+function Label(_ref4) {
 	var _ref4$offset = _ref4.offset, offset = _ref4$offset === void 0 ? 5 : _ref4$offset, restProps = _objectWithoutProperties$12(_ref4, _excluded$12);
 	var props = _objectSpread$26({ offset }, restProps);
 	var viewBox = props.viewBox, position = props.position, value = props.value, children = props.children, content = props.content, _props$className = props.className, className = _props$className === void 0 ? "" : _props$className, textBreakAll = props.textBreakAll;
@@ -55722,7 +56565,7 @@ function Label$2(_ref4) {
 	var positionAttrs = isPolarLabel ? getAttrsOfPolarLabel(props) : getAttrsOfCartesianLabel(props);
 	return /* @__PURE__ */ import_react.createElement(Text, _extends$22({ className: clsx("recharts-label", className) }, attrs, positionAttrs, { breakAll: textBreakAll }), label);
 }
-Label$2.displayName = "Label";
+Label.displayName = "Label";
 var parseViewBox = function parseViewBox(props) {
 	var cx = props.cx, cy = props.cy, angle = props.angle, startAngle = props.startAngle, endAngle = props.endAngle, r = props.r, radius = props.radius, innerRadius = props.innerRadius, outerRadius = props.outerRadius, x = props.x, y = props.y, top = props.top, left = props.left, width = props.width, height = props.height, clockWise = props.clockWise, labelViewBox = props.labelViewBox;
 	if (labelViewBox) return labelViewBox;
@@ -55760,32 +56603,32 @@ var parseViewBox = function parseViewBox(props) {
 };
 var parseLabel = function parseLabel(label, viewBox) {
 	if (!label) return null;
-	if (label === true) return /* @__PURE__ */ import_react.createElement(Label$2, {
+	if (label === true) return /* @__PURE__ */ import_react.createElement(Label, {
 		key: "label-implicit",
 		viewBox
 	});
-	if (isNumOrStr(label)) return /* @__PURE__ */ import_react.createElement(Label$2, {
+	if (isNumOrStr(label)) return /* @__PURE__ */ import_react.createElement(Label, {
 		key: "label-implicit",
 		viewBox,
 		value: label
 	});
 	if (/* @__PURE__ */ (0, import_react.isValidElement)(label)) {
-		if (label.type === Label$2) return /* @__PURE__ */ (0, import_react.cloneElement)(label, {
+		if (label.type === Label) return /* @__PURE__ */ (0, import_react.cloneElement)(label, {
 			key: "label-implicit",
 			viewBox
 		});
-		return /* @__PURE__ */ import_react.createElement(Label$2, {
+		return /* @__PURE__ */ import_react.createElement(Label, {
 			key: "label-implicit",
 			content: label,
 			viewBox
 		});
 	}
-	if ((0, import_isFunction.default)(label)) return /* @__PURE__ */ import_react.createElement(Label$2, {
+	if ((0, import_isFunction.default)(label)) return /* @__PURE__ */ import_react.createElement(Label, {
 		key: "label-implicit",
 		content: label,
 		viewBox
 	});
-	if ((0, import_isObject.default)(label)) return /* @__PURE__ */ import_react.createElement(Label$2, _extends$22({ viewBox }, label, { key: "label-implicit" }));
+	if ((0, import_isObject.default)(label)) return /* @__PURE__ */ import_react.createElement(Label, _extends$22({ viewBox }, label, { key: "label-implicit" }));
 	return null;
 };
 var renderCallByParent$1 = function renderCallByParent(parentProps, viewBox) {
@@ -55793,7 +56636,7 @@ var renderCallByParent$1 = function renderCallByParent(parentProps, viewBox) {
 	if (!parentProps || !parentProps.children && checkPropsLabel && !parentProps.label) return null;
 	var children = parentProps.children;
 	var parentViewBox = parseViewBox(parentProps);
-	var explicitChildren = findAllByType(children, Label$2).map(function(child, index) {
+	var explicitChildren = findAllByType(children, Label).map(function(child, index) {
 		return /* @__PURE__ */ (0, import_react.cloneElement)(child, {
 			viewBox: viewBox || parentViewBox,
 			key: "label-".concat(index)
@@ -55802,8 +56645,8 @@ var renderCallByParent$1 = function renderCallByParent(parentProps, viewBox) {
 	if (!checkPropsLabel) return explicitChildren;
 	return [parseLabel(parentProps.label, viewBox || parentViewBox)].concat(_toConsumableArray$7(explicitChildren));
 };
-Label$2.parseViewBox = parseViewBox;
-Label$2.renderCallByParent = renderCallByParent$1;
+Label.parseViewBox = parseViewBox;
+Label.renderCallByParent = renderCallByParent$1;
 //#endregion
 //#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/recharts@2.15.4_react-dom@19.2.4_react@19.2.4__react@19.2.4/node_modules/recharts/es6/component/LabelList.js
 var import_last = /* @__PURE__ */ __toESM((/* @__PURE__ */ __commonJSMin(((exports, module) => {
@@ -55957,11 +56800,11 @@ function LabelList(_ref) {
 	return /* @__PURE__ */ import_react.createElement(Layer, { className: "recharts-label-list" }, data.map(function(entry, index) {
 		var value = (0, import_isNil.default)(dataKey) ? valueAccessor(entry, index) : getValueByDataKey(entry && entry.payload, dataKey);
 		var idProps = (0, import_isNil.default)(id) ? {} : { id: "".concat(id, "-").concat(index) };
-		return /* @__PURE__ */ import_react.createElement(Label$2, _extends$21({}, filterProps(entry, true), others, idProps, {
+		return /* @__PURE__ */ import_react.createElement(Label, _extends$21({}, filterProps(entry, true), others, idProps, {
 			parentViewBox: entry.parentViewBox,
 			value,
 			textBreakAll,
-			viewBox: Label$2.parseViewBox((0, import_isNil.default)(clockWise) ? entry : _objectSpread$25(_objectSpread$25({}, entry), {}, { clockWise })),
+			viewBox: Label.parseViewBox((0, import_isNil.default)(clockWise) ? entry : _objectSpread$25(_objectSpread$25({}, entry), {}, { clockWise })),
 			key: "label-".concat(index),
 			index
 		}));
@@ -61705,7 +62548,7 @@ function ReferenceLineImpl(props) {
 		x2,
 		y2
 	});
-	return /* @__PURE__ */ import_react.createElement(Layer, { className: clsx("recharts-reference-line", className) }, renderLine(shape, lineProps), Label$2.renderCallByParent(props, rectWithCoords({
+	return /* @__PURE__ */ import_react.createElement(Layer, { className: clsx("recharts-reference-line", className) }, renderLine(shape, lineProps), Label.renderCallByParent(props, rectWithCoords({
 		x1,
 		y1,
 		x2,
@@ -61902,7 +62745,7 @@ var ReferenceDot = /* @__PURE__ */ function(_React$Component) {
 				cx,
 				cy
 			});
-			return /* @__PURE__ */ import_react.createElement(Layer, { className: clsx("recharts-reference-dot", className) }, ReferenceDot.renderDot(shape, dotProps), Label$2.renderCallByParent(this.props, {
+			return /* @__PURE__ */ import_react.createElement(Layer, { className: clsx("recharts-reference-dot", className) }, ReferenceDot.renderDot(shape, dotProps), Label.renderCallByParent(this.props, {
 				x: cx - r,
 				y: cy - r,
 				width: 2 * r,
@@ -62102,7 +62945,7 @@ var ReferenceArea = /* @__PURE__ */ function(_React$Component) {
 			var rect = getRect(hasX1, hasX2, hasY1, hasY2, this.props);
 			if (!rect && !shape) return null;
 			var clipPath = ifOverflowMatches(this.props, "hidden") ? "url(#".concat(clipPathId, ")") : void 0;
-			return /* @__PURE__ */ import_react.createElement(Layer, { className: clsx("recharts-reference-area", className) }, ReferenceArea.renderRect(shape, _objectSpread$8(_objectSpread$8({ clipPath }, filterProps(this.props, true)), rect)), Label$2.renderCallByParent(this.props, rect));
+			return /* @__PURE__ */ import_react.createElement(Layer, { className: clsx("recharts-reference-area", className) }, ReferenceArea.renderRect(shape, _objectSpread$8(_objectSpread$8({ clipPath }, filterProps(this.props, true)), rect)), Label.renderCallByParent(this.props, rect));
 		}
 	}]);
 }(import_react.Component);
@@ -62710,7 +63553,7 @@ var CartesianAxis = /* @__PURE__ */ function(_Component) {
 					ref: function ref(_ref2) {
 						_this3.layerReference = _ref2;
 					}
-				}, axisLine && this.renderAxisLine(), this.renderTicks(finalTicks, this.state.fontSize, this.state.letterSpacing), Label$2.renderCallByParent(this.props));
+				}, axisLine && this.renderAxisLine(), this.renderTicks(finalTicks, this.state.fontSize, this.state.letterSpacing), Label.renderCallByParent(this.props));
 			}
 		}
 	], [{
@@ -68042,91 +68885,303 @@ function AccountBalances() {
 	});
 }
 //#endregion
+//#region src/components/dashboard/PharmacyMetrics.tsx
+function PharmacyMetrics() {
+	const { filteredTransactions, filteredMonthlyMetrics } = useFinanceStore();
+	const metrics = (0, import_react.useMemo)(() => {
+		const totalSales = filteredMonthlyMetrics.reduce((sum, m) => sum + m.total_system_sales, 0);
+		const totalOrders = filteredMonthlyMetrics.reduce((sum, m) => sum + m.orders_count, 0);
+		const totalRawMaterial = filteredMonthlyMetrics.reduce((sum, m) => sum + m.raw_material_costs, 0);
+		let cfaTotal = 0;
+		let varExpenses = 0;
+		filteredTransactions.forEach((t) => {
+			if (t.type === "EXPENSE") {
+				if (t.categoryId === "FIXA") cfaTotal += t.amount;
+				if (t.categoryId === "VARIAVEL") varExpenses += t.amount;
+			}
+		});
+		const ticketMedio = totalOrders > 0 ? totalSales / totalOrders : 0;
+		const fatorMedio = totalRawMaterial > 0 ? totalSales / totalRawMaterial : 0;
+		const margemContribuicao = totalSales - (varExpenses + totalRawMaterial);
+		const mkpDivisor = totalSales > 0 ? (totalSales - (cfaTotal + varExpenses + totalRawMaterial)) / totalSales : 0;
+		const mkpMultiplier = mkpDivisor > 0 ? 1 / mkpDivisor : 0;
+		return {
+			ticketMedio,
+			fatorMedio,
+			margemContribuicao,
+			cfaTotal,
+			mkpDivisor,
+			mkpMultiplier
+		};
+	}, [filteredTransactions, filteredMonthlyMetrics]);
+	const formatCurrency = (val) => new Intl.NumberFormat("pt-BR", {
+		style: "currency",
+		currency: "BRL"
+	}).format(val);
+	const formatDecimal = (val) => new Intl.NumberFormat("pt-BR", {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+	}).format(val);
+	const items = [
+		{
+			title: "Ticket Médio",
+			value: formatCurrency(metrics.ticketMedio),
+			color: "text-indigo-600"
+		},
+		{
+			title: "Fator Médio",
+			value: formatDecimal(metrics.fatorMedio),
+			color: "text-indigo-600"
+		},
+		{
+			title: "Margem Contribuição",
+			value: formatCurrency(metrics.margemContribuicao),
+			color: metrics.margemContribuicao >= 0 ? "text-emerald-600" : "text-red-500"
+		},
+		{
+			title: "CFA Total (Fixas)",
+			value: formatCurrency(metrics.cfaTotal),
+			color: "text-orange-600"
+		},
+		{
+			title: "Mark-up Divisor",
+			value: formatDecimal(metrics.mkpDivisor),
+			color: "text-purple-600"
+		},
+		{
+			title: "Mark-up Multiplicador",
+			value: formatDecimal(metrics.mkpMultiplier),
+			color: "text-purple-600"
+		}
+	];
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+		"data-uid": "src/components/dashboard/PharmacyMetrics.tsx:71:5",
+		"data-prohibitions": "[editContent]",
+		className: "bg-slate-50 p-2 rounded-sm border border-slate-200 mt-2",
+		children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+			"data-uid": "src/components/dashboard/PharmacyMetrics.tsx:72:7",
+			"data-prohibitions": "[]",
+			className: "flex items-center gap-2 mb-2 px-1",
+			children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h3", {
+				"data-uid": "src/components/dashboard/PharmacyMetrics.tsx:73:9",
+				"data-prohibitions": "[]",
+				className: "text-xs font-bold text-slate-700 uppercase tracking-wide",
+				children: "Pharmacy Analytics (Fechamento)"
+			})
+		}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+			"data-uid": "src/components/dashboard/PharmacyMetrics.tsx:77:7",
+			"data-prohibitions": "[editContent]",
+			className: "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2",
+			children: items.map((item, i) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Card, {
+				"data-uid": "src/components/dashboard/PharmacyMetrics.tsx:79:11",
+				"data-prohibitions": "[editContent]",
+				className: "rounded-sm shadow-none border-slate-200 bg-white",
+				children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(CardContent, {
+					"data-uid": "src/components/dashboard/PharmacyMetrics.tsx:80:13",
+					"data-prohibitions": "[editContent]",
+					className: "p-2 text-center flex flex-col justify-center h-full",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h4", {
+						"data-uid": "src/components/dashboard/PharmacyMetrics.tsx:81:15",
+						"data-prohibitions": "[editContent]",
+						className: "text-[9px] font-semibold text-slate-500 uppercase leading-tight mb-1",
+						children: item.title
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+						"data-uid": "src/components/dashboard/PharmacyMetrics.tsx:84:15",
+						"data-prohibitions": "[editContent]",
+						className: cn$1("text-sm md:text-base font-bold tracking-tight", item.color),
+						children: item.value
+					})]
+				})
+			}, i))
+		})]
+	});
+}
+//#endregion
+//#region src/components/dashboard/ExpenseDistribution.tsx
+function ExpenseDistribution() {
+	const { filteredTransactions } = useFinanceStore();
+	const { pctFixa, pctVariavel, totalExpenses } = (0, import_react.useMemo)(() => {
+		let cfaTotal = 0;
+		let varExpenses = 0;
+		filteredTransactions.forEach((t) => {
+			if (t.type === "EXPENSE") {
+				if (t.categoryId === "FIXA") cfaTotal += t.amount;
+				if (t.categoryId === "VARIAVEL") varExpenses += t.amount;
+			}
+		});
+		const total = cfaTotal + varExpenses;
+		return {
+			totalExpenses: total,
+			pctFixa: total > 0 ? cfaTotal / total * 100 : 0,
+			pctVariavel: total > 0 ? varExpenses / total * 100 : 0
+		};
+	}, [filteredTransactions]);
+	if (totalExpenses === 0) return null;
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+		"data-uid": "src/components/dashboard/ExpenseDistribution.tsx:29:5",
+		"data-prohibitions": "[editContent]",
+		className: "bg-white p-3 rounded-sm border shadow-sm flex flex-col justify-center",
+		children: [
+			/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h3", {
+				"data-uid": "src/components/dashboard/ExpenseDistribution.tsx:30:7",
+				"data-prohibitions": "[]",
+				className: "text-[10px] font-bold text-gray-600 uppercase mb-2",
+				children: "Distribuição de Despesas"
+			}),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+				"data-uid": "src/components/dashboard/ExpenseDistribution.tsx:33:7",
+				"data-prohibitions": "[]",
+				className: "flex h-3 w-full rounded-full overflow-hidden bg-gray-100",
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+					"data-uid": "src/components/dashboard/ExpenseDistribution.tsx:34:9",
+					"data-prohibitions": "[editContent]",
+					style: { width: `${pctFixa}%` },
+					className: "bg-orange-400 transition-all duration-500"
+				}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+					"data-uid": "src/components/dashboard/ExpenseDistribution.tsx:38:9",
+					"data-prohibitions": "[editContent]",
+					style: { width: `${pctVariavel}%` },
+					className: "bg-emerald-400 transition-all duration-500"
+				})]
+			}),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+				"data-uid": "src/components/dashboard/ExpenseDistribution.tsx:43:7",
+				"data-prohibitions": "[editContent]",
+				className: "flex justify-between text-[10px] mt-1",
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+					"data-uid": "src/components/dashboard/ExpenseDistribution.tsx:44:9",
+					"data-prohibitions": "[editContent]",
+					className: "text-orange-600 font-medium",
+					children: [
+						"Fixas: ",
+						pctFixa.toFixed(1),
+						"%"
+					]
+				}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+					"data-uid": "src/components/dashboard/ExpenseDistribution.tsx:45:9",
+					"data-prohibitions": "[editContent]",
+					className: "text-emerald-600 font-medium",
+					children: [
+						"Variáveis: ",
+						pctVariavel.toFixed(1),
+						"%"
+					]
+				})]
+			})
+		]
+	});
+}
+//#endregion
 //#region src/pages/Index.tsx
 function Index() {
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-		"data-uid": "src/pages/Index.tsx:11:5",
+		"data-uid": "src/pages/Index.tsx:13:5",
 		"data-prohibitions": "[editContent]",
 		className: "flex flex-col h-[calc(100vh-5rem)] bg-white rounded-md shadow-md border overflow-hidden animate-fade-in",
 		children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(DashboardHeader, {
-			"data-uid": "src/pages/Index.tsx:12:7",
+			"data-uid": "src/pages/Index.tsx:14:7",
 			"data-prohibitions": "[editContent]"
 		}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-			"data-uid": "src/pages/Index.tsx:14:7",
+			"data-uid": "src/pages/Index.tsx:16:7",
 			"data-prohibitions": "[editContent]",
 			className: "flex flex-1 overflow-hidden",
 			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-				"data-uid": "src/pages/Index.tsx:16:9",
+				"data-uid": "src/pages/Index.tsx:18:9",
 				"data-prohibitions": "[]",
 				className: "w-[180px] hidden md:block",
 				children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SidebarFilters, {
-					"data-uid": "src/pages/Index.tsx:17:11",
+					"data-uid": "src/pages/Index.tsx:19:11",
 					"data-prohibitions": "[editContent]"
 				})
 			}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-				"data-uid": "src/pages/Index.tsx:21:9",
+				"data-uid": "src/pages/Index.tsx:23:9",
 				"data-prohibitions": "[editContent]",
 				className: "flex-1 bg-[#f1f5f9] p-2 flex flex-col gap-2 overflow-y-auto",
-				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(KpiCards, {
-					"data-uid": "src/pages/Index.tsx:22:11",
-					"data-prohibitions": "[editContent]"
-				}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-					"data-uid": "src/pages/Index.tsx:24:11",
-					"data-prohibitions": "[editContent]",
-					className: "grid grid-cols-1 lg:grid-cols-3 gap-2 flex-1 min-h-[500px]",
-					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-						"data-uid": "src/pages/Index.tsx:26:13",
+				children: [
+					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						"data-uid": "src/pages/Index.tsx:24:11",
 						"data-prohibitions": "[]",
-						className: "lg:col-span-2 flex flex-col gap-2",
+						className: "flex flex-col xl:flex-row gap-2",
 						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-							"data-uid": "src/pages/Index.tsx:27:15",
+							"data-uid": "src/pages/Index.tsx:25:13",
 							"data-prohibitions": "[]",
-							className: "flex-1 min-h-[250px]",
-							children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CashFlowChart, {
-								"data-uid": "src/pages/Index.tsx:28:17",
+							className: "flex-1",
+							children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(KpiCards, {
+								"data-uid": "src/pages/Index.tsx:26:15",
 								"data-prohibitions": "[editContent]"
 							})
 						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-							"data-uid": "src/pages/Index.tsx:30:15",
+							"data-uid": "src/pages/Index.tsx:28:13",
 							"data-prohibitions": "[]",
-							className: "flex-1 min-h-[200px]",
-							children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ProfitabilityChart, {
-								"data-uid": "src/pages/Index.tsx:31:17",
+							className: "xl:w-[250px] shrink-0",
+							children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ExpenseDistribution, {
+								"data-uid": "src/pages/Index.tsx:29:15",
 								"data-prohibitions": "[editContent]"
 							})
 						})]
-					}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-						"data-uid": "src/pages/Index.tsx:36:13",
-						"data-prohibitions": "[]",
-						className: "flex flex-col gap-2",
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)(PharmacyMetrics, {
+						"data-uid": "src/pages/Index.tsx:33:11",
+						"data-prohibitions": "[editContent]"
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						"data-uid": "src/pages/Index.tsx:35:11",
+						"data-prohibitions": "[editContent]",
+						className: "grid grid-cols-1 lg:grid-cols-3 gap-2 flex-1 min-h-[400px]",
 						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-							"data-uid": "src/pages/Index.tsx:37:15",
+							"data-uid": "src/pages/Index.tsx:37:13",
 							"data-prohibitions": "[]",
-							className: "grid grid-cols-2 gap-2 h-[160px]",
-							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TopCategoriesChart, {
-								"data-uid": "src/pages/Index.tsx:38:17",
-								"data-prohibitions": "[editContent]",
-								type: "INCOME",
-								title: "Top 5 - Entradas",
-								color: "#10b981"
-							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TopCategoriesChart, {
-								"data-uid": "src/pages/Index.tsx:39:17",
-								"data-prohibitions": "[editContent]",
-								type: "EXPENSE",
-								title: "Top 5 - Saídas",
-								color: "#ef4444"
+							className: "lg:col-span-2 flex flex-col gap-2",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+								"data-uid": "src/pages/Index.tsx:38:15",
+								"data-prohibitions": "[]",
+								className: "flex-1 min-h-[200px]",
+								children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CashFlowChart, {
+									"data-uid": "src/pages/Index.tsx:39:17",
+									"data-prohibitions": "[editContent]"
+								})
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+								"data-uid": "src/pages/Index.tsx:41:15",
+								"data-prohibitions": "[]",
+								className: "flex-1 min-h-[200px]",
+								children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ProfitabilityChart, {
+									"data-uid": "src/pages/Index.tsx:42:17",
+									"data-prohibitions": "[editContent]"
+								})
 							})]
-						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-							"data-uid": "src/pages/Index.tsx:41:15",
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							"data-uid": "src/pages/Index.tsx:47:13",
 							"data-prohibitions": "[]",
-							className: "flex-1 min-h-[150px]",
-							children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(AccountBalances, {
-								"data-uid": "src/pages/Index.tsx:42:17",
-								"data-prohibitions": "[editContent]"
-							})
+							className: "flex flex-col gap-2",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								"data-uid": "src/pages/Index.tsx:48:15",
+								"data-prohibitions": "[]",
+								className: "grid grid-cols-2 gap-2 h-[160px]",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TopCategoriesChart, {
+									"data-uid": "src/pages/Index.tsx:49:17",
+									"data-prohibitions": "[editContent]",
+									type: "INCOME",
+									title: "Top 5 - Entradas",
+									color: "#10b981"
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TopCategoriesChart, {
+									"data-uid": "src/pages/Index.tsx:50:17",
+									"data-prohibitions": "[editContent]",
+									type: "EXPENSE",
+									title: "Top 5 - Saídas",
+									color: "#ef4444"
+								})]
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+								"data-uid": "src/pages/Index.tsx:52:15",
+								"data-prohibitions": "[]",
+								className: "flex-1 min-h-[150px]",
+								children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(AccountBalances, {
+									"data-uid": "src/pages/Index.tsx:53:17",
+									"data-prohibitions": "[editContent]"
+								})
+							})]
 						})]
-					})]
-				})]
+					})
+				]
 			})]
 		})]
 	});
@@ -68203,19 +69258,6 @@ var TableCaption = import_react.forwardRef(({ className, ...props }, ref) => /* 
 }));
 TableCaption.displayName = "TableCaption";
 //#endregion
-//#region src/components/ui/input.tsx
-var Input = import_react.forwardRef(({ className, type, ...props }, ref) => {
-	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-		"data-uid": "src/components/ui/input.tsx:9:7",
-		"data-prohibitions": "[editContent]",
-		type,
-		className: cn$1("flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm", className),
-		ref,
-		...props
-	});
-});
-Input.displayName = "Input";
-//#endregion
 //#region src/components/ui/badge.tsx
 var badgeVariants = cva("inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2", {
 	variants: { variant: {
@@ -68235,286 +69277,8 @@ function Badge({ className, variant, ...props }) {
 	});
 }
 //#endregion
-//#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/@radix-ui+react-dialog@1.1.15_@types+react-dom@19.2.3_@types+react@19.2.14__@types+reac_779045218dc2799d336e7197abef9d38/node_modules/@radix-ui/react-dialog/dist/index.mjs
-var DIALOG_NAME = "Dialog";
-var [createDialogContext, createDialogScope] = createContextScope(DIALOG_NAME);
-var [DialogProvider, useDialogContext] = createDialogContext(DIALOG_NAME);
-var Dialog = (props) => {
-	const { __scopeDialog, children, open: openProp, defaultOpen, onOpenChange, modal = true } = props;
-	const triggerRef = import_react.useRef(null);
-	const contentRef = import_react.useRef(null);
-	const [open, setOpen] = useControllableState({
-		prop: openProp,
-		defaultProp: defaultOpen ?? false,
-		onChange: onOpenChange,
-		caller: DIALOG_NAME
-	});
-	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(DialogProvider, {
-		scope: __scopeDialog,
-		triggerRef,
-		contentRef,
-		contentId: useId(),
-		titleId: useId(),
-		descriptionId: useId(),
-		open,
-		onOpenChange: setOpen,
-		onOpenToggle: import_react.useCallback(() => setOpen((prevOpen) => !prevOpen), [setOpen]),
-		modal,
-		children
-	});
-};
-Dialog.displayName = DIALOG_NAME;
-var TRIGGER_NAME = "DialogTrigger";
-var DialogTrigger = import_react.forwardRef((props, forwardedRef) => {
-	const { __scopeDialog, ...triggerProps } = props;
-	const context = useDialogContext(TRIGGER_NAME, __scopeDialog);
-	const composedTriggerRef = useComposedRefs(forwardedRef, context.triggerRef);
-	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Primitive$1.button, {
-		type: "button",
-		"aria-haspopup": "dialog",
-		"aria-expanded": context.open,
-		"aria-controls": context.contentId,
-		"data-state": getState(context.open),
-		...triggerProps,
-		ref: composedTriggerRef,
-		onClick: composeEventHandlers(props.onClick, context.onOpenToggle)
-	});
-});
-DialogTrigger.displayName = TRIGGER_NAME;
-var PORTAL_NAME = "DialogPortal";
-var [PortalProvider, usePortalContext] = createDialogContext(PORTAL_NAME, { forceMount: void 0 });
-var DialogPortal = (props) => {
-	const { __scopeDialog, forceMount, children, container } = props;
-	const context = useDialogContext(PORTAL_NAME, __scopeDialog);
-	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(PortalProvider, {
-		scope: __scopeDialog,
-		forceMount,
-		children: import_react.Children.map(children, (child) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Presence, {
-			present: forceMount || context.open,
-			children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Portal$2, {
-				asChild: true,
-				container,
-				children: child
-			})
-		}))
-	});
-};
-DialogPortal.displayName = PORTAL_NAME;
-var OVERLAY_NAME = "DialogOverlay";
-var DialogOverlay = import_react.forwardRef((props, forwardedRef) => {
-	const portalContext = usePortalContext(OVERLAY_NAME, props.__scopeDialog);
-	const { forceMount = portalContext.forceMount, ...overlayProps } = props;
-	const context = useDialogContext(OVERLAY_NAME, props.__scopeDialog);
-	return context.modal ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Presence, {
-		present: forceMount || context.open,
-		children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(DialogOverlayImpl, {
-			...overlayProps,
-			ref: forwardedRef
-		})
-	}) : null;
-});
-DialogOverlay.displayName = OVERLAY_NAME;
-var Slot = /* @__PURE__ */ createSlot$1("DialogOverlay.RemoveScroll");
-var DialogOverlayImpl = import_react.forwardRef((props, forwardedRef) => {
-	const { __scopeDialog, ...overlayProps } = props;
-	const context = useDialogContext(OVERLAY_NAME, __scopeDialog);
-	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ReactRemoveScroll, {
-		as: Slot,
-		allowPinchZoom: true,
-		shards: [context.contentRef],
-		children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Primitive$1.div, {
-			"data-state": getState(context.open),
-			...overlayProps,
-			ref: forwardedRef,
-			style: {
-				pointerEvents: "auto",
-				...overlayProps.style
-			}
-		})
-	});
-});
-var CONTENT_NAME = "DialogContent";
-var DialogContent = import_react.forwardRef((props, forwardedRef) => {
-	const portalContext = usePortalContext(CONTENT_NAME, props.__scopeDialog);
-	const { forceMount = portalContext.forceMount, ...contentProps } = props;
-	const context = useDialogContext(CONTENT_NAME, props.__scopeDialog);
-	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Presence, {
-		present: forceMount || context.open,
-		children: context.modal ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(DialogContentModal, {
-			...contentProps,
-			ref: forwardedRef
-		}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(DialogContentNonModal, {
-			...contentProps,
-			ref: forwardedRef
-		})
-	});
-});
-DialogContent.displayName = CONTENT_NAME;
-var DialogContentModal = import_react.forwardRef((props, forwardedRef) => {
-	const context = useDialogContext(CONTENT_NAME, props.__scopeDialog);
-	const contentRef = import_react.useRef(null);
-	const composedRefs = useComposedRefs(forwardedRef, context.contentRef, contentRef);
-	import_react.useEffect(() => {
-		const content = contentRef.current;
-		if (content) return hideOthers(content);
-	}, []);
-	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(DialogContentImpl, {
-		...props,
-		ref: composedRefs,
-		trapFocus: context.open,
-		disableOutsidePointerEvents: true,
-		onCloseAutoFocus: composeEventHandlers(props.onCloseAutoFocus, (event) => {
-			event.preventDefault();
-			context.triggerRef.current?.focus();
-		}),
-		onPointerDownOutside: composeEventHandlers(props.onPointerDownOutside, (event) => {
-			const originalEvent = event.detail.originalEvent;
-			const ctrlLeftClick = originalEvent.button === 0 && originalEvent.ctrlKey === true;
-			if (originalEvent.button === 2 || ctrlLeftClick) event.preventDefault();
-		}),
-		onFocusOutside: composeEventHandlers(props.onFocusOutside, (event) => event.preventDefault())
-	});
-});
-var DialogContentNonModal = import_react.forwardRef((props, forwardedRef) => {
-	const context = useDialogContext(CONTENT_NAME, props.__scopeDialog);
-	const hasInteractedOutsideRef = import_react.useRef(false);
-	const hasPointerDownOutsideRef = import_react.useRef(false);
-	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(DialogContentImpl, {
-		...props,
-		ref: forwardedRef,
-		trapFocus: false,
-		disableOutsidePointerEvents: false,
-		onCloseAutoFocus: (event) => {
-			props.onCloseAutoFocus?.(event);
-			if (!event.defaultPrevented) {
-				if (!hasInteractedOutsideRef.current) context.triggerRef.current?.focus();
-				event.preventDefault();
-			}
-			hasInteractedOutsideRef.current = false;
-			hasPointerDownOutsideRef.current = false;
-		},
-		onInteractOutside: (event) => {
-			props.onInteractOutside?.(event);
-			if (!event.defaultPrevented) {
-				hasInteractedOutsideRef.current = true;
-				if (event.detail.originalEvent.type === "pointerdown") hasPointerDownOutsideRef.current = true;
-			}
-			const target = event.target;
-			if (context.triggerRef.current?.contains(target)) event.preventDefault();
-			if (event.detail.originalEvent.type === "focusin" && hasPointerDownOutsideRef.current) event.preventDefault();
-		}
-	});
-});
-var DialogContentImpl = import_react.forwardRef((props, forwardedRef) => {
-	const { __scopeDialog, trapFocus, onOpenAutoFocus, onCloseAutoFocus, ...contentProps } = props;
-	const context = useDialogContext(CONTENT_NAME, __scopeDialog);
-	const contentRef = import_react.useRef(null);
-	const composedRefs = useComposedRefs(forwardedRef, contentRef);
-	useFocusGuards();
-	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FocusScope, {
-		asChild: true,
-		loop: true,
-		trapped: trapFocus,
-		onMountAutoFocus: onOpenAutoFocus,
-		onUnmountAutoFocus: onCloseAutoFocus,
-		children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(DismissableLayer, {
-			role: "dialog",
-			id: context.contentId,
-			"aria-describedby": context.descriptionId,
-			"aria-labelledby": context.titleId,
-			"data-state": getState(context.open),
-			...contentProps,
-			ref: composedRefs,
-			onDismiss: () => context.onOpenChange(false)
-		})
-	}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TitleWarning, { titleId: context.titleId }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(DescriptionWarning, {
-		contentRef,
-		descriptionId: context.descriptionId
-	})] })] });
-});
-var TITLE_NAME = "DialogTitle";
-var DialogTitle = import_react.forwardRef((props, forwardedRef) => {
-	const { __scopeDialog, ...titleProps } = props;
-	const context = useDialogContext(TITLE_NAME, __scopeDialog);
-	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Primitive$1.h2, {
-		id: context.titleId,
-		...titleProps,
-		ref: forwardedRef
-	});
-});
-DialogTitle.displayName = TITLE_NAME;
-var DESCRIPTION_NAME = "DialogDescription";
-var DialogDescription = import_react.forwardRef((props, forwardedRef) => {
-	const { __scopeDialog, ...descriptionProps } = props;
-	const context = useDialogContext(DESCRIPTION_NAME, __scopeDialog);
-	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Primitive$1.p, {
-		id: context.descriptionId,
-		...descriptionProps,
-		ref: forwardedRef
-	});
-});
-DialogDescription.displayName = DESCRIPTION_NAME;
-var CLOSE_NAME = "DialogClose";
-var DialogClose = import_react.forwardRef((props, forwardedRef) => {
-	const { __scopeDialog, ...closeProps } = props;
-	const context = useDialogContext(CLOSE_NAME, __scopeDialog);
-	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Primitive$1.button, {
-		type: "button",
-		...closeProps,
-		ref: forwardedRef,
-		onClick: composeEventHandlers(props.onClick, () => context.onOpenChange(false))
-	});
-});
-DialogClose.displayName = CLOSE_NAME;
-function getState(open) {
-	return open ? "open" : "closed";
-}
-var TITLE_WARNING_NAME = "DialogTitleWarning";
-var [WarningProvider, useWarningContext] = createContext2(TITLE_WARNING_NAME, {
-	contentName: CONTENT_NAME,
-	titleName: TITLE_NAME,
-	docsSlug: "dialog"
-});
-var TitleWarning = ({ titleId }) => {
-	const titleWarningContext = useWarningContext(TITLE_WARNING_NAME);
-	const MESSAGE = `\`${titleWarningContext.contentName}\` requires a \`${titleWarningContext.titleName}\` for the component to be accessible for screen reader users.
-
-If you want to hide the \`${titleWarningContext.titleName}\`, you can wrap it with our VisuallyHidden component.
-
-For more information, see https://radix-ui.com/primitives/docs/components/${titleWarningContext.docsSlug}`;
-	import_react.useEffect(() => {
-		if (titleId) {
-			if (!document.getElementById(titleId)) console.error(MESSAGE);
-		}
-	}, [MESSAGE, titleId]);
-	return null;
-};
-var DESCRIPTION_WARNING_NAME = "DialogDescriptionWarning";
-var DescriptionWarning = ({ contentRef, descriptionId }) => {
-	const MESSAGE = `Warning: Missing \`Description\` or \`aria-describedby={undefined}\` for {${useWarningContext(DESCRIPTION_WARNING_NAME).contentName}}.`;
-	import_react.useEffect(() => {
-		const describedById = contentRef.current?.getAttribute("aria-describedby");
-		if (descriptionId && describedById) {
-			if (!document.getElementById(descriptionId)) console.warn(MESSAGE);
-		}
-	}, [
-		MESSAGE,
-		contentRef,
-		descriptionId
-	]);
-	return null;
-};
-var Root$1 = Dialog;
-var Trigger = DialogTrigger;
-var Portal = DialogPortal;
-var Overlay = DialogOverlay;
-var Content = DialogContent;
-var Title = DialogTitle;
-var Description = DialogDescription;
-var Close = DialogClose;
-//#endregion
 //#region src/components/ui/sheet.tsx
-var Sheet = Root$1;
+var Sheet = Root$2;
 var SheetTrigger = Trigger;
 var SheetPortal = Portal;
 var SheetOverlay = import_react.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Overlay, {
@@ -74275,70 +75039,6 @@ function number(params) {
 	return /* @__PURE__ */ _coercedNumber(ZodNumber, params);
 }
 //#endregion
-//#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/@radix-ui+react-primitive@2.1.4_@types+react-dom@19.2.3_@types+react@19.2.14__@types+re_0243fb2db8a1fb85ca77b8d9e5c2d650/node_modules/@radix-ui/react-primitive/dist/index.mjs
-var Primitive = [
-	"a",
-	"button",
-	"div",
-	"form",
-	"h2",
-	"h3",
-	"img",
-	"input",
-	"label",
-	"li",
-	"nav",
-	"ol",
-	"p",
-	"select",
-	"span",
-	"svg",
-	"ul"
-].reduce((primitive, node) => {
-	const Slot = /* @__PURE__ */ createSlot(`Primitive.${node}`);
-	const Node = import_react.forwardRef((props, forwardedRef) => {
-		const { asChild, ...primitiveProps } = props;
-		const Comp = asChild ? Slot : node;
-		if (typeof window !== "undefined") window[Symbol.for("radix-ui")] = true;
-		return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Comp, {
-			...primitiveProps,
-			ref: forwardedRef
-		});
-	});
-	Node.displayName = `Primitive.${node}`;
-	return {
-		...primitive,
-		[node]: Node
-	};
-}, {});
-//#endregion
-//#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/@radix-ui+react-label@2.1.8_@types+react-dom@19.2.3_@types+react@19.2.14__@types+react@_55fa612a976b7bdfbf4dcdd93d861aab/node_modules/@radix-ui/react-label/dist/index.mjs
-var NAME = "Label";
-var Label$1 = import_react.forwardRef((props, forwardedRef) => {
-	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Primitive.label, {
-		...props,
-		ref: forwardedRef,
-		onMouseDown: (event) => {
-			if (event.target.closest("button, input, select, textarea")) return;
-			props.onMouseDown?.(event);
-			if (!event.defaultPrevented && event.detail > 1) event.preventDefault();
-		}
-	});
-});
-Label$1.displayName = NAME;
-var Root = Label$1;
-//#endregion
-//#region src/components/ui/label.tsx
-var labelVariants = cva("text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70");
-var Label = import_react.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Root, {
-	"data-uid": "src/components/ui/label.tsx:16:3",
-	"data-prohibitions": "[editContent]",
-	ref,
-	className: cn$1(labelVariants(), className),
-	...props
-}));
-Label.displayName = Root.displayName;
-//#endregion
 //#region src/components/ui/form.tsx
 var Form = FormProvider;
 var FormFieldContext = import_react.createContext({});
@@ -74389,7 +75089,7 @@ var FormItem = import_react.forwardRef(({ className, ...props }, ref) => {
 FormItem.displayName = "FormItem";
 var FormLabel = import_react.forwardRef(({ className, ...props }, ref) => {
 	const { error, formItemId } = useFormField();
-	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Label, {
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Label$1, {
 		"data-uid": "src/components/ui/form.tsx:90:5",
 		"data-prohibitions": "[editContent]",
 		ref,
@@ -74465,39 +75165,61 @@ var formSchema = object({
 		path: ["categoryId"]
 	});
 });
-function TransactionForm({ onSuccess }) {
-	const { accounts, addTransaction } = useFinanceStore();
+function TransactionForm({ onSuccess, initialData }) {
+	const { accounts, addTransaction, updateTransaction } = useFinanceStore();
 	const { toast } = useToast();
 	const [loading, setLoading] = (0, import_react.useState)(false);
+	const defaultValues = initialData ? {
+		date: new Date(initialData.date).toISOString().split("T")[0],
+		description: initialData.description,
+		amount: initialData.amount,
+		type: initialData.type,
+		status: initialData.status,
+		categoryId: initialData.categoryId || "",
+		accountId: initialData.accountId || ""
+	} : {
+		date: (/* @__PURE__ */ new Date()).toISOString().split("T")[0],
+		description: "",
+		amount: 0,
+		type: "EXPENSE",
+		status: "REALIZADO",
+		categoryId: "",
+		accountId: ""
+	};
 	const form = useForm({
 		resolver: a(formSchema),
-		defaultValues: {
-			date: (/* @__PURE__ */ new Date()).toISOString().split("T")[0],
-			description: "",
-			amount: 0,
-			type: "EXPENSE",
-			status: "REALIZADO",
-			categoryId: "",
-			accountId: ""
-		}
+		defaultValues
 	});
 	const type = form.watch("type");
 	(0, import_react.useEffect)(() => {
-		if (type === "INCOME") form.setValue("categoryId", "");
+		if (!initialData) if (type === "INCOME") form.setValue("categoryId", "");
 		else form.setValue("accountId", "");
-	}, [type, form]);
+	}, [
+		type,
+		form,
+		initialData
+	]);
 	const onSubmit = async (values) => {
 		try {
 			setLoading(true);
-			await addTransaction({
+			const payload = {
 				...values,
 				categoryId: values.type === "EXPENSE" ? values.categoryId || "FIXA" : "",
 				accountId: values.type === "INCOME" ? values.accountId || "acc1" : ""
-			});
-			toast({
-				title: "Sucesso",
-				description: "Transação salva com sucesso!"
-			});
+			};
+			if (initialData) {
+				await updateTransaction(initialData.id, payload);
+				toast({
+					title: "Sucesso",
+					description: "Transação atualizada com sucesso!"
+				});
+			} else {
+				await addTransaction(payload);
+				toast({
+					title: "Sucesso",
+					description: "Transação salva com sucesso!"
+				});
+			}
 			form.reset();
 			onSuccess();
 		} catch (error) {
@@ -74511,58 +75233,58 @@ function TransactionForm({ onSuccess }) {
 		}
 	};
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Form, {
-		"data-uid": "src/components/transactions/TransactionForm.tsx:100:5",
+		"data-uid": "src/components/transactions/TransactionForm.tsx:123:5",
 		"data-prohibitions": "[editContent]",
 		...form,
 		children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("form", {
-			"data-uid": "src/components/transactions/TransactionForm.tsx:101:7",
+			"data-uid": "src/components/transactions/TransactionForm.tsx:124:7",
 			"data-prohibitions": "[editContent]",
 			onSubmit: form.handleSubmit(onSubmit),
 			className: "space-y-4 pt-4",
 			children: [
 				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-					"data-uid": "src/components/transactions/TransactionForm.tsx:102:9",
+					"data-uid": "src/components/transactions/TransactionForm.tsx:125:9",
 					"data-prohibitions": "[]",
 					className: "grid grid-cols-2 gap-4",
 					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormField, {
-						"data-uid": "src/components/transactions/TransactionForm.tsx:103:11",
+						"data-uid": "src/components/transactions/TransactionForm.tsx:126:11",
 						"data-prohibitions": "[editContent]",
 						control: form.control,
 						name: "type",
 						render: ({ field }) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(FormItem, {
-							"data-uid": "src/components/transactions/TransactionForm.tsx:107:15",
+							"data-uid": "src/components/transactions/TransactionForm.tsx:130:15",
 							"data-prohibitions": "[]",
 							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormLabel, {
-								"data-uid": "src/components/transactions/TransactionForm.tsx:108:17",
+								"data-uid": "src/components/transactions/TransactionForm.tsx:131:17",
 								"data-prohibitions": "[]",
 								children: "Tipo"
 							}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Select, {
-								"data-uid": "src/components/transactions/TransactionForm.tsx:109:17",
+								"data-uid": "src/components/transactions/TransactionForm.tsx:132:17",
 								"data-prohibitions": "[]",
 								onValueChange: field.onChange,
 								value: field.value || void 0,
 								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormControl, {
-									"data-uid": "src/components/transactions/TransactionForm.tsx:110:19",
+									"data-uid": "src/components/transactions/TransactionForm.tsx:133:19",
 									"data-prohibitions": "[]",
 									children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectTrigger, {
-										"data-uid": "src/components/transactions/TransactionForm.tsx:111:21",
+										"data-uid": "src/components/transactions/TransactionForm.tsx:134:21",
 										"data-prohibitions": "[]",
 										children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectValue, {
-											"data-uid": "src/components/transactions/TransactionForm.tsx:112:23",
+											"data-uid": "src/components/transactions/TransactionForm.tsx:135:23",
 											"data-prohibitions": "[editContent]",
 											placeholder: "Selecione o tipo"
 										})
 									})
 								}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(SelectContent, {
-									"data-uid": "src/components/transactions/TransactionForm.tsx:115:19",
+									"data-uid": "src/components/transactions/TransactionForm.tsx:138:19",
 									"data-prohibitions": "[]",
 									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectItem, {
-										"data-uid": "src/components/transactions/TransactionForm.tsx:116:21",
+										"data-uid": "src/components/transactions/TransactionForm.tsx:139:21",
 										"data-prohibitions": "[]",
 										value: "INCOME",
 										children: "Receita"
 									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectItem, {
-										"data-uid": "src/components/transactions/TransactionForm.tsx:117:21",
+										"data-uid": "src/components/transactions/TransactionForm.tsx:140:21",
 										"data-prohibitions": "[]",
 										value: "EXPENSE",
 										children: "Despesa"
@@ -74571,52 +75293,52 @@ function TransactionForm({ onSuccess }) {
 							})]
 						})
 					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormField, {
-						"data-uid": "src/components/transactions/TransactionForm.tsx:123:11",
+						"data-uid": "src/components/transactions/TransactionForm.tsx:146:11",
 						"data-prohibitions": "[editContent]",
 						control: form.control,
 						name: "status",
 						render: ({ field }) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(FormItem, {
-							"data-uid": "src/components/transactions/TransactionForm.tsx:127:15",
+							"data-uid": "src/components/transactions/TransactionForm.tsx:150:15",
 							"data-prohibitions": "[]",
 							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormLabel, {
-								"data-uid": "src/components/transactions/TransactionForm.tsx:128:17",
+								"data-uid": "src/components/transactions/TransactionForm.tsx:151:17",
 								"data-prohibitions": "[]",
 								children: "Status"
 							}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Select, {
-								"data-uid": "src/components/transactions/TransactionForm.tsx:129:17",
+								"data-uid": "src/components/transactions/TransactionForm.tsx:152:17",
 								"data-prohibitions": "[]",
 								onValueChange: field.onChange,
 								value: field.value || void 0,
 								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormControl, {
-									"data-uid": "src/components/transactions/TransactionForm.tsx:130:19",
+									"data-uid": "src/components/transactions/TransactionForm.tsx:153:19",
 									"data-prohibitions": "[]",
 									children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectTrigger, {
-										"data-uid": "src/components/transactions/TransactionForm.tsx:131:21",
+										"data-uid": "src/components/transactions/TransactionForm.tsx:154:21",
 										"data-prohibitions": "[]",
 										children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectValue, {
-											"data-uid": "src/components/transactions/TransactionForm.tsx:132:23",
+											"data-uid": "src/components/transactions/TransactionForm.tsx:155:23",
 											"data-prohibitions": "[editContent]",
 											placeholder: "Status"
 										})
 									})
 								}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(SelectContent, {
-									"data-uid": "src/components/transactions/TransactionForm.tsx:135:19",
+									"data-uid": "src/components/transactions/TransactionForm.tsx:158:19",
 									"data-prohibitions": "[]",
 									children: [
 										/* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectItem, {
-											"data-uid": "src/components/transactions/TransactionForm.tsx:136:21",
+											"data-uid": "src/components/transactions/TransactionForm.tsx:159:21",
 											"data-prohibitions": "[]",
 											value: "PREVISTO",
 											children: "Previsto"
 										}),
 										/* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectItem, {
-											"data-uid": "src/components/transactions/TransactionForm.tsx:137:21",
+											"data-uid": "src/components/transactions/TransactionForm.tsx:160:21",
 											"data-prohibitions": "[]",
 											value: "REALIZADO",
 											children: "Realizado"
 										}),
 										/* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectItem, {
-											"data-uid": "src/components/transactions/TransactionForm.tsx:138:21",
+											"data-uid": "src/components/transactions/TransactionForm.tsx:161:21",
 											"data-prohibitions": "[]",
 											value: "VENCIDO",
 											children: "Vencido"
@@ -74628,86 +75350,86 @@ function TransactionForm({ onSuccess }) {
 					})]
 				}),
 				/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormField, {
-					"data-uid": "src/components/transactions/TransactionForm.tsx:146:9",
+					"data-uid": "src/components/transactions/TransactionForm.tsx:169:9",
 					"data-prohibitions": "[editContent]",
 					control: form.control,
 					name: "date",
 					render: ({ field }) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(FormItem, {
-						"data-uid": "src/components/transactions/TransactionForm.tsx:150:13",
+						"data-uid": "src/components/transactions/TransactionForm.tsx:173:13",
 						"data-prohibitions": "[]",
 						children: [
 							/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormLabel, {
-								"data-uid": "src/components/transactions/TransactionForm.tsx:151:15",
+								"data-uid": "src/components/transactions/TransactionForm.tsx:174:15",
 								"data-prohibitions": "[]",
 								children: "Data"
 							}),
 							/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormControl, {
-								"data-uid": "src/components/transactions/TransactionForm.tsx:152:15",
+								"data-uid": "src/components/transactions/TransactionForm.tsx:175:15",
 								"data-prohibitions": "[]",
 								children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Input, {
-									"data-uid": "src/components/transactions/TransactionForm.tsx:153:17",
+									"data-uid": "src/components/transactions/TransactionForm.tsx:176:17",
 									"data-prohibitions": "[editContent]",
 									type: "date",
 									...field
 								})
 							}),
 							/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormMessage, {
-								"data-uid": "src/components/transactions/TransactionForm.tsx:155:15",
+								"data-uid": "src/components/transactions/TransactionForm.tsx:178:15",
 								"data-prohibitions": "[editContent]"
 							})
 						]
 					})
 				}),
 				/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormField, {
-					"data-uid": "src/components/transactions/TransactionForm.tsx:160:9",
+					"data-uid": "src/components/transactions/TransactionForm.tsx:183:9",
 					"data-prohibitions": "[editContent]",
 					control: form.control,
 					name: "description",
 					render: ({ field }) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(FormItem, {
-						"data-uid": "src/components/transactions/TransactionForm.tsx:164:13",
+						"data-uid": "src/components/transactions/TransactionForm.tsx:187:13",
 						"data-prohibitions": "[]",
 						children: [
 							/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormLabel, {
-								"data-uid": "src/components/transactions/TransactionForm.tsx:165:15",
+								"data-uid": "src/components/transactions/TransactionForm.tsx:188:15",
 								"data-prohibitions": "[]",
 								children: "Descrição"
 							}),
 							/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormControl, {
-								"data-uid": "src/components/transactions/TransactionForm.tsx:166:15",
+								"data-uid": "src/components/transactions/TransactionForm.tsx:189:15",
 								"data-prohibitions": "[]",
 								children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Input, {
-									"data-uid": "src/components/transactions/TransactionForm.tsx:167:17",
+									"data-uid": "src/components/transactions/TransactionForm.tsx:190:17",
 									"data-prohibitions": "[editContent]",
 									placeholder: "Ex: Conta de Luz",
 									...field
 								})
 							}),
 							/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormMessage, {
-								"data-uid": "src/components/transactions/TransactionForm.tsx:169:15",
+								"data-uid": "src/components/transactions/TransactionForm.tsx:192:15",
 								"data-prohibitions": "[editContent]"
 							})
 						]
 					})
 				}),
 				/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormField, {
-					"data-uid": "src/components/transactions/TransactionForm.tsx:174:9",
+					"data-uid": "src/components/transactions/TransactionForm.tsx:197:9",
 					"data-prohibitions": "[editContent]",
 					control: form.control,
 					name: "amount",
 					render: ({ field }) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(FormItem, {
-						"data-uid": "src/components/transactions/TransactionForm.tsx:178:13",
+						"data-uid": "src/components/transactions/TransactionForm.tsx:201:13",
 						"data-prohibitions": "[]",
 						children: [
 							/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormLabel, {
-								"data-uid": "src/components/transactions/TransactionForm.tsx:179:15",
+								"data-uid": "src/components/transactions/TransactionForm.tsx:202:15",
 								"data-prohibitions": "[]",
 								children: "Valor (R$)"
 							}),
 							/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormControl, {
-								"data-uid": "src/components/transactions/TransactionForm.tsx:180:15",
+								"data-uid": "src/components/transactions/TransactionForm.tsx:203:15",
 								"data-prohibitions": "[]",
 								children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Input, {
-									"data-uid": "src/components/transactions/TransactionForm.tsx:181:17",
+									"data-uid": "src/components/transactions/TransactionForm.tsx:204:17",
 									"data-prohibitions": "[editContent]",
 									type: "number",
 									step: "0.01",
@@ -74715,61 +75437,61 @@ function TransactionForm({ onSuccess }) {
 								})
 							}),
 							/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormMessage, {
-								"data-uid": "src/components/transactions/TransactionForm.tsx:183:15",
+								"data-uid": "src/components/transactions/TransactionForm.tsx:206:15",
 								"data-prohibitions": "[editContent]"
 							})
 						]
 					})
 				}),
 				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-					"data-uid": "src/components/transactions/TransactionForm.tsx:188:9",
+					"data-uid": "src/components/transactions/TransactionForm.tsx:211:9",
 					"data-prohibitions": "[editContent]",
 					className: "grid grid-cols-1 gap-4 transition-all duration-300 min-h-[80px]",
 					children: [type === "EXPENSE" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-						"data-uid": "src/components/transactions/TransactionForm.tsx:190:13",
+						"data-uid": "src/components/transactions/TransactionForm.tsx:213:13",
 						"data-prohibitions": "[]",
 						className: "animate-in fade-in slide-in-from-top-2 duration-300",
 						children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormField, {
-							"data-uid": "src/components/transactions/TransactionForm.tsx:191:15",
+							"data-uid": "src/components/transactions/TransactionForm.tsx:214:15",
 							"data-prohibitions": "[editContent]",
 							control: form.control,
 							name: "categoryId",
 							render: ({ field }) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(FormItem, {
-								"data-uid": "src/components/transactions/TransactionForm.tsx:195:19",
+								"data-uid": "src/components/transactions/TransactionForm.tsx:218:19",
 								"data-prohibitions": "[]",
 								children: [
 									/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormLabel, {
-										"data-uid": "src/components/transactions/TransactionForm.tsx:196:21",
+										"data-uid": "src/components/transactions/TransactionForm.tsx:219:21",
 										"data-prohibitions": "[]",
 										children: "Categoria"
 									}),
 									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Select, {
-										"data-uid": "src/components/transactions/TransactionForm.tsx:197:21",
+										"data-uid": "src/components/transactions/TransactionForm.tsx:220:21",
 										"data-prohibitions": "[]",
 										onValueChange: field.onChange,
 										value: field.value || void 0,
 										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormControl, {
-											"data-uid": "src/components/transactions/TransactionForm.tsx:198:23",
+											"data-uid": "src/components/transactions/TransactionForm.tsx:221:23",
 											"data-prohibitions": "[]",
 											children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectTrigger, {
-												"data-uid": "src/components/transactions/TransactionForm.tsx:199:25",
+												"data-uid": "src/components/transactions/TransactionForm.tsx:222:25",
 												"data-prohibitions": "[]",
 												children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectValue, {
-													"data-uid": "src/components/transactions/TransactionForm.tsx:200:27",
+													"data-uid": "src/components/transactions/TransactionForm.tsx:223:27",
 													"data-prohibitions": "[editContent]",
 													placeholder: "Categoria"
 												})
 											})
 										}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(SelectContent, {
-											"data-uid": "src/components/transactions/TransactionForm.tsx:203:23",
+											"data-uid": "src/components/transactions/TransactionForm.tsx:226:23",
 											"data-prohibitions": "[]",
 											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectItem, {
-												"data-uid": "src/components/transactions/TransactionForm.tsx:204:25",
+												"data-uid": "src/components/transactions/TransactionForm.tsx:227:25",
 												"data-prohibitions": "[]",
 												value: "FIXA",
 												children: "Fixa"
 											}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectItem, {
-												"data-uid": "src/components/transactions/TransactionForm.tsx:205:25",
+												"data-uid": "src/components/transactions/TransactionForm.tsx:228:25",
 												"data-prohibitions": "[]",
 												value: "VARIAVEL",
 												children: "Variável"
@@ -74777,52 +75499,52 @@ function TransactionForm({ onSuccess }) {
 										})]
 									}),
 									/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormMessage, {
-										"data-uid": "src/components/transactions/TransactionForm.tsx:208:21",
+										"data-uid": "src/components/transactions/TransactionForm.tsx:231:21",
 										"data-prohibitions": "[editContent]"
 									})
 								]
 							})
 						})
 					}), type === "INCOME" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-						"data-uid": "src/components/transactions/TransactionForm.tsx:216:13",
+						"data-uid": "src/components/transactions/TransactionForm.tsx:239:13",
 						"data-prohibitions": "[]",
 						className: "animate-in fade-in slide-in-from-top-2 duration-300",
 						children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormField, {
-							"data-uid": "src/components/transactions/TransactionForm.tsx:217:15",
+							"data-uid": "src/components/transactions/TransactionForm.tsx:240:15",
 							"data-prohibitions": "[editContent]",
 							control: form.control,
 							name: "accountId",
 							render: ({ field }) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(FormItem, {
-								"data-uid": "src/components/transactions/TransactionForm.tsx:221:19",
+								"data-uid": "src/components/transactions/TransactionForm.tsx:244:19",
 								"data-prohibitions": "[editContent]",
 								children: [
 									/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormLabel, {
-										"data-uid": "src/components/transactions/TransactionForm.tsx:222:21",
+										"data-uid": "src/components/transactions/TransactionForm.tsx:245:21",
 										"data-prohibitions": "[]",
 										children: "Método de entrada"
 									}),
 									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Select, {
-										"data-uid": "src/components/transactions/TransactionForm.tsx:223:21",
+										"data-uid": "src/components/transactions/TransactionForm.tsx:246:21",
 										"data-prohibitions": "[editContent]",
 										onValueChange: field.onChange,
 										value: field.value || void 0,
 										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormControl, {
-											"data-uid": "src/components/transactions/TransactionForm.tsx:224:23",
+											"data-uid": "src/components/transactions/TransactionForm.tsx:247:23",
 											"data-prohibitions": "[]",
 											children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectTrigger, {
-												"data-uid": "src/components/transactions/TransactionForm.tsx:225:25",
+												"data-uid": "src/components/transactions/TransactionForm.tsx:248:25",
 												"data-prohibitions": "[]",
 												children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectValue, {
-													"data-uid": "src/components/transactions/TransactionForm.tsx:226:27",
+													"data-uid": "src/components/transactions/TransactionForm.tsx:249:27",
 													"data-prohibitions": "[editContent]",
 													placeholder: "Método"
 												})
 											})
 										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectContent, {
-											"data-uid": "src/components/transactions/TransactionForm.tsx:229:23",
+											"data-uid": "src/components/transactions/TransactionForm.tsx:252:23",
 											"data-prohibitions": "[editContent]",
 											children: accounts.map((a) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectItem, {
-												"data-uid": "src/components/transactions/TransactionForm.tsx:231:27",
+												"data-uid": "src/components/transactions/TransactionForm.tsx:254:27",
 												"data-prohibitions": "[editContent]",
 												value: a.id,
 												children: a.name
@@ -74830,7 +75552,7 @@ function TransactionForm({ onSuccess }) {
 										})]
 									}),
 									/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormMessage, {
-										"data-uid": "src/components/transactions/TransactionForm.tsx:237:21",
+										"data-uid": "src/components/transactions/TransactionForm.tsx:260:21",
 										"data-prohibitions": "[editContent]"
 									})
 								]
@@ -74839,14 +75561,300 @@ function TransactionForm({ onSuccess }) {
 					})]
 				}),
 				/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, {
-					"data-uid": "src/components/transactions/TransactionForm.tsx:245:9",
+					"data-uid": "src/components/transactions/TransactionForm.tsx:268:9",
 					"data-prohibitions": "[editContent]",
 					type: "submit",
 					className: "w-full mt-4",
 					disabled: loading,
-					children: loading ? "Salvando..." : "Salvar Lançamento"
+					children: loading ? "Salvando..." : initialData ? "Atualizar Lançamento" : "Salvar Lançamento"
 				})
 			]
+		})
+	});
+}
+//#endregion
+//#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/@radix-ui+react-alert-dialog@1.1.15_@types+react-dom@19.2.3_@types+react@19.2.14__@type_d492cfbed6c88f7a3980b921a627d48d/node_modules/@radix-ui/react-alert-dialog/dist/index.mjs
+var ROOT_NAME = "AlertDialog";
+var [createAlertDialogContext, createAlertDialogScope] = createContextScope(ROOT_NAME, [createDialogScope]);
+var useDialogScope = createDialogScope();
+var AlertDialog$1 = (props) => {
+	const { __scopeAlertDialog, ...alertDialogProps } = props;
+	const dialogScope = useDialogScope(__scopeAlertDialog);
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Root$2, {
+		...dialogScope,
+		...alertDialogProps,
+		modal: true
+	});
+};
+AlertDialog$1.displayName = ROOT_NAME;
+var TRIGGER_NAME = "AlertDialogTrigger";
+var AlertDialogTrigger$1 = import_react.forwardRef((props, forwardedRef) => {
+	const { __scopeAlertDialog, ...triggerProps } = props;
+	const dialogScope = useDialogScope(__scopeAlertDialog);
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Trigger, {
+		...dialogScope,
+		...triggerProps,
+		ref: forwardedRef
+	});
+});
+AlertDialogTrigger$1.displayName = TRIGGER_NAME;
+var PORTAL_NAME = "AlertDialogPortal";
+var AlertDialogPortal$1 = (props) => {
+	const { __scopeAlertDialog, ...portalProps } = props;
+	const dialogScope = useDialogScope(__scopeAlertDialog);
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Portal, {
+		...dialogScope,
+		...portalProps
+	});
+};
+AlertDialogPortal$1.displayName = PORTAL_NAME;
+var OVERLAY_NAME = "AlertDialogOverlay";
+var AlertDialogOverlay$1 = import_react.forwardRef((props, forwardedRef) => {
+	const { __scopeAlertDialog, ...overlayProps } = props;
+	const dialogScope = useDialogScope(__scopeAlertDialog);
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Overlay, {
+		...dialogScope,
+		...overlayProps,
+		ref: forwardedRef
+	});
+});
+AlertDialogOverlay$1.displayName = OVERLAY_NAME;
+var CONTENT_NAME = "AlertDialogContent";
+var [AlertDialogContentProvider, useAlertDialogContentContext] = createAlertDialogContext(CONTENT_NAME);
+var Slottable = /* @__PURE__ */ createSlottable("AlertDialogContent");
+var AlertDialogContent$1 = import_react.forwardRef((props, forwardedRef) => {
+	const { __scopeAlertDialog, children, ...contentProps } = props;
+	const dialogScope = useDialogScope(__scopeAlertDialog);
+	const contentRef = import_react.useRef(null);
+	const composedRefs = useComposedRefs(forwardedRef, contentRef);
+	const cancelRef = import_react.useRef(null);
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(WarningProvider, {
+		contentName: CONTENT_NAME,
+		titleName: TITLE_NAME,
+		docsSlug: "alert-dialog",
+		children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(AlertDialogContentProvider, {
+			scope: __scopeAlertDialog,
+			cancelRef,
+			children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Content, {
+				role: "alertdialog",
+				...dialogScope,
+				...contentProps,
+				ref: composedRefs,
+				onOpenAutoFocus: composeEventHandlers(contentProps.onOpenAutoFocus, (event) => {
+					event.preventDefault();
+					cancelRef.current?.focus({ preventScroll: true });
+				}),
+				onPointerDownOutside: (event) => event.preventDefault(),
+				onInteractOutside: (event) => event.preventDefault(),
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Slottable, { children }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(DescriptionWarning, { contentRef })]
+			})
+		})
+	});
+});
+AlertDialogContent$1.displayName = CONTENT_NAME;
+var TITLE_NAME = "AlertDialogTitle";
+var AlertDialogTitle$1 = import_react.forwardRef((props, forwardedRef) => {
+	const { __scopeAlertDialog, ...titleProps } = props;
+	const dialogScope = useDialogScope(__scopeAlertDialog);
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Title, {
+		...dialogScope,
+		...titleProps,
+		ref: forwardedRef
+	});
+});
+AlertDialogTitle$1.displayName = TITLE_NAME;
+var DESCRIPTION_NAME = "AlertDialogDescription";
+var AlertDialogDescription$1 = import_react.forwardRef((props, forwardedRef) => {
+	const { __scopeAlertDialog, ...descriptionProps } = props;
+	const dialogScope = useDialogScope(__scopeAlertDialog);
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Description, {
+		...dialogScope,
+		...descriptionProps,
+		ref: forwardedRef
+	});
+});
+AlertDialogDescription$1.displayName = DESCRIPTION_NAME;
+var ACTION_NAME = "AlertDialogAction";
+var AlertDialogAction$1 = import_react.forwardRef((props, forwardedRef) => {
+	const { __scopeAlertDialog, ...actionProps } = props;
+	const dialogScope = useDialogScope(__scopeAlertDialog);
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Close, {
+		...dialogScope,
+		...actionProps,
+		ref: forwardedRef
+	});
+});
+AlertDialogAction$1.displayName = ACTION_NAME;
+var CANCEL_NAME = "AlertDialogCancel";
+var AlertDialogCancel$1 = import_react.forwardRef((props, forwardedRef) => {
+	const { __scopeAlertDialog, ...cancelProps } = props;
+	const { cancelRef } = useAlertDialogContentContext(CANCEL_NAME, __scopeAlertDialog);
+	const dialogScope = useDialogScope(__scopeAlertDialog);
+	const ref = useComposedRefs(forwardedRef, cancelRef);
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Close, {
+		...dialogScope,
+		...cancelProps,
+		ref
+	});
+});
+AlertDialogCancel$1.displayName = CANCEL_NAME;
+var DescriptionWarning = ({ contentRef }) => {
+	const MESSAGE = `\`${CONTENT_NAME}\` requires a description for the component to be accessible for screen reader users.
+
+You can add a description to the \`${CONTENT_NAME}\` by passing a \`${DESCRIPTION_NAME}\` component as a child, which also benefits sighted users by adding visible context to the dialog.
+
+Alternatively, you can use your own component as a description by assigning it an \`id\` and passing the same value to the \`aria-describedby\` prop in \`${CONTENT_NAME}\`. If the description is confusing or duplicative for sighted users, you can use the \`@radix-ui/react-visually-hidden\` primitive as a wrapper around your description component.
+
+For more information, see https://radix-ui.com/primitives/docs/components/alert-dialog`;
+	import_react.useEffect(() => {
+		if (!document.getElementById(contentRef.current?.getAttribute("aria-describedby"))) console.warn(MESSAGE);
+	}, [MESSAGE, contentRef]);
+	return null;
+};
+var Root2 = AlertDialog$1;
+var Portal2 = AlertDialogPortal$1;
+var Overlay2 = AlertDialogOverlay$1;
+var Content2 = AlertDialogContent$1;
+var Action = AlertDialogAction$1;
+var Cancel = AlertDialogCancel$1;
+var Title2 = AlertDialogTitle$1;
+var Description2 = AlertDialogDescription$1;
+//#endregion
+//#region src/components/ui/alert-dialog.tsx
+var AlertDialog = Root2;
+var AlertDialogPortal = Portal2;
+var AlertDialogOverlay = import_react.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Overlay2, {
+	"data-uid": "src/components/ui/alert-dialog.tsx:18:3",
+	"data-prohibitions": "[editContent]",
+	className: cn$1("fixed inset-0 z-50 bg-black/80  data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0", className),
+	...props,
+	ref
+}));
+AlertDialogOverlay.displayName = Overlay2.displayName;
+var AlertDialogContent = import_react.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(AlertDialogPortal, {
+	"data-uid": "src/components/ui/alert-dialog.tsx:33:3",
+	"data-prohibitions": "[editContent]",
+	children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(AlertDialogOverlay, {
+		"data-uid": "src/components/ui/alert-dialog.tsx:34:5",
+		"data-prohibitions": "[editContent]"
+	}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Content2, {
+		"data-uid": "src/components/ui/alert-dialog.tsx:35:5",
+		"data-prohibitions": "[editContent]",
+		ref,
+		className: cn$1("fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background p-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] sm:rounded-lg", className),
+		...props
+	})]
+}));
+AlertDialogContent.displayName = Content2.displayName;
+var AlertDialogHeader = ({ className, ...props }) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+	"data-uid": "src/components/ui/alert-dialog.tsx:48:3",
+	"data-prohibitions": "[editContent]",
+	className: cn$1("flex flex-col space-y-2 text-center sm:text-left", className),
+	...props
+});
+AlertDialogHeader.displayName = "AlertDialogHeader";
+var AlertDialogFooter = ({ className, ...props }) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+	"data-uid": "src/components/ui/alert-dialog.tsx:53:3",
+	"data-prohibitions": "[editContent]",
+	className: cn$1("flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2", className),
+	...props
+});
+AlertDialogFooter.displayName = "AlertDialogFooter";
+var AlertDialogTitle = import_react.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Title2, {
+	"data-uid": "src/components/ui/alert-dialog.tsx:64:3",
+	"data-prohibitions": "[editContent]",
+	ref,
+	className: cn$1("text-lg font-semibold", className),
+	...props
+}));
+AlertDialogTitle.displayName = Title2.displayName;
+var AlertDialogDescription = import_react.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Description2, {
+	"data-uid": "src/components/ui/alert-dialog.tsx:76:3",
+	"data-prohibitions": "[editContent]",
+	ref,
+	className: cn$1("text-sm text-muted-foreground", className),
+	...props
+}));
+AlertDialogDescription.displayName = Description2.displayName;
+var AlertDialogAction = import_react.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Action, {
+	"data-uid": "src/components/ui/alert-dialog.tsx:88:3",
+	"data-prohibitions": "[editContent]",
+	ref,
+	className: cn$1(buttonVariants(), className),
+	...props
+}));
+AlertDialogAction.displayName = Action.displayName;
+var AlertDialogCancel = import_react.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Cancel, {
+	"data-uid": "src/components/ui/alert-dialog.tsx:96:3",
+	"data-prohibitions": "[editContent]",
+	ref,
+	className: cn$1(buttonVariants({ variant: "outline" }), "mt-2 sm:mt-0", className),
+	...props
+}));
+AlertDialogCancel.displayName = Cancel.displayName;
+//#endregion
+//#region src/components/transactions/DeleteTransactionDialog.tsx
+function DeleteTransactionDialog({ id, open, onOpenChange }) {
+	const { deleteTransaction } = useFinanceStore();
+	const { toast } = useToast();
+	const [loading, setLoading] = (0, import_react.useState)(false);
+	const handleDelete = async () => {
+		if (!id) return;
+		try {
+			setLoading(true);
+			await deleteTransaction(id);
+			toast({
+				title: "Sucesso",
+				description: "Transação excluída."
+			});
+			onOpenChange(false);
+		} catch (error) {
+			toast({
+				title: "Erro",
+				description: "Erro ao excluir.",
+				variant: "destructive"
+			});
+		} finally {
+			setLoading(false);
+		}
+	};
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(AlertDialog, {
+		"data-uid": "src/components/transactions/DeleteTransactionDialog.tsx:41:5",
+		"data-prohibitions": "[editContent]",
+		open,
+		onOpenChange,
+		children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(AlertDialogContent, {
+			"data-uid": "src/components/transactions/DeleteTransactionDialog.tsx:42:7",
+			"data-prohibitions": "[editContent]",
+			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)(AlertDialogHeader, {
+				"data-uid": "src/components/transactions/DeleteTransactionDialog.tsx:43:9",
+				"data-prohibitions": "[]",
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(AlertDialogTitle, {
+					"data-uid": "src/components/transactions/DeleteTransactionDialog.tsx:44:11",
+					"data-prohibitions": "[]",
+					children: "Você tem certeza?"
+				}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(AlertDialogDescription, {
+					"data-uid": "src/components/transactions/DeleteTransactionDialog.tsx:45:11",
+					"data-prohibitions": "[]",
+					children: "Esta ação não pode ser desfeita. A transação será removida permanentemente."
+				})]
+			}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(AlertDialogFooter, {
+				"data-uid": "src/components/transactions/DeleteTransactionDialog.tsx:49:9",
+				"data-prohibitions": "[editContent]",
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(AlertDialogCancel, {
+					"data-uid": "src/components/transactions/DeleteTransactionDialog.tsx:50:11",
+					"data-prohibitions": "[]",
+					disabled: loading,
+					children: "Cancelar"
+				}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(AlertDialogAction, {
+					"data-uid": "src/components/transactions/DeleteTransactionDialog.tsx:51:11",
+					"data-prohibitions": "[editContent]",
+					onClick: handleDelete,
+					disabled: loading,
+					className: "bg-destructive text-destructive-foreground hover:bg-destructive/90",
+					children: loading ? "Excluindo..." : "Excluir"
+				})]
+			})]
 		})
 	});
 }
@@ -77008,6 +78016,8 @@ function Transactions() {
 	const { transactions, categories, accounts, loadingData } = useFinanceStore();
 	const [search, setSearch] = (0, import_react.useState)("");
 	const [isSheetOpen, setIsSheetOpen] = (0, import_react.useState)(false);
+	const [editingTx, setEditingTx] = (0, import_react.useState)(null);
+	const [deletingId, setDeletingId] = (0, import_react.useState)(null);
 	const filteredData = transactions.filter((t) => t.description.toLowerCase().includes(search.toLowerCase()));
 	const getCategoryName = (id, type) => {
 		if (type === "INCOME") return "-";
@@ -77028,97 +78038,107 @@ function Transactions() {
 		}).format(val);
 		return type === "EXPENSE" ? `- ${formatted}` : formatted;
 	};
+	const handleEdit = (tx) => {
+		setEditingTx(tx);
+		setIsSheetOpen(true);
+	};
+	const handleSheetChange = (open) => {
+		setIsSheetOpen(open);
+		if (!open) setEditingTx(null);
+	};
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-		"data-uid": "src/pages/Transactions.tsx:51:5",
+		"data-uid": "src/pages/Transactions.tsx:65:5",
 		"data-prohibitions": "[editContent]",
 		className: "flex flex-col h-full bg-white rounded-md shadow-md border overflow-hidden p-6 animate-fade-in-up",
 		children: [
 			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-				"data-uid": "src/pages/Transactions.tsx:52:7",
-				"data-prohibitions": "[]",
+				"data-uid": "src/pages/Transactions.tsx:66:7",
+				"data-prohibitions": "[editContent]",
 				className: "flex justify-between items-center mb-6",
 				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-					"data-uid": "src/pages/Transactions.tsx:53:9",
+					"data-uid": "src/pages/Transactions.tsx:67:9",
 					"data-prohibitions": "[]",
 					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h1", {
-						"data-uid": "src/pages/Transactions.tsx:54:11",
+						"data-uid": "src/pages/Transactions.tsx:68:11",
 						"data-prohibitions": "[]",
 						className: "text-2xl font-bold text-primary",
 						children: "Transações"
 					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-						"data-uid": "src/pages/Transactions.tsx:55:11",
+						"data-uid": "src/pages/Transactions.tsx:69:11",
 						"data-prohibitions": "[]",
 						className: "text-sm text-muted-foreground",
 						children: "Gerencie seus lançamentos financeiros"
 					})]
 				}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-					"data-uid": "src/pages/Transactions.tsx:57:9",
-					"data-prohibitions": "[]",
+					"data-uid": "src/pages/Transactions.tsx:71:9",
+					"data-prohibitions": "[editContent]",
 					className: "flex gap-2",
 					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Button, {
-						"data-uid": "src/pages/Transactions.tsx:58:11",
+						"data-uid": "src/pages/Transactions.tsx:72:11",
 						"data-prohibitions": "[]",
 						variant: "outline",
 						className: "hidden sm:flex gap-2",
 						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Download, {
-							"data-uid": "src/pages/Transactions.tsx:59:13",
+							"data-uid": "src/pages/Transactions.tsx:73:13",
 							"data-prohibitions": "[editContent]",
 							className: "h-4 w-4"
 						}), " Exportar CSV"]
 					}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Sheet, {
-						"data-uid": "src/pages/Transactions.tsx:61:11",
-						"data-prohibitions": "[]",
+						"data-uid": "src/pages/Transactions.tsx:75:11",
+						"data-prohibitions": "[editContent]",
 						open: isSheetOpen,
-						onOpenChange: setIsSheetOpen,
+						onOpenChange: handleSheetChange,
 						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(SheetTrigger, {
-							"data-uid": "src/pages/Transactions.tsx:62:13",
+							"data-uid": "src/pages/Transactions.tsx:76:13",
 							"data-prohibitions": "[]",
 							asChild: true,
 							children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Button, {
-								"data-uid": "src/pages/Transactions.tsx:63:15",
+								"data-uid": "src/pages/Transactions.tsx:77:15",
 								"data-prohibitions": "[]",
 								className: "gap-2 bg-green-600 hover:bg-green-700",
+								onClick: () => setEditingTx(null),
 								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Plus, {
-									"data-uid": "src/pages/Transactions.tsx:64:17",
+									"data-uid": "src/pages/Transactions.tsx:81:17",
 									"data-prohibitions": "[editContent]",
 									className: "h-4 w-4"
 								}), " Novo Lançamento"]
 							})
 						}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(SheetContent, {
-							"data-uid": "src/pages/Transactions.tsx:67:13",
-							"data-prohibitions": "[]",
+							"data-uid": "src/pages/Transactions.tsx:84:13",
+							"data-prohibitions": "[editContent]",
 							className: "overflow-y-auto",
 							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(SheetHeader, {
-								"data-uid": "src/pages/Transactions.tsx:68:15",
-								"data-prohibitions": "[]",
+								"data-uid": "src/pages/Transactions.tsx:85:15",
+								"data-prohibitions": "[editContent]",
 								children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SheetTitle, {
-									"data-uid": "src/pages/Transactions.tsx:69:17",
-									"data-prohibitions": "[]",
-									children: "Adicionar Transação"
+									"data-uid": "src/pages/Transactions.tsx:86:17",
+									"data-prohibitions": "[editContent]",
+									children: editingTx ? "Editar Transação" : "Adicionar Transação"
 								})
 							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TransactionForm, {
-								"data-uid": "src/pages/Transactions.tsx:71:15",
+								"data-uid": "src/pages/Transactions.tsx:88:15",
 								"data-prohibitions": "[editContent]",
-								onSuccess: () => setIsSheetOpen(false)
+								onSuccess: () => handleSheetChange(false),
+								initialData: editingTx
 							})]
 						})]
 					})]
 				})]
 			}),
 			/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-				"data-uid": "src/pages/Transactions.tsx:77:7",
+				"data-uid": "src/pages/Transactions.tsx:94:7",
 				"data-prohibitions": "[]",
 				className: "flex items-center gap-2 mb-4",
 				children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-					"data-uid": "src/pages/Transactions.tsx:78:9",
+					"data-uid": "src/pages/Transactions.tsx:95:9",
 					"data-prohibitions": "[]",
 					className: "relative flex-1 max-w-sm",
 					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Search, {
-						"data-uid": "src/pages/Transactions.tsx:79:11",
+						"data-uid": "src/pages/Transactions.tsx:96:11",
 						"data-prohibitions": "[editContent]",
 						className: "absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground"
 					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Input, {
-						"data-uid": "src/pages/Transactions.tsx:80:11",
+						"data-uid": "src/pages/Transactions.tsx:97:11",
 						"data-prohibitions": "[editContent]",
 						placeholder: "Buscar por descrição...",
 						className: "pl-8",
@@ -77128,107 +78148,113 @@ function Transactions() {
 				})
 			}),
 			/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-				"data-uid": "src/pages/Transactions.tsx:89:7",
+				"data-uid": "src/pages/Transactions.tsx:106:7",
 				"data-prohibitions": "[editContent]",
 				className: "rounded-md border flex-1 overflow-auto",
 				children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Table, {
-					"data-uid": "src/pages/Transactions.tsx:90:9",
+					"data-uid": "src/pages/Transactions.tsx:107:9",
 					"data-prohibitions": "[editContent]",
 					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TableHeader, {
-						"data-uid": "src/pages/Transactions.tsx:91:11",
+						"data-uid": "src/pages/Transactions.tsx:108:11",
 						"data-prohibitions": "[]",
 						className: "bg-gray-50 sticky top-0 z-10",
 						children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(TableRow, {
-							"data-uid": "src/pages/Transactions.tsx:92:13",
+							"data-uid": "src/pages/Transactions.tsx:109:13",
 							"data-prohibitions": "[]",
 							children: [
 								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TableHead, {
-									"data-uid": "src/pages/Transactions.tsx:93:15",
+									"data-uid": "src/pages/Transactions.tsx:110:15",
 									"data-prohibitions": "[]",
 									children: "Data"
 								}),
 								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TableHead, {
-									"data-uid": "src/pages/Transactions.tsx:94:15",
+									"data-uid": "src/pages/Transactions.tsx:111:15",
 									"data-prohibitions": "[]",
 									children: "Descrição"
 								}),
 								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TableHead, {
-									"data-uid": "src/pages/Transactions.tsx:95:15",
+									"data-uid": "src/pages/Transactions.tsx:112:15",
 									"data-prohibitions": "[]",
 									children: "Categoria"
 								}),
 								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TableHead, {
-									"data-uid": "src/pages/Transactions.tsx:96:15",
+									"data-uid": "src/pages/Transactions.tsx:113:15",
 									"data-prohibitions": "[]",
 									children: "Conta"
 								}),
 								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TableHead, {
-									"data-uid": "src/pages/Transactions.tsx:97:15",
+									"data-uid": "src/pages/Transactions.tsx:114:15",
 									"data-prohibitions": "[]",
 									children: "Status"
 								}),
 								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TableHead, {
-									"data-uid": "src/pages/Transactions.tsx:98:15",
+									"data-uid": "src/pages/Transactions.tsx:115:15",
 									"data-prohibitions": "[]",
 									className: "text-right",
 									children: "Valor"
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TableHead, {
+									"data-uid": "src/pages/Transactions.tsx:116:15",
+									"data-prohibitions": "[]",
+									className: "text-center w-24",
+									children: "Ações"
 								})
 							]
 						})
 					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TableBody, {
-						"data-uid": "src/pages/Transactions.tsx:101:11",
+						"data-uid": "src/pages/Transactions.tsx:119:11",
 						"data-prohibitions": "[editContent]",
 						children: loadingData ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TableRow, {
-							"data-uid": "src/pages/Transactions.tsx:103:15",
+							"data-uid": "src/pages/Transactions.tsx:121:15",
 							"data-prohibitions": "[]",
 							children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TableCell, {
-								"data-uid": "src/pages/Transactions.tsx:104:17",
+								"data-uid": "src/pages/Transactions.tsx:122:17",
 								"data-prohibitions": "[]",
-								colSpan: 6,
+								colSpan: 7,
 								className: "h-24 text-center text-muted-foreground",
 								children: "Carregando transações..."
 							})
 						}) : filteredData.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TableRow, {
-							"data-uid": "src/pages/Transactions.tsx:109:15",
+							"data-uid": "src/pages/Transactions.tsx:127:15",
 							"data-prohibitions": "[]",
 							children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TableCell, {
-								"data-uid": "src/pages/Transactions.tsx:110:17",
+								"data-uid": "src/pages/Transactions.tsx:128:17",
 								"data-prohibitions": "[]",
-								colSpan: 6,
+								colSpan: 7,
 								className: "h-24 text-center text-muted-foreground",
 								children: "Nenhuma transação encontrada."
 							})
 						}) : filteredData.slice(0, 50).map((tx) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(TableRow, {
-							"data-uid": "src/pages/Transactions.tsx:116:17",
+							"data-uid": "src/pages/Transactions.tsx:134:17",
 							"data-prohibitions": "[editContent]",
 							children: [
 								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TableCell, {
-									"data-uid": "src/pages/Transactions.tsx:117:19",
+									"data-uid": "src/pages/Transactions.tsx:135:19",
 									"data-prohibitions": "[editContent]",
 									className: "whitespace-nowrap",
 									children: format(new Date(tx.date), "dd/MM/yyyy")
 								}),
 								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TableCell, {
-									"data-uid": "src/pages/Transactions.tsx:120:19",
+									"data-uid": "src/pages/Transactions.tsx:138:19",
 									"data-prohibitions": "[editContent]",
 									className: "font-medium",
 									children: tx.description
 								}),
 								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TableCell, {
-									"data-uid": "src/pages/Transactions.tsx:121:19",
+									"data-uid": "src/pages/Transactions.tsx:139:19",
 									"data-prohibitions": "[editContent]",
 									children: getCategoryName(tx.categoryId, tx.type)
 								}),
 								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TableCell, {
-									"data-uid": "src/pages/Transactions.tsx:122:19",
+									"data-uid": "src/pages/Transactions.tsx:140:19",
 									"data-prohibitions": "[editContent]",
 									children: getAccountName(tx.accountId, tx.type)
 								}),
 								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TableCell, {
-									"data-uid": "src/pages/Transactions.tsx:123:19",
+									"data-uid": "src/pages/Transactions.tsx:141:19",
 									"data-prohibitions": "[editContent]",
 									children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Badge, {
-										"data-uid": "src/pages/Transactions.tsx:124:21",
+										"data-uid": "src/pages/Transactions.tsx:142:21",
 										"data-prohibitions": "[editContent]",
 										variant: tx.status === "REALIZADO" ? "default" : tx.status === "PREVISTO" ? "secondary" : "destructive",
 										className: cn$1("text-[10px]", tx.status === "REALIZADO" && "bg-emerald-500 hover:bg-emerald-600"),
@@ -77236,10 +78262,45 @@ function Transactions() {
 									})
 								}),
 								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TableCell, {
-									"data-uid": "src/pages/Transactions.tsx:140:19",
+									"data-uid": "src/pages/Transactions.tsx:158:19",
 									"data-prohibitions": "[editContent]",
 									className: cn$1("text-right font-medium", tx.type === "INCOME" ? "text-emerald-600" : "text-red-500"),
 									children: formatCurrency(tx.amount, tx.type)
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TableCell, {
+									"data-uid": "src/pages/Transactions.tsx:166:19",
+									"data-prohibitions": "[]",
+									className: "text-center",
+									children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										"data-uid": "src/pages/Transactions.tsx:167:21",
+										"data-prohibitions": "[]",
+										className: "flex justify-center gap-2",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, {
+											"data-uid": "src/pages/Transactions.tsx:168:23",
+											"data-prohibitions": "[]",
+											variant: "ghost",
+											size: "icon",
+											className: "h-8 w-8 text-slate-500 hover:text-blue-600",
+											onClick: () => handleEdit(tx),
+											children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Pencil, {
+												"data-uid": "src/pages/Transactions.tsx:174:25",
+												"data-prohibitions": "[editContent]",
+												className: "h-4 w-4"
+											})
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, {
+											"data-uid": "src/pages/Transactions.tsx:176:23",
+											"data-prohibitions": "[]",
+											variant: "ghost",
+											size: "icon",
+											className: "h-8 w-8 text-slate-500 hover:text-red-600",
+											onClick: () => setDeletingId(tx.id),
+											children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Trash2, {
+												"data-uid": "src/pages/Transactions.tsx:182:25",
+												"data-prohibitions": "[editContent]",
+												className: "h-4 w-4"
+											})
+										})]
+									})
 								})
 							]
 						}, tx.id))
@@ -77247,7 +78308,7 @@ function Transactions() {
 				})
 			}),
 			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-				"data-uid": "src/pages/Transactions.tsx:154:7",
+				"data-uid": "src/pages/Transactions.tsx:192:7",
 				"data-prohibitions": "[editContent]",
 				className: "text-xs text-muted-foreground mt-2 text-right",
 				children: [
@@ -77257,6 +78318,13 @@ function Transactions() {
 					filteredData.length,
 					"."
 				]
+			}),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsx)(DeleteTransactionDialog, {
+				"data-uid": "src/pages/Transactions.tsx:196:7",
+				"data-prohibitions": "[editContent]",
+				id: deletingId,
+				open: !!deletingId,
+				onOpenChange: (open) => !open && setDeletingId(null)
 			})
 		]
 	});
@@ -77342,7 +78410,7 @@ function Settings() {
 						"data-uid": "src/pages/Settings.tsx:74:15",
 						"data-prohibitions": "[editContent]",
 						className: "grid grid-cols-1 sm:grid-cols-4 items-center gap-2 sm:gap-4",
-						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Label, {
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Label$1, {
 							"data-uid": "src/pages/Settings.tsx:78:17",
 							"data-prohibitions": "[editContent]",
 							htmlFor: `acc-${acc.id}`,
@@ -77824,4 +78892,4 @@ var App = () => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(BrowserRouter, {
 }));
 //#endregion
 
-//# sourceMappingURL=index-OnJ1Yruf.js.map
+//# sourceMappingURL=index-Crra5bLW.js.map

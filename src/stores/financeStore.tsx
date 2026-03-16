@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useMemo, useEffect } from 'react'
-import { Transaction, Account, Category } from '@/types/finance'
+import { Transaction, Account, Category, MonthlyMetric } from '@/types/finance'
 import { supabase } from '@/lib/supabase/client'
 import { useAuth } from '@/hooks/use-auth'
 
@@ -25,10 +25,15 @@ interface FinanceContextType {
   transactions: Transaction[]
   accounts: Account[]
   categories: Category[]
+  monthlyMetrics: MonthlyMetric[]
   filters: FinanceFilters
   setFilter: (key: keyof FinanceFilters, values: string[]) => void
   addTransaction: (tx: Omit<Transaction, 'id'>) => Promise<void>
+  updateTransaction: (id: string, tx: Partial<Omit<Transaction, 'id'>>) => Promise<void>
+  deleteTransaction: (id: string) => Promise<void>
+  saveMonthlyMetric: (metric: Omit<MonthlyMetric, 'id'>) => Promise<void>
   filteredTransactions: Transaction[]
+  filteredMonthlyMetrics: MonthlyMetric[]
   updateAccountInitialBalances: (balances: Record<string, number>) => Promise<{ error: any }>
   loadingData: boolean
 }
@@ -68,6 +73,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
   const { user } = useAuth()
   const [transactions, setTransactions] = useState<Transaction[]>([])
   const [accounts, setAccounts] = useState<Account[]>(ACCOUNTS)
+  const [monthlyMetrics, setMonthlyMetrics] = useState<MonthlyMetric[]>([])
   const [loadingData, setLoadingData] = useState(true)
   const [filters, setFilters] = useState<FinanceFilters>({
     years: [new Date().getFullYear().toString()],
@@ -80,6 +86,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
       fetchData()
     } else {
       setTransactions([])
+      setMonthlyMetrics([])
       setAccounts(ACCOUNTS)
       setLoadingData(false)
     }
@@ -89,9 +96,10 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
     setLoadingData(true)
     if (!user) return
 
-    const [txRes, settingsRes] = await Promise.all([
+    const [txRes, settingsRes, metricsRes] = await Promise.all([
       supabase.from('transactions').select('*').order('date', { ascending: false }),
       supabase.from('user_settings').select('*').eq('user_id', user.id).maybeSingle(),
+      supabase.from('monthly_metrics').select('*'),
     ])
 
     if (txRes.data) {
@@ -105,6 +113,19 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
           categoryId: mapCategoryFromDB(d.category),
           accountId: mapAccountFromDB(d.account),
           status: d.status as any,
+        })),
+      )
+    }
+
+    if (metricsRes.data) {
+      setMonthlyMetrics(
+        metricsRes.data.map((m: any) => ({
+          id: m.id,
+          month: m.month,
+          year: m.year,
+          orders_count: Number(m.orders_count),
+          total_system_sales: Number(m.total_system_sales),
+          raw_material_costs: Number(m.raw_material_costs),
         })),
       )
     }
@@ -136,9 +157,6 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
   const addTransaction = async (tx: Omit<Transaction, 'id'>) => {
     if (!user) return
     const dbType = mapTypeToDB(tx.type)
-    const dbCategory = dbType === 'despesa' ? mapCategoryToDB(tx.categoryId) : null
-    const dbAccount = dbType === 'receita' ? mapAccountToDB(tx.accountId) : null
-
     const { data, error } = await supabase
       .from('transactions')
       .insert({
@@ -146,8 +164,8 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
         description: tx.description,
         amount: tx.amount,
         type: dbType,
-        category: dbCategory,
-        account: dbAccount,
+        category: dbType === 'despesa' ? mapCategoryToDB(tx.categoryId) : null,
+        account: dbType === 'receita' ? mapAccountToDB(tx.accountId) : null,
         status: tx.status,
         date: new Date(tx.date).toISOString(),
       })
@@ -166,9 +184,92 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
         status: data.status as any,
       }
       setTransactions((prev) => [newTx, ...prev])
-    } else if (error) {
-      throw error
-    }
+    } else if (error) throw error
+  }
+
+  const updateTransaction = async (id: string, tx: Partial<Omit<Transaction, 'id'>>) => {
+    if (!user) return
+    const updateData: any = {}
+    if (tx.description !== undefined) updateData.description = tx.description
+    if (tx.amount !== undefined) updateData.amount = tx.amount
+    if (tx.type !== undefined) updateData.type = mapTypeToDB(tx.type)
+    if (tx.categoryId !== undefined) updateData.category = mapCategoryToDB(tx.categoryId)
+    if (tx.accountId !== undefined) updateData.account = mapAccountToDB(tx.accountId)
+    if (tx.status !== undefined) updateData.status = tx.status
+    if (tx.date !== undefined) updateData.date = new Date(tx.date).toISOString()
+
+    const { data, error } = await supabase
+      .from('transactions')
+      .update(updateData)
+      .eq('id', id)
+      .select()
+      .single()
+
+    if (!error && data) {
+      setTransactions((prev) =>
+        prev.map((t) =>
+          t.id === id
+            ? {
+                ...t,
+                date: data.date,
+                description: data.description,
+                amount: Number(data.amount),
+                type: mapTypeFromDB(data.type) as any,
+                categoryId: mapCategoryFromDB(data.category),
+                accountId: mapAccountFromDB(data.account),
+                status: data.status as any,
+              }
+            : t,
+        ),
+      )
+    } else if (error) throw error
+  }
+
+  const deleteTransaction = async (id: string) => {
+    if (!user) return
+    const { error } = await supabase.from('transactions').delete().eq('id', id)
+    if (!error) {
+      setTransactions((prev) => prev.filter((t) => t.id !== id))
+    } else throw error
+  }
+
+  const saveMonthlyMetric = async (metric: Omit<MonthlyMetric, 'id'>) => {
+    if (!user) return
+    const { data, error } = await supabase
+      .from('monthly_metrics')
+      .upsert(
+        {
+          user_id: user.id,
+          month: metric.month,
+          year: metric.year,
+          orders_count: metric.orders_count,
+          total_system_sales: metric.total_system_sales,
+          raw_material_costs: metric.raw_material_costs,
+          updated_at: new Date().toISOString(),
+        },
+        { onConflict: 'user_id,month,year' },
+      )
+      .select()
+      .single()
+
+    if (!error && data) {
+      setMonthlyMetrics((prev) => {
+        const filtered = prev.filter(
+          (m) => m.id !== data.id && (m.month !== metric.month || m.year !== metric.year),
+        )
+        return [
+          ...filtered,
+          {
+            id: data.id,
+            month: data.month,
+            year: data.year,
+            orders_count: Number(data.orders_count),
+            total_system_sales: Number(data.total_system_sales),
+            raw_material_costs: Number(data.raw_material_costs),
+          },
+        ]
+      })
+    } else if (error) throw error
   }
 
   const updateAccountInitialBalances = async (balances: Record<string, number>) => {
@@ -206,16 +307,33 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
     })
   }, [transactions, filters])
 
+  const filteredMonthlyMetrics = useMemo(() => {
+    return monthlyMetrics.filter((m) => {
+      if (filters.years.length > 0 && !filters.years.includes(m.year.toString())) return false
+      if (
+        filters.months.length > 0 &&
+        !filters.months.includes(m.month.toString().padStart(2, '0'))
+      )
+        return false
+      return true
+    })
+  }, [monthlyMetrics, filters])
+
   return (
     <FinanceContext.Provider
       value={{
         transactions,
         accounts,
         categories: CATEGORIES,
+        monthlyMetrics,
         filters,
         setFilter,
         addTransaction,
+        updateTransaction,
+        deleteTransaction,
+        saveMonthlyMetric,
         filteredTransactions,
+        filteredMonthlyMetrics,
         updateAccountInitialBalances,
         loadingData,
       }}

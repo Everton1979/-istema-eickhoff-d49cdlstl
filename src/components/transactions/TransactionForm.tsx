@@ -21,7 +21,7 @@ import {
 import { useFinanceStore } from '@/stores/financeStore'
 import { useToast } from '@/hooks/use-toast'
 import { useEffect, useState } from 'react'
-import { cn } from '@/lib/utils'
+import { Transaction } from '@/types/finance'
 
 const formSchema = z
   .object({
@@ -50,43 +50,66 @@ const formSchema = z
     }
   })
 
-export function TransactionForm({ onSuccess }: { onSuccess: () => void }) {
-  const { accounts, addTransaction } = useFinanceStore()
+interface TransactionFormProps {
+  onSuccess: () => void
+  initialData?: Transaction | null
+}
+
+export function TransactionForm({ onSuccess, initialData }: TransactionFormProps) {
+  const { accounts, addTransaction, updateTransaction } = useFinanceStore()
   const { toast } = useToast()
   const [loading, setLoading] = useState(false)
 
+  const defaultValues = initialData
+    ? {
+        date: new Date(initialData.date).toISOString().split('T')[0],
+        description: initialData.description,
+        amount: initialData.amount,
+        type: initialData.type,
+        status: initialData.status,
+        categoryId: initialData.categoryId || '',
+        accountId: initialData.accountId || '',
+      }
+    : {
+        date: new Date().toISOString().split('T')[0],
+        description: '',
+        amount: 0,
+        type: 'EXPENSE' as const,
+        status: 'REALIZADO' as const,
+        categoryId: '',
+        accountId: '',
+      }
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      date: new Date().toISOString().split('T')[0],
-      description: '',
-      amount: 0,
-      type: 'EXPENSE',
-      status: 'REALIZADO',
-      categoryId: '',
-      accountId: '',
-    },
+    defaultValues,
   })
 
   const type = form.watch('type')
 
   useEffect(() => {
-    if (type === 'INCOME') {
-      form.setValue('categoryId', '')
-    } else {
-      form.setValue('accountId', '')
+    if (!initialData) {
+      if (type === 'INCOME') form.setValue('categoryId', '')
+      else form.setValue('accountId', '')
     }
-  }, [type, form])
+  }, [type, form, initialData])
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       setLoading(true)
-      await addTransaction({
+      const payload = {
         ...values,
         categoryId: values.type === 'EXPENSE' ? values.categoryId || 'FIXA' : '',
         accountId: values.type === 'INCOME' ? values.accountId || 'acc1' : '',
-      } as any)
-      toast({ title: 'Sucesso', description: 'Transação salva com sucesso!' })
+      }
+
+      if (initialData) {
+        await updateTransaction(initialData.id, payload as any)
+        toast({ title: 'Sucesso', description: 'Transação atualizada com sucesso!' })
+      } else {
+        await addTransaction(payload as any)
+        toast({ title: 'Sucesso', description: 'Transação salva com sucesso!' })
+      }
       form.reset()
       onSuccess()
     } catch (error) {
@@ -243,7 +266,7 @@ export function TransactionForm({ onSuccess }: { onSuccess: () => void }) {
         </div>
 
         <Button type="submit" className="w-full mt-4" disabled={loading}>
-          {loading ? 'Salvando...' : 'Salvar Lançamento'}
+          {loading ? 'Salvando...' : initialData ? 'Atualizar Lançamento' : 'Salvar Lançamento'}
         </Button>
       </form>
     </Form>

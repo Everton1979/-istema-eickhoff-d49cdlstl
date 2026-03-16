@@ -5,6 +5,8 @@ import { CashFlowChart } from '@/components/dashboard/CashFlowChart'
 import { TopCategoriesChart } from '@/components/dashboard/TopCategoriesChart'
 import { ProfitabilityChart } from '@/components/dashboard/ProfitabilityChart'
 import { AccountBalances } from '@/components/dashboard/AccountBalances'
+import { PharmacyMetrics } from '@/components/dashboard/PharmacyMetrics'
+import { ExpenseDistribution } from '@/components/dashboard/ExpenseDistribution'
 
 export default function Index() {
   return (
@@ -19,12 +21,21 @@ export default function Index() {
 
         {/* Main Dashboard Area */}
         <div className="flex-1 bg-[#f1f5f9] p-2 flex flex-col gap-2 overflow-y-auto">
-          <KpiCards />
+          <div className="flex flex-col xl:flex-row gap-2">
+            <div className="flex-1">
+              <KpiCards />
+            </div>
+            <div className="xl:w-[250px] shrink-0">
+              <ExpenseDistribution />
+            </div>
+          </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-2 flex-1 min-h-[500px]">
+          <PharmacyMetrics />
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-2 flex-1 min-h-[400px]">
             {/* Left large column */}
             <div className="lg:col-span-2 flex flex-col gap-2">
-              <div className="flex-1 min-h-[250px]">
+              <div className="flex-1 min-h-[200px]">
                 <CashFlowChart />
               </div>
               <div className="flex-1 min-h-[200px]">

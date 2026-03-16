@@ -13,14 +13,18 @@ import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { TransactionForm } from '@/components/transactions/TransactionForm'
+import { DeleteTransactionDialog } from '@/components/transactions/DeleteTransactionDialog'
 import { format } from 'date-fns'
-import { Plus, Search, Download } from 'lucide-react'
+import { Plus, Search, Download, Pencil, Trash2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { Transaction } from '@/types/finance'
 
 export default function Transactions() {
   const { transactions, categories, accounts, loadingData } = useFinanceStore()
   const [search, setSearch] = useState('')
   const [isSheetOpen, setIsSheetOpen] = useState(false)
+  const [editingTx, setEditingTx] = useState<Transaction | null>(null)
+  const [deletingId, setDeletingId] = useState<string | null>(null)
 
   const filteredData = transactions.filter((t) =>
     t.description.toLowerCase().includes(search.toLowerCase()),
@@ -47,6 +51,16 @@ export default function Transactions() {
     return type === 'EXPENSE' ? `- ${formatted}` : formatted
   }
 
+  const handleEdit = (tx: Transaction) => {
+    setEditingTx(tx)
+    setIsSheetOpen(true)
+  }
+
+  const handleSheetChange = (open: boolean) => {
+    setIsSheetOpen(open)
+    if (!open) setEditingTx(null)
+  }
+
   return (
     <div className="flex flex-col h-full bg-white rounded-md shadow-md border overflow-hidden p-6 animate-fade-in-up">
       <div className="flex justify-between items-center mb-6">
@@ -58,17 +72,20 @@ export default function Transactions() {
           <Button variant="outline" className="hidden sm:flex gap-2">
             <Download className="h-4 w-4" /> Exportar CSV
           </Button>
-          <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+          <Sheet open={isSheetOpen} onOpenChange={handleSheetChange}>
             <SheetTrigger asChild>
-              <Button className="gap-2 bg-green-600 hover:bg-green-700">
+              <Button
+                className="gap-2 bg-green-600 hover:bg-green-700"
+                onClick={() => setEditingTx(null)}
+              >
                 <Plus className="h-4 w-4" /> Novo Lançamento
               </Button>
             </SheetTrigger>
             <SheetContent className="overflow-y-auto">
               <SheetHeader>
-                <SheetTitle>Adicionar Transação</SheetTitle>
+                <SheetTitle>{editingTx ? 'Editar Transação' : 'Adicionar Transação'}</SheetTitle>
               </SheetHeader>
-              <TransactionForm onSuccess={() => setIsSheetOpen(false)} />
+              <TransactionForm onSuccess={() => handleSheetChange(false)} initialData={editingTx} />
             </SheetContent>
           </Sheet>
         </div>
@@ -96,18 +113,19 @@ export default function Transactions() {
               <TableHead>Conta</TableHead>
               <TableHead>Status</TableHead>
               <TableHead className="text-right">Valor</TableHead>
+              <TableHead className="text-center w-24">Ações</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {loadingData ? (
               <TableRow>
-                <TableCell colSpan={6} className="h-24 text-center text-muted-foreground">
+                <TableCell colSpan={7} className="h-24 text-center text-muted-foreground">
                   Carregando transações...
                 </TableCell>
               </TableRow>
             ) : filteredData.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={6} className="h-24 text-center text-muted-foreground">
+                <TableCell colSpan={7} className="h-24 text-center text-muted-foreground">
                   Nenhuma transação encontrada.
                 </TableCell>
               </TableRow>
@@ -145,6 +163,26 @@ export default function Transactions() {
                   >
                     {formatCurrency(tx.amount, tx.type)}
                   </TableCell>
+                  <TableCell className="text-center">
+                    <div className="flex justify-center gap-2">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 text-slate-500 hover:text-blue-600"
+                        onClick={() => handleEdit(tx)}
+                      >
+                        <Pencil className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 text-slate-500 hover:text-red-600"
+                        onClick={() => setDeletingId(tx.id)}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </TableCell>
                 </TableRow>
               ))
             )}
@@ -154,6 +192,12 @@ export default function Transactions() {
       <div className="text-xs text-muted-foreground mt-2 text-right">
         Mostrando {Math.min(filteredData.length, 50)} registros de {filteredData.length}.
       </div>
+
+      <DeleteTransactionDialog
+        id={deletingId}
+        open={!!deletingId}
+        onOpenChange={(open) => !open && setDeletingId(null)}
+      />
     </div>
   )
 }
