@@ -18,10 +18,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { Badge } from '@/components/ui/badge'
 import { useFinanceStore } from '@/stores/financeStore'
 import { useToast } from '@/hooks/use-toast'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import { Transaction } from '@/types/finance'
+import { X, Plus, Tag as TagIcon } from 'lucide-react'
 
 const formSchema = z
   .object({
@@ -32,6 +34,7 @@ const formSchema = z
     categoryId: z.string().optional(),
     accountId: z.string().optional(),
     status: z.enum(['PREVISTO', 'REALIZADO', 'VENCIDO']),
+    tags: z.string().optional(),
   })
   .superRefine((data, ctx) => {
     if (data.type === 'INCOME' && !data.accountId) {
@@ -63,9 +66,26 @@ interface TransactionFormProps {
 }
 
 export function TransactionForm({ onSuccess, initialData }: TransactionFormProps) {
-  const { accounts, addTransaction, updateTransaction } = useFinanceStore()
+  const { accounts, transactions, addTransaction, updateTransaction } = useFinanceStore()
   const { toast } = useToast()
   const [loading, setLoading] = useState(false)
+
+  const [tagsList, setTagsList] = useState<string[]>(
+    initialData?.tags ? initialData.tags.split(',').filter(Boolean) : [],
+  )
+  const [tagInput, setTagInput] = useState('')
+
+  const allUniqueTags = useMemo(() => {
+    const t = new Set<string>()
+    transactions.forEach((tx) => {
+      if (tx.tags) {
+        tx.tags.split(',').forEach((x) => {
+          if (x.trim()) t.add(x.trim())
+        })
+      }
+    })
+    return Array.from(t).sort()
+  }, [transactions])
 
   const defaultValues = initialData
     ? {
@@ -76,6 +96,7 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
         status: initialData.status,
         categoryId: initialData.categoryId || '',
         accountId: initialData.accountId || '',
+        tags: initialData.tags || '',
       }
     : {
         date: new Date().toISOString().split('T')[0],
@@ -85,6 +106,7 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
         status: 'REALIZADO' as const,
         categoryId: '',
         accountId: '',
+        tags: '',
       }
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -105,6 +127,22 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
     }
   }, [type, form, initialData])
 
+  const addTag = (tagToAdd?: string) => {
+    const val = (tagToAdd || tagInput).trim()
+    if (val && !tagsList.includes(val)) {
+      const newList = [...tagsList, val]
+      setTagsList(newList)
+      form.setValue('tags', newList.join(','))
+    }
+    setTagInput('')
+  }
+
+  const removeTag = (tagToRemove: string) => {
+    const newList = tagsList.filter((t) => t !== tagToRemove)
+    setTagsList(newList)
+    form.setValue('tags', newList.join(','))
+  }
+
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       setLoading(true)
@@ -115,6 +153,7 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
         status: values.type === 'INCOME' ? 'REALIZADO' : values.status,
         categoryId: values.type === 'EXPENSE' ? values.categoryId || 'FIXA' : '',
         accountId: values.type === 'INCOME' ? values.accountId || 'acc1' : '',
+        tags: tagsList.join(','),
       }
 
       if (initialData) {
@@ -125,6 +164,7 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
         toast({ title: 'Sucesso', description: 'Transação salva com sucesso!' })
       }
       form.reset()
+      setTagsList([])
       onSuccess()
     } catch (error) {
       toast({ title: 'Erro', description: 'Ocorreu um erro ao salvar.', variant: 'destructive' })
@@ -228,7 +268,7 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
 
         <div className="grid grid-cols-1 gap-4 transition-all duration-300 min-h-[80px]">
           {type === 'EXPENSE' && (
-            <div className="animate-in fade-in slide-in-from-top-2 duration-300">
+            <div className="animate-in fade-in slide-in-from-top-2 duration-300 space-y-4">
               <FormField
                 control={form.control}
                 name="categoryId"
@@ -250,6 +290,77 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
                   </FormItem>
                 )}
               />
+
+              <div className="space-y-2">
+                <FormLabel className="flex items-center gap-1.5">
+                  <TagIcon className="w-3.5 h-3.5" /> Tags (Opcional)
+                </FormLabel>
+                <div className="flex items-center gap-2">
+                  <Input
+                    value={tagInput}
+                    onChange={(e) => setTagInput(e.target.value)}
+                    placeholder="Adicionar tag..."
+                    className="h-9"
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault()
+                        addTag()
+                      }
+                    }}
+                  />
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="secondary"
+                    onClick={() => addTag()}
+                    className="h-9 shrink-0"
+                  >
+                    <Plus className="w-4 h-4" />
+                  </Button>
+                </div>
+
+                {tagsList.length > 0 && (
+                  <div className="flex flex-wrap gap-1.5 mt-2">
+                    {tagsList.map((t) => (
+                      <Badge
+                        key={t}
+                        variant="secondary"
+                        className="flex items-center gap-1 pl-2 pr-1 py-1"
+                      >
+                        {t}
+                        <button
+                          type="button"
+                          onClick={() => removeTag(t)}
+                          className="text-slate-500 hover:text-red-500 rounded-full p-0.5 hover:bg-slate-200 transition-colors"
+                        >
+                          <X className="w-3 h-3" />
+                        </button>
+                      </Badge>
+                    ))}
+                  </div>
+                )}
+
+                {allUniqueTags.length > 0 && (
+                  <div className="mt-2 pt-2 border-t">
+                    <p className="text-[10px] text-slate-500 mb-1.5">Tags Sugeridas:</p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {allUniqueTags
+                        .filter((t) => !tagsList.includes(t))
+                        .slice(0, 8)
+                        .map((t) => (
+                          <button
+                            type="button"
+                            key={t}
+                            onClick={() => addTag(t)}
+                            className="text-[10px] bg-slate-100 hover:bg-slate-200 text-slate-600 px-2 py-0.5 rounded-full transition-colors border border-slate-200"
+                          >
+                            {t}
+                          </button>
+                        ))}
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           )}
 

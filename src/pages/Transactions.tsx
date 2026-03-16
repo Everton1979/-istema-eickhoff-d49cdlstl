@@ -15,7 +15,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/co
 import { TransactionForm } from '@/components/transactions/TransactionForm'
 import { DeleteTransactionDialog } from '@/components/transactions/DeleteTransactionDialog'
 import { format } from 'date-fns'
-import { Plus, Search, Download, Pencil, Trash2 } from 'lucide-react'
+import { Plus, Search, Pencil, Trash2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Transaction } from '@/types/finance'
 
@@ -31,7 +31,12 @@ export default function Transactions() {
   today.setHours(0, 0, 0, 0)
 
   const filteredData = transactions.filter((t) => {
-    if (!t.description.toLowerCase().includes(search.toLowerCase())) return false
+    const searchLower = search.toLowerCase()
+    const matchesSearch =
+      t.description.toLowerCase().includes(searchLower) ||
+      (t.tags && t.tags.toLowerCase().includes(searchLower))
+
+    if (!matchesSearch) return false
 
     const tDate = new Date(t.date)
     tDate.setHours(0, 0, 0, 0)
@@ -85,9 +90,6 @@ export default function Transactions() {
           <p className="text-sm text-muted-foreground">Gerencie seus lançamentos financeiros</p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" className="hidden sm:flex gap-2">
-            <Download className="h-4 w-4" /> Exportar CSV
-          </Button>
           <Sheet open={isSheetOpen} onOpenChange={handleSheetChange}>
             <SheetTrigger asChild>
               <Button
@@ -97,7 +99,7 @@ export default function Transactions() {
                 <Plus className="h-4 w-4" /> Novo Lançamento
               </Button>
             </SheetTrigger>
-            <SheetContent className="overflow-y-auto">
+            <SheetContent className="overflow-y-auto w-full sm:max-w-md">
               <SheetHeader>
                 <SheetTitle>{editingTx ? 'Editar Transação' : 'Adicionar Transação'}</SheetTitle>
               </SheetHeader>
@@ -111,7 +113,7 @@ export default function Transactions() {
         <div className="relative w-full max-w-sm">
           <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input
-            placeholder="Buscar por descrição..."
+            placeholder="Buscar descrição ou tag..."
             className="pl-8"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
@@ -156,7 +158,7 @@ export default function Transactions() {
         <Table>
           <TableHeader className="bg-gray-50 sticky top-0 z-10">
             <TableRow>
-              <TableHead>Data</TableHead>
+              <TableHead className="w-28">Data</TableHead>
               <TableHead>Descrição</TableHead>
               <TableHead>Categoria</TableHead>
               <TableHead>Conta</TableHead>
@@ -181,12 +183,33 @@ export default function Transactions() {
             ) : (
               filteredData.slice(0, 50).map((tx) => (
                 <TableRow key={tx.id}>
-                  <TableCell className="whitespace-nowrap">
+                  <TableCell className="whitespace-nowrap font-medium text-slate-600">
                     {format(new Date(tx.date), 'dd/MM/yyyy')}
                   </TableCell>
-                  <TableCell className="font-medium">{tx.description}</TableCell>
-                  <TableCell>{getCategoryName(tx.categoryId, tx.type)}</TableCell>
-                  <TableCell>{getAccountName(tx.accountId, tx.type)}</TableCell>
+                  <TableCell>
+                    <div className="font-medium text-slate-900">{tx.description}</div>
+                    {tx.tags && (
+                      <div className="flex flex-wrap gap-1 mt-1">
+                        {tx.tags
+                          .split(',')
+                          .filter(Boolean)
+                          .map((t) => (
+                            <span
+                              key={t}
+                              className="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-medium bg-slate-100 text-slate-600 border border-slate-200"
+                            >
+                              {t}
+                            </span>
+                          ))}
+                      </div>
+                    )}
+                  </TableCell>
+                  <TableCell className="text-xs text-slate-600">
+                    {getCategoryName(tx.categoryId, tx.type)}
+                  </TableCell>
+                  <TableCell className="text-xs text-slate-600">
+                    {getAccountName(tx.accountId, tx.type)}
+                  </TableCell>
                   <TableCell>
                     <Badge
                       variant={
@@ -197,7 +220,7 @@ export default function Transactions() {
                             : 'destructive'
                       }
                       className={cn(
-                        'text-[10px]',
+                        'text-[10px] font-semibold',
                         tx.status === 'REALIZADO' && 'bg-emerald-500 hover:bg-emerald-600',
                       )}
                     >
@@ -206,18 +229,18 @@ export default function Transactions() {
                   </TableCell>
                   <TableCell
                     className={cn(
-                      'text-right font-medium',
+                      'text-right font-bold',
                       tx.type === 'INCOME' ? 'text-emerald-600' : 'text-red-500',
                     )}
                   >
                     {formatCurrency(tx.amount, tx.type)}
                   </TableCell>
                   <TableCell className="text-center">
-                    <div className="flex justify-center gap-2">
+                    <div className="flex justify-center gap-1">
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="h-8 w-8 text-slate-500 hover:text-blue-600"
+                        className="h-8 w-8 text-slate-400 hover:text-blue-600 hover:bg-blue-50"
                         onClick={() => handleEdit(tx)}
                       >
                         <Pencil className="h-4 w-4" />
@@ -225,7 +248,7 @@ export default function Transactions() {
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="h-8 w-8 text-slate-500 hover:text-red-600"
+                        className="h-8 w-8 text-slate-400 hover:text-red-600 hover:bg-red-50"
                         onClick={() => setDeletingId(tx.id)}
                       >
                         <Trash2 className="h-4 w-4" />

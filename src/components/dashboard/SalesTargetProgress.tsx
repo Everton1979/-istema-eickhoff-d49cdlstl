@@ -5,13 +5,14 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Target, Pencil, Check, X } from 'lucide-react'
 import { useState, useMemo } from 'react'
+import { getWorkingDays } from '@/lib/holidays'
 
 export function SalesTargetProgress() {
   const { monthlyMetrics, saveMonthlyMetric, filters } = useFinanceStore()
   const [isEditing, setIsEditing] = useState(false)
   const [tempValue, setTempValue] = useState('')
 
-  const { metric, monthName } = useMemo(() => {
+  const { metric, monthName, workingDays } = useMemo(() => {
     const currentYear = parseInt(filters.years[0] || new Date().getFullYear().toString())
     const currentMonth =
       filters.months.length > 0 ? parseInt(filters.months[0]) : new Date().getMonth() + 1
@@ -31,6 +32,8 @@ export function SalesTargetProgress() {
     ]
 
     const found = monthlyMetrics.find((m) => m.year === currentYear && m.month === currentMonth)
+    const wDays = getWorkingDays(currentYear, currentMonth)
+
     return {
       metric: found || {
         month: currentMonth,
@@ -42,12 +45,14 @@ export function SalesTargetProgress() {
         id: '',
       },
       monthName: `${monthLabels[currentMonth - 1]}/${currentYear}`,
+      workingDays: wDays,
     }
   }, [monthlyMetrics, filters])
 
   const target = metric.sales_target
   const sales = metric.total_system_sales
   const percentage = target > 0 ? Math.min((sales / target) * 100, 100) : 0
+  const dailyTarget = workingDays > 0 ? target / workingDays : 0
 
   const handleEdit = () => {
     setTempValue(target.toString())
@@ -70,9 +75,9 @@ export function SalesTargetProgress() {
     }).format(val)
 
   return (
-    <Card className="rounded-sm shadow-sm h-full flex flex-col justify-center border-t-4 border-t-emerald-500">
+    <Card className="rounded-sm shadow-sm h-full flex flex-col justify-center border-t-4 border-t-emerald-500 relative">
       <CardContent className="p-3">
-        <div className="flex justify-between items-center mb-2">
+        <div className="flex justify-between items-start mb-2">
           <div className="flex items-center gap-1.5 text-emerald-600">
             <Target className="w-4 h-4" />
             <h3 className="text-xs font-bold uppercase tracking-wide">
@@ -83,7 +88,7 @@ export function SalesTargetProgress() {
             <Button
               variant="ghost"
               size="icon"
-              className="h-5 w-5 text-gray-400 hover:text-emerald-600"
+              className="h-5 w-5 text-gray-400 hover:text-emerald-600 absolute right-2 top-2"
               onClick={handleEdit}
             >
               <Pencil className="h-3 w-3" />
@@ -106,7 +111,7 @@ export function SalesTargetProgress() {
             </div>
             <Button
               size="icon"
-              className="h-7 w-7 bg-emerald-500 hover:bg-emerald-600"
+              className="h-7 w-7 bg-emerald-500 hover:bg-emerald-600 shrink-0"
               onClick={handleSave}
             >
               <Check className="h-3 w-3" />
@@ -114,7 +119,7 @@ export function SalesTargetProgress() {
             <Button
               variant="ghost"
               size="icon"
-              className="h-7 w-7 text-gray-500"
+              className="h-7 w-7 text-gray-500 shrink-0"
               onClick={() => setIsEditing(false)}
             >
               <X className="h-3 w-3" />
@@ -135,9 +140,16 @@ export function SalesTargetProgress() {
 
         <div className="space-y-1 mt-1">
           <Progress value={percentage} className="h-2 bg-gray-100" />
-          <p className="text-[10px] text-right font-medium text-emerald-600">
-            {percentage.toFixed(1)}% alcançado
-          </p>
+          <div className="flex justify-between items-center text-[10px]">
+            <p className="text-gray-500 font-medium">
+              Meta Diária:{' '}
+              <span className="text-emerald-600 font-bold">{formatCurrency(dailyTarget)}</span>{' '}
+              <span className="text-gray-400">({workingDays} dias úteis)</span>
+            </p>
+            <p className="font-medium text-emerald-600 ml-2 whitespace-nowrap">
+              {percentage.toFixed(1)}% alc.
+            </p>
+          </div>
         </div>
       </CardContent>
     </Card>

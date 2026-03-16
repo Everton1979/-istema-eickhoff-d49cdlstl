@@ -16,6 +16,7 @@ export type Database = {
           month: number
           orders_count: number
           raw_material_costs: number
+          sales_target: number
           total_system_sales: number
           updated_at: string
           user_id: string
@@ -27,6 +28,7 @@ export type Database = {
           month: number
           orders_count?: number
           raw_material_costs?: number
+          sales_target?: number
           total_system_sales?: number
           updated_at?: string
           user_id: string
@@ -38,6 +40,7 @@ export type Database = {
           month?: number
           orders_count?: number
           raw_material_costs?: number
+          sales_target?: number
           total_system_sales?: number
           updated_at?: string
           user_id?: string
@@ -271,6 +274,7 @@ export const Constants = {
 //   raw_material_costs: numeric (not null, default: 0)
 //   created_at: timestamp with time zone (not null, default: now())
 //   updated_at: timestamp with time zone (not null, default: now())
+//   sales_target: numeric (not null, default: 0)
 // Table: transactions
 //   id: uuid (not null, default: gen_random_uuid())
 //   user_id: uuid (not null)

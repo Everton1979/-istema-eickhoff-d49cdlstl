@@ -109,7 +109,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
 
     if (txRes.data) {
       setTransactions(
-        txRes.data.map((d) => ({
+        txRes.data.map((d: any) => ({
           id: d.id,
           date: d.date,
           description: d.description,
@@ -118,6 +118,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
           categoryId: mapCategoryFromDB(d.category),
           accountId: mapAccountFromDB(d.account),
           status: d.status as any,
+          tags: d.tags || '',
         })),
       )
     }
@@ -165,20 +166,19 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
     const dbType = mapTypeToDB(tx.type)
     const formattedDate = ensureUtcNoon(tx.date)
 
-    const { data, error } = await supabase
-      .from('transactions')
-      .insert({
-        user_id: user.id,
-        description: tx.description,
-        amount: tx.amount,
-        type: dbType,
-        category: dbType === 'despesa' ? mapCategoryToDB(tx.categoryId) : null,
-        account: dbType === 'receita' ? mapAccountToDB(tx.accountId) : null,
-        status: tx.status,
-        date: formattedDate,
-      })
-      .select()
-      .single()
+    const payload: any = {
+      user_id: user.id,
+      description: tx.description,
+      amount: tx.amount,
+      type: dbType,
+      category: dbType === 'despesa' ? mapCategoryToDB(tx.categoryId) : null,
+      account: dbType === 'receita' ? mapAccountToDB(tx.accountId) : null,
+      status: tx.status,
+      date: formattedDate,
+      tags: tx.tags || '',
+    }
+
+    const { data, error } = await supabase.from('transactions').insert(payload).select().single()
 
     if (!error && data) {
       const newTx: Transaction = {
@@ -190,6 +190,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
         categoryId: mapCategoryFromDB(data.category),
         accountId: mapAccountFromDB(data.account),
         status: data.status as any,
+        tags: (data as any).tags || '',
       }
       setTransactions((prev) => [newTx, ...prev])
     } else if (error) throw error
@@ -205,6 +206,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
     if (tx.accountId !== undefined) updateData.account = mapAccountToDB(tx.accountId)
     if (tx.status !== undefined) updateData.status = tx.status
     if (tx.date !== undefined) updateData.date = ensureUtcNoon(tx.date)
+    if (tx.tags !== undefined) updateData.tags = tx.tags
 
     const { data, error } = await supabase
       .from('transactions')
@@ -226,6 +228,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
                 categoryId: mapCategoryFromDB(data.category),
                 accountId: mapAccountFromDB(data.account),
                 status: data.status as any,
+                tags: (data as any).tags || '',
               }
             : t,
         ),

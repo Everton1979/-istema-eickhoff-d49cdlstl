@@ -18149,8 +18149,8 @@ var Branch = DismissableLayerBranch;
 var useLayoutEffect2 = globalThis?.document ? import_react.useLayoutEffect : () => {};
 //#endregion
 //#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/@radix-ui+react-portal@1.1.9_@types+react-dom@19.2.3_@types+react@19.2.14__@types+react_7668895bec2444446faa4e0f4eb5244b/node_modules/@radix-ui/react-portal/dist/index.mjs
-var PORTAL_NAME$4 = "Portal";
-var Portal$2 = import_react.forwardRef((props, forwardedRef) => {
+var PORTAL_NAME$5 = "Portal";
+var Portal$3 = import_react.forwardRef((props, forwardedRef) => {
 	const { container: containerProp, ...portalProps } = props;
 	const [mounted, setMounted] = import_react.useState(false);
 	useLayoutEffect2(() => setMounted(true), []);
@@ -18160,7 +18160,7 @@ var Portal$2 = import_react.forwardRef((props, forwardedRef) => {
 		ref: forwardedRef
 	}), container) : null;
 });
-Portal$2.displayName = PORTAL_NAME$4;
+Portal$3.displayName = PORTAL_NAME$5;
 //#endregion
 //#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/@radix-ui+react-presence@1.1.5_@types+react-dom@19.2.3_@types+react@19.2.14__@types+rea_c01c26c80b5ab5e3ecefbda6eca51ad1/node_modules/@radix-ui/react-presence/dist/index.mjs
 function useStateMachine$1(initialState, machine) {
@@ -18733,7 +18733,7 @@ var ToastAnnounce = (props) => {
 		const timer = window.setTimeout(() => setIsAnnounced(true), 1e3);
 		return () => window.clearTimeout(timer);
 	}, []);
-	return isAnnounced ? null : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Portal$2, {
+	return isAnnounced ? null : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Portal$3, {
 		asChild: true,
 		children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(VisuallyHidden, {
 			...announceProps,
@@ -18780,10 +18780,10 @@ var ToastAction$1 = import_react.forwardRef((props, forwardedRef) => {
 	});
 });
 ToastAction$1.displayName = ACTION_NAME$1;
-var CLOSE_NAME$1 = "ToastClose";
+var CLOSE_NAME$2 = "ToastClose";
 var ToastClose$1 = import_react.forwardRef((props, forwardedRef) => {
 	const { __scopeToast, ...closeProps } = props;
-	const interactiveContext = useToastInteractiveContext(CLOSE_NAME$1, __scopeToast);
+	const interactiveContext = useToastInteractiveContext(CLOSE_NAME$2, __scopeToast);
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ToastAnnounceExclude, {
 		asChild: true,
 		children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Primitive$1.button, {
@@ -18794,7 +18794,7 @@ var ToastClose$1 = import_react.forwardRef((props, forwardedRef) => {
 		})
 	});
 });
-ToastClose$1.displayName = CLOSE_NAME$1;
+ToastClose$1.displayName = CLOSE_NAME$2;
 var ToastAnnounceExclude = import_react.forwardRef((props, forwardedRef) => {
 	const { __scopeToast, altText, ...announceExcludeProps } = props;
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Primitive$1.div, {
@@ -18872,7 +18872,7 @@ function focusFirst$1(candidates) {
 }
 var Provider$1 = ToastProvider$1;
 var Viewport$2 = ToastViewport$1;
-var Root2$3 = Toast$2;
+var Root2$4 = Toast$2;
 var Title$1 = ToastTitle$1;
 var Description$1 = ToastDescription$1;
 var Action$1 = ToastAction$1;
@@ -19061,6 +19061,13 @@ var ArrowRight = createLucideIcon("arrow-right", [["path", {
 	d: "m12 5 7 7-7 7",
 	key: "xquz4c"
 }]]);
+var Bell = createLucideIcon("bell", [["path", {
+	d: "M10.268 21a2 2 0 0 0 3.464 0",
+	key: "vwvbt9"
+}], ["path", {
+	d: "M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326",
+	key: "11g9vi"
+}]]);
 var Calculator = createLucideIcon("calculator", [
 	["rect", {
 		width: "16",
@@ -19125,36 +19132,37 @@ var ChevronUp = createLucideIcon("chevron-up", [["path", {
 	d: "m18 15-6-6-6 6",
 	key: "153udz"
 }]]);
-var CircleX = createLucideIcon("circle-x", [
+var CircleAlert = createLucideIcon("circle-alert", [
 	["circle", {
 		cx: "12",
 		cy: "12",
 		r: "10",
 		key: "1mglay"
 	}],
-	["path", {
-		d: "m15 9-6 6",
-		key: "1uzhvr"
+	["line", {
+		x1: "12",
+		x2: "12",
+		y1: "8",
+		y2: "12",
+		key: "1pkeuh"
 	}],
-	["path", {
-		d: "m9 9 6 6",
-		key: "z0biqf"
+	["line", {
+		x1: "12",
+		x2: "12.01",
+		y1: "16",
+		y2: "16",
+		key: "4dfq90"
 	}]
 ]);
-var Download = createLucideIcon("download", [
-	["path", {
-		d: "M12 15V3",
-		key: "m9g1x1"
-	}],
-	["path", {
-		d: "M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4",
-		key: "ih7n3h"
-	}],
-	["path", {
-		d: "m7 10 5 5 5-5",
-		key: "brsn70"
-	}]
-]);
+var Clock = createLucideIcon("clock", [["circle", {
+	cx: "12",
+	cy: "12",
+	r: "10",
+	key: "1mglay"
+}], ["path", {
+	d: "M12 6v6l4 2",
+	key: "mmk7yg"
+}]]);
 var FileChartColumnIncreasing = createLucideIcon("file-chart-column-increasing", [
 	["path", {
 		d: "M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z",
@@ -19274,6 +19282,24 @@ var Plus = createLucideIcon("plus", [["path", {
 	d: "M12 5v14",
 	key: "s699le"
 }]]);
+var Printer = createLucideIcon("printer", [
+	["path", {
+		d: "M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2",
+		key: "143wyd"
+	}],
+	["path", {
+		d: "M6 9V3a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v6",
+		key: "1itne7"
+	}],
+	["rect", {
+		x: "6",
+		y: "14",
+		width: "12",
+		height: "8",
+		rx: "1",
+		key: "1ue0tg"
+	}]
+]);
 var ReceiptText = createLucideIcon("receipt-text", [
 	["path", {
 		d: "M13 16H8",
@@ -19341,6 +19367,16 @@ var Settings$1 = createLucideIcon("settings", [["path", {
 	cy: "12",
 	r: "3",
 	key: "1v7zrd"
+}]]);
+var Tag = createLucideIcon("tag", [["path", {
+	d: "M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z",
+	key: "vktsd0"
+}], ["circle", {
+	cx: "7.5",
+	cy: "7.5",
+	r: ".5",
+	fill: "currentColor",
+	key: "kqv944"
 }]]);
 var Target = createLucideIcon("target", [
 	["circle", {
@@ -20831,7 +20867,7 @@ var toastVariants = cva("group pointer-events-auto relative flex w-full items-ce
 	defaultVariants: { variant: "default" }
 });
 var Toast$1 = import_react.forwardRef(({ className, variant, ...props }, ref) => {
-	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Root2$3, {
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Root2$4, {
 		"data-uid": "src/components/ui/toast.tsx:47:5",
 		"data-prohibitions": "[editContent]",
 		ref,
@@ -20839,7 +20875,7 @@ var Toast$1 = import_react.forwardRef(({ className, variant, ...props }, ref) =>
 		...props
 	});
 });
-Toast$1.displayName = Root2$3.displayName;
+Toast$1.displayName = Root2$4.displayName;
 var ToastAction = import_react.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Action$1, {
 	"data-uid": "src/components/ui/toast.tsx:60:3",
 	"data-prohibitions": "[editContent]",
@@ -23618,10 +23654,10 @@ var Popper = (props) => {
 	});
 };
 Popper.displayName = POPPER_NAME;
-var ANCHOR_NAME = "PopperAnchor";
+var ANCHOR_NAME$1 = "PopperAnchor";
 var PopperAnchor = import_react.forwardRef((props, forwardedRef) => {
 	const { __scopePopper, virtualRef, ...anchorProps } = props;
-	const context = usePopperContext(ANCHOR_NAME, __scopePopper);
+	const context = usePopperContext(ANCHOR_NAME$1, __scopePopper);
 	const ref = import_react.useRef(null);
 	const composedRefs = useComposedRefs(forwardedRef, ref);
 	const anchorRef = import_react.useRef(null);
@@ -23635,12 +23671,12 @@ var PopperAnchor = import_react.forwardRef((props, forwardedRef) => {
 		ref: composedRefs
 	});
 });
-PopperAnchor.displayName = ANCHOR_NAME;
-var CONTENT_NAME$4 = "PopperContent";
-var [PopperContentProvider, useContentContext] = createPopperContext(CONTENT_NAME$4);
+PopperAnchor.displayName = ANCHOR_NAME$1;
+var CONTENT_NAME$5 = "PopperContent";
+var [PopperContentProvider, useContentContext] = createPopperContext(CONTENT_NAME$5);
 var PopperContent = import_react.forwardRef((props, forwardedRef) => {
 	const { __scopePopper, side = "bottom", sideOffset = 0, align = "center", alignOffset = 0, arrowPadding = 0, avoidCollisions = true, collisionBoundary = [], collisionPadding: collisionPaddingProp = 0, sticky = "partial", hideWhenDetached = false, updatePositionStrategy = "optimized", onPlaced, ...contentProps } = props;
-	const context = usePopperContext(CONTENT_NAME$4, __scopePopper);
+	const context = usePopperContext(CONTENT_NAME$5, __scopePopper);
 	const [content, setContent] = import_react.useState(null);
 	const composedRefs = useComposedRefs(forwardedRef, (node) => setContent(node));
 	const [arrow$4, setArrow] = import_react.useState(null);
@@ -23753,8 +23789,8 @@ var PopperContent = import_react.forwardRef((props, forwardedRef) => {
 		})
 	});
 });
-PopperContent.displayName = CONTENT_NAME$4;
-var ARROW_NAME$2 = "PopperArrow";
+PopperContent.displayName = CONTENT_NAME$5;
+var ARROW_NAME$3 = "PopperArrow";
 var OPPOSITE_SIDE = {
 	top: "bottom",
 	right: "left",
@@ -23763,7 +23799,7 @@ var OPPOSITE_SIDE = {
 };
 var PopperArrow = import_react.forwardRef(function PopperArrow2(props, forwardedRef) {
 	const { __scopePopper, ...arrowProps } = props;
-	const contentContext = useContentContext(ARROW_NAME$2, __scopePopper);
+	const contentContext = useContentContext(ARROW_NAME$3, __scopePopper);
 	const baseSide = OPPOSITE_SIDE[contentContext.placedSide];
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
 		ref: contentContext.onArrowChange,
@@ -23796,7 +23832,7 @@ var PopperArrow = import_react.forwardRef(function PopperArrow2(props, forwarded
 		})
 	});
 });
-PopperArrow.displayName = ARROW_NAME$2;
+PopperArrow.displayName = ARROW_NAME$3;
 function isNotNull(value) {
 	return value !== null;
 }
@@ -23841,14 +23877,14 @@ function getSideAndAlignFromPlacement(placement) {
 	const [side, align = "center"] = placement.split("-");
 	return [side, align];
 }
-var Root2$2 = Popper;
+var Root2$3 = Popper;
 var Anchor = PopperAnchor;
 var Content$1 = PopperContent;
 var Arrow = PopperArrow;
 //#endregion
 //#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/@radix-ui+react-tooltip@1.2.8_@types+react-dom@19.2.3_@types+react@19.2.14__@types+reac_9074d9fb06315b089b2bee17c4c65951/node_modules/@radix-ui/react-tooltip/dist/index.mjs
 var [createTooltipContext, createTooltipScope] = createContextScope$1("Tooltip", [createPopperScope]);
-var usePopperScope$1 = createPopperScope();
+var usePopperScope$2 = createPopperScope();
 var PROVIDER_NAME = "TooltipProvider";
 var DEFAULT_DELAY_DURATION = 700;
 var TOOLTIP_OPEN = "tooltip.open";
@@ -23888,7 +23924,7 @@ var [TooltipContextProvider, useTooltipContext] = createTooltipContext(TOOLTIP_N
 var Tooltip$2 = (props) => {
 	const { __scopeTooltip, children, open: openProp, defaultOpen, onOpenChange, disableHoverableContent: disableHoverableContentProp, delayDuration: delayDurationProp } = props;
 	const providerContext = useTooltipProviderContext(TOOLTIP_NAME, props.__scopeTooltip);
-	const popperScope = usePopperScope$1(__scopeTooltip);
+	const popperScope = usePopperScope$2(__scopeTooltip);
 	const [trigger, setTrigger] = import_react.useState(null);
 	const contentId = useId();
 	const openTimerRef = import_react.useRef(0);
@@ -23937,7 +23973,7 @@ var Tooltip$2 = (props) => {
 			}
 		};
 	}, []);
-	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Root2$2, {
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Root2$3, {
 		...popperScope,
 		children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TooltipContextProvider, {
 			scope: __scopeTooltip,
@@ -23969,12 +24005,12 @@ var Tooltip$2 = (props) => {
 	});
 };
 Tooltip$2.displayName = TOOLTIP_NAME;
-var TRIGGER_NAME$3 = "TooltipTrigger";
+var TRIGGER_NAME$4 = "TooltipTrigger";
 var TooltipTrigger$1 = import_react.forwardRef((props, forwardedRef) => {
 	const { __scopeTooltip, ...triggerProps } = props;
-	const context = useTooltipContext(TRIGGER_NAME$3, __scopeTooltip);
-	const providerContext = useTooltipProviderContext(TRIGGER_NAME$3, __scopeTooltip);
-	const popperScope = usePopperScope$1(__scopeTooltip);
+	const context = useTooltipContext(TRIGGER_NAME$4, __scopeTooltip);
+	const providerContext = useTooltipProviderContext(TRIGGER_NAME$4, __scopeTooltip);
+	const popperScope = usePopperScope$2(__scopeTooltip);
 	const composedRefs = useComposedRefs(forwardedRef, import_react.useRef(null), context.onTriggerChange);
 	const isPointerDownRef = import_react.useRef(false);
 	const hasPointerMoveOpenedRef = import_react.useRef(false);
@@ -24014,18 +24050,18 @@ var TooltipTrigger$1 = import_react.forwardRef((props, forwardedRef) => {
 		})
 	});
 });
-TooltipTrigger$1.displayName = TRIGGER_NAME$3;
-var PORTAL_NAME$3 = "TooltipPortal";
-var [PortalProvider$1, usePortalContext$1] = createTooltipContext(PORTAL_NAME$3, { forceMount: void 0 });
+TooltipTrigger$1.displayName = TRIGGER_NAME$4;
+var PORTAL_NAME$4 = "TooltipPortal";
+var [PortalProvider$2, usePortalContext$2] = createTooltipContext(PORTAL_NAME$4, { forceMount: void 0 });
 var TooltipPortal = (props) => {
 	const { __scopeTooltip, forceMount, children, container } = props;
-	const context = useTooltipContext(PORTAL_NAME$3, __scopeTooltip);
-	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(PortalProvider$1, {
+	const context = useTooltipContext(PORTAL_NAME$4, __scopeTooltip);
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(PortalProvider$2, {
 		scope: __scopeTooltip,
 		forceMount,
 		children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Presence, {
 			present: forceMount || context.open,
-			children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Portal$2, {
+			children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Portal$3, {
 				asChild: true,
 				container,
 				children
@@ -24033,12 +24069,12 @@ var TooltipPortal = (props) => {
 		})
 	});
 };
-TooltipPortal.displayName = PORTAL_NAME$3;
-var CONTENT_NAME$3 = "TooltipContent";
+TooltipPortal.displayName = PORTAL_NAME$4;
+var CONTENT_NAME$4 = "TooltipContent";
 var TooltipContent$1 = import_react.forwardRef((props, forwardedRef) => {
-	const portalContext = usePortalContext$1(CONTENT_NAME$3, props.__scopeTooltip);
+	const portalContext = usePortalContext$2(CONTENT_NAME$4, props.__scopeTooltip);
 	const { forceMount = portalContext.forceMount, side = "top", ...contentProps } = props;
-	const context = useTooltipContext(CONTENT_NAME$3, props.__scopeTooltip);
+	const context = useTooltipContext(CONTENT_NAME$4, props.__scopeTooltip);
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Presence, {
 		present: forceMount || context.open,
 		children: context.disableHoverableContent ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TooltipContentImpl, {
@@ -24053,8 +24089,8 @@ var TooltipContent$1 = import_react.forwardRef((props, forwardedRef) => {
 	});
 });
 var TooltipContentHoverable = import_react.forwardRef((props, forwardedRef) => {
-	const context = useTooltipContext(CONTENT_NAME$3, props.__scopeTooltip);
-	const providerContext = useTooltipProviderContext(CONTENT_NAME$3, props.__scopeTooltip);
+	const context = useTooltipContext(CONTENT_NAME$4, props.__scopeTooltip);
+	const providerContext = useTooltipProviderContext(CONTENT_NAME$4, props.__scopeTooltip);
 	const ref = import_react.useRef(null);
 	const composedRefs = useComposedRefs(forwardedRef, ref);
 	const [pointerGraceArea, setPointerGraceArea] = import_react.useState(null);
@@ -24131,8 +24167,8 @@ var [VisuallyHiddenContentContextProvider, useVisuallyHiddenContentContext] = cr
 var Slottable$1 = /* @__PURE__ */ createSlottable("TooltipContent");
 var TooltipContentImpl = import_react.forwardRef((props, forwardedRef) => {
 	const { __scopeTooltip, children, "aria-label": ariaLabel, onEscapeKeyDown, onPointerDownOutside, ...contentProps } = props;
-	const context = useTooltipContext(CONTENT_NAME$3, __scopeTooltip);
-	const popperScope = usePopperScope$1(__scopeTooltip);
+	const context = useTooltipContext(CONTENT_NAME$4, __scopeTooltip);
+	const popperScope = usePopperScope$2(__scopeTooltip);
 	const { onClose } = context;
 	import_react.useEffect(() => {
 		document.addEventListener(TOOLTIP_OPEN, onClose);
@@ -24179,18 +24215,18 @@ var TooltipContentImpl = import_react.forwardRef((props, forwardedRef) => {
 		})
 	});
 });
-TooltipContent$1.displayName = CONTENT_NAME$3;
-var ARROW_NAME$1 = "TooltipArrow";
+TooltipContent$1.displayName = CONTENT_NAME$4;
+var ARROW_NAME$2 = "TooltipArrow";
 var TooltipArrow = import_react.forwardRef((props, forwardedRef) => {
 	const { __scopeTooltip, ...arrowProps } = props;
-	const popperScope = usePopperScope$1(__scopeTooltip);
-	return useVisuallyHiddenContentContext(ARROW_NAME$1, __scopeTooltip).isInside ? null : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Arrow, {
+	const popperScope = usePopperScope$2(__scopeTooltip);
+	return useVisuallyHiddenContentContext(ARROW_NAME$2, __scopeTooltip).isInside ? null : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Arrow, {
 		...popperScope,
 		...arrowProps,
 		ref: forwardedRef
 	});
 });
-TooltipArrow.displayName = ARROW_NAME$1;
+TooltipArrow.displayName = ARROW_NAME$2;
 function getExitSideFromRect(point, rect) {
 	const top = Math.abs(rect.top - point.y);
 	const bottom = Math.abs(rect.bottom - point.y);
@@ -24322,11 +24358,11 @@ function getHullPresorted(points) {
 	else return upperHull.concat(lowerHull);
 }
 var Provider = TooltipProvider$1;
-var Content2$2 = TooltipContent$1;
+var Content2$3 = TooltipContent$1;
 //#endregion
 //#region src/components/ui/tooltip.tsx
 var TooltipProvider = Provider;
-var TooltipContent = import_react.forwardRef(({ className, sideOffset = 4, ...props }, ref) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Content2$2, {
+var TooltipContent = import_react.forwardRef(({ className, sideOffset = 4, ...props }, ref) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Content2$3, {
 	"data-uid": "src/components/ui/tooltip.tsx:17:3",
 	"data-prohibitions": "[editContent]",
 	ref,
@@ -24334,7 +24370,7 @@ var TooltipContent = import_react.forwardRef(({ className, sideOffset = 4, ...pr
 	className: cn$1("z-50 overflow-hidden rounded-md border bg-popover px-3 py-1.5 text-sm text-popover-foreground shadow-md animate-in fade-in-0 zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 origin-[--radix-tooltip-content-transform-origin]", className),
 	...props
 }));
-TooltipContent.displayName = Content2$2.displayName;
+TooltipContent.displayName = Content2$3.displayName;
 //#endregion
 //#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/tslib@2.8.1/node_modules/tslib/tslib.es6.mjs
 var __assign = function() {
@@ -38162,7 +38198,8 @@ function FinanceProvider({ children }) {
 			type: mapTypeFromDB(d.type),
 			categoryId: mapCategoryFromDB(d.category),
 			accountId: mapAccountFromDB(d.account),
-			status: d.status
+			status: d.status,
+			tags: d.tags || ""
 		})));
 		if (metricsRes.data) setMonthlyMetrics(metricsRes.data.map((m) => ({
 			id: m.id,
@@ -38219,7 +38256,7 @@ function FinanceProvider({ children }) {
 		if (!user) return;
 		const dbType = mapTypeToDB(tx.type);
 		const formattedDate = ensureUtcNoon(tx.date);
-		const { data, error } = await supabase.from("transactions").insert({
+		const payload = {
 			user_id: user.id,
 			description: tx.description,
 			amount: tx.amount,
@@ -38227,8 +38264,10 @@ function FinanceProvider({ children }) {
 			category: dbType === "despesa" ? mapCategoryToDB(tx.categoryId) : null,
 			account: dbType === "receita" ? mapAccountToDB(tx.accountId) : null,
 			status: tx.status,
-			date: formattedDate
-		}).select().single();
+			date: formattedDate,
+			tags: tx.tags || ""
+		};
+		const { data, error } = await supabase.from("transactions").insert(payload).select().single();
 		if (!error && data) {
 			const newTx = {
 				id: data.id,
@@ -38238,7 +38277,8 @@ function FinanceProvider({ children }) {
 				type: mapTypeFromDB(data.type),
 				categoryId: mapCategoryFromDB(data.category),
 				accountId: mapAccountFromDB(data.account),
-				status: data.status
+				status: data.status,
+				tags: data.tags || ""
 			};
 			setTransactions((prev) => [newTx, ...prev]);
 		} else if (error) throw error;
@@ -38253,6 +38293,7 @@ function FinanceProvider({ children }) {
 		if (tx.accountId !== void 0) updateData.account = mapAccountToDB(tx.accountId);
 		if (tx.status !== void 0) updateData.status = tx.status;
 		if (tx.date !== void 0) updateData.date = ensureUtcNoon(tx.date);
+		if (tx.tags !== void 0) updateData.tags = tx.tags;
 		const { data, error } = await supabase.from("transactions").update(updateData).eq("id", id).select().single();
 		if (!error && data) setTransactions((prev) => prev.map((t) => t.id === id ? {
 			...t,
@@ -38262,7 +38303,8 @@ function FinanceProvider({ children }) {
 			type: mapTypeFromDB(data.type),
 			categoryId: mapCategoryFromDB(data.category),
 			accountId: mapAccountFromDB(data.account),
-			status: data.status
+			status: data.status,
+			tags: data.tags || ""
 		} : t));
 		else if (error) throw error;
 	};
@@ -38331,7 +38373,7 @@ function FinanceProvider({ children }) {
 		});
 	}, [monthlyMetrics, filters]);
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(FinanceContext.Provider, {
-		"data-uid": "src/stores/financeStore.tsx:333:5",
+		"data-uid": "src/stores/financeStore.tsx:336:5",
 		"data-prohibitions": "[editContent]",
 		value: {
 			transactions,
@@ -38398,7 +38440,7 @@ function createSlot(ownerName) {
 	Slot2.displayName = `${ownerName}.Slot`;
 	return Slot2;
 }
-var Slot$2 = /* @__PURE__ */ createSlot("Slot");
+var Slot$3 = /* @__PURE__ */ createSlot("Slot");
 /* @__NO_SIDE_EFFECTS__ */
 function createSlotClone(ownerName) {
 	const SlotClone = import_react.forwardRef((props, forwardedRef) => {
@@ -38476,7 +38518,7 @@ var buttonVariants = cva("inline-flex items-center justify-center gap-2 whitespa
 	}
 });
 var Button = import_react.forwardRef(({ className, variant, size, asChild = false, ...props }, ref) => {
-	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(asChild ? Slot$2 : "button", {
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(asChild ? Slot$3 : "button", {
 		"data-uid": "src/components/ui/button.tsx:44:7",
 		"data-prohibitions": "[editContent]",
 		className: cn$1(buttonVariants({
@@ -39532,12 +39574,12 @@ var SELECTION_KEYS = [" ", "Enter"];
 var SELECT_NAME = "Select";
 var [Collection, useCollection, createCollectionScope] = createCollection(SELECT_NAME);
 var [createSelectContext, createSelectScope] = createContextScope$1(SELECT_NAME, [createCollectionScope, createPopperScope]);
-var usePopperScope = createPopperScope();
+var usePopperScope$1 = createPopperScope();
 var [SelectProvider, useSelectContext] = createSelectContext(SELECT_NAME);
 var [SelectNativeOptionsProvider, useSelectNativeOptionsContext] = createSelectContext(SELECT_NAME);
 var Select$1 = (props) => {
 	const { __scopeSelect, children, open: openProp, defaultOpen, onOpenChange, value: valueProp, defaultValue, onValueChange, dir, name, autoComplete, disabled, required, form } = props;
-	const popperScope = usePopperScope(__scopeSelect);
+	const popperScope = usePopperScope$1(__scopeSelect);
 	const [trigger, setTrigger] = import_react.useState(null);
 	const [valueNode, setValueNode] = import_react.useState(null);
 	const [valueNodeHasChildren, setValueNodeHasChildren] = import_react.useState(false);
@@ -39558,7 +39600,7 @@ var Select$1 = (props) => {
 	const isFormControl = trigger ? form || !!trigger.closest("form") : true;
 	const [nativeOptionsSet, setNativeOptionsSet] = import_react.useState(/* @__PURE__ */ new Set());
 	const nativeSelectKey = Array.from(nativeOptionsSet).map((option) => option.props.value).join(";");
-	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Root2$2, {
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Root2$3, {
 		...popperScope,
 		children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(SelectProvider, {
 			required,
@@ -39609,11 +39651,11 @@ var Select$1 = (props) => {
 	});
 };
 Select$1.displayName = SELECT_NAME;
-var TRIGGER_NAME$2 = "SelectTrigger";
+var TRIGGER_NAME$3 = "SelectTrigger";
 var SelectTrigger$1 = import_react.forwardRef((props, forwardedRef) => {
 	const { __scopeSelect, disabled = false, ...triggerProps } = props;
-	const popperScope = usePopperScope(__scopeSelect);
-	const context = useSelectContext(TRIGGER_NAME$2, __scopeSelect);
+	const popperScope = usePopperScope$1(__scopeSelect);
+	const context = useSelectContext(TRIGGER_NAME$3, __scopeSelect);
 	const isDisabled = context.disabled || disabled;
 	const composedRefs = useComposedRefs(forwardedRef, context.onTriggerChange);
 	const getItems = useCollection(__scopeSelect);
@@ -39675,7 +39717,7 @@ var SelectTrigger$1 = import_react.forwardRef((props, forwardedRef) => {
 		})
 	});
 });
-SelectTrigger$1.displayName = TRIGGER_NAME$2;
+SelectTrigger$1.displayName = TRIGGER_NAME$3;
 var VALUE_NAME = "SelectValue";
 var SelectValue$1 = import_react.forwardRef((props, forwardedRef) => {
 	const { __scopeSelect, className, style, children, placeholder = "", ...valueProps } = props;
@@ -39705,17 +39747,17 @@ var SelectIcon = import_react.forwardRef((props, forwardedRef) => {
 	});
 });
 SelectIcon.displayName = ICON_NAME;
-var PORTAL_NAME$2 = "SelectPortal";
+var PORTAL_NAME$3 = "SelectPortal";
 var SelectPortal = (props) => {
-	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Portal$2, {
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Portal$3, {
 		asChild: true,
 		...props
 	});
 };
-SelectPortal.displayName = PORTAL_NAME$2;
-var CONTENT_NAME$2 = "SelectContent";
+SelectPortal.displayName = PORTAL_NAME$3;
+var CONTENT_NAME$3 = "SelectContent";
 var SelectContent$1 = import_react.forwardRef((props, forwardedRef) => {
-	const context = useSelectContext(CONTENT_NAME$2, props.__scopeSelect);
+	const context = useSelectContext(CONTENT_NAME$3, props.__scopeSelect);
 	const [fragment, setFragment] = import_react.useState();
 	useLayoutEffect2(() => {
 		setFragment(new DocumentFragment());
@@ -39735,14 +39777,14 @@ var SelectContent$1 = import_react.forwardRef((props, forwardedRef) => {
 		ref: forwardedRef
 	});
 });
-SelectContent$1.displayName = CONTENT_NAME$2;
+SelectContent$1.displayName = CONTENT_NAME$3;
 var CONTENT_MARGIN = 10;
-var [SelectContentProvider, useSelectContentContext] = createSelectContext(CONTENT_NAME$2);
+var [SelectContentProvider, useSelectContentContext] = createSelectContext(CONTENT_NAME$3);
 var CONTENT_IMPL_NAME = "SelectContentImpl";
-var Slot$1 = /* @__PURE__ */ createSlot$1("SelectContent.RemoveScroll");
+var Slot$2 = /* @__PURE__ */ createSlot$1("SelectContent.RemoveScroll");
 var SelectContentImpl = import_react.forwardRef((props, forwardedRef) => {
 	const { __scopeSelect, position = "item-aligned", onCloseAutoFocus, onEscapeKeyDown, onPointerDownOutside, side, sideOffset, align, alignOffset, arrowPadding, collisionBoundary, collisionPadding, sticky, hideWhenDetached, avoidCollisions, ...contentProps } = props;
-	const context = useSelectContext(CONTENT_NAME$2, __scopeSelect);
+	const context = useSelectContext(CONTENT_NAME$3, __scopeSelect);
 	const [content, setContent] = import_react.useState(null);
 	const [viewport, setViewport] = import_react.useState(null);
 	const composedRefs = useComposedRefs(forwardedRef, (node) => setContent(node));
@@ -39866,7 +39908,7 @@ var SelectContentImpl = import_react.forwardRef((props, forwardedRef) => {
 		isPositioned,
 		searchRef,
 		children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ReactRemoveScroll, {
-			as: Slot$1,
+			as: Slot$2,
 			allowPinchZoom: true,
 			children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(FocusScope, {
 				asChild: true,
@@ -39932,8 +39974,8 @@ SelectContentImpl.displayName = CONTENT_IMPL_NAME;
 var ITEM_ALIGNED_POSITION_NAME = "SelectItemAlignedPosition";
 var SelectItemAlignedPosition = import_react.forwardRef((props, forwardedRef) => {
 	const { __scopeSelect, onPlaced, ...popperProps } = props;
-	const context = useSelectContext(CONTENT_NAME$2, __scopeSelect);
-	const contentContext = useSelectContentContext(CONTENT_NAME$2, __scopeSelect);
+	const context = useSelectContext(CONTENT_NAME$3, __scopeSelect);
+	const contentContext = useSelectContentContext(CONTENT_NAME$3, __scopeSelect);
 	const [contentWrapper, setContentWrapper] = import_react.useState(null);
 	const [content, setContent] = import_react.useState(null);
 	const composedRefs = useComposedRefs(forwardedRef, (node) => setContent(node));
@@ -40058,7 +40100,7 @@ SelectItemAlignedPosition.displayName = ITEM_ALIGNED_POSITION_NAME;
 var POPPER_POSITION_NAME = "SelectPopperPosition";
 var SelectPopperPosition = import_react.forwardRef((props, forwardedRef) => {
 	const { __scopeSelect, align = "start", collisionPadding = CONTENT_MARGIN, ...popperProps } = props;
-	const popperScope = usePopperScope(__scopeSelect);
+	const popperScope = usePopperScope$1(__scopeSelect);
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Content$1, {
 		...popperScope,
 		...popperProps,
@@ -40077,7 +40119,7 @@ var SelectPopperPosition = import_react.forwardRef((props, forwardedRef) => {
 	});
 });
 SelectPopperPosition.displayName = POPPER_POSITION_NAME;
-var [SelectViewportProvider, useSelectViewportContext] = createSelectContext(CONTENT_NAME$2, {});
+var [SelectViewportProvider, useSelectViewportContext] = createSelectContext(CONTENT_NAME$3, {});
 var VIEWPORT_NAME$1 = "SelectViewport";
 var SelectViewport = import_react.forwardRef((props, forwardedRef) => {
 	const { __scopeSelect, nonce, ...viewportProps } = props;
@@ -40377,19 +40419,19 @@ var SelectSeparator$1 = import_react.forwardRef((props, forwardedRef) => {
 	});
 });
 SelectSeparator$1.displayName = SEPARATOR_NAME;
-var ARROW_NAME = "SelectArrow";
+var ARROW_NAME$1 = "SelectArrow";
 var SelectArrow = import_react.forwardRef((props, forwardedRef) => {
 	const { __scopeSelect, ...arrowProps } = props;
-	const popperScope = usePopperScope(__scopeSelect);
-	const context = useSelectContext(ARROW_NAME, __scopeSelect);
-	const contentContext = useSelectContentContext(ARROW_NAME, __scopeSelect);
+	const popperScope = usePopperScope$1(__scopeSelect);
+	const context = useSelectContext(ARROW_NAME$1, __scopeSelect);
+	const contentContext = useSelectContentContext(ARROW_NAME$1, __scopeSelect);
 	return context.open && contentContext.position === "popper" ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Arrow, {
 		...popperScope,
 		...arrowProps,
 		ref: forwardedRef
 	}) : null;
 });
-SelectArrow.displayName = ARROW_NAME;
+SelectArrow.displayName = ARROW_NAME$1;
 var BUBBLE_INPUT_NAME = "SelectBubbleInput";
 var SelectBubbleInput = import_react.forwardRef(({ __scopeSelect, value, ...props }, forwardedRef) => {
 	const ref = import_react.useRef(null);
@@ -40457,12 +40499,12 @@ function findNextItem(items, search, currentItem) {
 function wrapArray(array, startIndex) {
 	return array.map((_, index) => array[(startIndex + index) % array.length]);
 }
-var Root2$1 = Select$1;
-var Trigger$1 = SelectTrigger$1;
+var Root2$2 = Select$1;
+var Trigger$2 = SelectTrigger$1;
 var Value = SelectValue$1;
 var Icon = SelectIcon;
-var Portal$1 = SelectPortal;
-var Content2$1 = SelectContent$1;
+var Portal$2 = SelectPortal;
+var Content2$2 = SelectContent$1;
 var Viewport$1 = SelectViewport;
 var Label$3 = SelectLabel$1;
 var Item = SelectItem$1;
@@ -40473,9 +40515,9 @@ var ScrollDownButton = SelectScrollDownButton$1;
 var Separator = SelectSeparator$1;
 //#endregion
 //#region src/components/ui/select.tsx
-var Select = Root2$1;
+var Select = Root2$2;
 var SelectValue = Value;
-var SelectTrigger = import_react.forwardRef(({ className, children, ...props }, ref) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Trigger$1, {
+var SelectTrigger = import_react.forwardRef(({ className, children, ...props }, ref) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Trigger$2, {
 	"data-uid": "src/components/ui/select.tsx:18:3",
 	"data-prohibitions": "[editContent]",
 	ref,
@@ -40492,7 +40534,7 @@ var SelectTrigger = import_react.forwardRef(({ className, children, ...props }, 
 		})
 	})]
 }));
-SelectTrigger.displayName = Trigger$1.displayName;
+SelectTrigger.displayName = Trigger$2.displayName;
 var SelectScrollUpButton = import_react.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ScrollUpButton, {
 	"data-uid": "src/components/ui/select.tsx:38:3",
 	"data-prohibitions": "[editContent]",
@@ -40519,10 +40561,10 @@ var SelectScrollDownButton = import_react.forwardRef(({ className, ...props }, r
 	})
 }));
 SelectScrollDownButton.displayName = ScrollDownButton.displayName;
-var SelectContent = import_react.forwardRef(({ className, children, position = "popper", ...props }, ref) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Portal$1, {
+var SelectContent = import_react.forwardRef(({ className, children, position = "popper", ...props }, ref) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Portal$2, {
 	"data-uid": "src/components/ui/select.tsx:66:3",
 	"data-prohibitions": "[editContent]",
-	children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Content2$1, {
+	children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Content2$2, {
 		"data-uid": "src/components/ui/select.tsx:67:5",
 		"data-prohibitions": "[editContent]",
 		ref,
@@ -40547,7 +40589,7 @@ var SelectContent = import_react.forwardRef(({ className, children, position = "
 		]
 	})
 }));
-SelectContent.displayName = Content2$1.displayName;
+SelectContent.displayName = Content2$2.displayName;
 var SelectLabel = import_react.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Label$3, {
 	"data-uid": "src/components/ui/select.tsx:98:3",
 	"data-prohibitions": "[editContent]",
@@ -40620,34 +40662,34 @@ var Dialog$1 = (props) => {
 	});
 };
 Dialog$1.displayName = DIALOG_NAME;
-var TRIGGER_NAME$1 = "DialogTrigger";
+var TRIGGER_NAME$2 = "DialogTrigger";
 var DialogTrigger$1 = import_react.forwardRef((props, forwardedRef) => {
 	const { __scopeDialog, ...triggerProps } = props;
-	const context = useDialogContext(TRIGGER_NAME$1, __scopeDialog);
+	const context = useDialogContext(TRIGGER_NAME$2, __scopeDialog);
 	const composedTriggerRef = useComposedRefs(forwardedRef, context.triggerRef);
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Primitive$1.button, {
 		type: "button",
 		"aria-haspopup": "dialog",
 		"aria-expanded": context.open,
 		"aria-controls": context.contentId,
-		"data-state": getState(context.open),
+		"data-state": getState$1(context.open),
 		...triggerProps,
 		ref: composedTriggerRef,
 		onClick: composeEventHandlers(props.onClick, context.onOpenToggle)
 	});
 });
-DialogTrigger$1.displayName = TRIGGER_NAME$1;
-var PORTAL_NAME$1 = "DialogPortal";
-var [PortalProvider, usePortalContext] = createDialogContext(PORTAL_NAME$1, { forceMount: void 0 });
+DialogTrigger$1.displayName = TRIGGER_NAME$2;
+var PORTAL_NAME$2 = "DialogPortal";
+var [PortalProvider$1, usePortalContext$1] = createDialogContext(PORTAL_NAME$2, { forceMount: void 0 });
 var DialogPortal$1 = (props) => {
 	const { __scopeDialog, forceMount, children, container } = props;
-	const context = useDialogContext(PORTAL_NAME$1, __scopeDialog);
-	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(PortalProvider, {
+	const context = useDialogContext(PORTAL_NAME$2, __scopeDialog);
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(PortalProvider$1, {
 		scope: __scopeDialog,
 		forceMount,
 		children: import_react.Children.map(children, (child) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Presence, {
 			present: forceMount || context.open,
-			children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Portal$2, {
+			children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Portal$3, {
 				asChild: true,
 				container,
 				children: child
@@ -40655,10 +40697,10 @@ var DialogPortal$1 = (props) => {
 		}))
 	});
 };
-DialogPortal$1.displayName = PORTAL_NAME$1;
+DialogPortal$1.displayName = PORTAL_NAME$2;
 var OVERLAY_NAME$1 = "DialogOverlay";
 var DialogOverlay$1 = import_react.forwardRef((props, forwardedRef) => {
-	const portalContext = usePortalContext(OVERLAY_NAME$1, props.__scopeDialog);
+	const portalContext = usePortalContext$1(OVERLAY_NAME$1, props.__scopeDialog);
 	const { forceMount = portalContext.forceMount, ...overlayProps } = props;
 	const context = useDialogContext(OVERLAY_NAME$1, props.__scopeDialog);
 	return context.modal ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Presence, {
@@ -40670,16 +40712,16 @@ var DialogOverlay$1 = import_react.forwardRef((props, forwardedRef) => {
 	}) : null;
 });
 DialogOverlay$1.displayName = OVERLAY_NAME$1;
-var Slot = /* @__PURE__ */ createSlot$1("DialogOverlay.RemoveScroll");
+var Slot$1 = /* @__PURE__ */ createSlot$1("DialogOverlay.RemoveScroll");
 var DialogOverlayImpl = import_react.forwardRef((props, forwardedRef) => {
 	const { __scopeDialog, ...overlayProps } = props;
 	const context = useDialogContext(OVERLAY_NAME$1, __scopeDialog);
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ReactRemoveScroll, {
-		as: Slot,
+		as: Slot$1,
 		allowPinchZoom: true,
 		shards: [context.contentRef],
 		children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Primitive$1.div, {
-			"data-state": getState(context.open),
+			"data-state": getState$1(context.open),
 			...overlayProps,
 			ref: forwardedRef,
 			style: {
@@ -40689,11 +40731,11 @@ var DialogOverlayImpl = import_react.forwardRef((props, forwardedRef) => {
 		})
 	});
 });
-var CONTENT_NAME$1 = "DialogContent";
+var CONTENT_NAME$2 = "DialogContent";
 var DialogContent$1 = import_react.forwardRef((props, forwardedRef) => {
-	const portalContext = usePortalContext(CONTENT_NAME$1, props.__scopeDialog);
+	const portalContext = usePortalContext$1(CONTENT_NAME$2, props.__scopeDialog);
 	const { forceMount = portalContext.forceMount, ...contentProps } = props;
-	const context = useDialogContext(CONTENT_NAME$1, props.__scopeDialog);
+	const context = useDialogContext(CONTENT_NAME$2, props.__scopeDialog);
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Presence, {
 		present: forceMount || context.open,
 		children: context.modal ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(DialogContentModal, {
@@ -40705,9 +40747,9 @@ var DialogContent$1 = import_react.forwardRef((props, forwardedRef) => {
 		})
 	});
 });
-DialogContent$1.displayName = CONTENT_NAME$1;
+DialogContent$1.displayName = CONTENT_NAME$2;
 var DialogContentModal = import_react.forwardRef((props, forwardedRef) => {
-	const context = useDialogContext(CONTENT_NAME$1, props.__scopeDialog);
+	const context = useDialogContext(CONTENT_NAME$2, props.__scopeDialog);
 	const contentRef = import_react.useRef(null);
 	const composedRefs = useComposedRefs(forwardedRef, context.contentRef, contentRef);
 	import_react.useEffect(() => {
@@ -40732,7 +40774,7 @@ var DialogContentModal = import_react.forwardRef((props, forwardedRef) => {
 	});
 });
 var DialogContentNonModal = import_react.forwardRef((props, forwardedRef) => {
-	const context = useDialogContext(CONTENT_NAME$1, props.__scopeDialog);
+	const context = useDialogContext(CONTENT_NAME$2, props.__scopeDialog);
 	const hasInteractedOutsideRef = import_react.useRef(false);
 	const hasPointerDownOutsideRef = import_react.useRef(false);
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(DialogContentImpl, {
@@ -40763,7 +40805,7 @@ var DialogContentNonModal = import_react.forwardRef((props, forwardedRef) => {
 });
 var DialogContentImpl = import_react.forwardRef((props, forwardedRef) => {
 	const { __scopeDialog, trapFocus, onOpenAutoFocus, onCloseAutoFocus, ...contentProps } = props;
-	const context = useDialogContext(CONTENT_NAME$1, __scopeDialog);
+	const context = useDialogContext(CONTENT_NAME$2, __scopeDialog);
 	const contentRef = import_react.useRef(null);
 	const composedRefs = useComposedRefs(forwardedRef, contentRef);
 	useFocusGuards();
@@ -40778,7 +40820,7 @@ var DialogContentImpl = import_react.forwardRef((props, forwardedRef) => {
 			id: context.contentId,
 			"aria-describedby": context.descriptionId,
 			"aria-labelledby": context.titleId,
-			"data-state": getState(context.open),
+			"data-state": getState$1(context.open),
 			...contentProps,
 			ref: composedRefs,
 			onDismiss: () => context.onOpenChange(false)
@@ -40810,10 +40852,10 @@ var DialogDescription$1 = import_react.forwardRef((props, forwardedRef) => {
 	});
 });
 DialogDescription$1.displayName = DESCRIPTION_NAME$1;
-var CLOSE_NAME = "DialogClose";
+var CLOSE_NAME$1 = "DialogClose";
 var DialogClose$1 = import_react.forwardRef((props, forwardedRef) => {
 	const { __scopeDialog, ...closeProps } = props;
-	const context = useDialogContext(CLOSE_NAME, __scopeDialog);
+	const context = useDialogContext(CLOSE_NAME$1, __scopeDialog);
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Primitive$1.button, {
 		type: "button",
 		...closeProps,
@@ -40821,13 +40863,13 @@ var DialogClose$1 = import_react.forwardRef((props, forwardedRef) => {
 		onClick: composeEventHandlers(props.onClick, () => context.onOpenChange(false))
 	});
 });
-DialogClose$1.displayName = CLOSE_NAME;
-function getState(open) {
+DialogClose$1.displayName = CLOSE_NAME$1;
+function getState$1(open) {
 	return open ? "open" : "closed";
 }
 var TITLE_WARNING_NAME = "DialogTitleWarning";
 var [WarningProvider, useWarningContext] = createContext2(TITLE_WARNING_NAME, {
-	contentName: CONTENT_NAME$1,
+	contentName: CONTENT_NAME$2,
 	titleName: TITLE_NAME$1,
 	docsSlug: "dialog"
 });
@@ -40861,8 +40903,8 @@ var DescriptionWarning$1 = ({ contentRef, descriptionId }) => {
 	return null;
 };
 var Root$3 = Dialog$1;
-var Trigger = DialogTrigger$1;
-var Portal = DialogPortal$1;
+var Trigger$1 = DialogTrigger$1;
+var Portal$1 = DialogPortal$1;
 var Overlay = DialogOverlay$1;
 var Content = DialogContent$1;
 var Title = DialogTitle$1;
@@ -40871,8 +40913,8 @@ var Close = DialogClose$1;
 //#endregion
 //#region src/components/ui/dialog.tsx
 var Dialog = Root$3;
-var DialogTrigger = Trigger;
-var DialogPortal = Portal;
+var DialogTrigger = Trigger$1;
+var DialogPortal = Portal$1;
 var DialogOverlay = import_react.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Overlay, {
 	"data-uid": "src/components/ui/dialog.tsx:20:3",
 	"data-prohibitions": "[editContent]",
@@ -41300,138 +41342,280 @@ function MonthlyClosingDialog() {
 	});
 }
 //#endregion
-//#region src/components/dashboard/DashboardHeader.tsx
-function DashboardHeader() {
-	const { filters, setFilter, transactions } = useFinanceStore();
-	const years = (0, import_react.useMemo)(() => {
-		const y = /* @__PURE__ */ new Set();
-		transactions.forEach((tx) => y.add(new Date(tx.date).getFullYear().toString()));
-		const currentYear = (/* @__PURE__ */ new Date()).getFullYear().toString();
-		y.add(currentYear);
-		return Array.from(y).sort((a, b) => b.localeCompare(a));
-	}, [transactions]);
-	const selectedYear = filters.years[0] || (/* @__PURE__ */ new Date()).getFullYear().toString();
-	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-		"data-uid": "src/components/dashboard/DashboardHeader.tsx:29:5",
+//#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/@radix-ui+react-popover@1.1.15_@types+react-dom@19.2.3_@types+react@19.2.14__@types+rea_8b5332f8e883134e9d9ab2856fc4395d/node_modules/@radix-ui/react-popover/dist/index.mjs
+var POPOVER_NAME = "Popover";
+var [createPopoverContext, createPopoverScope] = createContextScope$1(POPOVER_NAME, [createPopperScope]);
+var usePopperScope = createPopperScope();
+var [PopoverProvider, usePopoverContext] = createPopoverContext(POPOVER_NAME);
+var Popover$1 = (props) => {
+	const { __scopePopover, children, open: openProp, defaultOpen, onOpenChange, modal = false } = props;
+	const popperScope = usePopperScope(__scopePopover);
+	const triggerRef = import_react.useRef(null);
+	const [hasCustomAnchor, setHasCustomAnchor] = import_react.useState(false);
+	const [open, setOpen] = useControllableState({
+		prop: openProp,
+		defaultProp: defaultOpen ?? false,
+		onChange: onOpenChange,
+		caller: POPOVER_NAME
+	});
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Root2$3, {
+		...popperScope,
+		children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(PopoverProvider, {
+			scope: __scopePopover,
+			contentId: useId(),
+			triggerRef,
+			open,
+			onOpenChange: setOpen,
+			onOpenToggle: import_react.useCallback(() => setOpen((prevOpen) => !prevOpen), [setOpen]),
+			hasCustomAnchor,
+			onCustomAnchorAdd: import_react.useCallback(() => setHasCustomAnchor(true), []),
+			onCustomAnchorRemove: import_react.useCallback(() => setHasCustomAnchor(false), []),
+			modal,
+			children
+		})
+	});
+};
+Popover$1.displayName = POPOVER_NAME;
+var ANCHOR_NAME = "PopoverAnchor";
+var PopoverAnchor = import_react.forwardRef((props, forwardedRef) => {
+	const { __scopePopover, ...anchorProps } = props;
+	const context = usePopoverContext(ANCHOR_NAME, __scopePopover);
+	const popperScope = usePopperScope(__scopePopover);
+	const { onCustomAnchorAdd, onCustomAnchorRemove } = context;
+	import_react.useEffect(() => {
+		onCustomAnchorAdd();
+		return () => onCustomAnchorRemove();
+	}, [onCustomAnchorAdd, onCustomAnchorRemove]);
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Anchor, {
+		...popperScope,
+		...anchorProps,
+		ref: forwardedRef
+	});
+});
+PopoverAnchor.displayName = ANCHOR_NAME;
+var TRIGGER_NAME$1 = "PopoverTrigger";
+var PopoverTrigger$1 = import_react.forwardRef((props, forwardedRef) => {
+	const { __scopePopover, ...triggerProps } = props;
+	const context = usePopoverContext(TRIGGER_NAME$1, __scopePopover);
+	const popperScope = usePopperScope(__scopePopover);
+	const composedTriggerRef = useComposedRefs(forwardedRef, context.triggerRef);
+	const trigger = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Primitive$1.button, {
+		type: "button",
+		"aria-haspopup": "dialog",
+		"aria-expanded": context.open,
+		"aria-controls": context.contentId,
+		"data-state": getState(context.open),
+		...triggerProps,
+		ref: composedTriggerRef,
+		onClick: composeEventHandlers(props.onClick, context.onOpenToggle)
+	});
+	return context.hasCustomAnchor ? trigger : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Anchor, {
+		asChild: true,
+		...popperScope,
+		children: trigger
+	});
+});
+PopoverTrigger$1.displayName = TRIGGER_NAME$1;
+var PORTAL_NAME$1 = "PopoverPortal";
+var [PortalProvider, usePortalContext] = createPopoverContext(PORTAL_NAME$1, { forceMount: void 0 });
+var PopoverPortal = (props) => {
+	const { __scopePopover, forceMount, children, container } = props;
+	const context = usePopoverContext(PORTAL_NAME$1, __scopePopover);
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(PortalProvider, {
+		scope: __scopePopover,
+		forceMount,
+		children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Presence, {
+			present: forceMount || context.open,
+			children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Portal$3, {
+				asChild: true,
+				container,
+				children
+			})
+		})
+	});
+};
+PopoverPortal.displayName = PORTAL_NAME$1;
+var CONTENT_NAME$1 = "PopoverContent";
+var PopoverContent$1 = import_react.forwardRef((props, forwardedRef) => {
+	const portalContext = usePortalContext(CONTENT_NAME$1, props.__scopePopover);
+	const { forceMount = portalContext.forceMount, ...contentProps } = props;
+	const context = usePopoverContext(CONTENT_NAME$1, props.__scopePopover);
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Presence, {
+		present: forceMount || context.open,
+		children: context.modal ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(PopoverContentModal, {
+			...contentProps,
+			ref: forwardedRef
+		}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(PopoverContentNonModal, {
+			...contentProps,
+			ref: forwardedRef
+		})
+	});
+});
+PopoverContent$1.displayName = CONTENT_NAME$1;
+var Slot = /* @__PURE__ */ createSlot$1("PopoverContent.RemoveScroll");
+var PopoverContentModal = import_react.forwardRef((props, forwardedRef) => {
+	const context = usePopoverContext(CONTENT_NAME$1, props.__scopePopover);
+	const contentRef = import_react.useRef(null);
+	const composedRefs = useComposedRefs(forwardedRef, contentRef);
+	const isRightClickOutsideRef = import_react.useRef(false);
+	import_react.useEffect(() => {
+		const content = contentRef.current;
+		if (content) return hideOthers(content);
+	}, []);
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ReactRemoveScroll, {
+		as: Slot,
+		allowPinchZoom: true,
+		children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(PopoverContentImpl, {
+			...props,
+			ref: composedRefs,
+			trapFocus: context.open,
+			disableOutsidePointerEvents: true,
+			onCloseAutoFocus: composeEventHandlers(props.onCloseAutoFocus, (event) => {
+				event.preventDefault();
+				if (!isRightClickOutsideRef.current) context.triggerRef.current?.focus();
+			}),
+			onPointerDownOutside: composeEventHandlers(props.onPointerDownOutside, (event) => {
+				const originalEvent = event.detail.originalEvent;
+				const ctrlLeftClick = originalEvent.button === 0 && originalEvent.ctrlKey === true;
+				isRightClickOutsideRef.current = originalEvent.button === 2 || ctrlLeftClick;
+			}, { checkForDefaultPrevented: false }),
+			onFocusOutside: composeEventHandlers(props.onFocusOutside, (event) => event.preventDefault(), { checkForDefaultPrevented: false })
+		})
+	});
+});
+var PopoverContentNonModal = import_react.forwardRef((props, forwardedRef) => {
+	const context = usePopoverContext(CONTENT_NAME$1, props.__scopePopover);
+	const hasInteractedOutsideRef = import_react.useRef(false);
+	const hasPointerDownOutsideRef = import_react.useRef(false);
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(PopoverContentImpl, {
+		...props,
+		ref: forwardedRef,
+		trapFocus: false,
+		disableOutsidePointerEvents: false,
+		onCloseAutoFocus: (event) => {
+			props.onCloseAutoFocus?.(event);
+			if (!event.defaultPrevented) {
+				if (!hasInteractedOutsideRef.current) context.triggerRef.current?.focus();
+				event.preventDefault();
+			}
+			hasInteractedOutsideRef.current = false;
+			hasPointerDownOutsideRef.current = false;
+		},
+		onInteractOutside: (event) => {
+			props.onInteractOutside?.(event);
+			if (!event.defaultPrevented) {
+				hasInteractedOutsideRef.current = true;
+				if (event.detail.originalEvent.type === "pointerdown") hasPointerDownOutsideRef.current = true;
+			}
+			const target = event.target;
+			if (context.triggerRef.current?.contains(target)) event.preventDefault();
+			if (event.detail.originalEvent.type === "focusin" && hasPointerDownOutsideRef.current) event.preventDefault();
+		}
+	});
+});
+var PopoverContentImpl = import_react.forwardRef((props, forwardedRef) => {
+	const { __scopePopover, trapFocus, onOpenAutoFocus, onCloseAutoFocus, disableOutsidePointerEvents, onEscapeKeyDown, onPointerDownOutside, onFocusOutside, onInteractOutside, ...contentProps } = props;
+	const context = usePopoverContext(CONTENT_NAME$1, __scopePopover);
+	const popperScope = usePopperScope(__scopePopover);
+	useFocusGuards();
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(FocusScope, {
+		asChild: true,
+		loop: true,
+		trapped: trapFocus,
+		onMountAutoFocus: onOpenAutoFocus,
+		onUnmountAutoFocus: onCloseAutoFocus,
+		children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(DismissableLayer, {
+			asChild: true,
+			disableOutsidePointerEvents,
+			onInteractOutside,
+			onEscapeKeyDown,
+			onPointerDownOutside,
+			onFocusOutside,
+			onDismiss: () => context.onOpenChange(false),
+			children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Content$1, {
+				"data-state": getState(context.open),
+				role: "dialog",
+				id: context.contentId,
+				...popperScope,
+				...contentProps,
+				ref: forwardedRef,
+				style: {
+					...contentProps.style,
+					"--radix-popover-content-transform-origin": "var(--radix-popper-transform-origin)",
+					"--radix-popover-content-available-width": "var(--radix-popper-available-width)",
+					"--radix-popover-content-available-height": "var(--radix-popper-available-height)",
+					"--radix-popover-trigger-width": "var(--radix-popper-anchor-width)",
+					"--radix-popover-trigger-height": "var(--radix-popper-anchor-height)"
+				}
+			})
+		})
+	});
+});
+var CLOSE_NAME = "PopoverClose";
+var PopoverClose = import_react.forwardRef((props, forwardedRef) => {
+	const { __scopePopover, ...closeProps } = props;
+	const context = usePopoverContext(CLOSE_NAME, __scopePopover);
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Primitive$1.button, {
+		type: "button",
+		...closeProps,
+		ref: forwardedRef,
+		onClick: composeEventHandlers(props.onClick, () => context.onOpenChange(false))
+	});
+});
+PopoverClose.displayName = CLOSE_NAME;
+var ARROW_NAME = "PopoverArrow";
+var PopoverArrow = import_react.forwardRef((props, forwardedRef) => {
+	const { __scopePopover, ...arrowProps } = props;
+	const popperScope = usePopperScope(__scopePopover);
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Arrow, {
+		...popperScope,
+		...arrowProps,
+		ref: forwardedRef
+	});
+});
+PopoverArrow.displayName = ARROW_NAME;
+function getState(open) {
+	return open ? "open" : "closed";
+}
+var Root2$1 = Popover$1;
+var Trigger = PopoverTrigger$1;
+var Portal = PopoverPortal;
+var Content2$1 = PopoverContent$1;
+//#endregion
+//#region src/components/ui/popover.tsx
+var Popover = Root2$1;
+var PopoverTrigger = Trigger;
+var PopoverContent = import_react.forwardRef(({ className, align = "center", sideOffset = 4, ...props }, ref) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Portal, {
+	"data-uid": "src/components/ui/popover.tsx:15:3",
+	"data-prohibitions": "[editContent]",
+	children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Content2$1, {
+		"data-uid": "src/components/ui/popover.tsx:16:5",
 		"data-prohibitions": "[editContent]",
-		className: "bg-[#1e3a5f] text-white rounded-t-md px-4 py-2 flex items-center justify-between shadow-sm",
-		children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-			"data-uid": "src/components/dashboard/DashboardHeader.tsx:30:7",
-			"data-prohibitions": "[]",
-			className: "flex items-center gap-2",
-			children: [
-				/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-					"data-uid": "src/components/dashboard/DashboardHeader.tsx:31:9",
-					"data-prohibitions": "[editContent]",
-					className: "w-4 h-4 bg-blue-400 rounded-sm"
-				}),
-				/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
-					"data-uid": "src/components/dashboard/DashboardHeader.tsx:32:9",
-					"data-prohibitions": "[]",
-					className: "font-bold text-sm tracking-wide hidden sm:block",
-					children: "DASHBOARD FINANCEIRO"
-				}),
-				/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
-					"data-uid": "src/components/dashboard/DashboardHeader.tsx:33:9",
-					"data-prohibitions": "[]",
-					className: "font-bold text-sm tracking-wide sm:hidden",
-					children: "DASHBOARD"
-				})
-			]
-		}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-			"data-uid": "src/components/dashboard/DashboardHeader.tsx:36:7",
-			"data-prohibitions": "[editContent]",
-			className: "flex items-center gap-2 sm:gap-4",
-			children: [
-				/* @__PURE__ */ (0, import_jsx_runtime.jsx)(MonthlyClosingDialog, {
-					"data-uid": "src/components/dashboard/DashboardHeader.tsx:37:9",
-					"data-prohibitions": "[editContent]"
-				}),
-				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-					"data-uid": "src/components/dashboard/DashboardHeader.tsx:39:9",
-					"data-prohibitions": "[editContent]",
-					className: "flex items-center gap-2",
-					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-						"data-uid": "src/components/dashboard/DashboardHeader.tsx:40:11",
-						"data-prohibitions": "[]",
-						className: "text-xs font-medium text-blue-200",
-						children: "Ano:"
-					}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Select, {
-						"data-uid": "src/components/dashboard/DashboardHeader.tsx:41:11",
-						"data-prohibitions": "[editContent]",
-						value: selectedYear,
-						onValueChange: (val) => setFilter("years", [val]),
-						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectTrigger, {
-							"data-uid": "src/components/dashboard/DashboardHeader.tsx:42:13",
-							"data-prohibitions": "[]",
-							className: "h-7 w-[80px] sm:w-[100px] bg-[#152943] border-none text-white focus:ring-1 focus:ring-blue-400 text-xs",
-							children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectValue, {
-								"data-uid": "src/components/dashboard/DashboardHeader.tsx:43:15",
-								"data-prohibitions": "[editContent]",
-								placeholder: "Selecione..."
-							})
-						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectContent, {
-							"data-uid": "src/components/dashboard/DashboardHeader.tsx:45:13",
-							"data-prohibitions": "[editContent]",
-							children: years.map((y) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectItem, {
-								"data-uid": "src/components/dashboard/DashboardHeader.tsx:47:17",
-								"data-prohibitions": "[editContent]",
-								value: y,
-								children: y
-							}, y))
-						})]
-					})]
-				}),
-				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-					"data-uid": "src/components/dashboard/DashboardHeader.tsx:55:9",
-					"data-prohibitions": "[]",
-					className: "flex items-center gap-1",
-					children: [
-						/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, {
-							"data-uid": "src/components/dashboard/DashboardHeader.tsx:56:11",
-							"data-prohibitions": "[]",
-							variant: "ghost",
-							size: "icon",
-							className: "h-6 w-6 text-white hover:bg-white/20",
-							children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(RefreshCw, {
-								"data-uid": "src/components/dashboard/DashboardHeader.tsx:57:13",
-								"data-prohibitions": "[editContent]",
-								className: "h-3 w-3"
-							})
-						}),
-						/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Link, {
-							"data-uid": "src/components/dashboard/DashboardHeader.tsx:59:11",
-							"data-prohibitions": "[]",
-							to: "/",
-							children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, {
-								"data-uid": "src/components/dashboard/DashboardHeader.tsx:60:13",
-								"data-prohibitions": "[]",
-								variant: "ghost",
-								size: "icon",
-								className: "h-6 w-6 text-white hover:bg-white/20",
-								children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(House, {
-									"data-uid": "src/components/dashboard/DashboardHeader.tsx:61:15",
-									"data-prohibitions": "[editContent]",
-									className: "h-3 w-3"
-								})
-							})
-						}),
-						/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, {
-							"data-uid": "src/components/dashboard/DashboardHeader.tsx:64:11",
-							"data-prohibitions": "[]",
-							variant: "ghost",
-							size: "icon",
-							className: "h-6 w-6 text-white hover:bg-white/20 hidden sm:flex",
-							children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CircleX, {
-								"data-uid": "src/components/dashboard/DashboardHeader.tsx:69:13",
-								"data-prohibitions": "[editContent]",
-								className: "h-3 w-3"
-							})
-						})
-					]
-				})
-			]
-		})]
+		ref,
+		align,
+		sideOffset,
+		className: cn$1("z-50 w-72 rounded-md border bg-popover p-4 text-popover-foreground shadow-md outline-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 origin-[--radix-popover-content-transform-origin]", className),
+		...props
+	})
+}));
+PopoverContent.displayName = Content2$1.displayName;
+//#endregion
+//#region src/components/ui/badge.tsx
+var badgeVariants = cva("inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2", {
+	variants: { variant: {
+		default: "border-transparent bg-primary text-primary-foreground hover:bg-primary/80",
+		secondary: "border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80",
+		destructive: "border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80",
+		outline: "text-foreground"
+	} },
+	defaultVariants: { variant: "default" }
+});
+function Badge({ className, variant, ...props }) {
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+		"data-uid": "src/components/ui/badge.tsx:30:10",
+		"data-prohibitions": "[editContent]",
+		className: cn$1(badgeVariants({ variant }), className),
+		...props
 	});
 }
 //#endregion
@@ -42131,6 +42315,2529 @@ var ScrollBar = import_react.forwardRef(({ className, orientation = "vertical", 
 	})
 }));
 ScrollBar.displayName = ScrollAreaScrollbar.displayName;
+//#endregion
+//#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/constants.js
+/**
+* @constant
+* @name daysInYear
+* @summary Days in 1 year.
+*
+* @description
+* How many days in a year.
+*
+* One years equals 365.2425 days according to the formula:
+*
+* > Leap year occurs every 4 years, except for years that are divisible by 100 and not divisible by 400.
+* > 1 mean year = (365+1/4-1/100+1/400) days = 365.2425 days
+*/
+var daysInYear = 365.2425;
+Math.pow(10, 8) * 24 * 60 * 60 * 1e3;
+/**
+* @constant
+* @name millisecondsInWeek
+* @summary Milliseconds in 1 week.
+*/
+var millisecondsInWeek = 6048e5;
+/**
+* @constant
+* @name millisecondsInDay
+* @summary Milliseconds in 1 day.
+*/
+var millisecondsInDay = 864e5;
+/**
+* @constant
+* @name secondsInDay
+* @summary Seconds in 1 day.
+*/
+var secondsInDay = 3600 * 24;
+secondsInDay * 7;
+secondsInDay * daysInYear / 12 * 3;
+/**
+* @constant
+* @name constructFromSymbol
+* @summary Symbol enabling Date extensions to inherit properties from the reference date.
+*
+* The symbol is used to enable the `constructFrom` function to construct a date
+* using a reference date and a value. It allows to transfer extra properties
+* from the reference date to the new date. It's useful for extensions like
+* [`TZDate`](https://github.com/date-fns/tz) that accept a time zone as
+* a constructor argument.
+*/
+var constructFromSymbol = Symbol.for("constructDateFrom");
+//#endregion
+//#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/constructFrom.js
+/**
+* @name constructFrom
+* @category Generic Helpers
+* @summary Constructs a date using the reference date and the value
+*
+* @description
+* The function constructs a new date using the constructor from the reference
+* date and the given value. It helps to build generic functions that accept
+* date extensions.
+*
+* It defaults to `Date` if the passed reference date is a number or a string.
+*
+* Starting from v3.7.0, it allows to construct a date using `[Symbol.for("constructDateFrom")]`
+* enabling to transfer extra properties from the reference date to the new date.
+* It's useful for extensions like [`TZDate`](https://github.com/date-fns/tz)
+* that accept a time zone as a constructor argument.
+*
+* @typeParam DateType - The `Date` type, the function operates on. Gets inferred from passed arguments. Allows to use extensions like [`UTCDate`](https://github.com/date-fns/utc).
+*
+* @param date - The reference date to take constructor from
+* @param value - The value to create the date
+*
+* @returns Date initialized using the given date and value
+*
+* @example
+* import { constructFrom } from "./constructFrom/date-fns";
+*
+* // A function that clones a date preserving the original type
+* function cloneDate<DateType extends Date>(date: DateType): DateType {
+*   return constructFrom(
+*     date, // Use constructor from the given date
+*     date.getTime() // Use the date value to create a new date
+*   );
+* }
+*/
+function constructFrom(date, value) {
+	if (typeof date === "function") return date(value);
+	if (date && typeof date === "object" && constructFromSymbol in date) return date[constructFromSymbol](value);
+	if (date instanceof Date) return new date.constructor(value);
+	return new Date(value);
+}
+//#endregion
+//#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/toDate.js
+/**
+* @name toDate
+* @category Common Helpers
+* @summary Convert the given argument to an instance of Date.
+*
+* @description
+* Convert the given argument to an instance of Date.
+*
+* If the argument is an instance of Date, the function returns its clone.
+*
+* If the argument is a number, it is treated as a timestamp.
+*
+* If the argument is none of the above, the function returns Invalid Date.
+*
+* Starting from v3.7.0, it clones a date using `[Symbol.for("constructDateFrom")]`
+* enabling to transfer extra properties from the reference date to the new date.
+* It's useful for extensions like [`TZDate`](https://github.com/date-fns/tz)
+* that accept a time zone as a constructor argument.
+*
+* **Note**: *all* Date arguments passed to any *date-fns* function is processed by `toDate`.
+*
+* @typeParam DateType - The `Date` type, the function operates on. Gets inferred from passed arguments. Allows to use extensions like [`UTCDate`](https://github.com/date-fns/utc).
+* @typeParam ResultDate - The result `Date` type, it is the type returned from the context function if it is passed, or inferred from the arguments.
+*
+* @param argument - The value to convert
+*
+* @returns The parsed date in the local time zone
+*
+* @example
+* // Clone the date:
+* const result = toDate(new Date(2014, 1, 11, 11, 30, 30))
+* //=> Tue Feb 11 2014 11:30:30
+*
+* @example
+* // Convert the timestamp to date:
+* const result = toDate(1392098430000)
+* //=> Tue Feb 11 2014 11:30:30
+*/
+function toDate(argument, context) {
+	return constructFrom(context || argument, argument);
+}
+//#endregion
+//#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/_lib/defaultOptions.js
+var defaultOptions$1 = {};
+function getDefaultOptions() {
+	return defaultOptions$1;
+}
+//#endregion
+//#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/startOfWeek.js
+/**
+* The {@link startOfWeek} function options.
+*/
+/**
+* @name startOfWeek
+* @category Week Helpers
+* @summary Return the start of a week for the given date.
+*
+* @description
+* Return the start of a week for the given date.
+* The result will be in the local timezone.
+*
+* @typeParam DateType - The `Date` type, the function operates on. Gets inferred from passed arguments. Allows to use extensions like [`UTCDate`](https://github.com/date-fns/utc).
+* @typeParam ResultDate - The result `Date` type, it is the type returned from the context function if it is passed, or inferred from the arguments.
+*
+* @param date - The original date
+* @param options - An object with options
+*
+* @returns The start of a week
+*
+* @example
+* // The start of a week for 2 September 2014 11:55:00:
+* const result = startOfWeek(new Date(2014, 8, 2, 11, 55, 0))
+* //=> Sun Aug 31 2014 00:00:00
+*
+* @example
+* // If the week starts on Monday, the start of the week for 2 September 2014 11:55:00:
+* const result = startOfWeek(new Date(2014, 8, 2, 11, 55, 0), { weekStartsOn: 1 })
+* //=> Mon Sep 01 2014 00:00:00
+*/
+function startOfWeek(date, options) {
+	const defaultOptions = getDefaultOptions();
+	const weekStartsOn = options?.weekStartsOn ?? options?.locale?.options?.weekStartsOn ?? defaultOptions.weekStartsOn ?? defaultOptions.locale?.options?.weekStartsOn ?? 0;
+	const _date = toDate(date, options?.in);
+	const day = _date.getDay();
+	const diff = (day < weekStartsOn ? 7 : 0) + day - weekStartsOn;
+	_date.setDate(_date.getDate() - diff);
+	_date.setHours(0, 0, 0, 0);
+	return _date;
+}
+//#endregion
+//#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/startOfISOWeek.js
+/**
+* The {@link startOfISOWeek} function options.
+*/
+/**
+* @name startOfISOWeek
+* @category ISO Week Helpers
+* @summary Return the start of an ISO week for the given date.
+*
+* @description
+* Return the start of an ISO week for the given date.
+* The result will be in the local timezone.
+*
+* ISO week-numbering year: http://en.wikipedia.org/wiki/ISO_week_date
+*
+* @typeParam DateType - The `Date` type, the function operates on. Gets inferred from passed arguments. Allows to use extensions like [`UTCDate`](https://github.com/date-fns/utc).
+* @typeParam ResultDate - The result `Date` type, it is the type returned from the context function if it is passed, or inferred from the arguments.
+*
+* @param date - The original date
+* @param options - An object with options
+*
+* @returns The start of an ISO week
+*
+* @example
+* // The start of an ISO week for 2 September 2014 11:55:00:
+* const result = startOfISOWeek(new Date(2014, 8, 2, 11, 55, 0))
+* //=> Mon Sep 01 2014 00:00:00
+*/
+function startOfISOWeek(date, options) {
+	return startOfWeek(date, {
+		...options,
+		weekStartsOn: 1
+	});
+}
+//#endregion
+//#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/getISOWeekYear.js
+/**
+* The {@link getISOWeekYear} function options.
+*/
+/**
+* @name getISOWeekYear
+* @category ISO Week-Numbering Year Helpers
+* @summary Get the ISO week-numbering year of the given date.
+*
+* @description
+* Get the ISO week-numbering year of the given date,
+* which always starts 3 days before the year's first Thursday.
+*
+* ISO week-numbering year: http://en.wikipedia.org/wiki/ISO_week_date
+*
+* @param date - The given date
+*
+* @returns The ISO week-numbering year
+*
+* @example
+* // Which ISO-week numbering year is 2 January 2005?
+* const result = getISOWeekYear(new Date(2005, 0, 2))
+* //=> 2004
+*/
+function getISOWeekYear(date, options) {
+	const _date = toDate(date, options?.in);
+	const year = _date.getFullYear();
+	const fourthOfJanuaryOfNextYear = constructFrom(_date, 0);
+	fourthOfJanuaryOfNextYear.setFullYear(year + 1, 0, 4);
+	fourthOfJanuaryOfNextYear.setHours(0, 0, 0, 0);
+	const startOfNextYear = startOfISOWeek(fourthOfJanuaryOfNextYear);
+	const fourthOfJanuaryOfThisYear = constructFrom(_date, 0);
+	fourthOfJanuaryOfThisYear.setFullYear(year, 0, 4);
+	fourthOfJanuaryOfThisYear.setHours(0, 0, 0, 0);
+	const startOfThisYear = startOfISOWeek(fourthOfJanuaryOfThisYear);
+	if (_date.getTime() >= startOfNextYear.getTime()) return year + 1;
+	else if (_date.getTime() >= startOfThisYear.getTime()) return year;
+	else return year - 1;
+}
+//#endregion
+//#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/_lib/getTimezoneOffsetInMilliseconds.js
+/**
+* Google Chrome as of 67.0.3396.87 introduced timezones with offset that includes seconds.
+* They usually appear for dates that denote time before the timezones were introduced
+* (e.g. for 'Europe/Prague' timezone the offset is GMT+00:57:44 before 1 October 1891
+* and GMT+01:00:00 after that date)
+*
+* Date#getTimezoneOffset returns the offset in minutes and would return 57 for the example above,
+* which would lead to incorrect calculations.
+*
+* This function returns the timezone offset in milliseconds that takes seconds in account.
+*/
+function getTimezoneOffsetInMilliseconds(date) {
+	const _date = toDate(date);
+	const utcDate = new Date(Date.UTC(_date.getFullYear(), _date.getMonth(), _date.getDate(), _date.getHours(), _date.getMinutes(), _date.getSeconds(), _date.getMilliseconds()));
+	utcDate.setUTCFullYear(_date.getFullYear());
+	return +date - +utcDate;
+}
+//#endregion
+//#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/_lib/normalizeDates.js
+function normalizeDates(context, ...dates) {
+	const normalize = constructFrom.bind(null, context || dates.find((date) => typeof date === "object"));
+	return dates.map(normalize);
+}
+//#endregion
+//#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/startOfDay.js
+/**
+* The {@link startOfDay} function options.
+*/
+/**
+* @name startOfDay
+* @category Day Helpers
+* @summary Return the start of a day for the given date.
+*
+* @description
+* Return the start of a day for the given date.
+* The result will be in the local timezone.
+*
+* @typeParam DateType - The `Date` type, the function operates on. Gets inferred from passed arguments. Allows to use extensions like [`UTCDate`](https://github.com/date-fns/utc).
+* @typeParam ResultDate - The result `Date` type, it is the type returned from the context function if it is passed, or inferred from the arguments.
+*
+* @param date - The original date
+* @param options - The options
+*
+* @returns The start of a day
+*
+* @example
+* // The start of a day for 2 September 2014 11:55:00:
+* const result = startOfDay(new Date(2014, 8, 2, 11, 55, 0))
+* //=> Tue Sep 02 2014 00:00:00
+*/
+function startOfDay(date, options) {
+	const _date = toDate(date, options?.in);
+	_date.setHours(0, 0, 0, 0);
+	return _date;
+}
+//#endregion
+//#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/differenceInCalendarDays.js
+/**
+* The {@link differenceInCalendarDays} function options.
+*/
+/**
+* @name differenceInCalendarDays
+* @category Day Helpers
+* @summary Get the number of calendar days between the given dates.
+*
+* @description
+* Get the number of calendar days between the given dates. This means that the times are removed
+* from the dates and then the difference in days is calculated.
+*
+* @param laterDate - The later date
+* @param earlierDate - The earlier date
+* @param options - The options object
+*
+* @returns The number of calendar days
+*
+* @example
+* // How many calendar days are between
+* // 2 July 2011 23:00:00 and 2 July 2012 00:00:00?
+* const result = differenceInCalendarDays(
+*   new Date(2012, 6, 2, 0, 0),
+*   new Date(2011, 6, 2, 23, 0)
+* )
+* //=> 366
+* // How many calendar days are between
+* // 2 July 2011 23:59:00 and 3 July 2011 00:01:00?
+* const result = differenceInCalendarDays(
+*   new Date(2011, 6, 3, 0, 1),
+*   new Date(2011, 6, 2, 23, 59)
+* )
+* //=> 1
+*/
+function differenceInCalendarDays(laterDate, earlierDate, options) {
+	const [laterDate_, earlierDate_] = normalizeDates(options?.in, laterDate, earlierDate);
+	const laterStartOfDay = startOfDay(laterDate_);
+	const earlierStartOfDay = startOfDay(earlierDate_);
+	const laterTimestamp = +laterStartOfDay - getTimezoneOffsetInMilliseconds(laterStartOfDay);
+	const earlierTimestamp = +earlierStartOfDay - getTimezoneOffsetInMilliseconds(earlierStartOfDay);
+	return Math.round((laterTimestamp - earlierTimestamp) / millisecondsInDay);
+}
+//#endregion
+//#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/startOfISOWeekYear.js
+/**
+* The {@link startOfISOWeekYear} function options.
+*/
+/**
+* @name startOfISOWeekYear
+* @category ISO Week-Numbering Year Helpers
+* @summary Return the start of an ISO week-numbering year for the given date.
+*
+* @description
+* Return the start of an ISO week-numbering year,
+* which always starts 3 days before the year's first Thursday.
+* The result will be in the local timezone.
+*
+* ISO week-numbering year: http://en.wikipedia.org/wiki/ISO_week_date
+*
+* @typeParam DateType - The `Date` type, the function operates on. Gets inferred from passed arguments. Allows to use extensions like [`UTCDate`](https://github.com/date-fns/utc).
+* @typeParam ResultDate - The result `Date` type, it is the type returned from the context function if it is passed, or inferred from the arguments.
+*
+* @param date - The original date
+* @param options - An object with options
+*
+* @returns The start of an ISO week-numbering year
+*
+* @example
+* // The start of an ISO week-numbering year for 2 July 2005:
+* const result = startOfISOWeekYear(new Date(2005, 6, 2))
+* //=> Mon Jan 03 2005 00:00:00
+*/
+function startOfISOWeekYear(date, options) {
+	const year = getISOWeekYear(date, options);
+	const fourthOfJanuary = constructFrom(options?.in || date, 0);
+	fourthOfJanuary.setFullYear(year, 0, 4);
+	fourthOfJanuary.setHours(0, 0, 0, 0);
+	return startOfISOWeek(fourthOfJanuary);
+}
+//#endregion
+//#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/isDate.js
+/**
+* @name isDate
+* @category Common Helpers
+* @summary Is the given value a date?
+*
+* @description
+* Returns true if the given value is an instance of Date. The function works for dates transferred across iframes.
+*
+* @param value - The value to check
+*
+* @returns True if the given value is a date
+*
+* @example
+* // For a valid date:
+* const result = isDate(new Date())
+* //=> true
+*
+* @example
+* // For an invalid date:
+* const result = isDate(new Date(NaN))
+* //=> true
+*
+* @example
+* // For some value:
+* const result = isDate('2014-02-31')
+* //=> false
+*
+* @example
+* // For an object:
+* const result = isDate({})
+* //=> false
+*/
+function isDate(value) {
+	return value instanceof Date || typeof value === "object" && Object.prototype.toString.call(value) === "[object Date]";
+}
+//#endregion
+//#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/isValid.js
+/**
+* @name isValid
+* @category Common Helpers
+* @summary Is the given date valid?
+*
+* @description
+* Returns false if argument is Invalid Date and true otherwise.
+* Argument is converted to Date using `toDate`. See [toDate](https://date-fns.org/docs/toDate)
+* Invalid Date is a Date, whose time value is NaN.
+*
+* Time value of Date: http://es5.github.io/#x15.9.1.1
+*
+* @param date - The date to check
+*
+* @returns The date is valid
+*
+* @example
+* // For the valid date:
+* const result = isValid(new Date(2014, 1, 31))
+* //=> true
+*
+* @example
+* // For the value, convertible into a date:
+* const result = isValid(1393804800000)
+* //=> true
+*
+* @example
+* // For the invalid date:
+* const result = isValid(new Date(''))
+* //=> false
+*/
+function isValid(date) {
+	return !(!isDate(date) && typeof date !== "number" || isNaN(+toDate(date)));
+}
+//#endregion
+//#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/startOfYear.js
+/**
+* The {@link startOfYear} function options.
+*/
+/**
+* @name startOfYear
+* @category Year Helpers
+* @summary Return the start of a year for the given date.
+*
+* @description
+* Return the start of a year for the given date.
+* The result will be in the local timezone.
+*
+* @typeParam DateType - The `Date` type, the function operates on. Gets inferred from passed arguments. Allows to use extensions like [`UTCDate`](https://github.com/date-fns/utc).
+* @typeParam ResultDate - The result `Date` type, it is the type returned from the context function if it is passed, or inferred from the arguments.
+*
+* @param date - The original date
+* @param options - The options
+*
+* @returns The start of a year
+*
+* @example
+* // The start of a year for 2 September 2014 11:55:00:
+* const result = startOfYear(new Date(2014, 8, 2, 11, 55, 00))
+* //=> Wed Jan 01 2014 00:00:00
+*/
+function startOfYear(date, options) {
+	const date_ = toDate(date, options?.in);
+	date_.setFullYear(date_.getFullYear(), 0, 1);
+	date_.setHours(0, 0, 0, 0);
+	return date_;
+}
+//#endregion
+//#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/locale/en-US/_lib/formatDistance.js
+var formatDistanceLocale = {
+	lessThanXSeconds: {
+		one: "less than a second",
+		other: "less than {{count}} seconds"
+	},
+	xSeconds: {
+		one: "1 second",
+		other: "{{count}} seconds"
+	},
+	halfAMinute: "half a minute",
+	lessThanXMinutes: {
+		one: "less than a minute",
+		other: "less than {{count}} minutes"
+	},
+	xMinutes: {
+		one: "1 minute",
+		other: "{{count}} minutes"
+	},
+	aboutXHours: {
+		one: "about 1 hour",
+		other: "about {{count}} hours"
+	},
+	xHours: {
+		one: "1 hour",
+		other: "{{count}} hours"
+	},
+	xDays: {
+		one: "1 day",
+		other: "{{count}} days"
+	},
+	aboutXWeeks: {
+		one: "about 1 week",
+		other: "about {{count}} weeks"
+	},
+	xWeeks: {
+		one: "1 week",
+		other: "{{count}} weeks"
+	},
+	aboutXMonths: {
+		one: "about 1 month",
+		other: "about {{count}} months"
+	},
+	xMonths: {
+		one: "1 month",
+		other: "{{count}} months"
+	},
+	aboutXYears: {
+		one: "about 1 year",
+		other: "about {{count}} years"
+	},
+	xYears: {
+		one: "1 year",
+		other: "{{count}} years"
+	},
+	overXYears: {
+		one: "over 1 year",
+		other: "over {{count}} years"
+	},
+	almostXYears: {
+		one: "almost 1 year",
+		other: "almost {{count}} years"
+	}
+};
+var formatDistance = (token, count, options) => {
+	let result;
+	const tokenValue = formatDistanceLocale[token];
+	if (typeof tokenValue === "string") result = tokenValue;
+	else if (count === 1) result = tokenValue.one;
+	else result = tokenValue.other.replace("{{count}}", count.toString());
+	if (options?.addSuffix) if (options.comparison && options.comparison > 0) return "in " + result;
+	else return result + " ago";
+	return result;
+};
+//#endregion
+//#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/locale/_lib/buildFormatLongFn.js
+function buildFormatLongFn(args) {
+	return (options = {}) => {
+		const width = options.width ? String(options.width) : args.defaultWidth;
+		return args.formats[width] || args.formats[args.defaultWidth];
+	};
+}
+var formatLong = {
+	date: buildFormatLongFn({
+		formats: {
+			full: "EEEE, MMMM do, y",
+			long: "MMMM do, y",
+			medium: "MMM d, y",
+			short: "MM/dd/yyyy"
+		},
+		defaultWidth: "full"
+	}),
+	time: buildFormatLongFn({
+		formats: {
+			full: "h:mm:ss a zzzz",
+			long: "h:mm:ss a z",
+			medium: "h:mm:ss a",
+			short: "h:mm a"
+		},
+		defaultWidth: "full"
+	}),
+	dateTime: buildFormatLongFn({
+		formats: {
+			full: "{{date}} 'at' {{time}}",
+			long: "{{date}} 'at' {{time}}",
+			medium: "{{date}}, {{time}}",
+			short: "{{date}}, {{time}}"
+		},
+		defaultWidth: "full"
+	})
+};
+//#endregion
+//#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/locale/en-US/_lib/formatRelative.js
+var formatRelativeLocale = {
+	lastWeek: "'last' eeee 'at' p",
+	yesterday: "'yesterday at' p",
+	today: "'today at' p",
+	tomorrow: "'tomorrow at' p",
+	nextWeek: "eeee 'at' p",
+	other: "P"
+};
+var formatRelative = (token, _date, _baseDate, _options) => formatRelativeLocale[token];
+//#endregion
+//#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/locale/_lib/buildLocalizeFn.js
+/**
+* The localize function argument callback which allows to convert raw value to
+* the actual type.
+*
+* @param value - The value to convert
+*
+* @returns The converted value
+*/
+/**
+* The map of localized values for each width.
+*/
+/**
+* The index type of the locale unit value. It types conversion of units of
+* values that don't start at 0 (i.e. quarters).
+*/
+/**
+* Converts the unit value to the tuple of values.
+*/
+/**
+* The tuple of localized era values. The first element represents BC,
+* the second element represents AD.
+*/
+/**
+* The tuple of localized quarter values. The first element represents Q1.
+*/
+/**
+* The tuple of localized day values. The first element represents Sunday.
+*/
+/**
+* The tuple of localized month values. The first element represents January.
+*/
+function buildLocalizeFn(args) {
+	return (value, options) => {
+		const context = options?.context ? String(options.context) : "standalone";
+		let valuesArray;
+		if (context === "formatting" && args.formattingValues) {
+			const defaultWidth = args.defaultFormattingWidth || args.defaultWidth;
+			const width = options?.width ? String(options.width) : defaultWidth;
+			valuesArray = args.formattingValues[width] || args.formattingValues[defaultWidth];
+		} else {
+			const defaultWidth = args.defaultWidth;
+			const width = options?.width ? String(options.width) : args.defaultWidth;
+			valuesArray = args.values[width] || args.values[defaultWidth];
+		}
+		const index = args.argumentCallback ? args.argumentCallback(value) : value;
+		return valuesArray[index];
+	};
+}
+//#endregion
+//#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/locale/en-US/_lib/localize.js
+var eraValues = {
+	narrow: ["B", "A"],
+	abbreviated: ["BC", "AD"],
+	wide: ["Before Christ", "Anno Domini"]
+};
+var quarterValues = {
+	narrow: [
+		"1",
+		"2",
+		"3",
+		"4"
+	],
+	abbreviated: [
+		"Q1",
+		"Q2",
+		"Q3",
+		"Q4"
+	],
+	wide: [
+		"1st quarter",
+		"2nd quarter",
+		"3rd quarter",
+		"4th quarter"
+	]
+};
+var monthValues = {
+	narrow: [
+		"J",
+		"F",
+		"M",
+		"A",
+		"M",
+		"J",
+		"J",
+		"A",
+		"S",
+		"O",
+		"N",
+		"D"
+	],
+	abbreviated: [
+		"Jan",
+		"Feb",
+		"Mar",
+		"Apr",
+		"May",
+		"Jun",
+		"Jul",
+		"Aug",
+		"Sep",
+		"Oct",
+		"Nov",
+		"Dec"
+	],
+	wide: [
+		"January",
+		"February",
+		"March",
+		"April",
+		"May",
+		"June",
+		"July",
+		"August",
+		"September",
+		"October",
+		"November",
+		"December"
+	]
+};
+var dayValues = {
+	narrow: [
+		"S",
+		"M",
+		"T",
+		"W",
+		"T",
+		"F",
+		"S"
+	],
+	short: [
+		"Su",
+		"Mo",
+		"Tu",
+		"We",
+		"Th",
+		"Fr",
+		"Sa"
+	],
+	abbreviated: [
+		"Sun",
+		"Mon",
+		"Tue",
+		"Wed",
+		"Thu",
+		"Fri",
+		"Sat"
+	],
+	wide: [
+		"Sunday",
+		"Monday",
+		"Tuesday",
+		"Wednesday",
+		"Thursday",
+		"Friday",
+		"Saturday"
+	]
+};
+var dayPeriodValues = {
+	narrow: {
+		am: "a",
+		pm: "p",
+		midnight: "mi",
+		noon: "n",
+		morning: "morning",
+		afternoon: "afternoon",
+		evening: "evening",
+		night: "night"
+	},
+	abbreviated: {
+		am: "AM",
+		pm: "PM",
+		midnight: "midnight",
+		noon: "noon",
+		morning: "morning",
+		afternoon: "afternoon",
+		evening: "evening",
+		night: "night"
+	},
+	wide: {
+		am: "a.m.",
+		pm: "p.m.",
+		midnight: "midnight",
+		noon: "noon",
+		morning: "morning",
+		afternoon: "afternoon",
+		evening: "evening",
+		night: "night"
+	}
+};
+var formattingDayPeriodValues = {
+	narrow: {
+		am: "a",
+		pm: "p",
+		midnight: "mi",
+		noon: "n",
+		morning: "in the morning",
+		afternoon: "in the afternoon",
+		evening: "in the evening",
+		night: "at night"
+	},
+	abbreviated: {
+		am: "AM",
+		pm: "PM",
+		midnight: "midnight",
+		noon: "noon",
+		morning: "in the morning",
+		afternoon: "in the afternoon",
+		evening: "in the evening",
+		night: "at night"
+	},
+	wide: {
+		am: "a.m.",
+		pm: "p.m.",
+		midnight: "midnight",
+		noon: "noon",
+		morning: "in the morning",
+		afternoon: "in the afternoon",
+		evening: "in the evening",
+		night: "at night"
+	}
+};
+var ordinalNumber = (dirtyNumber, _options) => {
+	const number = Number(dirtyNumber);
+	const rem100 = number % 100;
+	if (rem100 > 20 || rem100 < 10) switch (rem100 % 10) {
+		case 1: return number + "st";
+		case 2: return number + "nd";
+		case 3: return number + "rd";
+	}
+	return number + "th";
+};
+var localize = {
+	ordinalNumber,
+	era: buildLocalizeFn({
+		values: eraValues,
+		defaultWidth: "wide"
+	}),
+	quarter: buildLocalizeFn({
+		values: quarterValues,
+		defaultWidth: "wide",
+		argumentCallback: (quarter) => quarter - 1
+	}),
+	month: buildLocalizeFn({
+		values: monthValues,
+		defaultWidth: "wide"
+	}),
+	day: buildLocalizeFn({
+		values: dayValues,
+		defaultWidth: "wide"
+	}),
+	dayPeriod: buildLocalizeFn({
+		values: dayPeriodValues,
+		defaultWidth: "wide",
+		formattingValues: formattingDayPeriodValues,
+		defaultFormattingWidth: "wide"
+	})
+};
+//#endregion
+//#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/locale/_lib/buildMatchFn.js
+function buildMatchFn(args) {
+	return (string, options = {}) => {
+		const width = options.width;
+		const matchPattern = width && args.matchPatterns[width] || args.matchPatterns[args.defaultMatchWidth];
+		const matchResult = string.match(matchPattern);
+		if (!matchResult) return null;
+		const matchedString = matchResult[0];
+		const parsePatterns = width && args.parsePatterns[width] || args.parsePatterns[args.defaultParseWidth];
+		const key = Array.isArray(parsePatterns) ? findIndex(parsePatterns, (pattern) => pattern.test(matchedString)) : findKey(parsePatterns, (pattern) => pattern.test(matchedString));
+		let value;
+		value = args.valueCallback ? args.valueCallback(key) : key;
+		value = options.valueCallback ? options.valueCallback(value) : value;
+		const rest = string.slice(matchedString.length);
+		return {
+			value,
+			rest
+		};
+	};
+}
+function findKey(object, predicate) {
+	for (const key in object) if (Object.prototype.hasOwnProperty.call(object, key) && predicate(object[key])) return key;
+}
+function findIndex(array, predicate) {
+	for (let key = 0; key < array.length; key++) if (predicate(array[key])) return key;
+}
+//#endregion
+//#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/locale/_lib/buildMatchPatternFn.js
+function buildMatchPatternFn(args) {
+	return (string, options = {}) => {
+		const matchResult = string.match(args.matchPattern);
+		if (!matchResult) return null;
+		const matchedString = matchResult[0];
+		const parseResult = string.match(args.parsePattern);
+		if (!parseResult) return null;
+		let value = args.valueCallback ? args.valueCallback(parseResult[0]) : parseResult[0];
+		value = options.valueCallback ? options.valueCallback(value) : value;
+		const rest = string.slice(matchedString.length);
+		return {
+			value,
+			rest
+		};
+	};
+}
+//#endregion
+//#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/locale/en-US.js
+/**
+* @category Locales
+* @summary English locale (United States).
+* @language English
+* @iso-639-2 eng
+* @author Sasha Koss [@kossnocorp](https://github.com/kossnocorp)
+* @author Lesha Koss [@leshakoss](https://github.com/leshakoss)
+*/
+var enUS = {
+	code: "en-US",
+	formatDistance,
+	formatLong,
+	formatRelative,
+	localize,
+	match: {
+		ordinalNumber: buildMatchPatternFn({
+			matchPattern: /^(\d+)(th|st|nd|rd)?/i,
+			parsePattern: /\d+/i,
+			valueCallback: (value) => parseInt(value, 10)
+		}),
+		era: buildMatchFn({
+			matchPatterns: {
+				narrow: /^(b|a)/i,
+				abbreviated: /^(b\.?\s?c\.?|b\.?\s?c\.?\s?e\.?|a\.?\s?d\.?|c\.?\s?e\.?)/i,
+				wide: /^(before christ|before common era|anno domini|common era)/i
+			},
+			defaultMatchWidth: "wide",
+			parsePatterns: { any: [/^b/i, /^(a|c)/i] },
+			defaultParseWidth: "any"
+		}),
+		quarter: buildMatchFn({
+			matchPatterns: {
+				narrow: /^[1234]/i,
+				abbreviated: /^q[1234]/i,
+				wide: /^[1234](th|st|nd|rd)? quarter/i
+			},
+			defaultMatchWidth: "wide",
+			parsePatterns: { any: [
+				/1/i,
+				/2/i,
+				/3/i,
+				/4/i
+			] },
+			defaultParseWidth: "any",
+			valueCallback: (index) => index + 1
+		}),
+		month: buildMatchFn({
+			matchPatterns: {
+				narrow: /^[jfmasond]/i,
+				abbreviated: /^(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)/i,
+				wide: /^(january|february|march|april|may|june|july|august|september|october|november|december)/i
+			},
+			defaultMatchWidth: "wide",
+			parsePatterns: {
+				narrow: [
+					/^j/i,
+					/^f/i,
+					/^m/i,
+					/^a/i,
+					/^m/i,
+					/^j/i,
+					/^j/i,
+					/^a/i,
+					/^s/i,
+					/^o/i,
+					/^n/i,
+					/^d/i
+				],
+				any: [
+					/^ja/i,
+					/^f/i,
+					/^mar/i,
+					/^ap/i,
+					/^may/i,
+					/^jun/i,
+					/^jul/i,
+					/^au/i,
+					/^s/i,
+					/^o/i,
+					/^n/i,
+					/^d/i
+				]
+			},
+			defaultParseWidth: "any"
+		}),
+		day: buildMatchFn({
+			matchPatterns: {
+				narrow: /^[smtwf]/i,
+				short: /^(su|mo|tu|we|th|fr|sa)/i,
+				abbreviated: /^(sun|mon|tue|wed|thu|fri|sat)/i,
+				wide: /^(sunday|monday|tuesday|wednesday|thursday|friday|saturday)/i
+			},
+			defaultMatchWidth: "wide",
+			parsePatterns: {
+				narrow: [
+					/^s/i,
+					/^m/i,
+					/^t/i,
+					/^w/i,
+					/^t/i,
+					/^f/i,
+					/^s/i
+				],
+				any: [
+					/^su/i,
+					/^m/i,
+					/^tu/i,
+					/^w/i,
+					/^th/i,
+					/^f/i,
+					/^sa/i
+				]
+			},
+			defaultParseWidth: "any"
+		}),
+		dayPeriod: buildMatchFn({
+			matchPatterns: {
+				narrow: /^(a|p|mi|n|(in the|at) (morning|afternoon|evening|night))/i,
+				any: /^([ap]\.?\s?m\.?|midnight|noon|(in the|at) (morning|afternoon|evening|night))/i
+			},
+			defaultMatchWidth: "any",
+			parsePatterns: { any: {
+				am: /^a/i,
+				pm: /^p/i,
+				midnight: /^mi/i,
+				noon: /^no/i,
+				morning: /morning/i,
+				afternoon: /afternoon/i,
+				evening: /evening/i,
+				night: /night/i
+			} },
+			defaultParseWidth: "any"
+		})
+	},
+	options: {
+		weekStartsOn: 0,
+		firstWeekContainsDate: 1
+	}
+};
+//#endregion
+//#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/getDayOfYear.js
+/**
+* The {@link getDayOfYear} function options.
+*/
+/**
+* @name getDayOfYear
+* @category Day Helpers
+* @summary Get the day of the year of the given date.
+*
+* @description
+* Get the day of the year of the given date.
+*
+* @param date - The given date
+* @param options - The options
+*
+* @returns The day of year
+*
+* @example
+* // Which day of the year is 2 July 2014?
+* const result = getDayOfYear(new Date(2014, 6, 2))
+* //=> 183
+*/
+function getDayOfYear(date, options) {
+	const _date = toDate(date, options?.in);
+	return differenceInCalendarDays(_date, startOfYear(_date)) + 1;
+}
+//#endregion
+//#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/getISOWeek.js
+/**
+* The {@link getISOWeek} function options.
+*/
+/**
+* @name getISOWeek
+* @category ISO Week Helpers
+* @summary Get the ISO week of the given date.
+*
+* @description
+* Get the ISO week of the given date.
+*
+* ISO week-numbering year: http://en.wikipedia.org/wiki/ISO_week_date
+*
+* @param date - The given date
+* @param options - The options
+*
+* @returns The ISO week
+*
+* @example
+* // Which week of the ISO-week numbering year is 2 January 2005?
+* const result = getISOWeek(new Date(2005, 0, 2))
+* //=> 53
+*/
+function getISOWeek(date, options) {
+	const _date = toDate(date, options?.in);
+	const diff = +startOfISOWeek(_date) - +startOfISOWeekYear(_date);
+	return Math.round(diff / millisecondsInWeek) + 1;
+}
+//#endregion
+//#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/getWeekYear.js
+/**
+* The {@link getWeekYear} function options.
+*/
+/**
+* @name getWeekYear
+* @category Week-Numbering Year Helpers
+* @summary Get the local week-numbering year of the given date.
+*
+* @description
+* Get the local week-numbering year of the given date.
+* The exact calculation depends on the values of
+* `options.weekStartsOn` (which is the index of the first day of the week)
+* and `options.firstWeekContainsDate` (which is the day of January, which is always in
+* the first week of the week-numbering year)
+*
+* Week numbering: https://en.wikipedia.org/wiki/Week#The_ISO_week_date_system
+*
+* @param date - The given date
+* @param options - An object with options.
+*
+* @returns The local week-numbering year
+*
+* @example
+* // Which week numbering year is 26 December 2004 with the default settings?
+* const result = getWeekYear(new Date(2004, 11, 26))
+* //=> 2005
+*
+* @example
+* // Which week numbering year is 26 December 2004 if week starts on Saturday?
+* const result = getWeekYear(new Date(2004, 11, 26), { weekStartsOn: 6 })
+* //=> 2004
+*
+* @example
+* // Which week numbering year is 26 December 2004 if the first week contains 4 January?
+* const result = getWeekYear(new Date(2004, 11, 26), { firstWeekContainsDate: 4 })
+* //=> 2004
+*/
+function getWeekYear(date, options) {
+	const _date = toDate(date, options?.in);
+	const year = _date.getFullYear();
+	const defaultOptions = getDefaultOptions();
+	const firstWeekContainsDate = options?.firstWeekContainsDate ?? options?.locale?.options?.firstWeekContainsDate ?? defaultOptions.firstWeekContainsDate ?? defaultOptions.locale?.options?.firstWeekContainsDate ?? 1;
+	const firstWeekOfNextYear = constructFrom(options?.in || date, 0);
+	firstWeekOfNextYear.setFullYear(year + 1, 0, firstWeekContainsDate);
+	firstWeekOfNextYear.setHours(0, 0, 0, 0);
+	const startOfNextYear = startOfWeek(firstWeekOfNextYear, options);
+	const firstWeekOfThisYear = constructFrom(options?.in || date, 0);
+	firstWeekOfThisYear.setFullYear(year, 0, firstWeekContainsDate);
+	firstWeekOfThisYear.setHours(0, 0, 0, 0);
+	const startOfThisYear = startOfWeek(firstWeekOfThisYear, options);
+	if (+_date >= +startOfNextYear) return year + 1;
+	else if (+_date >= +startOfThisYear) return year;
+	else return year - 1;
+}
+//#endregion
+//#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/startOfWeekYear.js
+/**
+* The {@link startOfWeekYear} function options.
+*/
+/**
+* @name startOfWeekYear
+* @category Week-Numbering Year Helpers
+* @summary Return the start of a local week-numbering year for the given date.
+*
+* @description
+* Return the start of a local week-numbering year.
+* The exact calculation depends on the values of
+* `options.weekStartsOn` (which is the index of the first day of the week)
+* and `options.firstWeekContainsDate` (which is the day of January, which is always in
+* the first week of the week-numbering year)
+*
+* Week numbering: https://en.wikipedia.org/wiki/Week#The_ISO_week_date_system
+*
+* @typeParam DateType - The `Date` type, the function operates on. Gets inferred from passed arguments. Allows to use extensions like [`UTCDate`](https://github.com/date-fns/utc).
+* @typeParam ResultDate - The result `Date` type.
+*
+* @param date - The original date
+* @param options - An object with options
+*
+* @returns The start of a week-numbering year
+*
+* @example
+* // The start of an a week-numbering year for 2 July 2005 with default settings:
+* const result = startOfWeekYear(new Date(2005, 6, 2))
+* //=> Sun Dec 26 2004 00:00:00
+*
+* @example
+* // The start of a week-numbering year for 2 July 2005
+* // if Monday is the first day of week
+* // and 4 January is always in the first week of the year:
+* const result = startOfWeekYear(new Date(2005, 6, 2), {
+*   weekStartsOn: 1,
+*   firstWeekContainsDate: 4
+* })
+* //=> Mon Jan 03 2005 00:00:00
+*/
+function startOfWeekYear(date, options) {
+	const defaultOptions = getDefaultOptions();
+	const firstWeekContainsDate = options?.firstWeekContainsDate ?? options?.locale?.options?.firstWeekContainsDate ?? defaultOptions.firstWeekContainsDate ?? defaultOptions.locale?.options?.firstWeekContainsDate ?? 1;
+	const year = getWeekYear(date, options);
+	const firstWeek = constructFrom(options?.in || date, 0);
+	firstWeek.setFullYear(year, 0, firstWeekContainsDate);
+	firstWeek.setHours(0, 0, 0, 0);
+	return startOfWeek(firstWeek, options);
+}
+//#endregion
+//#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/getWeek.js
+/**
+* The {@link getWeek} function options.
+*/
+/**
+* @name getWeek
+* @category Week Helpers
+* @summary Get the local week index of the given date.
+*
+* @description
+* Get the local week index of the given date.
+* The exact calculation depends on the values of
+* `options.weekStartsOn` (which is the index of the first day of the week)
+* and `options.firstWeekContainsDate` (which is the day of January, which is always in
+* the first week of the week-numbering year)
+*
+* Week numbering: https://en.wikipedia.org/wiki/Week#The_ISO_week_date_system
+*
+* @param date - The given date
+* @param options - An object with options
+*
+* @returns The week
+*
+* @example
+* // Which week of the local week numbering year is 2 January 2005 with default options?
+* const result = getWeek(new Date(2005, 0, 2))
+* //=> 2
+*
+* @example
+* // Which week of the local week numbering year is 2 January 2005,
+* // if Monday is the first day of the week,
+* // and the first week of the year always contains 4 January?
+* const result = getWeek(new Date(2005, 0, 2), {
+*   weekStartsOn: 1,
+*   firstWeekContainsDate: 4
+* })
+* //=> 53
+*/
+function getWeek(date, options) {
+	const _date = toDate(date, options?.in);
+	const diff = +startOfWeek(_date, options) - +startOfWeekYear(_date, options);
+	return Math.round(diff / millisecondsInWeek) + 1;
+}
+//#endregion
+//#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/_lib/addLeadingZeros.js
+function addLeadingZeros(number, targetLength) {
+	return (number < 0 ? "-" : "") + Math.abs(number).toString().padStart(targetLength, "0");
+}
+//#endregion
+//#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/_lib/format/lightFormatters.js
+var lightFormatters = {
+	y(date, token) {
+		const signedYear = date.getFullYear();
+		const year = signedYear > 0 ? signedYear : 1 - signedYear;
+		return addLeadingZeros(token === "yy" ? year % 100 : year, token.length);
+	},
+	M(date, token) {
+		const month = date.getMonth();
+		return token === "M" ? String(month + 1) : addLeadingZeros(month + 1, 2);
+	},
+	d(date, token) {
+		return addLeadingZeros(date.getDate(), token.length);
+	},
+	a(date, token) {
+		const dayPeriodEnumValue = date.getHours() / 12 >= 1 ? "pm" : "am";
+		switch (token) {
+			case "a":
+			case "aa": return dayPeriodEnumValue.toUpperCase();
+			case "aaa": return dayPeriodEnumValue;
+			case "aaaaa": return dayPeriodEnumValue[0];
+			default: return dayPeriodEnumValue === "am" ? "a.m." : "p.m.";
+		}
+	},
+	h(date, token) {
+		return addLeadingZeros(date.getHours() % 12 || 12, token.length);
+	},
+	H(date, token) {
+		return addLeadingZeros(date.getHours(), token.length);
+	},
+	m(date, token) {
+		return addLeadingZeros(date.getMinutes(), token.length);
+	},
+	s(date, token) {
+		return addLeadingZeros(date.getSeconds(), token.length);
+	},
+	S(date, token) {
+		const numberOfDigits = token.length;
+		const milliseconds = date.getMilliseconds();
+		return addLeadingZeros(Math.trunc(milliseconds * Math.pow(10, numberOfDigits - 3)), token.length);
+	}
+};
+//#endregion
+//#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/_lib/format/formatters.js
+var dayPeriodEnum = {
+	am: "am",
+	pm: "pm",
+	midnight: "midnight",
+	noon: "noon",
+	morning: "morning",
+	afternoon: "afternoon",
+	evening: "evening",
+	night: "night"
+};
+var formatters = {
+	G: function(date, token, localize) {
+		const era = date.getFullYear() > 0 ? 1 : 0;
+		switch (token) {
+			case "G":
+			case "GG":
+			case "GGG": return localize.era(era, { width: "abbreviated" });
+			case "GGGGG": return localize.era(era, { width: "narrow" });
+			default: return localize.era(era, { width: "wide" });
+		}
+	},
+	y: function(date, token, localize) {
+		if (token === "yo") {
+			const signedYear = date.getFullYear();
+			const year = signedYear > 0 ? signedYear : 1 - signedYear;
+			return localize.ordinalNumber(year, { unit: "year" });
+		}
+		return lightFormatters.y(date, token);
+	},
+	Y: function(date, token, localize, options) {
+		const signedWeekYear = getWeekYear(date, options);
+		const weekYear = signedWeekYear > 0 ? signedWeekYear : 1 - signedWeekYear;
+		if (token === "YY") return addLeadingZeros(weekYear % 100, 2);
+		if (token === "Yo") return localize.ordinalNumber(weekYear, { unit: "year" });
+		return addLeadingZeros(weekYear, token.length);
+	},
+	R: function(date, token) {
+		return addLeadingZeros(getISOWeekYear(date), token.length);
+	},
+	u: function(date, token) {
+		return addLeadingZeros(date.getFullYear(), token.length);
+	},
+	Q: function(date, token, localize) {
+		const quarter = Math.ceil((date.getMonth() + 1) / 3);
+		switch (token) {
+			case "Q": return String(quarter);
+			case "QQ": return addLeadingZeros(quarter, 2);
+			case "Qo": return localize.ordinalNumber(quarter, { unit: "quarter" });
+			case "QQQ": return localize.quarter(quarter, {
+				width: "abbreviated",
+				context: "formatting"
+			});
+			case "QQQQQ": return localize.quarter(quarter, {
+				width: "narrow",
+				context: "formatting"
+			});
+			default: return localize.quarter(quarter, {
+				width: "wide",
+				context: "formatting"
+			});
+		}
+	},
+	q: function(date, token, localize) {
+		const quarter = Math.ceil((date.getMonth() + 1) / 3);
+		switch (token) {
+			case "q": return String(quarter);
+			case "qq": return addLeadingZeros(quarter, 2);
+			case "qo": return localize.ordinalNumber(quarter, { unit: "quarter" });
+			case "qqq": return localize.quarter(quarter, {
+				width: "abbreviated",
+				context: "standalone"
+			});
+			case "qqqqq": return localize.quarter(quarter, {
+				width: "narrow",
+				context: "standalone"
+			});
+			default: return localize.quarter(quarter, {
+				width: "wide",
+				context: "standalone"
+			});
+		}
+	},
+	M: function(date, token, localize) {
+		const month = date.getMonth();
+		switch (token) {
+			case "M":
+			case "MM": return lightFormatters.M(date, token);
+			case "Mo": return localize.ordinalNumber(month + 1, { unit: "month" });
+			case "MMM": return localize.month(month, {
+				width: "abbreviated",
+				context: "formatting"
+			});
+			case "MMMMM": return localize.month(month, {
+				width: "narrow",
+				context: "formatting"
+			});
+			default: return localize.month(month, {
+				width: "wide",
+				context: "formatting"
+			});
+		}
+	},
+	L: function(date, token, localize) {
+		const month = date.getMonth();
+		switch (token) {
+			case "L": return String(month + 1);
+			case "LL": return addLeadingZeros(month + 1, 2);
+			case "Lo": return localize.ordinalNumber(month + 1, { unit: "month" });
+			case "LLL": return localize.month(month, {
+				width: "abbreviated",
+				context: "standalone"
+			});
+			case "LLLLL": return localize.month(month, {
+				width: "narrow",
+				context: "standalone"
+			});
+			default: return localize.month(month, {
+				width: "wide",
+				context: "standalone"
+			});
+		}
+	},
+	w: function(date, token, localize, options) {
+		const week = getWeek(date, options);
+		if (token === "wo") return localize.ordinalNumber(week, { unit: "week" });
+		return addLeadingZeros(week, token.length);
+	},
+	I: function(date, token, localize) {
+		const isoWeek = getISOWeek(date);
+		if (token === "Io") return localize.ordinalNumber(isoWeek, { unit: "week" });
+		return addLeadingZeros(isoWeek, token.length);
+	},
+	d: function(date, token, localize) {
+		if (token === "do") return localize.ordinalNumber(date.getDate(), { unit: "date" });
+		return lightFormatters.d(date, token);
+	},
+	D: function(date, token, localize) {
+		const dayOfYear = getDayOfYear(date);
+		if (token === "Do") return localize.ordinalNumber(dayOfYear, { unit: "dayOfYear" });
+		return addLeadingZeros(dayOfYear, token.length);
+	},
+	E: function(date, token, localize) {
+		const dayOfWeek = date.getDay();
+		switch (token) {
+			case "E":
+			case "EE":
+			case "EEE": return localize.day(dayOfWeek, {
+				width: "abbreviated",
+				context: "formatting"
+			});
+			case "EEEEE": return localize.day(dayOfWeek, {
+				width: "narrow",
+				context: "formatting"
+			});
+			case "EEEEEE": return localize.day(dayOfWeek, {
+				width: "short",
+				context: "formatting"
+			});
+			default: return localize.day(dayOfWeek, {
+				width: "wide",
+				context: "formatting"
+			});
+		}
+	},
+	e: function(date, token, localize, options) {
+		const dayOfWeek = date.getDay();
+		const localDayOfWeek = (dayOfWeek - options.weekStartsOn + 8) % 7 || 7;
+		switch (token) {
+			case "e": return String(localDayOfWeek);
+			case "ee": return addLeadingZeros(localDayOfWeek, 2);
+			case "eo": return localize.ordinalNumber(localDayOfWeek, { unit: "day" });
+			case "eee": return localize.day(dayOfWeek, {
+				width: "abbreviated",
+				context: "formatting"
+			});
+			case "eeeee": return localize.day(dayOfWeek, {
+				width: "narrow",
+				context: "formatting"
+			});
+			case "eeeeee": return localize.day(dayOfWeek, {
+				width: "short",
+				context: "formatting"
+			});
+			default: return localize.day(dayOfWeek, {
+				width: "wide",
+				context: "formatting"
+			});
+		}
+	},
+	c: function(date, token, localize, options) {
+		const dayOfWeek = date.getDay();
+		const localDayOfWeek = (dayOfWeek - options.weekStartsOn + 8) % 7 || 7;
+		switch (token) {
+			case "c": return String(localDayOfWeek);
+			case "cc": return addLeadingZeros(localDayOfWeek, token.length);
+			case "co": return localize.ordinalNumber(localDayOfWeek, { unit: "day" });
+			case "ccc": return localize.day(dayOfWeek, {
+				width: "abbreviated",
+				context: "standalone"
+			});
+			case "ccccc": return localize.day(dayOfWeek, {
+				width: "narrow",
+				context: "standalone"
+			});
+			case "cccccc": return localize.day(dayOfWeek, {
+				width: "short",
+				context: "standalone"
+			});
+			default: return localize.day(dayOfWeek, {
+				width: "wide",
+				context: "standalone"
+			});
+		}
+	},
+	i: function(date, token, localize) {
+		const dayOfWeek = date.getDay();
+		const isoDayOfWeek = dayOfWeek === 0 ? 7 : dayOfWeek;
+		switch (token) {
+			case "i": return String(isoDayOfWeek);
+			case "ii": return addLeadingZeros(isoDayOfWeek, token.length);
+			case "io": return localize.ordinalNumber(isoDayOfWeek, { unit: "day" });
+			case "iii": return localize.day(dayOfWeek, {
+				width: "abbreviated",
+				context: "formatting"
+			});
+			case "iiiii": return localize.day(dayOfWeek, {
+				width: "narrow",
+				context: "formatting"
+			});
+			case "iiiiii": return localize.day(dayOfWeek, {
+				width: "short",
+				context: "formatting"
+			});
+			default: return localize.day(dayOfWeek, {
+				width: "wide",
+				context: "formatting"
+			});
+		}
+	},
+	a: function(date, token, localize) {
+		const dayPeriodEnumValue = date.getHours() / 12 >= 1 ? "pm" : "am";
+		switch (token) {
+			case "a":
+			case "aa": return localize.dayPeriod(dayPeriodEnumValue, {
+				width: "abbreviated",
+				context: "formatting"
+			});
+			case "aaa": return localize.dayPeriod(dayPeriodEnumValue, {
+				width: "abbreviated",
+				context: "formatting"
+			}).toLowerCase();
+			case "aaaaa": return localize.dayPeriod(dayPeriodEnumValue, {
+				width: "narrow",
+				context: "formatting"
+			});
+			default: return localize.dayPeriod(dayPeriodEnumValue, {
+				width: "wide",
+				context: "formatting"
+			});
+		}
+	},
+	b: function(date, token, localize) {
+		const hours = date.getHours();
+		let dayPeriodEnumValue;
+		if (hours === 12) dayPeriodEnumValue = dayPeriodEnum.noon;
+		else if (hours === 0) dayPeriodEnumValue = dayPeriodEnum.midnight;
+		else dayPeriodEnumValue = hours / 12 >= 1 ? "pm" : "am";
+		switch (token) {
+			case "b":
+			case "bb": return localize.dayPeriod(dayPeriodEnumValue, {
+				width: "abbreviated",
+				context: "formatting"
+			});
+			case "bbb": return localize.dayPeriod(dayPeriodEnumValue, {
+				width: "abbreviated",
+				context: "formatting"
+			}).toLowerCase();
+			case "bbbbb": return localize.dayPeriod(dayPeriodEnumValue, {
+				width: "narrow",
+				context: "formatting"
+			});
+			default: return localize.dayPeriod(dayPeriodEnumValue, {
+				width: "wide",
+				context: "formatting"
+			});
+		}
+	},
+	B: function(date, token, localize) {
+		const hours = date.getHours();
+		let dayPeriodEnumValue;
+		if (hours >= 17) dayPeriodEnumValue = dayPeriodEnum.evening;
+		else if (hours >= 12) dayPeriodEnumValue = dayPeriodEnum.afternoon;
+		else if (hours >= 4) dayPeriodEnumValue = dayPeriodEnum.morning;
+		else dayPeriodEnumValue = dayPeriodEnum.night;
+		switch (token) {
+			case "B":
+			case "BB":
+			case "BBB": return localize.dayPeriod(dayPeriodEnumValue, {
+				width: "abbreviated",
+				context: "formatting"
+			});
+			case "BBBBB": return localize.dayPeriod(dayPeriodEnumValue, {
+				width: "narrow",
+				context: "formatting"
+			});
+			default: return localize.dayPeriod(dayPeriodEnumValue, {
+				width: "wide",
+				context: "formatting"
+			});
+		}
+	},
+	h: function(date, token, localize) {
+		if (token === "ho") {
+			let hours = date.getHours() % 12;
+			if (hours === 0) hours = 12;
+			return localize.ordinalNumber(hours, { unit: "hour" });
+		}
+		return lightFormatters.h(date, token);
+	},
+	H: function(date, token, localize) {
+		if (token === "Ho") return localize.ordinalNumber(date.getHours(), { unit: "hour" });
+		return lightFormatters.H(date, token);
+	},
+	K: function(date, token, localize) {
+		const hours = date.getHours() % 12;
+		if (token === "Ko") return localize.ordinalNumber(hours, { unit: "hour" });
+		return addLeadingZeros(hours, token.length);
+	},
+	k: function(date, token, localize) {
+		let hours = date.getHours();
+		if (hours === 0) hours = 24;
+		if (token === "ko") return localize.ordinalNumber(hours, { unit: "hour" });
+		return addLeadingZeros(hours, token.length);
+	},
+	m: function(date, token, localize) {
+		if (token === "mo") return localize.ordinalNumber(date.getMinutes(), { unit: "minute" });
+		return lightFormatters.m(date, token);
+	},
+	s: function(date, token, localize) {
+		if (token === "so") return localize.ordinalNumber(date.getSeconds(), { unit: "second" });
+		return lightFormatters.s(date, token);
+	},
+	S: function(date, token) {
+		return lightFormatters.S(date, token);
+	},
+	X: function(date, token, _localize) {
+		const timezoneOffset = date.getTimezoneOffset();
+		if (timezoneOffset === 0) return "Z";
+		switch (token) {
+			case "X": return formatTimezoneWithOptionalMinutes(timezoneOffset);
+			case "XXXX":
+			case "XX": return formatTimezone(timezoneOffset);
+			default: return formatTimezone(timezoneOffset, ":");
+		}
+	},
+	x: function(date, token, _localize) {
+		const timezoneOffset = date.getTimezoneOffset();
+		switch (token) {
+			case "x": return formatTimezoneWithOptionalMinutes(timezoneOffset);
+			case "xxxx":
+			case "xx": return formatTimezone(timezoneOffset);
+			default: return formatTimezone(timezoneOffset, ":");
+		}
+	},
+	O: function(date, token, _localize) {
+		const timezoneOffset = date.getTimezoneOffset();
+		switch (token) {
+			case "O":
+			case "OO":
+			case "OOO": return "GMT" + formatTimezoneShort(timezoneOffset, ":");
+			default: return "GMT" + formatTimezone(timezoneOffset, ":");
+		}
+	},
+	z: function(date, token, _localize) {
+		const timezoneOffset = date.getTimezoneOffset();
+		switch (token) {
+			case "z":
+			case "zz":
+			case "zzz": return "GMT" + formatTimezoneShort(timezoneOffset, ":");
+			default: return "GMT" + formatTimezone(timezoneOffset, ":");
+		}
+	},
+	t: function(date, token, _localize) {
+		return addLeadingZeros(Math.trunc(+date / 1e3), token.length);
+	},
+	T: function(date, token, _localize) {
+		return addLeadingZeros(+date, token.length);
+	}
+};
+function formatTimezoneShort(offset, delimiter = "") {
+	const sign = offset > 0 ? "-" : "+";
+	const absOffset = Math.abs(offset);
+	const hours = Math.trunc(absOffset / 60);
+	const minutes = absOffset % 60;
+	if (minutes === 0) return sign + String(hours);
+	return sign + String(hours) + delimiter + addLeadingZeros(minutes, 2);
+}
+function formatTimezoneWithOptionalMinutes(offset, delimiter) {
+	if (offset % 60 === 0) return (offset > 0 ? "-" : "+") + addLeadingZeros(Math.abs(offset) / 60, 2);
+	return formatTimezone(offset, delimiter);
+}
+function formatTimezone(offset, delimiter = "") {
+	const sign = offset > 0 ? "-" : "+";
+	const absOffset = Math.abs(offset);
+	const hours = addLeadingZeros(Math.trunc(absOffset / 60), 2);
+	const minutes = addLeadingZeros(absOffset % 60, 2);
+	return sign + hours + delimiter + minutes;
+}
+//#endregion
+//#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/_lib/format/longFormatters.js
+var dateLongFormatter = (pattern, formatLong) => {
+	switch (pattern) {
+		case "P": return formatLong.date({ width: "short" });
+		case "PP": return formatLong.date({ width: "medium" });
+		case "PPP": return formatLong.date({ width: "long" });
+		default: return formatLong.date({ width: "full" });
+	}
+};
+var timeLongFormatter = (pattern, formatLong) => {
+	switch (pattern) {
+		case "p": return formatLong.time({ width: "short" });
+		case "pp": return formatLong.time({ width: "medium" });
+		case "ppp": return formatLong.time({ width: "long" });
+		default: return formatLong.time({ width: "full" });
+	}
+};
+var dateTimeLongFormatter = (pattern, formatLong) => {
+	const matchResult = pattern.match(/(P+)(p+)?/) || [];
+	const datePattern = matchResult[1];
+	const timePattern = matchResult[2];
+	if (!timePattern) return dateLongFormatter(pattern, formatLong);
+	let dateTimeFormat;
+	switch (datePattern) {
+		case "P":
+			dateTimeFormat = formatLong.dateTime({ width: "short" });
+			break;
+		case "PP":
+			dateTimeFormat = formatLong.dateTime({ width: "medium" });
+			break;
+		case "PPP":
+			dateTimeFormat = formatLong.dateTime({ width: "long" });
+			break;
+		default:
+			dateTimeFormat = formatLong.dateTime({ width: "full" });
+			break;
+	}
+	return dateTimeFormat.replace("{{date}}", dateLongFormatter(datePattern, formatLong)).replace("{{time}}", timeLongFormatter(timePattern, formatLong));
+};
+var longFormatters = {
+	p: timeLongFormatter,
+	P: dateTimeLongFormatter
+};
+//#endregion
+//#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/_lib/protectedTokens.js
+var dayOfYearTokenRE = /^D+$/;
+var weekYearTokenRE = /^Y+$/;
+var throwTokens = [
+	"D",
+	"DD",
+	"YY",
+	"YYYY"
+];
+function isProtectedDayOfYearToken(token) {
+	return dayOfYearTokenRE.test(token);
+}
+function isProtectedWeekYearToken(token) {
+	return weekYearTokenRE.test(token);
+}
+function warnOrThrowProtectedError(token, format, input) {
+	const _message = message(token, format, input);
+	console.warn(_message);
+	if (throwTokens.includes(token)) throw new RangeError(_message);
+}
+function message(token, format, input) {
+	const subject = token[0] === "Y" ? "years" : "days of the month";
+	return `Use \`${token.toLowerCase()}\` instead of \`${token}\` (in \`${format}\`) for formatting ${subject} to the input \`${input}\`; see: https://github.com/date-fns/date-fns/blob/master/docs/unicodeTokens.md`;
+}
+//#endregion
+//#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/format.js
+var formattingTokensRegExp = /[yYQqMLwIdDecihHKkms]o|(\w)\1*|''|'(''|[^'])+('|$)|./g;
+var longFormattingTokensRegExp = /P+p+|P+|p+|''|'(''|[^'])+('|$)|./g;
+var escapedStringRegExp = /^'([^]*?)'?$/;
+var doubleQuoteRegExp = /''/g;
+var unescapedLatinCharacterRegExp = /[a-zA-Z]/;
+/**
+* The {@link format} function options.
+*/
+/**
+* @name format
+* @alias formatDate
+* @category Common Helpers
+* @summary Format the date.
+*
+* @description
+* Return the formatted date string in the given format. The result may vary by locale.
+*
+* > ⚠️ Please note that the `format` tokens differ from Moment.js and other libraries.
+* > See: https://github.com/date-fns/date-fns/blob/master/docs/unicodeTokens.md
+*
+* The characters wrapped between two single quotes characters (') are escaped.
+* Two single quotes in a row, whether inside or outside a quoted sequence, represent a 'real' single quote.
+* (see the last example)
+*
+* Format of the string is based on Unicode Technical Standard #35:
+* https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table
+* with a few additions (see note 7 below the table).
+*
+* Accepted patterns:
+* | Unit                            | Pattern | Result examples                   | Notes |
+* |---------------------------------|---------|-----------------------------------|-------|
+* | Era                             | G..GGG  | AD, BC                            |       |
+* |                                 | GGGG    | Anno Domini, Before Christ        | 2     |
+* |                                 | GGGGG   | A, B                              |       |
+* | Calendar year                   | y       | 44, 1, 1900, 2017                 | 5     |
+* |                                 | yo      | 44th, 1st, 0th, 17th              | 5,7   |
+* |                                 | yy      | 44, 01, 00, 17                    | 5     |
+* |                                 | yyy     | 044, 001, 1900, 2017              | 5     |
+* |                                 | yyyy    | 0044, 0001, 1900, 2017            | 5     |
+* |                                 | yyyyy   | ...                               | 3,5   |
+* | Local week-numbering year       | Y       | 44, 1, 1900, 2017                 | 5     |
+* |                                 | Yo      | 44th, 1st, 1900th, 2017th         | 5,7   |
+* |                                 | YY      | 44, 01, 00, 17                    | 5,8   |
+* |                                 | YYY     | 044, 001, 1900, 2017              | 5     |
+* |                                 | YYYY    | 0044, 0001, 1900, 2017            | 5,8   |
+* |                                 | YYYYY   | ...                               | 3,5   |
+* | ISO week-numbering year         | R       | -43, 0, 1, 1900, 2017             | 5,7   |
+* |                                 | RR      | -43, 00, 01, 1900, 2017           | 5,7   |
+* |                                 | RRR     | -043, 000, 001, 1900, 2017        | 5,7   |
+* |                                 | RRRR    | -0043, 0000, 0001, 1900, 2017     | 5,7   |
+* |                                 | RRRRR   | ...                               | 3,5,7 |
+* | Extended year                   | u       | -43, 0, 1, 1900, 2017             | 5     |
+* |                                 | uu      | -43, 01, 1900, 2017               | 5     |
+* |                                 | uuu     | -043, 001, 1900, 2017             | 5     |
+* |                                 | uuuu    | -0043, 0001, 1900, 2017           | 5     |
+* |                                 | uuuuu   | ...                               | 3,5   |
+* | Quarter (formatting)            | Q       | 1, 2, 3, 4                        |       |
+* |                                 | Qo      | 1st, 2nd, 3rd, 4th                | 7     |
+* |                                 | QQ      | 01, 02, 03, 04                    |       |
+* |                                 | QQQ     | Q1, Q2, Q3, Q4                    |       |
+* |                                 | QQQQ    | 1st quarter, 2nd quarter, ...     | 2     |
+* |                                 | QQQQQ   | 1, 2, 3, 4                        | 4     |
+* | Quarter (stand-alone)           | q       | 1, 2, 3, 4                        |       |
+* |                                 | qo      | 1st, 2nd, 3rd, 4th                | 7     |
+* |                                 | qq      | 01, 02, 03, 04                    |       |
+* |                                 | qqq     | Q1, Q2, Q3, Q4                    |       |
+* |                                 | qqqq    | 1st quarter, 2nd quarter, ...     | 2     |
+* |                                 | qqqqq   | 1, 2, 3, 4                        | 4     |
+* | Month (formatting)              | M       | 1, 2, ..., 12                     |       |
+* |                                 | Mo      | 1st, 2nd, ..., 12th               | 7     |
+* |                                 | MM      | 01, 02, ..., 12                   |       |
+* |                                 | MMM     | Jan, Feb, ..., Dec                |       |
+* |                                 | MMMM    | January, February, ..., December  | 2     |
+* |                                 | MMMMM   | J, F, ..., D                      |       |
+* | Month (stand-alone)             | L       | 1, 2, ..., 12                     |       |
+* |                                 | Lo      | 1st, 2nd, ..., 12th               | 7     |
+* |                                 | LL      | 01, 02, ..., 12                   |       |
+* |                                 | LLL     | Jan, Feb, ..., Dec                |       |
+* |                                 | LLLL    | January, February, ..., December  | 2     |
+* |                                 | LLLLL   | J, F, ..., D                      |       |
+* | Local week of year              | w       | 1, 2, ..., 53                     |       |
+* |                                 | wo      | 1st, 2nd, ..., 53th               | 7     |
+* |                                 | ww      | 01, 02, ..., 53                   |       |
+* | ISO week of year                | I       | 1, 2, ..., 53                     | 7     |
+* |                                 | Io      | 1st, 2nd, ..., 53th               | 7     |
+* |                                 | II      | 01, 02, ..., 53                   | 7     |
+* | Day of month                    | d       | 1, 2, ..., 31                     |       |
+* |                                 | do      | 1st, 2nd, ..., 31st               | 7     |
+* |                                 | dd      | 01, 02, ..., 31                   |       |
+* | Day of year                     | D       | 1, 2, ..., 365, 366               | 9     |
+* |                                 | Do      | 1st, 2nd, ..., 365th, 366th       | 7     |
+* |                                 | DD      | 01, 02, ..., 365, 366             | 9     |
+* |                                 | DDD     | 001, 002, ..., 365, 366           |       |
+* |                                 | DDDD    | ...                               | 3     |
+* | Day of week (formatting)        | E..EEE  | Mon, Tue, Wed, ..., Sun           |       |
+* |                                 | EEEE    | Monday, Tuesday, ..., Sunday      | 2     |
+* |                                 | EEEEE   | M, T, W, T, F, S, S               |       |
+* |                                 | EEEEEE  | Mo, Tu, We, Th, Fr, Sa, Su        |       |
+* | ISO day of week (formatting)    | i       | 1, 2, 3, ..., 7                   | 7     |
+* |                                 | io      | 1st, 2nd, ..., 7th                | 7     |
+* |                                 | ii      | 01, 02, ..., 07                   | 7     |
+* |                                 | iii     | Mon, Tue, Wed, ..., Sun           | 7     |
+* |                                 | iiii    | Monday, Tuesday, ..., Sunday      | 2,7   |
+* |                                 | iiiii   | M, T, W, T, F, S, S               | 7     |
+* |                                 | iiiiii  | Mo, Tu, We, Th, Fr, Sa, Su        | 7     |
+* | Local day of week (formatting)  | e       | 2, 3, 4, ..., 1                   |       |
+* |                                 | eo      | 2nd, 3rd, ..., 1st                | 7     |
+* |                                 | ee      | 02, 03, ..., 01                   |       |
+* |                                 | eee     | Mon, Tue, Wed, ..., Sun           |       |
+* |                                 | eeee    | Monday, Tuesday, ..., Sunday      | 2     |
+* |                                 | eeeee   | M, T, W, T, F, S, S               |       |
+* |                                 | eeeeee  | Mo, Tu, We, Th, Fr, Sa, Su        |       |
+* | Local day of week (stand-alone) | c       | 2, 3, 4, ..., 1                   |       |
+* |                                 | co      | 2nd, 3rd, ..., 1st                | 7     |
+* |                                 | cc      | 02, 03, ..., 01                   |       |
+* |                                 | ccc     | Mon, Tue, Wed, ..., Sun           |       |
+* |                                 | cccc    | Monday, Tuesday, ..., Sunday      | 2     |
+* |                                 | ccccc   | M, T, W, T, F, S, S               |       |
+* |                                 | cccccc  | Mo, Tu, We, Th, Fr, Sa, Su        |       |
+* | AM, PM                          | a..aa   | AM, PM                            |       |
+* |                                 | aaa     | am, pm                            |       |
+* |                                 | aaaa    | a.m., p.m.                        | 2     |
+* |                                 | aaaaa   | a, p                              |       |
+* | AM, PM, noon, midnight          | b..bb   | AM, PM, noon, midnight            |       |
+* |                                 | bbb     | am, pm, noon, midnight            |       |
+* |                                 | bbbb    | a.m., p.m., noon, midnight        | 2     |
+* |                                 | bbbbb   | a, p, n, mi                       |       |
+* | Flexible day period             | B..BBB  | at night, in the morning, ...     |       |
+* |                                 | BBBB    | at night, in the morning, ...     | 2     |
+* |                                 | BBBBB   | at night, in the morning, ...     |       |
+* | Hour [1-12]                     | h       | 1, 2, ..., 11, 12                 |       |
+* |                                 | ho      | 1st, 2nd, ..., 11th, 12th         | 7     |
+* |                                 | hh      | 01, 02, ..., 11, 12               |       |
+* | Hour [0-23]                     | H       | 0, 1, 2, ..., 23                  |       |
+* |                                 | Ho      | 0th, 1st, 2nd, ..., 23rd          | 7     |
+* |                                 | HH      | 00, 01, 02, ..., 23               |       |
+* | Hour [0-11]                     | K       | 1, 2, ..., 11, 0                  |       |
+* |                                 | Ko      | 1st, 2nd, ..., 11th, 0th          | 7     |
+* |                                 | KK      | 01, 02, ..., 11, 00               |       |
+* | Hour [1-24]                     | k       | 24, 1, 2, ..., 23                 |       |
+* |                                 | ko      | 24th, 1st, 2nd, ..., 23rd         | 7     |
+* |                                 | kk      | 24, 01, 02, ..., 23               |       |
+* | Minute                          | m       | 0, 1, ..., 59                     |       |
+* |                                 | mo      | 0th, 1st, ..., 59th               | 7     |
+* |                                 | mm      | 00, 01, ..., 59                   |       |
+* | Second                          | s       | 0, 1, ..., 59                     |       |
+* |                                 | so      | 0th, 1st, ..., 59th               | 7     |
+* |                                 | ss      | 00, 01, ..., 59                   |       |
+* | Fraction of second              | S       | 0, 1, ..., 9                      |       |
+* |                                 | SS      | 00, 01, ..., 99                   |       |
+* |                                 | SSS     | 000, 001, ..., 999                |       |
+* |                                 | SSSS    | ...                               | 3     |
+* | Timezone (ISO-8601 w/ Z)        | X       | -08, +0530, Z                     |       |
+* |                                 | XX      | -0800, +0530, Z                   |       |
+* |                                 | XXX     | -08:00, +05:30, Z                 |       |
+* |                                 | XXXX    | -0800, +0530, Z, +123456          | 2     |
+* |                                 | XXXXX   | -08:00, +05:30, Z, +12:34:56      |       |
+* | Timezone (ISO-8601 w/o Z)       | x       | -08, +0530, +00                   |       |
+* |                                 | xx      | -0800, +0530, +0000               |       |
+* |                                 | xxx     | -08:00, +05:30, +00:00            | 2     |
+* |                                 | xxxx    | -0800, +0530, +0000, +123456      |       |
+* |                                 | xxxxx   | -08:00, +05:30, +00:00, +12:34:56 |       |
+* | Timezone (GMT)                  | O...OOO | GMT-8, GMT+5:30, GMT+0            |       |
+* |                                 | OOOO    | GMT-08:00, GMT+05:30, GMT+00:00   | 2     |
+* | Timezone (specific non-locat.)  | z...zzz | GMT-8, GMT+5:30, GMT+0            | 6     |
+* |                                 | zzzz    | GMT-08:00, GMT+05:30, GMT+00:00   | 2,6   |
+* | Seconds timestamp               | t       | 512969520                         | 7     |
+* |                                 | tt      | ...                               | 3,7   |
+* | Milliseconds timestamp          | T       | 512969520900                      | 7     |
+* |                                 | TT      | ...                               | 3,7   |
+* | Long localized date             | P       | 04/29/1453                        | 7     |
+* |                                 | PP      | Apr 29, 1453                      | 7     |
+* |                                 | PPP     | April 29th, 1453                  | 7     |
+* |                                 | PPPP    | Friday, April 29th, 1453          | 2,7   |
+* | Long localized time             | p       | 12:00 AM                          | 7     |
+* |                                 | pp      | 12:00:00 AM                       | 7     |
+* |                                 | ppp     | 12:00:00 AM GMT+2                 | 7     |
+* |                                 | pppp    | 12:00:00 AM GMT+02:00             | 2,7   |
+* | Combination of date and time    | Pp      | 04/29/1453, 12:00 AM              | 7     |
+* |                                 | PPpp    | Apr 29, 1453, 12:00:00 AM         | 7     |
+* |                                 | PPPppp  | April 29th, 1453 at ...           | 7     |
+* |                                 | PPPPpppp| Friday, April 29th, 1453 at ...   | 2,7   |
+* Notes:
+* 1. "Formatting" units (e.g. formatting quarter) in the default en-US locale
+*    are the same as "stand-alone" units, but are different in some languages.
+*    "Formatting" units are declined according to the rules of the language
+*    in the context of a date. "Stand-alone" units are always nominative singular:
+*
+*    `format(new Date(2017, 10, 6), 'do LLLL', {locale: cs}) //=> '6. listopad'`
+*
+*    `format(new Date(2017, 10, 6), 'do MMMM', {locale: cs}) //=> '6. listopadu'`
+*
+* 2. Any sequence of the identical letters is a pattern, unless it is escaped by
+*    the single quote characters (see below).
+*    If the sequence is longer than listed in table (e.g. `EEEEEEEEEEE`)
+*    the output will be the same as default pattern for this unit, usually
+*    the longest one (in case of ISO weekdays, `EEEE`). Default patterns for units
+*    are marked with "2" in the last column of the table.
+*
+*    `format(new Date(2017, 10, 6), 'MMM') //=> 'Nov'`
+*
+*    `format(new Date(2017, 10, 6), 'MMMM') //=> 'November'`
+*
+*    `format(new Date(2017, 10, 6), 'MMMMM') //=> 'N'`
+*
+*    `format(new Date(2017, 10, 6), 'MMMMMM') //=> 'November'`
+*
+*    `format(new Date(2017, 10, 6), 'MMMMMMM') //=> 'November'`
+*
+* 3. Some patterns could be unlimited length (such as `yyyyyyyy`).
+*    The output will be padded with zeros to match the length of the pattern.
+*
+*    `format(new Date(2017, 10, 6), 'yyyyyyyy') //=> '00002017'`
+*
+* 4. `QQQQQ` and `qqqqq` could be not strictly numerical in some locales.
+*    These tokens represent the shortest form of the quarter.
+*
+* 5. The main difference between `y` and `u` patterns are B.C. years:
+*
+*    | Year | `y` | `u` |
+*    |------|-----|-----|
+*    | AC 1 |   1 |   1 |
+*    | BC 1 |   1 |   0 |
+*    | BC 2 |   2 |  -1 |
+*
+*    Also `yy` always returns the last two digits of a year,
+*    while `uu` pads single digit years to 2 characters and returns other years unchanged:
+*
+*    | Year | `yy` | `uu` |
+*    |------|------|------|
+*    | 1    |   01 |   01 |
+*    | 14   |   14 |   14 |
+*    | 376  |   76 |  376 |
+*    | 1453 |   53 | 1453 |
+*
+*    The same difference is true for local and ISO week-numbering years (`Y` and `R`),
+*    except local week-numbering years are dependent on `options.weekStartsOn`
+*    and `options.firstWeekContainsDate` (compare [getISOWeekYear](https://date-fns.org/docs/getISOWeekYear)
+*    and [getWeekYear](https://date-fns.org/docs/getWeekYear)).
+*
+* 6. Specific non-location timezones are currently unavailable in `date-fns`,
+*    so right now these tokens fall back to GMT timezones.
+*
+* 7. These patterns are not in the Unicode Technical Standard #35:
+*    - `i`: ISO day of week
+*    - `I`: ISO week of year
+*    - `R`: ISO week-numbering year
+*    - `t`: seconds timestamp
+*    - `T`: milliseconds timestamp
+*    - `o`: ordinal number modifier
+*    - `P`: long localized date
+*    - `p`: long localized time
+*
+* 8. `YY` and `YYYY` tokens represent week-numbering years but they are often confused with years.
+*    You should enable `options.useAdditionalWeekYearTokens` to use them. See: https://github.com/date-fns/date-fns/blob/master/docs/unicodeTokens.md
+*
+* 9. `D` and `DD` tokens represent days of the year but they are often confused with days of the month.
+*    You should enable `options.useAdditionalDayOfYearTokens` to use them. See: https://github.com/date-fns/date-fns/blob/master/docs/unicodeTokens.md
+*
+* @param date - The original date
+* @param format - The string of tokens
+* @param options - An object with options
+*
+* @returns The formatted date string
+*
+* @throws `date` must not be Invalid Date
+* @throws `options.locale` must contain `localize` property
+* @throws `options.locale` must contain `formatLong` property
+* @throws use `yyyy` instead of `YYYY` for formatting years using [format provided] to the input [input provided]; see: https://github.com/date-fns/date-fns/blob/master/docs/unicodeTokens.md
+* @throws use `yy` instead of `YY` for formatting years using [format provided] to the input [input provided]; see: https://github.com/date-fns/date-fns/blob/master/docs/unicodeTokens.md
+* @throws use `d` instead of `D` for formatting days of the month using [format provided] to the input [input provided]; see: https://github.com/date-fns/date-fns/blob/master/docs/unicodeTokens.md
+* @throws use `dd` instead of `DD` for formatting days of the month using [format provided] to the input [input provided]; see: https://github.com/date-fns/date-fns/blob/master/docs/unicodeTokens.md
+* @throws format string contains an unescaped latin alphabet character
+*
+* @example
+* // Represent 11 February 2014 in middle-endian format:
+* const result = format(new Date(2014, 1, 11), 'MM/dd/yyyy')
+* //=> '02/11/2014'
+*
+* @example
+* // Represent 2 July 2014 in Esperanto:
+* import { eoLocale } from 'date-fns/locale/eo'
+* const result = format(new Date(2014, 6, 2), "do 'de' MMMM yyyy", {
+*   locale: eoLocale
+* })
+* //=> '2-a de julio 2014'
+*
+* @example
+* // Escape string by single quote characters:
+* const result = format(new Date(2014, 6, 2, 15), "h 'o''clock'")
+* //=> "3 o'clock"
+*/
+function format$1(date, formatStr, options) {
+	const defaultOptions = getDefaultOptions();
+	const locale = options?.locale ?? defaultOptions.locale ?? enUS;
+	const firstWeekContainsDate = options?.firstWeekContainsDate ?? options?.locale?.options?.firstWeekContainsDate ?? defaultOptions.firstWeekContainsDate ?? defaultOptions.locale?.options?.firstWeekContainsDate ?? 1;
+	const weekStartsOn = options?.weekStartsOn ?? options?.locale?.options?.weekStartsOn ?? defaultOptions.weekStartsOn ?? defaultOptions.locale?.options?.weekStartsOn ?? 0;
+	const originalDate = toDate(date, options?.in);
+	if (!isValid(originalDate)) throw new RangeError("Invalid time value");
+	let parts = formatStr.match(longFormattingTokensRegExp).map((substring) => {
+		const firstCharacter = substring[0];
+		if (firstCharacter === "p" || firstCharacter === "P") {
+			const longFormatter = longFormatters[firstCharacter];
+			return longFormatter(substring, locale.formatLong);
+		}
+		return substring;
+	}).join("").match(formattingTokensRegExp).map((substring) => {
+		if (substring === "''") return {
+			isToken: false,
+			value: "'"
+		};
+		const firstCharacter = substring[0];
+		if (firstCharacter === "'") return {
+			isToken: false,
+			value: cleanEscapedString(substring)
+		};
+		if (formatters[firstCharacter]) return {
+			isToken: true,
+			value: substring
+		};
+		if (firstCharacter.match(unescapedLatinCharacterRegExp)) throw new RangeError("Format string contains an unescaped latin alphabet character `" + firstCharacter + "`");
+		return {
+			isToken: false,
+			value: substring
+		};
+	});
+	if (locale.localize.preprocessor) parts = locale.localize.preprocessor(originalDate, parts);
+	const formatterOptions = {
+		firstWeekContainsDate,
+		weekStartsOn,
+		locale
+	};
+	return parts.map((part) => {
+		if (!part.isToken) return part.value;
+		const token = part.value;
+		if (!options?.useAdditionalWeekYearTokens && isProtectedWeekYearToken(token) || !options?.useAdditionalDayOfYearTokens && isProtectedDayOfYearToken(token)) warnOrThrowProtectedError(token, formatStr, String(date));
+		const formatter = formatters[token[0]];
+		return formatter(originalDate, token, locale.localize, formatterOptions);
+	}).join("");
+}
+function cleanEscapedString(input) {
+	const matched = input.match(escapedStringRegExp);
+	if (!matched) return input;
+	return matched[1].replace(doubleQuoteRegExp, "'");
+}
+//#endregion
+//#region src/components/dashboard/ExpirationAlerts.tsx
+function ExpirationAlerts() {
+	const { transactions } = useFinanceStore();
+	const alerts = (0, import_react.useMemo)(() => {
+		const today = /* @__PURE__ */ new Date();
+		today.setHours(0, 0, 0, 0);
+		const pending = transactions.filter((t) => t.status !== "REALIZADO");
+		const dueToday = [];
+		const overdue = [];
+		pending.forEach((t) => {
+			const d = new Date(t.date);
+			d.setHours(0, 0, 0, 0);
+			if (d < today || t.status === "VENCIDO") overdue.push(t);
+			else if (d.getTime() === today.getTime()) dueToday.push(t);
+		});
+		return {
+			dueToday: dueToday.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()),
+			overdue: overdue.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()),
+			total: dueToday.length + overdue.length
+		};
+	}, [transactions]);
+	const formatCurrency = (val) => new Intl.NumberFormat("pt-BR", {
+		style: "currency",
+		currency: "BRL"
+	}).format(val);
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Popover, {
+		"data-uid": "src/components/dashboard/ExpirationAlerts.tsx:42:5",
+		"data-prohibitions": "[editContent]",
+		children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(PopoverTrigger, {
+			"data-uid": "src/components/dashboard/ExpirationAlerts.tsx:43:7",
+			"data-prohibitions": "[editContent]",
+			asChild: true,
+			children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Button, {
+				"data-uid": "src/components/dashboard/ExpirationAlerts.tsx:44:9",
+				"data-prohibitions": "[editContent]",
+				variant: "ghost",
+				size: "icon",
+				className: "relative h-8 w-8 text-white hover:bg-white/20",
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Bell, {
+					"data-uid": "src/components/dashboard/ExpirationAlerts.tsx:49:11",
+					"data-prohibitions": "[editContent]",
+					className: "h-4 w-4"
+				}), alerts.total > 0 && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+					"data-uid": "src/components/dashboard/ExpirationAlerts.tsx:51:13",
+					"data-prohibitions": "[]",
+					className: "absolute top-1.5 right-1.5 flex h-2.5 w-2.5 rounded-full bg-red-500 ring-2 ring-[#1e3a5f]",
+					children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+						"data-uid": "src/components/dashboard/ExpirationAlerts.tsx:52:15",
+						"data-prohibitions": "[]",
+						className: "animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"
+					})
+				})]
+			})
+		}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(PopoverContent, {
+			"data-uid": "src/components/dashboard/ExpirationAlerts.tsx:57:7",
+			"data-prohibitions": "[editContent]",
+			align: "end",
+			className: "w-80 p-0 shadow-lg border-slate-200",
+			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+				"data-uid": "src/components/dashboard/ExpirationAlerts.tsx:58:9",
+				"data-prohibitions": "[editContent]",
+				className: "bg-slate-50 border-b px-4 py-3 flex items-center justify-between rounded-t-md",
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("h4", {
+					"data-uid": "src/components/dashboard/ExpirationAlerts.tsx:59:11",
+					"data-prohibitions": "[]",
+					className: "font-semibold text-sm text-slate-800 flex items-center gap-2",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Bell, {
+						"data-uid": "src/components/dashboard/ExpirationAlerts.tsx:60:13",
+						"data-prohibitions": "[editContent]",
+						className: "w-4 h-4 text-slate-500"
+					}), " Alertas"]
+				}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Badge, {
+					"data-uid": "src/components/dashboard/ExpirationAlerts.tsx:62:11",
+					"data-prohibitions": "[editContent]",
+					variant: "secondary",
+					className: "bg-slate-200 hover:bg-slate-200 text-slate-700",
+					children: alerts.total
+				})]
+			}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ScrollArea, {
+				"data-uid": "src/components/dashboard/ExpirationAlerts.tsx:67:9",
+				"data-prohibitions": "[editContent]",
+				className: "h-[300px]",
+				children: alerts.total === 0 ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					"data-uid": "src/components/dashboard/ExpirationAlerts.tsx:69:13",
+					"data-prohibitions": "[]",
+					className: "p-8 text-center text-sm text-slate-500 flex flex-col items-center gap-2",
+					children: [
+						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+							"data-uid": "src/components/dashboard/ExpirationAlerts.tsx:70:15",
+							"data-prohibitions": "[]",
+							className: "bg-slate-100 p-3 rounded-full",
+							children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Bell, {
+								"data-uid": "src/components/dashboard/ExpirationAlerts.tsx:71:17",
+								"data-prohibitions": "[editContent]",
+								className: "w-5 h-5 text-slate-400"
+							})
+						}),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+							"data-uid": "src/components/dashboard/ExpirationAlerts.tsx:73:15",
+							"data-prohibitions": "[]",
+							children: "Nenhum alerta no momento."
+						}),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+							"data-uid": "src/components/dashboard/ExpirationAlerts.tsx:74:15",
+							"data-prohibitions": "[]",
+							className: "text-xs",
+							children: "Tudo em dia!"
+						})
+					]
+				}) : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					"data-uid": "src/components/dashboard/ExpirationAlerts.tsx:77:13",
+					"data-prohibitions": "[editContent]",
+					className: "flex flex-col",
+					children: [alerts.overdue.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						"data-uid": "src/components/dashboard/ExpirationAlerts.tsx:79:17",
+						"data-prohibitions": "[editContent]",
+						className: "p-2 bg-red-50/50",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							"data-uid": "src/components/dashboard/ExpirationAlerts.tsx:80:19",
+							"data-prohibitions": "[editContent]",
+							className: "text-[10px] font-bold text-red-800 uppercase px-2 py-1 flex items-center gap-1",
+							children: [
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(CircleAlert, {
+									"data-uid": "src/components/dashboard/ExpirationAlerts.tsx:81:21",
+									"data-prohibitions": "[editContent]",
+									className: "w-3 h-3"
+								}),
+								" Vencidos (",
+								alerts.overdue.length,
+								")"
+							]
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+							"data-uid": "src/components/dashboard/ExpirationAlerts.tsx:83:19",
+							"data-prohibitions": "[editContent]",
+							className: "flex flex-col gap-1 mt-1",
+							children: alerts.overdue.map((t) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								"data-uid": "src/components/dashboard/ExpirationAlerts.tsx:85:23",
+								"data-prohibitions": "[editContent]",
+								className: "bg-white p-2 rounded-sm border border-red-100 flex justify-between items-center shadow-sm",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									"data-uid": "src/components/dashboard/ExpirationAlerts.tsx:89:25",
+									"data-prohibitions": "[editContent]",
+									className: "flex-1 min-w-0 pr-2",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+										"data-uid": "src/components/dashboard/ExpirationAlerts.tsx:90:27",
+										"data-prohibitions": "[editContent]",
+										className: "text-xs font-medium text-slate-800 truncate",
+										children: t.description
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
+										"data-uid": "src/components/dashboard/ExpirationAlerts.tsx:93:27",
+										"data-prohibitions": "[editContent]",
+										className: "text-[10px] text-red-600 font-medium mt-0.5",
+										children: ["Venceu em ", format$1(new Date(t.date), "dd/MM/yyyy")]
+									})]
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+									"data-uid": "src/components/dashboard/ExpirationAlerts.tsx:97:25",
+									"data-prohibitions": "[editContent]",
+									className: "text-right shrink-0",
+									children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+										"data-uid": "src/components/dashboard/ExpirationAlerts.tsx:98:27",
+										"data-prohibitions": "[editContent]",
+										className: "text-xs font-bold text-slate-800",
+										children: formatCurrency(t.amount)
+									})
+								})]
+							}, t.id))
+						})]
+					}), alerts.dueToday.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						"data-uid": "src/components/dashboard/ExpirationAlerts.tsx:109:17",
+						"data-prohibitions": "[editContent]",
+						className: "p-2 bg-amber-50/50",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							"data-uid": "src/components/dashboard/ExpirationAlerts.tsx:110:19",
+							"data-prohibitions": "[editContent]",
+							className: "text-[10px] font-bold text-amber-800 uppercase px-2 py-1 flex items-center gap-1",
+							children: [
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Clock, {
+									"data-uid": "src/components/dashboard/ExpirationAlerts.tsx:111:21",
+									"data-prohibitions": "[editContent]",
+									className: "w-3 h-3"
+								}),
+								" Vence Hoje (",
+								alerts.dueToday.length,
+								")"
+							]
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+							"data-uid": "src/components/dashboard/ExpirationAlerts.tsx:113:19",
+							"data-prohibitions": "[editContent]",
+							className: "flex flex-col gap-1 mt-1",
+							children: alerts.dueToday.map((t) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								"data-uid": "src/components/dashboard/ExpirationAlerts.tsx:115:23",
+								"data-prohibitions": "[editContent]",
+								className: "bg-white p-2 rounded-sm border border-amber-100 flex justify-between items-center shadow-sm",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									"data-uid": "src/components/dashboard/ExpirationAlerts.tsx:119:25",
+									"data-prohibitions": "[editContent]",
+									className: "flex-1 min-w-0 pr-2",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+										"data-uid": "src/components/dashboard/ExpirationAlerts.tsx:120:27",
+										"data-prohibitions": "[editContent]",
+										className: "text-xs font-medium text-slate-800 truncate",
+										children: t.description
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+										"data-uid": "src/components/dashboard/ExpirationAlerts.tsx:123:27",
+										"data-prohibitions": "[]",
+										className: "text-[10px] text-amber-600 font-medium mt-0.5",
+										children: "Previsto"
+									})]
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+									"data-uid": "src/components/dashboard/ExpirationAlerts.tsx:125:25",
+									"data-prohibitions": "[editContent]",
+									className: "text-right shrink-0",
+									children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+										"data-uid": "src/components/dashboard/ExpirationAlerts.tsx:126:27",
+										"data-prohibitions": "[editContent]",
+										className: "text-xs font-bold text-slate-800",
+										children: formatCurrency(t.amount)
+									})
+								})]
+							}, t.id))
+						})]
+					})]
+				})
+			})]
+		})]
+	});
+}
+//#endregion
+//#region src/components/dashboard/DashboardHeader.tsx
+function DashboardHeader() {
+	const { filters, setFilter, transactions } = useFinanceStore();
+	const years = (0, import_react.useMemo)(() => {
+		const y = /* @__PURE__ */ new Set();
+		transactions.forEach((tx) => y.add(new Date(tx.date).getFullYear().toString()));
+		const currentYear = (/* @__PURE__ */ new Date()).getFullYear().toString();
+		y.add(currentYear);
+		return Array.from(y).sort((a, b) => b.localeCompare(a));
+	}, [transactions]);
+	const selectedYear = filters.years[0] || (/* @__PURE__ */ new Date()).getFullYear().toString();
+	const handlePrint = () => {
+		window.print();
+	};
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+		"data-uid": "src/components/dashboard/DashboardHeader.tsx:34:5",
+		"data-prohibitions": "[editContent]",
+		className: "bg-[#1e3a5f] text-white rounded-t-md px-4 py-2 flex items-center justify-between shadow-sm",
+		children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+			"data-uid": "src/components/dashboard/DashboardHeader.tsx:35:7",
+			"data-prohibitions": "[]",
+			className: "flex items-center gap-2",
+			children: [
+				/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+					"data-uid": "src/components/dashboard/DashboardHeader.tsx:36:9",
+					"data-prohibitions": "[editContent]",
+					className: "w-4 h-4 bg-blue-400 rounded-sm"
+				}),
+				/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+					"data-uid": "src/components/dashboard/DashboardHeader.tsx:37:9",
+					"data-prohibitions": "[]",
+					className: "font-bold text-sm tracking-wide hidden sm:block",
+					children: "DASHBOARD FINANCEIRO"
+				}),
+				/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+					"data-uid": "src/components/dashboard/DashboardHeader.tsx:38:9",
+					"data-prohibitions": "[]",
+					className: "font-bold text-sm tracking-wide sm:hidden",
+					children: "DASHBOARD"
+				})
+			]
+		}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+			"data-uid": "src/components/dashboard/DashboardHeader.tsx:41:7",
+			"data-prohibitions": "[editContent]",
+			className: "flex items-center gap-2 sm:gap-4",
+			children: [
+				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Button, {
+					"data-uid": "src/components/dashboard/DashboardHeader.tsx:42:9",
+					"data-prohibitions": "[]",
+					variant: "outline",
+					size: "sm",
+					onClick: handlePrint,
+					className: "h-7 text-xs bg-white text-blue-900 border-none hover:bg-gray-100 hidden md:flex gap-1",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Printer, {
+						"data-uid": "src/components/dashboard/DashboardHeader.tsx:48:11",
+						"data-prohibitions": "[editContent]",
+						className: "w-3 h-3"
+					}), " Exportar PDF"]
+				}),
+				/* @__PURE__ */ (0, import_jsx_runtime.jsx)(MonthlyClosingDialog, {
+					"data-uid": "src/components/dashboard/DashboardHeader.tsx:51:9",
+					"data-prohibitions": "[editContent]"
+				}),
+				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					"data-uid": "src/components/dashboard/DashboardHeader.tsx:53:9",
+					"data-prohibitions": "[editContent]",
+					className: "flex items-center gap-2",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+						"data-uid": "src/components/dashboard/DashboardHeader.tsx:54:11",
+						"data-prohibitions": "[]",
+						className: "text-xs font-medium text-blue-200 hidden sm:inline",
+						children: "Ano:"
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Select, {
+						"data-uid": "src/components/dashboard/DashboardHeader.tsx:55:11",
+						"data-prohibitions": "[editContent]",
+						value: selectedYear,
+						onValueChange: (val) => setFilter("years", [val]),
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectTrigger, {
+							"data-uid": "src/components/dashboard/DashboardHeader.tsx:56:13",
+							"data-prohibitions": "[]",
+							className: "h-7 w-[70px] sm:w-[90px] bg-[#152943] border-none text-white focus:ring-1 focus:ring-blue-400 text-xs",
+							children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectValue, {
+								"data-uid": "src/components/dashboard/DashboardHeader.tsx:57:15",
+								"data-prohibitions": "[editContent]",
+								placeholder: "Ano"
+							})
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectContent, {
+							"data-uid": "src/components/dashboard/DashboardHeader.tsx:59:13",
+							"data-prohibitions": "[editContent]",
+							children: years.map((y) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectItem, {
+								"data-uid": "src/components/dashboard/DashboardHeader.tsx:61:17",
+								"data-prohibitions": "[editContent]",
+								value: y,
+								children: y
+							}, y))
+						})]
+					})]
+				}),
+				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					"data-uid": "src/components/dashboard/DashboardHeader.tsx:69:9",
+					"data-prohibitions": "[]",
+					className: "flex items-center gap-0.5",
+					children: [
+						/* @__PURE__ */ (0, import_jsx_runtime.jsx)(ExpirationAlerts, {
+							"data-uid": "src/components/dashboard/DashboardHeader.tsx:70:11",
+							"data-prohibitions": "[editContent]"
+						}),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, {
+							"data-uid": "src/components/dashboard/DashboardHeader.tsx:72:11",
+							"data-prohibitions": "[]",
+							variant: "ghost",
+							size: "icon",
+							className: "h-8 w-8 text-white hover:bg-white/20",
+							children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(RefreshCw, {
+								"data-uid": "src/components/dashboard/DashboardHeader.tsx:73:13",
+								"data-prohibitions": "[editContent]",
+								className: "h-3.5 w-3.5"
+							})
+						}),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Link, {
+							"data-uid": "src/components/dashboard/DashboardHeader.tsx:75:11",
+							"data-prohibitions": "[]",
+							to: "/",
+							children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, {
+								"data-uid": "src/components/dashboard/DashboardHeader.tsx:76:13",
+								"data-prohibitions": "[]",
+								variant: "ghost",
+								size: "icon",
+								className: "h-8 w-8 text-white hover:bg-white/20",
+								children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(House, {
+									"data-uid": "src/components/dashboard/DashboardHeader.tsx:77:15",
+									"data-prohibitions": "[editContent]",
+									className: "h-3.5 w-3.5"
+								})
+							})
+						})
+					]
+				})
+			]
+		})]
+	});
+}
 //#endregion
 //#region src/components/dashboard/SidebarFilters.tsx
 function SidebarFilters() {
@@ -51771,7 +54478,7 @@ function locale_default(locale) {
 //#endregion
 //#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/d3-format@3.1.2/node_modules/d3-format/src/defaultLocale.js
 var locale$1;
-var format$1;
+var format;
 var formatPrefix;
 defaultLocale$1({
 	thousands: ",",
@@ -51780,7 +54487,7 @@ defaultLocale$1({
 });
 function defaultLocale$1(definition) {
 	locale$1 = locale_default(definition);
-	format$1 = locale$1.format;
+	format = locale$1.format;
 	formatPrefix = locale$1.formatPrefix;
 	return locale$1;
 }
@@ -51822,7 +54529,7 @@ function tickFormat(start, stop, count, specifier) {
 			if (specifier.precision == null && !isNaN(precision = precisionFixed_default(step))) specifier.precision = precision - (specifier.type === "%") * 2;
 			break;
 	}
-	return format$1(specifier);
+	return format(specifier);
 }
 //#endregion
 //#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/d3-scale@4.0.2/node_modules/d3-scale/src/linear.js
@@ -51991,7 +54698,7 @@ function loggish(transform) {
 		if (specifier == null) specifier = base === 10 ? "s" : ",";
 		if (typeof specifier !== "function") {
 			if (!(base % 1) && (specifier = formatSpecifier(specifier)).precision == null) specifier.trim = true;
-			specifier = format$1(specifier);
+			specifier = format(specifier);
 		}
 		if (count === Infinity) return specifier;
 		const k = Math.max(1, base * count / scale.ticks().length);
@@ -69313,16 +72020,82 @@ var Progress = import_react.forwardRef(({ className, value, ...props }, ref) => 
 }));
 Progress.displayName = Root.displayName;
 //#endregion
+//#region src/lib/holidays.ts
+function getEaster(year) {
+	const a = year % 19;
+	const b = Math.floor(year / 100);
+	const c = year % 100;
+	const d = Math.floor(b / 4);
+	const e = b % 4;
+	const f = Math.floor((b + 8) / 25);
+	const g = Math.floor((b - f + 1) / 3);
+	const h = (19 * a + b - d - g + 15) % 30;
+	const i = Math.floor(c / 4);
+	const k = c % 4;
+	const l = (32 + 2 * e + 2 * i - h - k) % 7;
+	const m = Math.floor((a + 11 * h + 22 * l) / 451);
+	const month = Math.floor((h + l - 7 * m + 114) / 31) - 1;
+	const day = (h + l - 7 * m + 114) % 31 + 1;
+	return new Date(year, month, day);
+}
+function isHoliday(date) {
+	const day = date.getDate();
+	const month = date.getMonth();
+	const year = date.getFullYear();
+	if ([
+		[1, 0],
+		[21, 3],
+		[1, 4],
+		[7, 8],
+		[12, 9],
+		[2, 10],
+		[15, 10],
+		[25, 11]
+	].some((h) => h[0] === day && h[1] === month)) return true;
+	const easter = getEaster(year);
+	const carnaval = new Date(easter);
+	carnaval.setDate(easter.getDate() - 47);
+	const sextaSanta = new Date(easter);
+	sextaSanta.setDate(easter.getDate() - 2);
+	const corpusChristi = new Date(easter);
+	corpusChristi.setDate(easter.getDate() + 60);
+	const isSameDate = (d1, d2) => d1.getDate() === d2.getDate() && d1.getMonth() === d2.getMonth();
+	return isSameDate(date, carnaval) || isSameDate(date, sextaSanta) || isSameDate(date, corpusChristi);
+}
+function getWorkingDays(year, month) {
+	const start = new Date(year, month - 1, 1);
+	const end = new Date(year, month, 0);
+	let count = 0;
+	for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) if (d.getDay() !== 0 && !isHoliday(d)) count++;
+	return count;
+}
+//#endregion
 //#region src/components/dashboard/SalesTargetProgress.tsx
 function SalesTargetProgress() {
 	const { monthlyMetrics, saveMonthlyMetric, filters } = useFinanceStore();
 	const [isEditing, setIsEditing] = (0, import_react.useState)(false);
 	const [tempValue, setTempValue] = (0, import_react.useState)("");
-	const { metric, monthName } = (0, import_react.useMemo)(() => {
+	const { metric, monthName, workingDays } = (0, import_react.useMemo)(() => {
 		const currentYear = parseInt(filters.years[0] || (/* @__PURE__ */ new Date()).getFullYear().toString());
 		const currentMonth = filters.months.length > 0 ? parseInt(filters.months[0]) : (/* @__PURE__ */ new Date()).getMonth() + 1;
+		const monthLabels = [
+			"Jan",
+			"Fev",
+			"Mar",
+			"Abr",
+			"Mai",
+			"Jun",
+			"Jul",
+			"Ago",
+			"Set",
+			"Out",
+			"Nov",
+			"Dez"
+		];
+		const found = monthlyMetrics.find((m) => m.year === currentYear && m.month === currentMonth);
+		const wDays = getWorkingDays(currentYear, currentMonth);
 		return {
-			metric: monthlyMetrics.find((m) => m.year === currentYear && m.month === currentMonth) || {
+			metric: found || {
 				month: currentMonth,
 				year: currentYear,
 				sales_target: 0,
@@ -69331,25 +72104,14 @@ function SalesTargetProgress() {
 				orders_count: 0,
 				id: ""
 			},
-			monthName: `${[
-				"Jan",
-				"Fev",
-				"Mar",
-				"Abr",
-				"Mai",
-				"Jun",
-				"Jul",
-				"Ago",
-				"Set",
-				"Out",
-				"Nov",
-				"Dez"
-			][currentMonth - 1]}/${currentYear}`
+			monthName: `${monthLabels[currentMonth - 1]}/${currentYear}`,
+			workingDays: wDays
 		};
 	}, [monthlyMetrics, filters]);
 	const target = metric.sales_target;
 	const sales = metric.total_system_sales;
 	const percentage = target > 0 ? Math.min(sales / target * 100, 100) : 0;
+	const dailyTarget = workingDays > 0 ? target / workingDays : 0;
 	const handleEdit = () => {
 		setTempValue(target.toString());
 		setIsEditing(true);
@@ -69368,28 +72130,28 @@ function SalesTargetProgress() {
 		maximumFractionDigits: 0
 	}).format(val);
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Card, {
-		"data-uid": "src/components/dashboard/SalesTargetProgress.tsx:73:5",
+		"data-uid": "src/components/dashboard/SalesTargetProgress.tsx:78:5",
 		"data-prohibitions": "[editContent]",
-		className: "rounded-sm shadow-sm h-full flex flex-col justify-center border-t-4 border-t-emerald-500",
+		className: "rounded-sm shadow-sm h-full flex flex-col justify-center border-t-4 border-t-emerald-500 relative",
 		children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(CardContent, {
-			"data-uid": "src/components/dashboard/SalesTargetProgress.tsx:74:7",
+			"data-uid": "src/components/dashboard/SalesTargetProgress.tsx:79:7",
 			"data-prohibitions": "[editContent]",
 			className: "p-3",
 			children: [
 				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-					"data-uid": "src/components/dashboard/SalesTargetProgress.tsx:75:9",
+					"data-uid": "src/components/dashboard/SalesTargetProgress.tsx:80:9",
 					"data-prohibitions": "[editContent]",
-					className: "flex justify-between items-center mb-2",
+					className: "flex justify-between items-start mb-2",
 					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-						"data-uid": "src/components/dashboard/SalesTargetProgress.tsx:76:11",
+						"data-uid": "src/components/dashboard/SalesTargetProgress.tsx:81:11",
 						"data-prohibitions": "[editContent]",
 						className: "flex items-center gap-1.5 text-emerald-600",
 						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Target, {
-							"data-uid": "src/components/dashboard/SalesTargetProgress.tsx:77:13",
+							"data-uid": "src/components/dashboard/SalesTargetProgress.tsx:82:13",
 							"data-prohibitions": "[editContent]",
 							className: "w-4 h-4"
 						}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("h3", {
-							"data-uid": "src/components/dashboard/SalesTargetProgress.tsx:78:13",
+							"data-uid": "src/components/dashboard/SalesTargetProgress.tsx:83:13",
 							"data-prohibitions": "[editContent]",
 							className: "text-xs font-bold uppercase tracking-wide",
 							children: [
@@ -69399,35 +72161,35 @@ function SalesTargetProgress() {
 							]
 						})]
 					}), !isEditing && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, {
-						"data-uid": "src/components/dashboard/SalesTargetProgress.tsx:83:13",
+						"data-uid": "src/components/dashboard/SalesTargetProgress.tsx:88:13",
 						"data-prohibitions": "[]",
 						variant: "ghost",
 						size: "icon",
-						className: "h-5 w-5 text-gray-400 hover:text-emerald-600",
+						className: "h-5 w-5 text-gray-400 hover:text-emerald-600 absolute right-2 top-2",
 						onClick: handleEdit,
 						children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Pencil, {
-							"data-uid": "src/components/dashboard/SalesTargetProgress.tsx:89:15",
+							"data-uid": "src/components/dashboard/SalesTargetProgress.tsx:94:15",
 							"data-prohibitions": "[editContent]",
 							className: "h-3 w-3"
 						})
 					})]
 				}),
 				isEditing ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-					"data-uid": "src/components/dashboard/SalesTargetProgress.tsx:95:11",
+					"data-uid": "src/components/dashboard/SalesTargetProgress.tsx:100:11",
 					"data-prohibitions": "[]",
 					className: "flex items-center gap-2 mb-2",
 					children: [
 						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-							"data-uid": "src/components/dashboard/SalesTargetProgress.tsx:96:13",
+							"data-uid": "src/components/dashboard/SalesTargetProgress.tsx:101:13",
 							"data-prohibitions": "[]",
 							className: "relative flex-1",
 							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-								"data-uid": "src/components/dashboard/SalesTargetProgress.tsx:97:15",
+								"data-uid": "src/components/dashboard/SalesTargetProgress.tsx:102:15",
 								"data-prohibitions": "[]",
 								className: "absolute left-2 top-1.5 text-xs text-gray-500",
 								children: "R$"
 							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Input, {
-								"data-uid": "src/components/dashboard/SalesTargetProgress.tsx:98:15",
+								"data-uid": "src/components/dashboard/SalesTargetProgress.tsx:103:15",
 								"data-prohibitions": "[editContent]",
 								type: "number",
 								className: "h-7 text-xs pl-6",
@@ -69438,60 +72200,60 @@ function SalesTargetProgress() {
 							})]
 						}),
 						/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, {
-							"data-uid": "src/components/dashboard/SalesTargetProgress.tsx:107:13",
+							"data-uid": "src/components/dashboard/SalesTargetProgress.tsx:112:13",
 							"data-prohibitions": "[]",
 							size: "icon",
-							className: "h-7 w-7 bg-emerald-500 hover:bg-emerald-600",
+							className: "h-7 w-7 bg-emerald-500 hover:bg-emerald-600 shrink-0",
 							onClick: handleSave,
 							children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Check, {
-								"data-uid": "src/components/dashboard/SalesTargetProgress.tsx:112:15",
+								"data-uid": "src/components/dashboard/SalesTargetProgress.tsx:117:15",
 								"data-prohibitions": "[editContent]",
 								className: "h-3 w-3"
 							})
 						}),
 						/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, {
-							"data-uid": "src/components/dashboard/SalesTargetProgress.tsx:114:13",
+							"data-uid": "src/components/dashboard/SalesTargetProgress.tsx:119:13",
 							"data-prohibitions": "[]",
 							variant: "ghost",
 							size: "icon",
-							className: "h-7 w-7 text-gray-500",
+							className: "h-7 w-7 text-gray-500 shrink-0",
 							onClick: () => setIsEditing(false),
 							children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(X, {
-								"data-uid": "src/components/dashboard/SalesTargetProgress.tsx:120:15",
+								"data-uid": "src/components/dashboard/SalesTargetProgress.tsx:125:15",
 								"data-prohibitions": "[editContent]",
 								className: "h-3 w-3"
 							})
 						})
 					]
 				}) : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-					"data-uid": "src/components/dashboard/SalesTargetProgress.tsx:124:11",
+					"data-uid": "src/components/dashboard/SalesTargetProgress.tsx:129:11",
 					"data-prohibitions": "[editContent]",
 					className: "flex justify-between items-end mb-1",
 					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-						"data-uid": "src/components/dashboard/SalesTargetProgress.tsx:125:13",
+						"data-uid": "src/components/dashboard/SalesTargetProgress.tsx:130:13",
 						"data-prohibitions": "[editContent]",
 						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-							"data-uid": "src/components/dashboard/SalesTargetProgress.tsx:126:15",
+							"data-uid": "src/components/dashboard/SalesTargetProgress.tsx:131:15",
 							"data-prohibitions": "[]",
 							className: "text-[10px] text-gray-500 font-medium",
 							children: "Realizado"
 						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-							"data-uid": "src/components/dashboard/SalesTargetProgress.tsx:127:15",
+							"data-uid": "src/components/dashboard/SalesTargetProgress.tsx:132:15",
 							"data-prohibitions": "[editContent]",
 							className: "text-sm font-bold text-gray-800",
 							children: formatCurrency(sales)
 						})]
 					}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-						"data-uid": "src/components/dashboard/SalesTargetProgress.tsx:129:13",
+						"data-uid": "src/components/dashboard/SalesTargetProgress.tsx:134:13",
 						"data-prohibitions": "[editContent]",
 						className: "text-right",
 						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-							"data-uid": "src/components/dashboard/SalesTargetProgress.tsx:130:15",
+							"data-uid": "src/components/dashboard/SalesTargetProgress.tsx:135:15",
 							"data-prohibitions": "[]",
 							className: "text-[10px] text-gray-500 font-medium",
 							children: "Objetivo"
 						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-							"data-uid": "src/components/dashboard/SalesTargetProgress.tsx:131:15",
+							"data-uid": "src/components/dashboard/SalesTargetProgress.tsx:136:15",
 							"data-prohibitions": "[editContent]",
 							className: "text-sm font-bold text-emerald-600",
 							children: formatCurrency(target)
@@ -69499,19 +72261,49 @@ function SalesTargetProgress() {
 					})]
 				}),
 				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-					"data-uid": "src/components/dashboard/SalesTargetProgress.tsx:136:9",
+					"data-uid": "src/components/dashboard/SalesTargetProgress.tsx:141:9",
 					"data-prohibitions": "[editContent]",
 					className: "space-y-1 mt-1",
 					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Progress, {
-						"data-uid": "src/components/dashboard/SalesTargetProgress.tsx:137:11",
+						"data-uid": "src/components/dashboard/SalesTargetProgress.tsx:142:11",
 						"data-prohibitions": "[editContent]",
 						value: percentage,
 						className: "h-2 bg-gray-100"
-					}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
-						"data-uid": "src/components/dashboard/SalesTargetProgress.tsx:138:11",
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						"data-uid": "src/components/dashboard/SalesTargetProgress.tsx:143:11",
 						"data-prohibitions": "[editContent]",
-						className: "text-[10px] text-right font-medium text-emerald-600",
-						children: [percentage.toFixed(1), "% alcançado"]
+						className: "flex justify-between items-center text-[10px]",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
+							"data-uid": "src/components/dashboard/SalesTargetProgress.tsx:144:13",
+							"data-prohibitions": "[editContent]",
+							className: "text-gray-500 font-medium",
+							children: [
+								"Meta Diária:",
+								" ",
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+									"data-uid": "src/components/dashboard/SalesTargetProgress.tsx:146:15",
+									"data-prohibitions": "[editContent]",
+									className: "text-emerald-600 font-bold",
+									children: formatCurrency(dailyTarget)
+								}),
+								" ",
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+									"data-uid": "src/components/dashboard/SalesTargetProgress.tsx:147:15",
+									"data-prohibitions": "[editContent]",
+									className: "text-gray-400",
+									children: [
+										"(",
+										workingDays,
+										" dias úteis)"
+									]
+								})
+							]
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
+							"data-uid": "src/components/dashboard/SalesTargetProgress.tsx:149:13",
+							"data-prohibitions": "[editContent]",
+							className: "font-medium text-emerald-600 ml-2 whitespace-nowrap",
+							children: [percentage.toFixed(1), "% alc."]
+						})]
 					})]
 				})
 			]
@@ -69855,124 +72647,462 @@ function PerformanceEvolutionChart() {
 	});
 }
 //#endregion
+//#region src/components/dashboard/PrintableReport.tsx
+function PrintableReport() {
+	const { filteredTransactions, filteredMonthlyMetrics, filters, categories } = useFinanceStore();
+	const currentYear = filters.years[0] || (/* @__PURE__ */ new Date()).getFullYear().toString();
+	const currentMonth = filters.months.length > 0 ? filters.months[0] : "";
+	const metrics = (0, import_react.useMemo)(() => {
+		let receitas = 0;
+		let despesas = 0;
+		let custosVariaveis = 0;
+		let fixas = 0;
+		filteredTransactions.forEach((tx) => {
+			if (tx.status === "REALIZADO") if (tx.type === "INCOME") receitas += tx.amount;
+			else {
+				despesas += tx.amount;
+				if (tx.categoryId === "FIXA") fixas += tx.amount;
+				if (tx.categoryId === "VARIAVEL") custosVariaveis += tx.amount;
+			}
+		});
+		const totalSales = filteredMonthlyMetrics.reduce((sum, m) => sum + m.total_system_sales, 0);
+		const target = filteredMonthlyMetrics.reduce((sum, m) => sum + m.sales_target, 0);
+		const rawMaterial = filteredMonthlyMetrics.reduce((sum, m) => sum + m.raw_material_costs, 0);
+		const orders = filteredMonthlyMetrics.reduce((sum, m) => sum + m.orders_count, 0);
+		const lucro = receitas - despesas;
+		const ticket = orders > 0 ? totalSales / orders : 0;
+		const divisor = totalSales > 0 ? (totalSales - (fixas + custosVariaveis + rawMaterial)) / totalSales : 0;
+		const markup = divisor > 0 ? 1 / divisor : 1;
+		return {
+			receitas,
+			despesas,
+			lucro,
+			totalSales,
+			target,
+			rawMaterial,
+			ticket,
+			markup,
+			fixas,
+			custosVariaveis
+		};
+	}, [filteredTransactions, filteredMonthlyMetrics]);
+	const formatCurrency = (val) => new Intl.NumberFormat("pt-BR", {
+		style: "currency",
+		currency: "BRL"
+	}).format(val);
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+		"data-uid": "src/components/dashboard/PrintableReport.tsx:59:5",
+		"data-prohibitions": "[editContent]",
+		className: "hidden print:block absolute inset-0 bg-white z-[9999] p-8 text-black font-sans w-full h-full min-h-screen max-w-[210mm] mx-auto overflow-visible",
+		children: [
+			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+				"data-uid": "src/components/dashboard/PrintableReport.tsx:60:7",
+				"data-prohibitions": "[editContent]",
+				className: "border-b-2 border-slate-800 pb-4 mb-6",
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h1", {
+					"data-uid": "src/components/dashboard/PrintableReport.tsx:61:9",
+					"data-prohibitions": "[]",
+					className: "text-2xl font-bold uppercase tracking-widest text-slate-800",
+					children: "Relatório Financeiro Gerencial"
+				}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
+					"data-uid": "src/components/dashboard/PrintableReport.tsx:64:9",
+					"data-prohibitions": "[editContent]",
+					className: "text-slate-500 font-medium mt-1",
+					children: [
+						"Período: ",
+						currentMonth ? `${currentMonth}/` : "Ano ",
+						currentYear,
+						" | Gerado em: ",
+						format$1(/* @__PURE__ */ new Date(), "dd/MM/yyyy HH:mm")
+					]
+				})]
+			}),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+				"data-uid": "src/components/dashboard/PrintableReport.tsx:70:7",
+				"data-prohibitions": "[editContent]",
+				className: "grid grid-cols-2 gap-6 mb-8",
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					"data-uid": "src/components/dashboard/PrintableReport.tsx:71:9",
+					"data-prohibitions": "[editContent]",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+						"data-uid": "src/components/dashboard/PrintableReport.tsx:72:11",
+						"data-prohibitions": "[]",
+						className: "text-lg font-bold text-slate-800 border-b pb-1 mb-3",
+						children: "Resumo Operacional"
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("table", {
+						"data-uid": "src/components/dashboard/PrintableReport.tsx:75:11",
+						"data-prohibitions": "[editContent]",
+						className: "w-full text-sm",
+						children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tbody", {
+							"data-uid": "src/components/dashboard/PrintableReport.tsx:76:13",
+							"data-prohibitions": "[editContent]",
+							children: [
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", {
+									"data-uid": "src/components/dashboard/PrintableReport.tsx:77:15",
+									"data-prohibitions": "[editContent]",
+									className: "border-b border-slate-100",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
+										"data-uid": "src/components/dashboard/PrintableReport.tsx:78:17",
+										"data-prohibitions": "[]",
+										className: "py-2 text-slate-600",
+										children: "Receitas (Realizadas)"
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
+										"data-uid": "src/components/dashboard/PrintableReport.tsx:79:17",
+										"data-prohibitions": "[editContent]",
+										className: "py-2 text-right font-bold text-emerald-600",
+										children: formatCurrency(metrics.receitas)
+									})]
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", {
+									"data-uid": "src/components/dashboard/PrintableReport.tsx:83:15",
+									"data-prohibitions": "[editContent]",
+									className: "border-b border-slate-100",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
+										"data-uid": "src/components/dashboard/PrintableReport.tsx:84:17",
+										"data-prohibitions": "[]",
+										className: "py-2 text-slate-600",
+										children: "Despesas Totais"
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
+										"data-uid": "src/components/dashboard/PrintableReport.tsx:85:17",
+										"data-prohibitions": "[editContent]",
+										className: "py-2 text-right font-bold text-red-600",
+										children: formatCurrency(metrics.despesas)
+									})]
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", {
+									"data-uid": "src/components/dashboard/PrintableReport.tsx:89:15",
+									"data-prohibitions": "[editContent]",
+									className: "bg-slate-50",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
+										"data-uid": "src/components/dashboard/PrintableReport.tsx:90:17",
+										"data-prohibitions": "[]",
+										className: "py-2 px-2 font-semibold text-slate-800",
+										children: "Lucro Operacional"
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
+										"data-uid": "src/components/dashboard/PrintableReport.tsx:91:17",
+										"data-prohibitions": "[editContent]",
+										className: "py-2 px-2 text-right font-bold text-slate-800",
+										children: formatCurrency(metrics.lucro)
+									})]
+								})
+							]
+						})
+					})]
+				}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					"data-uid": "src/components/dashboard/PrintableReport.tsx:99:9",
+					"data-prohibitions": "[editContent]",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+						"data-uid": "src/components/dashboard/PrintableReport.tsx:100:11",
+						"data-prohibitions": "[]",
+						className: "text-lg font-bold text-slate-800 border-b pb-1 mb-3",
+						children: "Métricas da Farmácia (Fechamento)"
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("table", {
+						"data-uid": "src/components/dashboard/PrintableReport.tsx:103:11",
+						"data-prohibitions": "[editContent]",
+						className: "w-full text-sm",
+						children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tbody", {
+							"data-uid": "src/components/dashboard/PrintableReport.tsx:104:13",
+							"data-prohibitions": "[editContent]",
+							children: [
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", {
+									"data-uid": "src/components/dashboard/PrintableReport.tsx:105:15",
+									"data-prohibitions": "[editContent]",
+									className: "border-b border-slate-100",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
+										"data-uid": "src/components/dashboard/PrintableReport.tsx:106:17",
+										"data-prohibitions": "[]",
+										className: "py-2 text-slate-600",
+										children: "Vendas do Sistema"
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
+										"data-uid": "src/components/dashboard/PrintableReport.tsx:107:17",
+										"data-prohibitions": "[editContent]",
+										className: "py-2 text-right font-bold",
+										children: formatCurrency(metrics.totalSales)
+									})]
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", {
+									"data-uid": "src/components/dashboard/PrintableReport.tsx:109:15",
+									"data-prohibitions": "[editContent]",
+									className: "border-b border-slate-100",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
+										"data-uid": "src/components/dashboard/PrintableReport.tsx:110:17",
+										"data-prohibitions": "[]",
+										className: "py-2 text-slate-600",
+										children: "Meta de Vendas"
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
+										"data-uid": "src/components/dashboard/PrintableReport.tsx:111:17",
+										"data-prohibitions": "[editContent]",
+										className: "py-2 text-right font-bold text-slate-800",
+										children: formatCurrency(metrics.target)
+									})]
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", {
+									"data-uid": "src/components/dashboard/PrintableReport.tsx:115:15",
+									"data-prohibitions": "[editContent]",
+									className: "border-b border-slate-100",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
+										"data-uid": "src/components/dashboard/PrintableReport.tsx:116:17",
+										"data-prohibitions": "[]",
+										className: "py-2 text-slate-600",
+										children: "Ticket Médio"
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
+										"data-uid": "src/components/dashboard/PrintableReport.tsx:117:17",
+										"data-prohibitions": "[editContent]",
+										className: "py-2 text-right font-bold text-blue-600",
+										children: formatCurrency(metrics.ticket)
+									})]
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", {
+									"data-uid": "src/components/dashboard/PrintableReport.tsx:121:15",
+									"data-prohibitions": "[editContent]",
+									className: "bg-slate-50",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
+										"data-uid": "src/components/dashboard/PrintableReport.tsx:122:17",
+										"data-prohibitions": "[]",
+										className: "py-2 px-2 font-semibold text-slate-800",
+										children: "Markup (Multiplicador)"
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("td", {
+										"data-uid": "src/components/dashboard/PrintableReport.tsx:123:17",
+										"data-prohibitions": "[editContent]",
+										className: "py-2 px-2 text-right font-bold text-purple-600",
+										children: [metrics.markup.toFixed(2), "x"]
+									})]
+								})
+							]
+						})
+					})]
+				})]
+			}),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+				"data-uid": "src/components/dashboard/PrintableReport.tsx:132:7",
+				"data-prohibitions": "[editContent]",
+				className: "mb-6 page-break-inside-avoid",
+				children: [
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+						"data-uid": "src/components/dashboard/PrintableReport.tsx:133:9",
+						"data-prohibitions": "[]",
+						className: "text-lg font-bold text-slate-800 border-b border-slate-800 pb-1 mb-3",
+						children: "Extrato de Despesas (Top 30)"
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("table", {
+						"data-uid": "src/components/dashboard/PrintableReport.tsx:136:9",
+						"data-prohibitions": "[editContent]",
+						className: "w-full text-xs text-left border-collapse",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("thead", {
+							"data-uid": "src/components/dashboard/PrintableReport.tsx:137:11",
+							"data-prohibitions": "[]",
+							children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", {
+								"data-uid": "src/components/dashboard/PrintableReport.tsx:138:13",
+								"data-prohibitions": "[]",
+								className: "bg-slate-100",
+								children: [
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+										"data-uid": "src/components/dashboard/PrintableReport.tsx:139:15",
+										"data-prohibitions": "[]",
+										className: "py-2 px-2 border border-slate-200",
+										children: "Data"
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+										"data-uid": "src/components/dashboard/PrintableReport.tsx:140:15",
+										"data-prohibitions": "[]",
+										className: "py-2 px-2 border border-slate-200",
+										children: "Descrição"
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+										"data-uid": "src/components/dashboard/PrintableReport.tsx:141:15",
+										"data-prohibitions": "[]",
+										className: "py-2 px-2 border border-slate-200",
+										children: "Categoria"
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+										"data-uid": "src/components/dashboard/PrintableReport.tsx:142:15",
+										"data-prohibitions": "[]",
+										className: "py-2 px-2 border border-slate-200 text-right",
+										children: "Valor"
+									})
+								]
+							})
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("tbody", {
+							"data-uid": "src/components/dashboard/PrintableReport.tsx:145:11",
+							"data-prohibitions": "[editContent]",
+							children: filteredTransactions.filter((t) => t.type === "EXPENSE").slice(0, 30).map((t) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", {
+								"data-uid": "src/components/dashboard/PrintableReport.tsx:150:17",
+								"data-prohibitions": "[editContent]",
+								className: "border-b border-slate-200",
+								children: [
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
+										"data-uid": "src/components/dashboard/PrintableReport.tsx:151:19",
+										"data-prohibitions": "[editContent]",
+										className: "py-1.5 px-2",
+										children: format$1(new Date(t.date), "dd/MM/yyyy")
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("td", {
+										"data-uid": "src/components/dashboard/PrintableReport.tsx:152:19",
+										"data-prohibitions": "[editContent]",
+										className: "py-1.5 px-2",
+										children: [t.description, t.tags && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+											"data-uid": "src/components/dashboard/PrintableReport.tsx:154:32",
+											"data-prohibitions": "[editContent]",
+											className: "text-slate-400 ml-1",
+											children: [
+												"[",
+												t.tags,
+												"]"
+											]
+										})]
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
+										"data-uid": "src/components/dashboard/PrintableReport.tsx:156:19",
+										"data-prohibitions": "[editContent]",
+										className: "py-1.5 px-2",
+										children: t.categoryId === "FIXA" ? "Fixa" : "Variável"
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
+										"data-uid": "src/components/dashboard/PrintableReport.tsx:157:19",
+										"data-prohibitions": "[editContent]",
+										className: "py-1.5 px-2 text-right text-red-600 font-medium",
+										children: formatCurrency(t.amount)
+									})
+								]
+							}, t.id))
+						})]
+					}),
+					filteredTransactions.filter((t) => t.type === "EXPENSE").length > 30 && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+						"data-uid": "src/components/dashboard/PrintableReport.tsx:165:11",
+						"data-prohibitions": "[]",
+						className: "text-[10px] text-slate-500 mt-2 italic",
+						children: "* Listando apenas as 30 despesas mais recentes no período selecionado."
+					})
+				]
+			}),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+				"data-uid": "src/components/dashboard/PrintableReport.tsx:171:7",
+				"data-prohibitions": "[]",
+				className: "mt-12 text-center text-[10px] text-slate-400 border-t pt-4",
+				children: "Controle Financeiro Planilha - Documento Interno"
+			})
+		]
+	});
+}
+//#endregion
 //#region src/pages/Index.tsx
 function Index() {
-	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-		"data-uid": "src/pages/Index.tsx:16:5",
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+		"data-uid": "src/pages/Index.tsx:18:7",
 		"data-prohibitions": "[editContent]",
-		className: "flex flex-col h-[calc(100vh-5rem)] bg-white rounded-md shadow-md border overflow-hidden animate-fade-in",
+		className: "flex flex-col h-[calc(100vh-5rem)] bg-white rounded-md shadow-md border overflow-hidden animate-fade-in print:hidden",
 		children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(DashboardHeader, {
-			"data-uid": "src/pages/Index.tsx:17:7",
+			"data-uid": "src/pages/Index.tsx:19:9",
 			"data-prohibitions": "[editContent]"
 		}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-			"data-uid": "src/pages/Index.tsx:19:7",
+			"data-uid": "src/pages/Index.tsx:21:9",
 			"data-prohibitions": "[editContent]",
 			className: "flex flex-1 overflow-hidden",
 			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-				"data-uid": "src/pages/Index.tsx:21:9",
+				"data-uid": "src/pages/Index.tsx:23:11",
 				"data-prohibitions": "[]",
 				className: "w-[180px] hidden md:block",
 				children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SidebarFilters, {
-					"data-uid": "src/pages/Index.tsx:22:11",
+					"data-uid": "src/pages/Index.tsx:24:13",
 					"data-prohibitions": "[editContent]"
 				})
 			}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-				"data-uid": "src/pages/Index.tsx:26:9",
+				"data-uid": "src/pages/Index.tsx:28:11",
 				"data-prohibitions": "[editContent]",
 				className: "flex-1 bg-[#f1f5f9] p-2 flex flex-col gap-2 overflow-y-auto",
 				children: [
 					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-						"data-uid": "src/pages/Index.tsx:27:11",
+						"data-uid": "src/pages/Index.tsx:29:13",
 						"data-prohibitions": "[]",
 						className: "flex flex-col xl:flex-row gap-2",
 						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-							"data-uid": "src/pages/Index.tsx:28:13",
+							"data-uid": "src/pages/Index.tsx:30:15",
 							"data-prohibitions": "[]",
 							className: "flex-1 flex flex-col gap-2",
 							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(KpiCards, {
-								"data-uid": "src/pages/Index.tsx:29:15",
+								"data-uid": "src/pages/Index.tsx:31:17",
 								"data-prohibitions": "[editContent]"
 							}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-								"data-uid": "src/pages/Index.tsx:30:15",
+								"data-uid": "src/pages/Index.tsx:32:17",
 								"data-prohibitions": "[]",
 								className: "grid grid-cols-1 md:grid-cols-2 gap-2 h-auto min-h-[90px]",
 								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(SalesTargetProgress, {
-									"data-uid": "src/pages/Index.tsx:31:17",
+									"data-uid": "src/pages/Index.tsx:33:19",
 									"data-prohibitions": "[editContent]"
 								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(PricingAssistant, {
-									"data-uid": "src/pages/Index.tsx:32:17",
+									"data-uid": "src/pages/Index.tsx:34:19",
 									"data-prohibitions": "[editContent]"
 								})]
 							})]
 						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-							"data-uid": "src/pages/Index.tsx:35:13",
+							"data-uid": "src/pages/Index.tsx:37:15",
 							"data-prohibitions": "[]",
 							className: "xl:w-[250px] shrink-0",
 							children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ExpenseDistribution, {
-								"data-uid": "src/pages/Index.tsx:36:15",
+								"data-uid": "src/pages/Index.tsx:38:17",
 								"data-prohibitions": "[editContent]"
 							})
 						})]
 					}),
 					/* @__PURE__ */ (0, import_jsx_runtime.jsx)(PharmacyMetrics, {
-						"data-uid": "src/pages/Index.tsx:40:11",
+						"data-uid": "src/pages/Index.tsx:42:13",
 						"data-prohibitions": "[editContent]"
 					}),
 					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-						"data-uid": "src/pages/Index.tsx:42:11",
+						"data-uid": "src/pages/Index.tsx:44:13",
 						"data-prohibitions": "[editContent]",
 						className: "grid grid-cols-1 lg:grid-cols-3 gap-2 flex-1 min-h-[400px]",
 						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-							"data-uid": "src/pages/Index.tsx:44:13",
+							"data-uid": "src/pages/Index.tsx:46:15",
 							"data-prohibitions": "[]",
 							className: "lg:col-span-2 flex flex-col gap-2",
 							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-								"data-uid": "src/pages/Index.tsx:45:15",
+								"data-uid": "src/pages/Index.tsx:47:17",
 								"data-prohibitions": "[]",
 								className: "flex-1 min-h-[220px]",
 								children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(PerformanceEvolutionChart, {
-									"data-uid": "src/pages/Index.tsx:46:17",
+									"data-uid": "src/pages/Index.tsx:48:19",
 									"data-prohibitions": "[editContent]"
 								})
 							}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-								"data-uid": "src/pages/Index.tsx:48:15",
+								"data-uid": "src/pages/Index.tsx:50:17",
 								"data-prohibitions": "[]",
 								className: "grid grid-cols-1 md:grid-cols-2 gap-2 flex-1 min-h-[200px]",
 								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(CashFlowChart, {
-									"data-uid": "src/pages/Index.tsx:49:17",
+									"data-uid": "src/pages/Index.tsx:51:19",
 									"data-prohibitions": "[editContent]"
 								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ProfitabilityChart, {
-									"data-uid": "src/pages/Index.tsx:50:17",
+									"data-uid": "src/pages/Index.tsx:52:19",
 									"data-prohibitions": "[editContent]"
 								})]
 							})]
 						}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-							"data-uid": "src/pages/Index.tsx:55:13",
+							"data-uid": "src/pages/Index.tsx:57:15",
 							"data-prohibitions": "[]",
 							className: "flex flex-col gap-2",
 							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-								"data-uid": "src/pages/Index.tsx:56:15",
+								"data-uid": "src/pages/Index.tsx:58:17",
 								"data-prohibitions": "[]",
 								className: "grid grid-cols-2 gap-2 h-[160px]",
 								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TopCategoriesChart, {
-									"data-uid": "src/pages/Index.tsx:57:17",
+									"data-uid": "src/pages/Index.tsx:59:19",
 									"data-prohibitions": "[editContent]",
 									type: "INCOME",
 									title: "Top 5 - Entradas",
 									color: "#10b981"
 								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TopCategoriesChart, {
-									"data-uid": "src/pages/Index.tsx:58:17",
+									"data-uid": "src/pages/Index.tsx:60:19",
 									"data-prohibitions": "[editContent]",
 									type: "EXPENSE",
 									title: "Top 5 - Saídas",
 									color: "#ef4444"
 								})]
 							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-								"data-uid": "src/pages/Index.tsx:60:15",
+								"data-uid": "src/pages/Index.tsx:62:17",
 								"data-prohibitions": "[]",
 								className: "flex-1 min-h-[150px]",
 								children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(AccountBalances, {
-									"data-uid": "src/pages/Index.tsx:61:17",
+									"data-uid": "src/pages/Index.tsx:63:19",
 									"data-prohibitions": "[editContent]"
 								})
 							})]
@@ -69981,7 +73111,10 @@ function Index() {
 				]
 			})]
 		})]
-	});
+	}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(PrintableReport, {
+		"data-uid": "src/pages/Index.tsx:70:7",
+		"data-prohibitions": "[editContent]"
+	})] });
 }
 //#endregion
 //#region src/components/ui/table.tsx
@@ -70055,29 +73188,10 @@ var TableCaption = import_react.forwardRef(({ className, ...props }, ref) => /* 
 }));
 TableCaption.displayName = "TableCaption";
 //#endregion
-//#region src/components/ui/badge.tsx
-var badgeVariants = cva("inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2", {
-	variants: { variant: {
-		default: "border-transparent bg-primary text-primary-foreground hover:bg-primary/80",
-		secondary: "border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80",
-		destructive: "border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80",
-		outline: "text-foreground"
-	} },
-	defaultVariants: { variant: "default" }
-});
-function Badge({ className, variant, ...props }) {
-	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-		"data-uid": "src/components/ui/badge.tsx:30:10",
-		"data-prohibitions": "[editContent]",
-		className: cn$1(badgeVariants({ variant }), className),
-		...props
-	});
-}
-//#endregion
 //#region src/components/ui/sheet.tsx
 var Sheet = Root$3;
-var SheetTrigger = Trigger;
-var SheetPortal = Portal;
+var SheetTrigger = Trigger$1;
+var SheetPortal = Portal$1;
 var SheetOverlay = import_react.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Overlay, {
 	"data-uid": "src/components/ui/sheet.tsx:21:3",
 	"data-prohibitions": "[editContent]",
@@ -71115,14 +74229,14 @@ var validateField = async (field, disabledFieldNames, formValues, validateAllFie
 	setCustomValidity(true);
 	return error;
 };
-var defaultOptions$1 = {
+var defaultOptions = {
 	mode: VALIDATION_MODE.onSubmit,
 	reValidateMode: VALIDATION_MODE.onChange,
 	shouldFocusError: true
 };
 function createFormControl(props = {}) {
 	let _options = {
-		...defaultOptions$1,
+		...defaultOptions,
 		...props
 	};
 	let _formState = {
@@ -75898,7 +79012,7 @@ var FormLabel = import_react.forwardRef(({ className, ...props }, ref) => {
 FormLabel.displayName = "FormLabel";
 var FormControl = import_react.forwardRef(({ ...props }, ref) => {
 	const { error, formItemId, formDescriptionId, formMessageId } = useFormField();
-	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Slot$2, {
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Slot$3, {
 		"data-uid": "src/components/ui/form.tsx:107:5",
 		"data-prohibitions": "[editContent]",
 		ref,
@@ -75949,7 +79063,8 @@ var formSchema = object({
 		"PREVISTO",
 		"REALIZADO",
 		"VENCIDO"
-	])
+	]),
+	tags: string().optional()
 }).superRefine((data, ctx) => {
 	if (data.type === "INCOME" && !data.accountId) ctx.addIssue({
 		code: ZodIssueCode.custom,
@@ -75968,9 +79083,20 @@ var formSchema = object({
 	});
 });
 function TransactionForm({ onSuccess, initialData }) {
-	const { accounts, addTransaction, updateTransaction } = useFinanceStore();
+	const { accounts, transactions, addTransaction, updateTransaction } = useFinanceStore();
 	const { toast } = useToast();
 	const [loading, setLoading] = (0, import_react.useState)(false);
+	const [tagsList, setTagsList] = (0, import_react.useState)(initialData?.tags ? initialData.tags.split(",").filter(Boolean) : []);
+	const [tagInput, setTagInput] = (0, import_react.useState)("");
+	const allUniqueTags = (0, import_react.useMemo)(() => {
+		const t = /* @__PURE__ */ new Set();
+		transactions.forEach((tx) => {
+			if (tx.tags) tx.tags.split(",").forEach((x) => {
+				if (x.trim()) t.add(x.trim());
+			});
+		});
+		return Array.from(t).sort();
+	}, [transactions]);
 	const defaultValues = initialData ? {
 		date: new Date(initialData.date).toISOString().split("T")[0],
 		description: initialData.description,
@@ -75978,7 +79104,8 @@ function TransactionForm({ onSuccess, initialData }) {
 		type: initialData.type,
 		status: initialData.status,
 		categoryId: initialData.categoryId || "",
-		accountId: initialData.accountId || ""
+		accountId: initialData.accountId || "",
+		tags: initialData.tags || ""
 	} : {
 		date: (/* @__PURE__ */ new Date()).toISOString().split("T")[0],
 		description: "",
@@ -75986,7 +79113,8 @@ function TransactionForm({ onSuccess, initialData }) {
 		type: "EXPENSE",
 		status: "REALIZADO",
 		categoryId: "",
-		accountId: ""
+		accountId: "",
+		tags: ""
 	};
 	const form = useForm({
 		resolver: a(formSchema),
@@ -76003,6 +79131,20 @@ function TransactionForm({ onSuccess, initialData }) {
 		form,
 		initialData
 	]);
+	const addTag = (tagToAdd) => {
+		const val = (tagToAdd || tagInput).trim();
+		if (val && !tagsList.includes(val)) {
+			const newList = [...tagsList, val];
+			setTagsList(newList);
+			form.setValue("tags", newList.join(","));
+		}
+		setTagInput("");
+	};
+	const removeTag = (tagToRemove) => {
+		const newList = tagsList.filter((t) => t !== tagToRemove);
+		setTagsList(newList);
+		form.setValue("tags", newList.join(","));
+	};
 	const onSubmit = async (values) => {
 		try {
 			setLoading(true);
@@ -76011,7 +79153,8 @@ function TransactionForm({ onSuccess, initialData }) {
 				description: values.type === "INCOME" ? "Receita Registrada" : values.description || "Despesa",
 				status: values.type === "INCOME" ? "REALIZADO" : values.status,
 				categoryId: values.type === "EXPENSE" ? values.categoryId || "FIXA" : "",
-				accountId: values.type === "INCOME" ? values.accountId || "acc1" : ""
+				accountId: values.type === "INCOME" ? values.accountId || "acc1" : "",
+				tags: tagsList.join(",")
 			};
 			if (initialData) {
 				await updateTransaction(initialData.id, payload);
@@ -76027,6 +79170,7 @@ function TransactionForm({ onSuccess, initialData }) {
 				});
 			}
 			form.reset();
+			setTagsList([]);
 			onSuccess();
 		} catch (error) {
 			toast({
@@ -76039,59 +79183,59 @@ function TransactionForm({ onSuccess, initialData }) {
 		}
 	};
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Form, {
-		"data-uid": "src/components/transactions/TransactionForm.tsx:137:5",
+		"data-uid": "src/components/transactions/TransactionForm.tsx:177:5",
 		"data-prohibitions": "[editContent]",
 		...form,
 		children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("form", {
-			"data-uid": "src/components/transactions/TransactionForm.tsx:138:7",
+			"data-uid": "src/components/transactions/TransactionForm.tsx:178:7",
 			"data-prohibitions": "[editContent]",
 			onSubmit: form.handleSubmit(onSubmit),
 			className: "space-y-4 pt-4",
 			children: [
 				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-					"data-uid": "src/components/transactions/TransactionForm.tsx:139:9",
+					"data-uid": "src/components/transactions/TransactionForm.tsx:179:9",
 					"data-prohibitions": "[editContent]",
 					className: "grid grid-cols-2 gap-4",
 					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormField, {
-						"data-uid": "src/components/transactions/TransactionForm.tsx:140:11",
+						"data-uid": "src/components/transactions/TransactionForm.tsx:180:11",
 						"data-prohibitions": "[editContent]",
 						control: form.control,
 						name: "type",
 						render: ({ field }) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(FormItem, {
-							"data-uid": "src/components/transactions/TransactionForm.tsx:144:15",
+							"data-uid": "src/components/transactions/TransactionForm.tsx:184:15",
 							"data-prohibitions": "[editContent]",
 							className: type === "INCOME" ? "col-span-2" : "",
 							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormLabel, {
-								"data-uid": "src/components/transactions/TransactionForm.tsx:145:17",
+								"data-uid": "src/components/transactions/TransactionForm.tsx:185:17",
 								"data-prohibitions": "[]",
 								children: "Tipo"
 							}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Select, {
-								"data-uid": "src/components/transactions/TransactionForm.tsx:146:17",
+								"data-uid": "src/components/transactions/TransactionForm.tsx:186:17",
 								"data-prohibitions": "[]",
 								onValueChange: field.onChange,
 								value: field.value || void 0,
 								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormControl, {
-									"data-uid": "src/components/transactions/TransactionForm.tsx:147:19",
+									"data-uid": "src/components/transactions/TransactionForm.tsx:187:19",
 									"data-prohibitions": "[]",
 									children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectTrigger, {
-										"data-uid": "src/components/transactions/TransactionForm.tsx:148:21",
+										"data-uid": "src/components/transactions/TransactionForm.tsx:188:21",
 										"data-prohibitions": "[]",
 										children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectValue, {
-											"data-uid": "src/components/transactions/TransactionForm.tsx:149:23",
+											"data-uid": "src/components/transactions/TransactionForm.tsx:189:23",
 											"data-prohibitions": "[editContent]",
 											placeholder: "Selecione o tipo"
 										})
 									})
 								}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(SelectContent, {
-									"data-uid": "src/components/transactions/TransactionForm.tsx:152:19",
+									"data-uid": "src/components/transactions/TransactionForm.tsx:192:19",
 									"data-prohibitions": "[]",
 									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectItem, {
-										"data-uid": "src/components/transactions/TransactionForm.tsx:153:21",
+										"data-uid": "src/components/transactions/TransactionForm.tsx:193:21",
 										"data-prohibitions": "[]",
 										value: "INCOME",
 										children: "Receita"
 									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectItem, {
-										"data-uid": "src/components/transactions/TransactionForm.tsx:154:21",
+										"data-uid": "src/components/transactions/TransactionForm.tsx:194:21",
 										"data-prohibitions": "[]",
 										value: "EXPENSE",
 										children: "Despesa"
@@ -76100,52 +79244,52 @@ function TransactionForm({ onSuccess, initialData }) {
 							})]
 						})
 					}), type === "EXPENSE" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormField, {
-						"data-uid": "src/components/transactions/TransactionForm.tsx:161:13",
+						"data-uid": "src/components/transactions/TransactionForm.tsx:201:13",
 						"data-prohibitions": "[editContent]",
 						control: form.control,
 						name: "status",
 						render: ({ field }) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(FormItem, {
-							"data-uid": "src/components/transactions/TransactionForm.tsx:165:17",
+							"data-uid": "src/components/transactions/TransactionForm.tsx:205:17",
 							"data-prohibitions": "[]",
 							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormLabel, {
-								"data-uid": "src/components/transactions/TransactionForm.tsx:166:19",
+								"data-uid": "src/components/transactions/TransactionForm.tsx:206:19",
 								"data-prohibitions": "[]",
 								children: "Status"
 							}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Select, {
-								"data-uid": "src/components/transactions/TransactionForm.tsx:167:19",
+								"data-uid": "src/components/transactions/TransactionForm.tsx:207:19",
 								"data-prohibitions": "[]",
 								onValueChange: field.onChange,
 								value: field.value || void 0,
 								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormControl, {
-									"data-uid": "src/components/transactions/TransactionForm.tsx:168:21",
+									"data-uid": "src/components/transactions/TransactionForm.tsx:208:21",
 									"data-prohibitions": "[]",
 									children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectTrigger, {
-										"data-uid": "src/components/transactions/TransactionForm.tsx:169:23",
+										"data-uid": "src/components/transactions/TransactionForm.tsx:209:23",
 										"data-prohibitions": "[]",
 										children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectValue, {
-											"data-uid": "src/components/transactions/TransactionForm.tsx:170:25",
+											"data-uid": "src/components/transactions/TransactionForm.tsx:210:25",
 											"data-prohibitions": "[editContent]",
 											placeholder: "Status"
 										})
 									})
 								}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(SelectContent, {
-									"data-uid": "src/components/transactions/TransactionForm.tsx:173:21",
+									"data-uid": "src/components/transactions/TransactionForm.tsx:213:21",
 									"data-prohibitions": "[]",
 									children: [
 										/* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectItem, {
-											"data-uid": "src/components/transactions/TransactionForm.tsx:174:23",
+											"data-uid": "src/components/transactions/TransactionForm.tsx:214:23",
 											"data-prohibitions": "[]",
 											value: "PREVISTO",
 											children: "Previsto"
 										}),
 										/* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectItem, {
-											"data-uid": "src/components/transactions/TransactionForm.tsx:175:23",
+											"data-uid": "src/components/transactions/TransactionForm.tsx:215:23",
 											"data-prohibitions": "[]",
 											value: "REALIZADO",
 											children: "Realizado"
 										}),
 										/* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectItem, {
-											"data-uid": "src/components/transactions/TransactionForm.tsx:176:23",
+											"data-uid": "src/components/transactions/TransactionForm.tsx:216:23",
 											"data-prohibitions": "[]",
 											value: "VENCIDO",
 											children: "Vencido"
@@ -76157,86 +79301,86 @@ function TransactionForm({ onSuccess, initialData }) {
 					})]
 				}),
 				/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormField, {
-					"data-uid": "src/components/transactions/TransactionForm.tsx:185:9",
+					"data-uid": "src/components/transactions/TransactionForm.tsx:225:9",
 					"data-prohibitions": "[editContent]",
 					control: form.control,
 					name: "date",
 					render: ({ field }) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(FormItem, {
-						"data-uid": "src/components/transactions/TransactionForm.tsx:189:13",
+						"data-uid": "src/components/transactions/TransactionForm.tsx:229:13",
 						"data-prohibitions": "[]",
 						children: [
 							/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormLabel, {
-								"data-uid": "src/components/transactions/TransactionForm.tsx:190:15",
+								"data-uid": "src/components/transactions/TransactionForm.tsx:230:15",
 								"data-prohibitions": "[]",
 								children: "Data"
 							}),
 							/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormControl, {
-								"data-uid": "src/components/transactions/TransactionForm.tsx:191:15",
+								"data-uid": "src/components/transactions/TransactionForm.tsx:231:15",
 								"data-prohibitions": "[]",
 								children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Input, {
-									"data-uid": "src/components/transactions/TransactionForm.tsx:192:17",
+									"data-uid": "src/components/transactions/TransactionForm.tsx:232:17",
 									"data-prohibitions": "[editContent]",
 									type: "date",
 									...field
 								})
 							}),
 							/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormMessage, {
-								"data-uid": "src/components/transactions/TransactionForm.tsx:194:15",
+								"data-uid": "src/components/transactions/TransactionForm.tsx:234:15",
 								"data-prohibitions": "[editContent]"
 							})
 						]
 					})
 				}),
 				type === "EXPENSE" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormField, {
-					"data-uid": "src/components/transactions/TransactionForm.tsx:200:11",
+					"data-uid": "src/components/transactions/TransactionForm.tsx:240:11",
 					"data-prohibitions": "[editContent]",
 					control: form.control,
 					name: "description",
 					render: ({ field }) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(FormItem, {
-						"data-uid": "src/components/transactions/TransactionForm.tsx:204:15",
+						"data-uid": "src/components/transactions/TransactionForm.tsx:244:15",
 						"data-prohibitions": "[]",
 						children: [
 							/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormLabel, {
-								"data-uid": "src/components/transactions/TransactionForm.tsx:205:17",
+								"data-uid": "src/components/transactions/TransactionForm.tsx:245:17",
 								"data-prohibitions": "[]",
 								children: "Descrição"
 							}),
 							/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormControl, {
-								"data-uid": "src/components/transactions/TransactionForm.tsx:206:17",
+								"data-uid": "src/components/transactions/TransactionForm.tsx:246:17",
 								"data-prohibitions": "[]",
 								children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Input, {
-									"data-uid": "src/components/transactions/TransactionForm.tsx:207:19",
+									"data-uid": "src/components/transactions/TransactionForm.tsx:247:19",
 									"data-prohibitions": "[editContent]",
 									placeholder: "Ex: Conta de Luz",
 									...field
 								})
 							}),
 							/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormMessage, {
-								"data-uid": "src/components/transactions/TransactionForm.tsx:209:17",
+								"data-uid": "src/components/transactions/TransactionForm.tsx:249:17",
 								"data-prohibitions": "[editContent]"
 							})
 						]
 					})
 				}),
 				/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormField, {
-					"data-uid": "src/components/transactions/TransactionForm.tsx:215:9",
+					"data-uid": "src/components/transactions/TransactionForm.tsx:255:9",
 					"data-prohibitions": "[editContent]",
 					control: form.control,
 					name: "amount",
 					render: ({ field }) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(FormItem, {
-						"data-uid": "src/components/transactions/TransactionForm.tsx:219:13",
+						"data-uid": "src/components/transactions/TransactionForm.tsx:259:13",
 						"data-prohibitions": "[]",
 						children: [
 							/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormLabel, {
-								"data-uid": "src/components/transactions/TransactionForm.tsx:220:15",
+								"data-uid": "src/components/transactions/TransactionForm.tsx:260:15",
 								"data-prohibitions": "[]",
 								children: "Valor (R$)"
 							}),
 							/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormControl, {
-								"data-uid": "src/components/transactions/TransactionForm.tsx:221:15",
+								"data-uid": "src/components/transactions/TransactionForm.tsx:261:15",
 								"data-prohibitions": "[]",
 								children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Input, {
-									"data-uid": "src/components/transactions/TransactionForm.tsx:222:17",
+									"data-uid": "src/components/transactions/TransactionForm.tsx:262:17",
 									"data-prohibitions": "[editContent]",
 									type: "number",
 									step: "0.01",
@@ -76244,61 +79388,61 @@ function TransactionForm({ onSuccess, initialData }) {
 								})
 							}),
 							/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormMessage, {
-								"data-uid": "src/components/transactions/TransactionForm.tsx:224:15",
+								"data-uid": "src/components/transactions/TransactionForm.tsx:264:15",
 								"data-prohibitions": "[editContent]"
 							})
 						]
 					})
 				}),
 				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-					"data-uid": "src/components/transactions/TransactionForm.tsx:229:9",
+					"data-uid": "src/components/transactions/TransactionForm.tsx:269:9",
 					"data-prohibitions": "[editContent]",
 					className: "grid grid-cols-1 gap-4 transition-all duration-300 min-h-[80px]",
-					children: [type === "EXPENSE" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-						"data-uid": "src/components/transactions/TransactionForm.tsx:231:13",
-						"data-prohibitions": "[]",
-						className: "animate-in fade-in slide-in-from-top-2 duration-300",
-						children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormField, {
-							"data-uid": "src/components/transactions/TransactionForm.tsx:232:15",
+					children: [type === "EXPENSE" && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						"data-uid": "src/components/transactions/TransactionForm.tsx:271:13",
+						"data-prohibitions": "[editContent]",
+						className: "animate-in fade-in slide-in-from-top-2 duration-300 space-y-4",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormField, {
+							"data-uid": "src/components/transactions/TransactionForm.tsx:272:15",
 							"data-prohibitions": "[editContent]",
 							control: form.control,
 							name: "categoryId",
 							render: ({ field }) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(FormItem, {
-								"data-uid": "src/components/transactions/TransactionForm.tsx:236:19",
+								"data-uid": "src/components/transactions/TransactionForm.tsx:276:19",
 								"data-prohibitions": "[]",
 								children: [
 									/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormLabel, {
-										"data-uid": "src/components/transactions/TransactionForm.tsx:237:21",
+										"data-uid": "src/components/transactions/TransactionForm.tsx:277:21",
 										"data-prohibitions": "[]",
 										children: "Categoria"
 									}),
 									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Select, {
-										"data-uid": "src/components/transactions/TransactionForm.tsx:238:21",
+										"data-uid": "src/components/transactions/TransactionForm.tsx:278:21",
 										"data-prohibitions": "[]",
 										onValueChange: field.onChange,
 										value: field.value || void 0,
 										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormControl, {
-											"data-uid": "src/components/transactions/TransactionForm.tsx:239:23",
+											"data-uid": "src/components/transactions/TransactionForm.tsx:279:23",
 											"data-prohibitions": "[]",
 											children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectTrigger, {
-												"data-uid": "src/components/transactions/TransactionForm.tsx:240:25",
+												"data-uid": "src/components/transactions/TransactionForm.tsx:280:25",
 												"data-prohibitions": "[]",
 												children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectValue, {
-													"data-uid": "src/components/transactions/TransactionForm.tsx:241:27",
+													"data-uid": "src/components/transactions/TransactionForm.tsx:281:27",
 													"data-prohibitions": "[editContent]",
 													placeholder: "Categoria"
 												})
 											})
 										}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(SelectContent, {
-											"data-uid": "src/components/transactions/TransactionForm.tsx:244:23",
+											"data-uid": "src/components/transactions/TransactionForm.tsx:284:23",
 											"data-prohibitions": "[]",
 											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectItem, {
-												"data-uid": "src/components/transactions/TransactionForm.tsx:245:25",
+												"data-uid": "src/components/transactions/TransactionForm.tsx:285:25",
 												"data-prohibitions": "[]",
 												value: "FIXA",
 												children: "Fixa"
 											}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectItem, {
-												"data-uid": "src/components/transactions/TransactionForm.tsx:246:25",
+												"data-uid": "src/components/transactions/TransactionForm.tsx:286:25",
 												"data-prohibitions": "[]",
 												value: "VARIAVEL",
 												children: "Variável"
@@ -76306,52 +79450,146 @@ function TransactionForm({ onSuccess, initialData }) {
 										})]
 									}),
 									/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormMessage, {
-										"data-uid": "src/components/transactions/TransactionForm.tsx:249:21",
+										"data-uid": "src/components/transactions/TransactionForm.tsx:289:21",
 										"data-prohibitions": "[editContent]"
 									})
 								]
 							})
-						})
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							"data-uid": "src/components/transactions/TransactionForm.tsx:294:15",
+							"data-prohibitions": "[editContent]",
+							className: "space-y-2",
+							children: [
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)(FormLabel, {
+									"data-uid": "src/components/transactions/TransactionForm.tsx:295:17",
+									"data-prohibitions": "[]",
+									className: "flex items-center gap-1.5",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Tag, {
+										"data-uid": "src/components/transactions/TransactionForm.tsx:296:19",
+										"data-prohibitions": "[editContent]",
+										className: "w-3.5 h-3.5"
+									}), " Tags (Opcional)"]
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									"data-uid": "src/components/transactions/TransactionForm.tsx:298:17",
+									"data-prohibitions": "[]",
+									className: "flex items-center gap-2",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Input, {
+										"data-uid": "src/components/transactions/TransactionForm.tsx:299:19",
+										"data-prohibitions": "[editContent]",
+										value: tagInput,
+										onChange: (e) => setTagInput(e.target.value),
+										placeholder: "Adicionar tag...",
+										className: "h-9",
+										onKeyDown: (e) => {
+											if (e.key === "Enter") {
+												e.preventDefault();
+												addTag();
+											}
+										}
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, {
+										"data-uid": "src/components/transactions/TransactionForm.tsx:311:19",
+										"data-prohibitions": "[]",
+										type: "button",
+										size: "sm",
+										variant: "secondary",
+										onClick: () => addTag(),
+										className: "h-9 shrink-0",
+										children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Plus, {
+											"data-uid": "src/components/transactions/TransactionForm.tsx:318:21",
+											"data-prohibitions": "[editContent]",
+											className: "w-4 h-4"
+										})
+									})]
+								}),
+								tagsList.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+									"data-uid": "src/components/transactions/TransactionForm.tsx:323:19",
+									"data-prohibitions": "[editContent]",
+									className: "flex flex-wrap gap-1.5 mt-2",
+									children: tagsList.map((t) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Badge, {
+										"data-uid": "src/components/transactions/TransactionForm.tsx:325:23",
+										"data-prohibitions": "[editContent]",
+										variant: "secondary",
+										className: "flex items-center gap-1 pl-2 pr-1 py-1",
+										children: [t, /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+											"data-uid": "src/components/transactions/TransactionForm.tsx:331:25",
+											"data-prohibitions": "[]",
+											type: "button",
+											onClick: () => removeTag(t),
+											className: "text-slate-500 hover:text-red-500 rounded-full p-0.5 hover:bg-slate-200 transition-colors",
+											children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(X, {
+												"data-uid": "src/components/transactions/TransactionForm.tsx:336:27",
+												"data-prohibitions": "[editContent]",
+												className: "w-3 h-3"
+											})
+										})]
+									}, t))
+								}),
+								allUniqueTags.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									"data-uid": "src/components/transactions/TransactionForm.tsx:344:19",
+									"data-prohibitions": "[editContent]",
+									className: "mt-2 pt-2 border-t",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+										"data-uid": "src/components/transactions/TransactionForm.tsx:345:21",
+										"data-prohibitions": "[]",
+										className: "text-[10px] text-slate-500 mb-1.5",
+										children: "Tags Sugeridas:"
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+										"data-uid": "src/components/transactions/TransactionForm.tsx:346:21",
+										"data-prohibitions": "[editContent]",
+										className: "flex flex-wrap gap-1.5",
+										children: allUniqueTags.filter((t) => !tagsList.includes(t)).slice(0, 8).map((t) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+											"data-uid": "src/components/transactions/TransactionForm.tsx:351:27",
+											"data-prohibitions": "[editContent]",
+											type: "button",
+											onClick: () => addTag(t),
+											className: "text-[10px] bg-slate-100 hover:bg-slate-200 text-slate-600 px-2 py-0.5 rounded-full transition-colors border border-slate-200",
+											children: t
+										}, t))
+									})]
+								})
+							]
+						})]
 					}), type === "INCOME" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-						"data-uid": "src/components/transactions/TransactionForm.tsx:257:13",
+						"data-uid": "src/components/transactions/TransactionForm.tsx:368:13",
 						"data-prohibitions": "[]",
 						className: "animate-in fade-in slide-in-from-top-2 duration-300",
 						children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormField, {
-							"data-uid": "src/components/transactions/TransactionForm.tsx:258:15",
+							"data-uid": "src/components/transactions/TransactionForm.tsx:369:15",
 							"data-prohibitions": "[editContent]",
 							control: form.control,
 							name: "accountId",
 							render: ({ field }) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(FormItem, {
-								"data-uid": "src/components/transactions/TransactionForm.tsx:262:19",
+								"data-uid": "src/components/transactions/TransactionForm.tsx:373:19",
 								"data-prohibitions": "[editContent]",
 								children: [
 									/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormLabel, {
-										"data-uid": "src/components/transactions/TransactionForm.tsx:263:21",
+										"data-uid": "src/components/transactions/TransactionForm.tsx:374:21",
 										"data-prohibitions": "[]",
 										children: "Método de entrada"
 									}),
 									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Select, {
-										"data-uid": "src/components/transactions/TransactionForm.tsx:264:21",
+										"data-uid": "src/components/transactions/TransactionForm.tsx:375:21",
 										"data-prohibitions": "[editContent]",
 										onValueChange: field.onChange,
 										value: field.value || void 0,
 										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormControl, {
-											"data-uid": "src/components/transactions/TransactionForm.tsx:265:23",
+											"data-uid": "src/components/transactions/TransactionForm.tsx:376:23",
 											"data-prohibitions": "[]",
 											children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectTrigger, {
-												"data-uid": "src/components/transactions/TransactionForm.tsx:266:25",
+												"data-uid": "src/components/transactions/TransactionForm.tsx:377:25",
 												"data-prohibitions": "[]",
 												children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectValue, {
-													"data-uid": "src/components/transactions/TransactionForm.tsx:267:27",
+													"data-uid": "src/components/transactions/TransactionForm.tsx:378:27",
 													"data-prohibitions": "[editContent]",
 													placeholder: "Método"
 												})
 											})
 										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectContent, {
-											"data-uid": "src/components/transactions/TransactionForm.tsx:270:23",
+											"data-uid": "src/components/transactions/TransactionForm.tsx:381:23",
 											"data-prohibitions": "[editContent]",
 											children: accounts.map((a) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectItem, {
-												"data-uid": "src/components/transactions/TransactionForm.tsx:272:27",
+												"data-uid": "src/components/transactions/TransactionForm.tsx:383:27",
 												"data-prohibitions": "[editContent]",
 												value: a.id,
 												children: a.name
@@ -76359,7 +79597,7 @@ function TransactionForm({ onSuccess, initialData }) {
 										})]
 									}),
 									/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormMessage, {
-										"data-uid": "src/components/transactions/TransactionForm.tsx:278:21",
+										"data-uid": "src/components/transactions/TransactionForm.tsx:389:21",
 										"data-prohibitions": "[editContent]"
 									})
 								]
@@ -76368,7 +79606,7 @@ function TransactionForm({ onSuccess, initialData }) {
 					})]
 				}),
 				/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, {
-					"data-uid": "src/components/transactions/TransactionForm.tsx:286:9",
+					"data-uid": "src/components/transactions/TransactionForm.tsx:397:9",
 					"data-prohibitions": "[editContent]",
 					type: "submit",
 					className: "w-full mt-4",
@@ -76398,7 +79636,7 @@ var TRIGGER_NAME = "AlertDialogTrigger";
 var AlertDialogTrigger$1 = import_react.forwardRef((props, forwardedRef) => {
 	const { __scopeAlertDialog, ...triggerProps } = props;
 	const dialogScope = useDialogScope(__scopeAlertDialog);
-	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Trigger, {
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Trigger$1, {
 		...dialogScope,
 		...triggerProps,
 		ref: forwardedRef
@@ -76409,7 +79647,7 @@ var PORTAL_NAME = "AlertDialogPortal";
 var AlertDialogPortal$1 = (props) => {
 	const { __scopeAlertDialog, ...portalProps } = props;
 	const dialogScope = useDialogScope(__scopeAlertDialog);
-	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Portal, {
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Portal$1, {
 		...dialogScope,
 		...portalProps
 	});
@@ -76666,2158 +79904,6 @@ function DeleteTransactionDialog({ id, open, onOpenChange }) {
 	});
 }
 //#endregion
-//#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/constants.js
-/**
-* @constant
-* @name daysInYear
-* @summary Days in 1 year.
-*
-* @description
-* How many days in a year.
-*
-* One years equals 365.2425 days according to the formula:
-*
-* > Leap year occurs every 4 years, except for years that are divisible by 100 and not divisible by 400.
-* > 1 mean year = (365+1/4-1/100+1/400) days = 365.2425 days
-*/
-var daysInYear = 365.2425;
-Math.pow(10, 8) * 24 * 60 * 60 * 1e3;
-/**
-* @constant
-* @name millisecondsInWeek
-* @summary Milliseconds in 1 week.
-*/
-var millisecondsInWeek = 6048e5;
-/**
-* @constant
-* @name millisecondsInDay
-* @summary Milliseconds in 1 day.
-*/
-var millisecondsInDay = 864e5;
-/**
-* @constant
-* @name secondsInDay
-* @summary Seconds in 1 day.
-*/
-var secondsInDay = 3600 * 24;
-secondsInDay * 7;
-secondsInDay * daysInYear / 12 * 3;
-/**
-* @constant
-* @name constructFromSymbol
-* @summary Symbol enabling Date extensions to inherit properties from the reference date.
-*
-* The symbol is used to enable the `constructFrom` function to construct a date
-* using a reference date and a value. It allows to transfer extra properties
-* from the reference date to the new date. It's useful for extensions like
-* [`TZDate`](https://github.com/date-fns/tz) that accept a time zone as
-* a constructor argument.
-*/
-var constructFromSymbol = Symbol.for("constructDateFrom");
-//#endregion
-//#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/constructFrom.js
-/**
-* @name constructFrom
-* @category Generic Helpers
-* @summary Constructs a date using the reference date and the value
-*
-* @description
-* The function constructs a new date using the constructor from the reference
-* date and the given value. It helps to build generic functions that accept
-* date extensions.
-*
-* It defaults to `Date` if the passed reference date is a number or a string.
-*
-* Starting from v3.7.0, it allows to construct a date using `[Symbol.for("constructDateFrom")]`
-* enabling to transfer extra properties from the reference date to the new date.
-* It's useful for extensions like [`TZDate`](https://github.com/date-fns/tz)
-* that accept a time zone as a constructor argument.
-*
-* @typeParam DateType - The `Date` type, the function operates on. Gets inferred from passed arguments. Allows to use extensions like [`UTCDate`](https://github.com/date-fns/utc).
-*
-* @param date - The reference date to take constructor from
-* @param value - The value to create the date
-*
-* @returns Date initialized using the given date and value
-*
-* @example
-* import { constructFrom } from "./constructFrom/date-fns";
-*
-* // A function that clones a date preserving the original type
-* function cloneDate<DateType extends Date>(date: DateType): DateType {
-*   return constructFrom(
-*     date, // Use constructor from the given date
-*     date.getTime() // Use the date value to create a new date
-*   );
-* }
-*/
-function constructFrom(date, value) {
-	if (typeof date === "function") return date(value);
-	if (date && typeof date === "object" && constructFromSymbol in date) return date[constructFromSymbol](value);
-	if (date instanceof Date) return new date.constructor(value);
-	return new Date(value);
-}
-//#endregion
-//#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/toDate.js
-/**
-* @name toDate
-* @category Common Helpers
-* @summary Convert the given argument to an instance of Date.
-*
-* @description
-* Convert the given argument to an instance of Date.
-*
-* If the argument is an instance of Date, the function returns its clone.
-*
-* If the argument is a number, it is treated as a timestamp.
-*
-* If the argument is none of the above, the function returns Invalid Date.
-*
-* Starting from v3.7.0, it clones a date using `[Symbol.for("constructDateFrom")]`
-* enabling to transfer extra properties from the reference date to the new date.
-* It's useful for extensions like [`TZDate`](https://github.com/date-fns/tz)
-* that accept a time zone as a constructor argument.
-*
-* **Note**: *all* Date arguments passed to any *date-fns* function is processed by `toDate`.
-*
-* @typeParam DateType - The `Date` type, the function operates on. Gets inferred from passed arguments. Allows to use extensions like [`UTCDate`](https://github.com/date-fns/utc).
-* @typeParam ResultDate - The result `Date` type, it is the type returned from the context function if it is passed, or inferred from the arguments.
-*
-* @param argument - The value to convert
-*
-* @returns The parsed date in the local time zone
-*
-* @example
-* // Clone the date:
-* const result = toDate(new Date(2014, 1, 11, 11, 30, 30))
-* //=> Tue Feb 11 2014 11:30:30
-*
-* @example
-* // Convert the timestamp to date:
-* const result = toDate(1392098430000)
-* //=> Tue Feb 11 2014 11:30:30
-*/
-function toDate(argument, context) {
-	return constructFrom(context || argument, argument);
-}
-//#endregion
-//#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/_lib/defaultOptions.js
-var defaultOptions = {};
-function getDefaultOptions() {
-	return defaultOptions;
-}
-//#endregion
-//#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/startOfWeek.js
-/**
-* The {@link startOfWeek} function options.
-*/
-/**
-* @name startOfWeek
-* @category Week Helpers
-* @summary Return the start of a week for the given date.
-*
-* @description
-* Return the start of a week for the given date.
-* The result will be in the local timezone.
-*
-* @typeParam DateType - The `Date` type, the function operates on. Gets inferred from passed arguments. Allows to use extensions like [`UTCDate`](https://github.com/date-fns/utc).
-* @typeParam ResultDate - The result `Date` type, it is the type returned from the context function if it is passed, or inferred from the arguments.
-*
-* @param date - The original date
-* @param options - An object with options
-*
-* @returns The start of a week
-*
-* @example
-* // The start of a week for 2 September 2014 11:55:00:
-* const result = startOfWeek(new Date(2014, 8, 2, 11, 55, 0))
-* //=> Sun Aug 31 2014 00:00:00
-*
-* @example
-* // If the week starts on Monday, the start of the week for 2 September 2014 11:55:00:
-* const result = startOfWeek(new Date(2014, 8, 2, 11, 55, 0), { weekStartsOn: 1 })
-* //=> Mon Sep 01 2014 00:00:00
-*/
-function startOfWeek(date, options) {
-	const defaultOptions = getDefaultOptions();
-	const weekStartsOn = options?.weekStartsOn ?? options?.locale?.options?.weekStartsOn ?? defaultOptions.weekStartsOn ?? defaultOptions.locale?.options?.weekStartsOn ?? 0;
-	const _date = toDate(date, options?.in);
-	const day = _date.getDay();
-	const diff = (day < weekStartsOn ? 7 : 0) + day - weekStartsOn;
-	_date.setDate(_date.getDate() - diff);
-	_date.setHours(0, 0, 0, 0);
-	return _date;
-}
-//#endregion
-//#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/startOfISOWeek.js
-/**
-* The {@link startOfISOWeek} function options.
-*/
-/**
-* @name startOfISOWeek
-* @category ISO Week Helpers
-* @summary Return the start of an ISO week for the given date.
-*
-* @description
-* Return the start of an ISO week for the given date.
-* The result will be in the local timezone.
-*
-* ISO week-numbering year: http://en.wikipedia.org/wiki/ISO_week_date
-*
-* @typeParam DateType - The `Date` type, the function operates on. Gets inferred from passed arguments. Allows to use extensions like [`UTCDate`](https://github.com/date-fns/utc).
-* @typeParam ResultDate - The result `Date` type, it is the type returned from the context function if it is passed, or inferred from the arguments.
-*
-* @param date - The original date
-* @param options - An object with options
-*
-* @returns The start of an ISO week
-*
-* @example
-* // The start of an ISO week for 2 September 2014 11:55:00:
-* const result = startOfISOWeek(new Date(2014, 8, 2, 11, 55, 0))
-* //=> Mon Sep 01 2014 00:00:00
-*/
-function startOfISOWeek(date, options) {
-	return startOfWeek(date, {
-		...options,
-		weekStartsOn: 1
-	});
-}
-//#endregion
-//#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/getISOWeekYear.js
-/**
-* The {@link getISOWeekYear} function options.
-*/
-/**
-* @name getISOWeekYear
-* @category ISO Week-Numbering Year Helpers
-* @summary Get the ISO week-numbering year of the given date.
-*
-* @description
-* Get the ISO week-numbering year of the given date,
-* which always starts 3 days before the year's first Thursday.
-*
-* ISO week-numbering year: http://en.wikipedia.org/wiki/ISO_week_date
-*
-* @param date - The given date
-*
-* @returns The ISO week-numbering year
-*
-* @example
-* // Which ISO-week numbering year is 2 January 2005?
-* const result = getISOWeekYear(new Date(2005, 0, 2))
-* //=> 2004
-*/
-function getISOWeekYear(date, options) {
-	const _date = toDate(date, options?.in);
-	const year = _date.getFullYear();
-	const fourthOfJanuaryOfNextYear = constructFrom(_date, 0);
-	fourthOfJanuaryOfNextYear.setFullYear(year + 1, 0, 4);
-	fourthOfJanuaryOfNextYear.setHours(0, 0, 0, 0);
-	const startOfNextYear = startOfISOWeek(fourthOfJanuaryOfNextYear);
-	const fourthOfJanuaryOfThisYear = constructFrom(_date, 0);
-	fourthOfJanuaryOfThisYear.setFullYear(year, 0, 4);
-	fourthOfJanuaryOfThisYear.setHours(0, 0, 0, 0);
-	const startOfThisYear = startOfISOWeek(fourthOfJanuaryOfThisYear);
-	if (_date.getTime() >= startOfNextYear.getTime()) return year + 1;
-	else if (_date.getTime() >= startOfThisYear.getTime()) return year;
-	else return year - 1;
-}
-//#endregion
-//#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/_lib/getTimezoneOffsetInMilliseconds.js
-/**
-* Google Chrome as of 67.0.3396.87 introduced timezones with offset that includes seconds.
-* They usually appear for dates that denote time before the timezones were introduced
-* (e.g. for 'Europe/Prague' timezone the offset is GMT+00:57:44 before 1 October 1891
-* and GMT+01:00:00 after that date)
-*
-* Date#getTimezoneOffset returns the offset in minutes and would return 57 for the example above,
-* which would lead to incorrect calculations.
-*
-* This function returns the timezone offset in milliseconds that takes seconds in account.
-*/
-function getTimezoneOffsetInMilliseconds(date) {
-	const _date = toDate(date);
-	const utcDate = new Date(Date.UTC(_date.getFullYear(), _date.getMonth(), _date.getDate(), _date.getHours(), _date.getMinutes(), _date.getSeconds(), _date.getMilliseconds()));
-	utcDate.setUTCFullYear(_date.getFullYear());
-	return +date - +utcDate;
-}
-//#endregion
-//#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/_lib/normalizeDates.js
-function normalizeDates(context, ...dates) {
-	const normalize = constructFrom.bind(null, context || dates.find((date) => typeof date === "object"));
-	return dates.map(normalize);
-}
-//#endregion
-//#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/startOfDay.js
-/**
-* The {@link startOfDay} function options.
-*/
-/**
-* @name startOfDay
-* @category Day Helpers
-* @summary Return the start of a day for the given date.
-*
-* @description
-* Return the start of a day for the given date.
-* The result will be in the local timezone.
-*
-* @typeParam DateType - The `Date` type, the function operates on. Gets inferred from passed arguments. Allows to use extensions like [`UTCDate`](https://github.com/date-fns/utc).
-* @typeParam ResultDate - The result `Date` type, it is the type returned from the context function if it is passed, or inferred from the arguments.
-*
-* @param date - The original date
-* @param options - The options
-*
-* @returns The start of a day
-*
-* @example
-* // The start of a day for 2 September 2014 11:55:00:
-* const result = startOfDay(new Date(2014, 8, 2, 11, 55, 0))
-* //=> Tue Sep 02 2014 00:00:00
-*/
-function startOfDay(date, options) {
-	const _date = toDate(date, options?.in);
-	_date.setHours(0, 0, 0, 0);
-	return _date;
-}
-//#endregion
-//#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/differenceInCalendarDays.js
-/**
-* The {@link differenceInCalendarDays} function options.
-*/
-/**
-* @name differenceInCalendarDays
-* @category Day Helpers
-* @summary Get the number of calendar days between the given dates.
-*
-* @description
-* Get the number of calendar days between the given dates. This means that the times are removed
-* from the dates and then the difference in days is calculated.
-*
-* @param laterDate - The later date
-* @param earlierDate - The earlier date
-* @param options - The options object
-*
-* @returns The number of calendar days
-*
-* @example
-* // How many calendar days are between
-* // 2 July 2011 23:00:00 and 2 July 2012 00:00:00?
-* const result = differenceInCalendarDays(
-*   new Date(2012, 6, 2, 0, 0),
-*   new Date(2011, 6, 2, 23, 0)
-* )
-* //=> 366
-* // How many calendar days are between
-* // 2 July 2011 23:59:00 and 3 July 2011 00:01:00?
-* const result = differenceInCalendarDays(
-*   new Date(2011, 6, 3, 0, 1),
-*   new Date(2011, 6, 2, 23, 59)
-* )
-* //=> 1
-*/
-function differenceInCalendarDays(laterDate, earlierDate, options) {
-	const [laterDate_, earlierDate_] = normalizeDates(options?.in, laterDate, earlierDate);
-	const laterStartOfDay = startOfDay(laterDate_);
-	const earlierStartOfDay = startOfDay(earlierDate_);
-	const laterTimestamp = +laterStartOfDay - getTimezoneOffsetInMilliseconds(laterStartOfDay);
-	const earlierTimestamp = +earlierStartOfDay - getTimezoneOffsetInMilliseconds(earlierStartOfDay);
-	return Math.round((laterTimestamp - earlierTimestamp) / millisecondsInDay);
-}
-//#endregion
-//#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/startOfISOWeekYear.js
-/**
-* The {@link startOfISOWeekYear} function options.
-*/
-/**
-* @name startOfISOWeekYear
-* @category ISO Week-Numbering Year Helpers
-* @summary Return the start of an ISO week-numbering year for the given date.
-*
-* @description
-* Return the start of an ISO week-numbering year,
-* which always starts 3 days before the year's first Thursday.
-* The result will be in the local timezone.
-*
-* ISO week-numbering year: http://en.wikipedia.org/wiki/ISO_week_date
-*
-* @typeParam DateType - The `Date` type, the function operates on. Gets inferred from passed arguments. Allows to use extensions like [`UTCDate`](https://github.com/date-fns/utc).
-* @typeParam ResultDate - The result `Date` type, it is the type returned from the context function if it is passed, or inferred from the arguments.
-*
-* @param date - The original date
-* @param options - An object with options
-*
-* @returns The start of an ISO week-numbering year
-*
-* @example
-* // The start of an ISO week-numbering year for 2 July 2005:
-* const result = startOfISOWeekYear(new Date(2005, 6, 2))
-* //=> Mon Jan 03 2005 00:00:00
-*/
-function startOfISOWeekYear(date, options) {
-	const year = getISOWeekYear(date, options);
-	const fourthOfJanuary = constructFrom(options?.in || date, 0);
-	fourthOfJanuary.setFullYear(year, 0, 4);
-	fourthOfJanuary.setHours(0, 0, 0, 0);
-	return startOfISOWeek(fourthOfJanuary);
-}
-//#endregion
-//#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/isDate.js
-/**
-* @name isDate
-* @category Common Helpers
-* @summary Is the given value a date?
-*
-* @description
-* Returns true if the given value is an instance of Date. The function works for dates transferred across iframes.
-*
-* @param value - The value to check
-*
-* @returns True if the given value is a date
-*
-* @example
-* // For a valid date:
-* const result = isDate(new Date())
-* //=> true
-*
-* @example
-* // For an invalid date:
-* const result = isDate(new Date(NaN))
-* //=> true
-*
-* @example
-* // For some value:
-* const result = isDate('2014-02-31')
-* //=> false
-*
-* @example
-* // For an object:
-* const result = isDate({})
-* //=> false
-*/
-function isDate(value) {
-	return value instanceof Date || typeof value === "object" && Object.prototype.toString.call(value) === "[object Date]";
-}
-//#endregion
-//#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/isValid.js
-/**
-* @name isValid
-* @category Common Helpers
-* @summary Is the given date valid?
-*
-* @description
-* Returns false if argument is Invalid Date and true otherwise.
-* Argument is converted to Date using `toDate`. See [toDate](https://date-fns.org/docs/toDate)
-* Invalid Date is a Date, whose time value is NaN.
-*
-* Time value of Date: http://es5.github.io/#x15.9.1.1
-*
-* @param date - The date to check
-*
-* @returns The date is valid
-*
-* @example
-* // For the valid date:
-* const result = isValid(new Date(2014, 1, 31))
-* //=> true
-*
-* @example
-* // For the value, convertible into a date:
-* const result = isValid(1393804800000)
-* //=> true
-*
-* @example
-* // For the invalid date:
-* const result = isValid(new Date(''))
-* //=> false
-*/
-function isValid(date) {
-	return !(!isDate(date) && typeof date !== "number" || isNaN(+toDate(date)));
-}
-//#endregion
-//#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/startOfYear.js
-/**
-* The {@link startOfYear} function options.
-*/
-/**
-* @name startOfYear
-* @category Year Helpers
-* @summary Return the start of a year for the given date.
-*
-* @description
-* Return the start of a year for the given date.
-* The result will be in the local timezone.
-*
-* @typeParam DateType - The `Date` type, the function operates on. Gets inferred from passed arguments. Allows to use extensions like [`UTCDate`](https://github.com/date-fns/utc).
-* @typeParam ResultDate - The result `Date` type, it is the type returned from the context function if it is passed, or inferred from the arguments.
-*
-* @param date - The original date
-* @param options - The options
-*
-* @returns The start of a year
-*
-* @example
-* // The start of a year for 2 September 2014 11:55:00:
-* const result = startOfYear(new Date(2014, 8, 2, 11, 55, 00))
-* //=> Wed Jan 01 2014 00:00:00
-*/
-function startOfYear(date, options) {
-	const date_ = toDate(date, options?.in);
-	date_.setFullYear(date_.getFullYear(), 0, 1);
-	date_.setHours(0, 0, 0, 0);
-	return date_;
-}
-//#endregion
-//#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/locale/en-US/_lib/formatDistance.js
-var formatDistanceLocale = {
-	lessThanXSeconds: {
-		one: "less than a second",
-		other: "less than {{count}} seconds"
-	},
-	xSeconds: {
-		one: "1 second",
-		other: "{{count}} seconds"
-	},
-	halfAMinute: "half a minute",
-	lessThanXMinutes: {
-		one: "less than a minute",
-		other: "less than {{count}} minutes"
-	},
-	xMinutes: {
-		one: "1 minute",
-		other: "{{count}} minutes"
-	},
-	aboutXHours: {
-		one: "about 1 hour",
-		other: "about {{count}} hours"
-	},
-	xHours: {
-		one: "1 hour",
-		other: "{{count}} hours"
-	},
-	xDays: {
-		one: "1 day",
-		other: "{{count}} days"
-	},
-	aboutXWeeks: {
-		one: "about 1 week",
-		other: "about {{count}} weeks"
-	},
-	xWeeks: {
-		one: "1 week",
-		other: "{{count}} weeks"
-	},
-	aboutXMonths: {
-		one: "about 1 month",
-		other: "about {{count}} months"
-	},
-	xMonths: {
-		one: "1 month",
-		other: "{{count}} months"
-	},
-	aboutXYears: {
-		one: "about 1 year",
-		other: "about {{count}} years"
-	},
-	xYears: {
-		one: "1 year",
-		other: "{{count}} years"
-	},
-	overXYears: {
-		one: "over 1 year",
-		other: "over {{count}} years"
-	},
-	almostXYears: {
-		one: "almost 1 year",
-		other: "almost {{count}} years"
-	}
-};
-var formatDistance = (token, count, options) => {
-	let result;
-	const tokenValue = formatDistanceLocale[token];
-	if (typeof tokenValue === "string") result = tokenValue;
-	else if (count === 1) result = tokenValue.one;
-	else result = tokenValue.other.replace("{{count}}", count.toString());
-	if (options?.addSuffix) if (options.comparison && options.comparison > 0) return "in " + result;
-	else return result + " ago";
-	return result;
-};
-//#endregion
-//#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/locale/_lib/buildFormatLongFn.js
-function buildFormatLongFn(args) {
-	return (options = {}) => {
-		const width = options.width ? String(options.width) : args.defaultWidth;
-		return args.formats[width] || args.formats[args.defaultWidth];
-	};
-}
-var formatLong = {
-	date: buildFormatLongFn({
-		formats: {
-			full: "EEEE, MMMM do, y",
-			long: "MMMM do, y",
-			medium: "MMM d, y",
-			short: "MM/dd/yyyy"
-		},
-		defaultWidth: "full"
-	}),
-	time: buildFormatLongFn({
-		formats: {
-			full: "h:mm:ss a zzzz",
-			long: "h:mm:ss a z",
-			medium: "h:mm:ss a",
-			short: "h:mm a"
-		},
-		defaultWidth: "full"
-	}),
-	dateTime: buildFormatLongFn({
-		formats: {
-			full: "{{date}} 'at' {{time}}",
-			long: "{{date}} 'at' {{time}}",
-			medium: "{{date}}, {{time}}",
-			short: "{{date}}, {{time}}"
-		},
-		defaultWidth: "full"
-	})
-};
-//#endregion
-//#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/locale/en-US/_lib/formatRelative.js
-var formatRelativeLocale = {
-	lastWeek: "'last' eeee 'at' p",
-	yesterday: "'yesterday at' p",
-	today: "'today at' p",
-	tomorrow: "'tomorrow at' p",
-	nextWeek: "eeee 'at' p",
-	other: "P"
-};
-var formatRelative = (token, _date, _baseDate, _options) => formatRelativeLocale[token];
-//#endregion
-//#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/locale/_lib/buildLocalizeFn.js
-/**
-* The localize function argument callback which allows to convert raw value to
-* the actual type.
-*
-* @param value - The value to convert
-*
-* @returns The converted value
-*/
-/**
-* The map of localized values for each width.
-*/
-/**
-* The index type of the locale unit value. It types conversion of units of
-* values that don't start at 0 (i.e. quarters).
-*/
-/**
-* Converts the unit value to the tuple of values.
-*/
-/**
-* The tuple of localized era values. The first element represents BC,
-* the second element represents AD.
-*/
-/**
-* The tuple of localized quarter values. The first element represents Q1.
-*/
-/**
-* The tuple of localized day values. The first element represents Sunday.
-*/
-/**
-* The tuple of localized month values. The first element represents January.
-*/
-function buildLocalizeFn(args) {
-	return (value, options) => {
-		const context = options?.context ? String(options.context) : "standalone";
-		let valuesArray;
-		if (context === "formatting" && args.formattingValues) {
-			const defaultWidth = args.defaultFormattingWidth || args.defaultWidth;
-			const width = options?.width ? String(options.width) : defaultWidth;
-			valuesArray = args.formattingValues[width] || args.formattingValues[defaultWidth];
-		} else {
-			const defaultWidth = args.defaultWidth;
-			const width = options?.width ? String(options.width) : args.defaultWidth;
-			valuesArray = args.values[width] || args.values[defaultWidth];
-		}
-		const index = args.argumentCallback ? args.argumentCallback(value) : value;
-		return valuesArray[index];
-	};
-}
-//#endregion
-//#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/locale/en-US/_lib/localize.js
-var eraValues = {
-	narrow: ["B", "A"],
-	abbreviated: ["BC", "AD"],
-	wide: ["Before Christ", "Anno Domini"]
-};
-var quarterValues = {
-	narrow: [
-		"1",
-		"2",
-		"3",
-		"4"
-	],
-	abbreviated: [
-		"Q1",
-		"Q2",
-		"Q3",
-		"Q4"
-	],
-	wide: [
-		"1st quarter",
-		"2nd quarter",
-		"3rd quarter",
-		"4th quarter"
-	]
-};
-var monthValues = {
-	narrow: [
-		"J",
-		"F",
-		"M",
-		"A",
-		"M",
-		"J",
-		"J",
-		"A",
-		"S",
-		"O",
-		"N",
-		"D"
-	],
-	abbreviated: [
-		"Jan",
-		"Feb",
-		"Mar",
-		"Apr",
-		"May",
-		"Jun",
-		"Jul",
-		"Aug",
-		"Sep",
-		"Oct",
-		"Nov",
-		"Dec"
-	],
-	wide: [
-		"January",
-		"February",
-		"March",
-		"April",
-		"May",
-		"June",
-		"July",
-		"August",
-		"September",
-		"October",
-		"November",
-		"December"
-	]
-};
-var dayValues = {
-	narrow: [
-		"S",
-		"M",
-		"T",
-		"W",
-		"T",
-		"F",
-		"S"
-	],
-	short: [
-		"Su",
-		"Mo",
-		"Tu",
-		"We",
-		"Th",
-		"Fr",
-		"Sa"
-	],
-	abbreviated: [
-		"Sun",
-		"Mon",
-		"Tue",
-		"Wed",
-		"Thu",
-		"Fri",
-		"Sat"
-	],
-	wide: [
-		"Sunday",
-		"Monday",
-		"Tuesday",
-		"Wednesday",
-		"Thursday",
-		"Friday",
-		"Saturday"
-	]
-};
-var dayPeriodValues = {
-	narrow: {
-		am: "a",
-		pm: "p",
-		midnight: "mi",
-		noon: "n",
-		morning: "morning",
-		afternoon: "afternoon",
-		evening: "evening",
-		night: "night"
-	},
-	abbreviated: {
-		am: "AM",
-		pm: "PM",
-		midnight: "midnight",
-		noon: "noon",
-		morning: "morning",
-		afternoon: "afternoon",
-		evening: "evening",
-		night: "night"
-	},
-	wide: {
-		am: "a.m.",
-		pm: "p.m.",
-		midnight: "midnight",
-		noon: "noon",
-		morning: "morning",
-		afternoon: "afternoon",
-		evening: "evening",
-		night: "night"
-	}
-};
-var formattingDayPeriodValues = {
-	narrow: {
-		am: "a",
-		pm: "p",
-		midnight: "mi",
-		noon: "n",
-		morning: "in the morning",
-		afternoon: "in the afternoon",
-		evening: "in the evening",
-		night: "at night"
-	},
-	abbreviated: {
-		am: "AM",
-		pm: "PM",
-		midnight: "midnight",
-		noon: "noon",
-		morning: "in the morning",
-		afternoon: "in the afternoon",
-		evening: "in the evening",
-		night: "at night"
-	},
-	wide: {
-		am: "a.m.",
-		pm: "p.m.",
-		midnight: "midnight",
-		noon: "noon",
-		morning: "in the morning",
-		afternoon: "in the afternoon",
-		evening: "in the evening",
-		night: "at night"
-	}
-};
-var ordinalNumber = (dirtyNumber, _options) => {
-	const number = Number(dirtyNumber);
-	const rem100 = number % 100;
-	if (rem100 > 20 || rem100 < 10) switch (rem100 % 10) {
-		case 1: return number + "st";
-		case 2: return number + "nd";
-		case 3: return number + "rd";
-	}
-	return number + "th";
-};
-var localize = {
-	ordinalNumber,
-	era: buildLocalizeFn({
-		values: eraValues,
-		defaultWidth: "wide"
-	}),
-	quarter: buildLocalizeFn({
-		values: quarterValues,
-		defaultWidth: "wide",
-		argumentCallback: (quarter) => quarter - 1
-	}),
-	month: buildLocalizeFn({
-		values: monthValues,
-		defaultWidth: "wide"
-	}),
-	day: buildLocalizeFn({
-		values: dayValues,
-		defaultWidth: "wide"
-	}),
-	dayPeriod: buildLocalizeFn({
-		values: dayPeriodValues,
-		defaultWidth: "wide",
-		formattingValues: formattingDayPeriodValues,
-		defaultFormattingWidth: "wide"
-	})
-};
-//#endregion
-//#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/locale/_lib/buildMatchFn.js
-function buildMatchFn(args) {
-	return (string, options = {}) => {
-		const width = options.width;
-		const matchPattern = width && args.matchPatterns[width] || args.matchPatterns[args.defaultMatchWidth];
-		const matchResult = string.match(matchPattern);
-		if (!matchResult) return null;
-		const matchedString = matchResult[0];
-		const parsePatterns = width && args.parsePatterns[width] || args.parsePatterns[args.defaultParseWidth];
-		const key = Array.isArray(parsePatterns) ? findIndex(parsePatterns, (pattern) => pattern.test(matchedString)) : findKey(parsePatterns, (pattern) => pattern.test(matchedString));
-		let value;
-		value = args.valueCallback ? args.valueCallback(key) : key;
-		value = options.valueCallback ? options.valueCallback(value) : value;
-		const rest = string.slice(matchedString.length);
-		return {
-			value,
-			rest
-		};
-	};
-}
-function findKey(object, predicate) {
-	for (const key in object) if (Object.prototype.hasOwnProperty.call(object, key) && predicate(object[key])) return key;
-}
-function findIndex(array, predicate) {
-	for (let key = 0; key < array.length; key++) if (predicate(array[key])) return key;
-}
-//#endregion
-//#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/locale/_lib/buildMatchPatternFn.js
-function buildMatchPatternFn(args) {
-	return (string, options = {}) => {
-		const matchResult = string.match(args.matchPattern);
-		if (!matchResult) return null;
-		const matchedString = matchResult[0];
-		const parseResult = string.match(args.parsePattern);
-		if (!parseResult) return null;
-		let value = args.valueCallback ? args.valueCallback(parseResult[0]) : parseResult[0];
-		value = options.valueCallback ? options.valueCallback(value) : value;
-		const rest = string.slice(matchedString.length);
-		return {
-			value,
-			rest
-		};
-	};
-}
-//#endregion
-//#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/locale/en-US.js
-/**
-* @category Locales
-* @summary English locale (United States).
-* @language English
-* @iso-639-2 eng
-* @author Sasha Koss [@kossnocorp](https://github.com/kossnocorp)
-* @author Lesha Koss [@leshakoss](https://github.com/leshakoss)
-*/
-var enUS = {
-	code: "en-US",
-	formatDistance,
-	formatLong,
-	formatRelative,
-	localize,
-	match: {
-		ordinalNumber: buildMatchPatternFn({
-			matchPattern: /^(\d+)(th|st|nd|rd)?/i,
-			parsePattern: /\d+/i,
-			valueCallback: (value) => parseInt(value, 10)
-		}),
-		era: buildMatchFn({
-			matchPatterns: {
-				narrow: /^(b|a)/i,
-				abbreviated: /^(b\.?\s?c\.?|b\.?\s?c\.?\s?e\.?|a\.?\s?d\.?|c\.?\s?e\.?)/i,
-				wide: /^(before christ|before common era|anno domini|common era)/i
-			},
-			defaultMatchWidth: "wide",
-			parsePatterns: { any: [/^b/i, /^(a|c)/i] },
-			defaultParseWidth: "any"
-		}),
-		quarter: buildMatchFn({
-			matchPatterns: {
-				narrow: /^[1234]/i,
-				abbreviated: /^q[1234]/i,
-				wide: /^[1234](th|st|nd|rd)? quarter/i
-			},
-			defaultMatchWidth: "wide",
-			parsePatterns: { any: [
-				/1/i,
-				/2/i,
-				/3/i,
-				/4/i
-			] },
-			defaultParseWidth: "any",
-			valueCallback: (index) => index + 1
-		}),
-		month: buildMatchFn({
-			matchPatterns: {
-				narrow: /^[jfmasond]/i,
-				abbreviated: /^(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)/i,
-				wide: /^(january|february|march|april|may|june|july|august|september|october|november|december)/i
-			},
-			defaultMatchWidth: "wide",
-			parsePatterns: {
-				narrow: [
-					/^j/i,
-					/^f/i,
-					/^m/i,
-					/^a/i,
-					/^m/i,
-					/^j/i,
-					/^j/i,
-					/^a/i,
-					/^s/i,
-					/^o/i,
-					/^n/i,
-					/^d/i
-				],
-				any: [
-					/^ja/i,
-					/^f/i,
-					/^mar/i,
-					/^ap/i,
-					/^may/i,
-					/^jun/i,
-					/^jul/i,
-					/^au/i,
-					/^s/i,
-					/^o/i,
-					/^n/i,
-					/^d/i
-				]
-			},
-			defaultParseWidth: "any"
-		}),
-		day: buildMatchFn({
-			matchPatterns: {
-				narrow: /^[smtwf]/i,
-				short: /^(su|mo|tu|we|th|fr|sa)/i,
-				abbreviated: /^(sun|mon|tue|wed|thu|fri|sat)/i,
-				wide: /^(sunday|monday|tuesday|wednesday|thursday|friday|saturday)/i
-			},
-			defaultMatchWidth: "wide",
-			parsePatterns: {
-				narrow: [
-					/^s/i,
-					/^m/i,
-					/^t/i,
-					/^w/i,
-					/^t/i,
-					/^f/i,
-					/^s/i
-				],
-				any: [
-					/^su/i,
-					/^m/i,
-					/^tu/i,
-					/^w/i,
-					/^th/i,
-					/^f/i,
-					/^sa/i
-				]
-			},
-			defaultParseWidth: "any"
-		}),
-		dayPeriod: buildMatchFn({
-			matchPatterns: {
-				narrow: /^(a|p|mi|n|(in the|at) (morning|afternoon|evening|night))/i,
-				any: /^([ap]\.?\s?m\.?|midnight|noon|(in the|at) (morning|afternoon|evening|night))/i
-			},
-			defaultMatchWidth: "any",
-			parsePatterns: { any: {
-				am: /^a/i,
-				pm: /^p/i,
-				midnight: /^mi/i,
-				noon: /^no/i,
-				morning: /morning/i,
-				afternoon: /afternoon/i,
-				evening: /evening/i,
-				night: /night/i
-			} },
-			defaultParseWidth: "any"
-		})
-	},
-	options: {
-		weekStartsOn: 0,
-		firstWeekContainsDate: 1
-	}
-};
-//#endregion
-//#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/getDayOfYear.js
-/**
-* The {@link getDayOfYear} function options.
-*/
-/**
-* @name getDayOfYear
-* @category Day Helpers
-* @summary Get the day of the year of the given date.
-*
-* @description
-* Get the day of the year of the given date.
-*
-* @param date - The given date
-* @param options - The options
-*
-* @returns The day of year
-*
-* @example
-* // Which day of the year is 2 July 2014?
-* const result = getDayOfYear(new Date(2014, 6, 2))
-* //=> 183
-*/
-function getDayOfYear(date, options) {
-	const _date = toDate(date, options?.in);
-	return differenceInCalendarDays(_date, startOfYear(_date)) + 1;
-}
-//#endregion
-//#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/getISOWeek.js
-/**
-* The {@link getISOWeek} function options.
-*/
-/**
-* @name getISOWeek
-* @category ISO Week Helpers
-* @summary Get the ISO week of the given date.
-*
-* @description
-* Get the ISO week of the given date.
-*
-* ISO week-numbering year: http://en.wikipedia.org/wiki/ISO_week_date
-*
-* @param date - The given date
-* @param options - The options
-*
-* @returns The ISO week
-*
-* @example
-* // Which week of the ISO-week numbering year is 2 January 2005?
-* const result = getISOWeek(new Date(2005, 0, 2))
-* //=> 53
-*/
-function getISOWeek(date, options) {
-	const _date = toDate(date, options?.in);
-	const diff = +startOfISOWeek(_date) - +startOfISOWeekYear(_date);
-	return Math.round(diff / millisecondsInWeek) + 1;
-}
-//#endregion
-//#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/getWeekYear.js
-/**
-* The {@link getWeekYear} function options.
-*/
-/**
-* @name getWeekYear
-* @category Week-Numbering Year Helpers
-* @summary Get the local week-numbering year of the given date.
-*
-* @description
-* Get the local week-numbering year of the given date.
-* The exact calculation depends on the values of
-* `options.weekStartsOn` (which is the index of the first day of the week)
-* and `options.firstWeekContainsDate` (which is the day of January, which is always in
-* the first week of the week-numbering year)
-*
-* Week numbering: https://en.wikipedia.org/wiki/Week#The_ISO_week_date_system
-*
-* @param date - The given date
-* @param options - An object with options.
-*
-* @returns The local week-numbering year
-*
-* @example
-* // Which week numbering year is 26 December 2004 with the default settings?
-* const result = getWeekYear(new Date(2004, 11, 26))
-* //=> 2005
-*
-* @example
-* // Which week numbering year is 26 December 2004 if week starts on Saturday?
-* const result = getWeekYear(new Date(2004, 11, 26), { weekStartsOn: 6 })
-* //=> 2004
-*
-* @example
-* // Which week numbering year is 26 December 2004 if the first week contains 4 January?
-* const result = getWeekYear(new Date(2004, 11, 26), { firstWeekContainsDate: 4 })
-* //=> 2004
-*/
-function getWeekYear(date, options) {
-	const _date = toDate(date, options?.in);
-	const year = _date.getFullYear();
-	const defaultOptions = getDefaultOptions();
-	const firstWeekContainsDate = options?.firstWeekContainsDate ?? options?.locale?.options?.firstWeekContainsDate ?? defaultOptions.firstWeekContainsDate ?? defaultOptions.locale?.options?.firstWeekContainsDate ?? 1;
-	const firstWeekOfNextYear = constructFrom(options?.in || date, 0);
-	firstWeekOfNextYear.setFullYear(year + 1, 0, firstWeekContainsDate);
-	firstWeekOfNextYear.setHours(0, 0, 0, 0);
-	const startOfNextYear = startOfWeek(firstWeekOfNextYear, options);
-	const firstWeekOfThisYear = constructFrom(options?.in || date, 0);
-	firstWeekOfThisYear.setFullYear(year, 0, firstWeekContainsDate);
-	firstWeekOfThisYear.setHours(0, 0, 0, 0);
-	const startOfThisYear = startOfWeek(firstWeekOfThisYear, options);
-	if (+_date >= +startOfNextYear) return year + 1;
-	else if (+_date >= +startOfThisYear) return year;
-	else return year - 1;
-}
-//#endregion
-//#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/startOfWeekYear.js
-/**
-* The {@link startOfWeekYear} function options.
-*/
-/**
-* @name startOfWeekYear
-* @category Week-Numbering Year Helpers
-* @summary Return the start of a local week-numbering year for the given date.
-*
-* @description
-* Return the start of a local week-numbering year.
-* The exact calculation depends on the values of
-* `options.weekStartsOn` (which is the index of the first day of the week)
-* and `options.firstWeekContainsDate` (which is the day of January, which is always in
-* the first week of the week-numbering year)
-*
-* Week numbering: https://en.wikipedia.org/wiki/Week#The_ISO_week_date_system
-*
-* @typeParam DateType - The `Date` type, the function operates on. Gets inferred from passed arguments. Allows to use extensions like [`UTCDate`](https://github.com/date-fns/utc).
-* @typeParam ResultDate - The result `Date` type.
-*
-* @param date - The original date
-* @param options - An object with options
-*
-* @returns The start of a week-numbering year
-*
-* @example
-* // The start of an a week-numbering year for 2 July 2005 with default settings:
-* const result = startOfWeekYear(new Date(2005, 6, 2))
-* //=> Sun Dec 26 2004 00:00:00
-*
-* @example
-* // The start of a week-numbering year for 2 July 2005
-* // if Monday is the first day of week
-* // and 4 January is always in the first week of the year:
-* const result = startOfWeekYear(new Date(2005, 6, 2), {
-*   weekStartsOn: 1,
-*   firstWeekContainsDate: 4
-* })
-* //=> Mon Jan 03 2005 00:00:00
-*/
-function startOfWeekYear(date, options) {
-	const defaultOptions = getDefaultOptions();
-	const firstWeekContainsDate = options?.firstWeekContainsDate ?? options?.locale?.options?.firstWeekContainsDate ?? defaultOptions.firstWeekContainsDate ?? defaultOptions.locale?.options?.firstWeekContainsDate ?? 1;
-	const year = getWeekYear(date, options);
-	const firstWeek = constructFrom(options?.in || date, 0);
-	firstWeek.setFullYear(year, 0, firstWeekContainsDate);
-	firstWeek.setHours(0, 0, 0, 0);
-	return startOfWeek(firstWeek, options);
-}
-//#endregion
-//#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/getWeek.js
-/**
-* The {@link getWeek} function options.
-*/
-/**
-* @name getWeek
-* @category Week Helpers
-* @summary Get the local week index of the given date.
-*
-* @description
-* Get the local week index of the given date.
-* The exact calculation depends on the values of
-* `options.weekStartsOn` (which is the index of the first day of the week)
-* and `options.firstWeekContainsDate` (which is the day of January, which is always in
-* the first week of the week-numbering year)
-*
-* Week numbering: https://en.wikipedia.org/wiki/Week#The_ISO_week_date_system
-*
-* @param date - The given date
-* @param options - An object with options
-*
-* @returns The week
-*
-* @example
-* // Which week of the local week numbering year is 2 January 2005 with default options?
-* const result = getWeek(new Date(2005, 0, 2))
-* //=> 2
-*
-* @example
-* // Which week of the local week numbering year is 2 January 2005,
-* // if Monday is the first day of the week,
-* // and the first week of the year always contains 4 January?
-* const result = getWeek(new Date(2005, 0, 2), {
-*   weekStartsOn: 1,
-*   firstWeekContainsDate: 4
-* })
-* //=> 53
-*/
-function getWeek(date, options) {
-	const _date = toDate(date, options?.in);
-	const diff = +startOfWeek(_date, options) - +startOfWeekYear(_date, options);
-	return Math.round(diff / millisecondsInWeek) + 1;
-}
-//#endregion
-//#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/_lib/addLeadingZeros.js
-function addLeadingZeros(number, targetLength) {
-	return (number < 0 ? "-" : "") + Math.abs(number).toString().padStart(targetLength, "0");
-}
-//#endregion
-//#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/_lib/format/lightFormatters.js
-var lightFormatters = {
-	y(date, token) {
-		const signedYear = date.getFullYear();
-		const year = signedYear > 0 ? signedYear : 1 - signedYear;
-		return addLeadingZeros(token === "yy" ? year % 100 : year, token.length);
-	},
-	M(date, token) {
-		const month = date.getMonth();
-		return token === "M" ? String(month + 1) : addLeadingZeros(month + 1, 2);
-	},
-	d(date, token) {
-		return addLeadingZeros(date.getDate(), token.length);
-	},
-	a(date, token) {
-		const dayPeriodEnumValue = date.getHours() / 12 >= 1 ? "pm" : "am";
-		switch (token) {
-			case "a":
-			case "aa": return dayPeriodEnumValue.toUpperCase();
-			case "aaa": return dayPeriodEnumValue;
-			case "aaaaa": return dayPeriodEnumValue[0];
-			default: return dayPeriodEnumValue === "am" ? "a.m." : "p.m.";
-		}
-	},
-	h(date, token) {
-		return addLeadingZeros(date.getHours() % 12 || 12, token.length);
-	},
-	H(date, token) {
-		return addLeadingZeros(date.getHours(), token.length);
-	},
-	m(date, token) {
-		return addLeadingZeros(date.getMinutes(), token.length);
-	},
-	s(date, token) {
-		return addLeadingZeros(date.getSeconds(), token.length);
-	},
-	S(date, token) {
-		const numberOfDigits = token.length;
-		const milliseconds = date.getMilliseconds();
-		return addLeadingZeros(Math.trunc(milliseconds * Math.pow(10, numberOfDigits - 3)), token.length);
-	}
-};
-//#endregion
-//#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/_lib/format/formatters.js
-var dayPeriodEnum = {
-	am: "am",
-	pm: "pm",
-	midnight: "midnight",
-	noon: "noon",
-	morning: "morning",
-	afternoon: "afternoon",
-	evening: "evening",
-	night: "night"
-};
-var formatters = {
-	G: function(date, token, localize) {
-		const era = date.getFullYear() > 0 ? 1 : 0;
-		switch (token) {
-			case "G":
-			case "GG":
-			case "GGG": return localize.era(era, { width: "abbreviated" });
-			case "GGGGG": return localize.era(era, { width: "narrow" });
-			default: return localize.era(era, { width: "wide" });
-		}
-	},
-	y: function(date, token, localize) {
-		if (token === "yo") {
-			const signedYear = date.getFullYear();
-			const year = signedYear > 0 ? signedYear : 1 - signedYear;
-			return localize.ordinalNumber(year, { unit: "year" });
-		}
-		return lightFormatters.y(date, token);
-	},
-	Y: function(date, token, localize, options) {
-		const signedWeekYear = getWeekYear(date, options);
-		const weekYear = signedWeekYear > 0 ? signedWeekYear : 1 - signedWeekYear;
-		if (token === "YY") return addLeadingZeros(weekYear % 100, 2);
-		if (token === "Yo") return localize.ordinalNumber(weekYear, { unit: "year" });
-		return addLeadingZeros(weekYear, token.length);
-	},
-	R: function(date, token) {
-		return addLeadingZeros(getISOWeekYear(date), token.length);
-	},
-	u: function(date, token) {
-		return addLeadingZeros(date.getFullYear(), token.length);
-	},
-	Q: function(date, token, localize) {
-		const quarter = Math.ceil((date.getMonth() + 1) / 3);
-		switch (token) {
-			case "Q": return String(quarter);
-			case "QQ": return addLeadingZeros(quarter, 2);
-			case "Qo": return localize.ordinalNumber(quarter, { unit: "quarter" });
-			case "QQQ": return localize.quarter(quarter, {
-				width: "abbreviated",
-				context: "formatting"
-			});
-			case "QQQQQ": return localize.quarter(quarter, {
-				width: "narrow",
-				context: "formatting"
-			});
-			default: return localize.quarter(quarter, {
-				width: "wide",
-				context: "formatting"
-			});
-		}
-	},
-	q: function(date, token, localize) {
-		const quarter = Math.ceil((date.getMonth() + 1) / 3);
-		switch (token) {
-			case "q": return String(quarter);
-			case "qq": return addLeadingZeros(quarter, 2);
-			case "qo": return localize.ordinalNumber(quarter, { unit: "quarter" });
-			case "qqq": return localize.quarter(quarter, {
-				width: "abbreviated",
-				context: "standalone"
-			});
-			case "qqqqq": return localize.quarter(quarter, {
-				width: "narrow",
-				context: "standalone"
-			});
-			default: return localize.quarter(quarter, {
-				width: "wide",
-				context: "standalone"
-			});
-		}
-	},
-	M: function(date, token, localize) {
-		const month = date.getMonth();
-		switch (token) {
-			case "M":
-			case "MM": return lightFormatters.M(date, token);
-			case "Mo": return localize.ordinalNumber(month + 1, { unit: "month" });
-			case "MMM": return localize.month(month, {
-				width: "abbreviated",
-				context: "formatting"
-			});
-			case "MMMMM": return localize.month(month, {
-				width: "narrow",
-				context: "formatting"
-			});
-			default: return localize.month(month, {
-				width: "wide",
-				context: "formatting"
-			});
-		}
-	},
-	L: function(date, token, localize) {
-		const month = date.getMonth();
-		switch (token) {
-			case "L": return String(month + 1);
-			case "LL": return addLeadingZeros(month + 1, 2);
-			case "Lo": return localize.ordinalNumber(month + 1, { unit: "month" });
-			case "LLL": return localize.month(month, {
-				width: "abbreviated",
-				context: "standalone"
-			});
-			case "LLLLL": return localize.month(month, {
-				width: "narrow",
-				context: "standalone"
-			});
-			default: return localize.month(month, {
-				width: "wide",
-				context: "standalone"
-			});
-		}
-	},
-	w: function(date, token, localize, options) {
-		const week = getWeek(date, options);
-		if (token === "wo") return localize.ordinalNumber(week, { unit: "week" });
-		return addLeadingZeros(week, token.length);
-	},
-	I: function(date, token, localize) {
-		const isoWeek = getISOWeek(date);
-		if (token === "Io") return localize.ordinalNumber(isoWeek, { unit: "week" });
-		return addLeadingZeros(isoWeek, token.length);
-	},
-	d: function(date, token, localize) {
-		if (token === "do") return localize.ordinalNumber(date.getDate(), { unit: "date" });
-		return lightFormatters.d(date, token);
-	},
-	D: function(date, token, localize) {
-		const dayOfYear = getDayOfYear(date);
-		if (token === "Do") return localize.ordinalNumber(dayOfYear, { unit: "dayOfYear" });
-		return addLeadingZeros(dayOfYear, token.length);
-	},
-	E: function(date, token, localize) {
-		const dayOfWeek = date.getDay();
-		switch (token) {
-			case "E":
-			case "EE":
-			case "EEE": return localize.day(dayOfWeek, {
-				width: "abbreviated",
-				context: "formatting"
-			});
-			case "EEEEE": return localize.day(dayOfWeek, {
-				width: "narrow",
-				context: "formatting"
-			});
-			case "EEEEEE": return localize.day(dayOfWeek, {
-				width: "short",
-				context: "formatting"
-			});
-			default: return localize.day(dayOfWeek, {
-				width: "wide",
-				context: "formatting"
-			});
-		}
-	},
-	e: function(date, token, localize, options) {
-		const dayOfWeek = date.getDay();
-		const localDayOfWeek = (dayOfWeek - options.weekStartsOn + 8) % 7 || 7;
-		switch (token) {
-			case "e": return String(localDayOfWeek);
-			case "ee": return addLeadingZeros(localDayOfWeek, 2);
-			case "eo": return localize.ordinalNumber(localDayOfWeek, { unit: "day" });
-			case "eee": return localize.day(dayOfWeek, {
-				width: "abbreviated",
-				context: "formatting"
-			});
-			case "eeeee": return localize.day(dayOfWeek, {
-				width: "narrow",
-				context: "formatting"
-			});
-			case "eeeeee": return localize.day(dayOfWeek, {
-				width: "short",
-				context: "formatting"
-			});
-			default: return localize.day(dayOfWeek, {
-				width: "wide",
-				context: "formatting"
-			});
-		}
-	},
-	c: function(date, token, localize, options) {
-		const dayOfWeek = date.getDay();
-		const localDayOfWeek = (dayOfWeek - options.weekStartsOn + 8) % 7 || 7;
-		switch (token) {
-			case "c": return String(localDayOfWeek);
-			case "cc": return addLeadingZeros(localDayOfWeek, token.length);
-			case "co": return localize.ordinalNumber(localDayOfWeek, { unit: "day" });
-			case "ccc": return localize.day(dayOfWeek, {
-				width: "abbreviated",
-				context: "standalone"
-			});
-			case "ccccc": return localize.day(dayOfWeek, {
-				width: "narrow",
-				context: "standalone"
-			});
-			case "cccccc": return localize.day(dayOfWeek, {
-				width: "short",
-				context: "standalone"
-			});
-			default: return localize.day(dayOfWeek, {
-				width: "wide",
-				context: "standalone"
-			});
-		}
-	},
-	i: function(date, token, localize) {
-		const dayOfWeek = date.getDay();
-		const isoDayOfWeek = dayOfWeek === 0 ? 7 : dayOfWeek;
-		switch (token) {
-			case "i": return String(isoDayOfWeek);
-			case "ii": return addLeadingZeros(isoDayOfWeek, token.length);
-			case "io": return localize.ordinalNumber(isoDayOfWeek, { unit: "day" });
-			case "iii": return localize.day(dayOfWeek, {
-				width: "abbreviated",
-				context: "formatting"
-			});
-			case "iiiii": return localize.day(dayOfWeek, {
-				width: "narrow",
-				context: "formatting"
-			});
-			case "iiiiii": return localize.day(dayOfWeek, {
-				width: "short",
-				context: "formatting"
-			});
-			default: return localize.day(dayOfWeek, {
-				width: "wide",
-				context: "formatting"
-			});
-		}
-	},
-	a: function(date, token, localize) {
-		const dayPeriodEnumValue = date.getHours() / 12 >= 1 ? "pm" : "am";
-		switch (token) {
-			case "a":
-			case "aa": return localize.dayPeriod(dayPeriodEnumValue, {
-				width: "abbreviated",
-				context: "formatting"
-			});
-			case "aaa": return localize.dayPeriod(dayPeriodEnumValue, {
-				width: "abbreviated",
-				context: "formatting"
-			}).toLowerCase();
-			case "aaaaa": return localize.dayPeriod(dayPeriodEnumValue, {
-				width: "narrow",
-				context: "formatting"
-			});
-			default: return localize.dayPeriod(dayPeriodEnumValue, {
-				width: "wide",
-				context: "formatting"
-			});
-		}
-	},
-	b: function(date, token, localize) {
-		const hours = date.getHours();
-		let dayPeriodEnumValue;
-		if (hours === 12) dayPeriodEnumValue = dayPeriodEnum.noon;
-		else if (hours === 0) dayPeriodEnumValue = dayPeriodEnum.midnight;
-		else dayPeriodEnumValue = hours / 12 >= 1 ? "pm" : "am";
-		switch (token) {
-			case "b":
-			case "bb": return localize.dayPeriod(dayPeriodEnumValue, {
-				width: "abbreviated",
-				context: "formatting"
-			});
-			case "bbb": return localize.dayPeriod(dayPeriodEnumValue, {
-				width: "abbreviated",
-				context: "formatting"
-			}).toLowerCase();
-			case "bbbbb": return localize.dayPeriod(dayPeriodEnumValue, {
-				width: "narrow",
-				context: "formatting"
-			});
-			default: return localize.dayPeriod(dayPeriodEnumValue, {
-				width: "wide",
-				context: "formatting"
-			});
-		}
-	},
-	B: function(date, token, localize) {
-		const hours = date.getHours();
-		let dayPeriodEnumValue;
-		if (hours >= 17) dayPeriodEnumValue = dayPeriodEnum.evening;
-		else if (hours >= 12) dayPeriodEnumValue = dayPeriodEnum.afternoon;
-		else if (hours >= 4) dayPeriodEnumValue = dayPeriodEnum.morning;
-		else dayPeriodEnumValue = dayPeriodEnum.night;
-		switch (token) {
-			case "B":
-			case "BB":
-			case "BBB": return localize.dayPeriod(dayPeriodEnumValue, {
-				width: "abbreviated",
-				context: "formatting"
-			});
-			case "BBBBB": return localize.dayPeriod(dayPeriodEnumValue, {
-				width: "narrow",
-				context: "formatting"
-			});
-			default: return localize.dayPeriod(dayPeriodEnumValue, {
-				width: "wide",
-				context: "formatting"
-			});
-		}
-	},
-	h: function(date, token, localize) {
-		if (token === "ho") {
-			let hours = date.getHours() % 12;
-			if (hours === 0) hours = 12;
-			return localize.ordinalNumber(hours, { unit: "hour" });
-		}
-		return lightFormatters.h(date, token);
-	},
-	H: function(date, token, localize) {
-		if (token === "Ho") return localize.ordinalNumber(date.getHours(), { unit: "hour" });
-		return lightFormatters.H(date, token);
-	},
-	K: function(date, token, localize) {
-		const hours = date.getHours() % 12;
-		if (token === "Ko") return localize.ordinalNumber(hours, { unit: "hour" });
-		return addLeadingZeros(hours, token.length);
-	},
-	k: function(date, token, localize) {
-		let hours = date.getHours();
-		if (hours === 0) hours = 24;
-		if (token === "ko") return localize.ordinalNumber(hours, { unit: "hour" });
-		return addLeadingZeros(hours, token.length);
-	},
-	m: function(date, token, localize) {
-		if (token === "mo") return localize.ordinalNumber(date.getMinutes(), { unit: "minute" });
-		return lightFormatters.m(date, token);
-	},
-	s: function(date, token, localize) {
-		if (token === "so") return localize.ordinalNumber(date.getSeconds(), { unit: "second" });
-		return lightFormatters.s(date, token);
-	},
-	S: function(date, token) {
-		return lightFormatters.S(date, token);
-	},
-	X: function(date, token, _localize) {
-		const timezoneOffset = date.getTimezoneOffset();
-		if (timezoneOffset === 0) return "Z";
-		switch (token) {
-			case "X": return formatTimezoneWithOptionalMinutes(timezoneOffset);
-			case "XXXX":
-			case "XX": return formatTimezone(timezoneOffset);
-			default: return formatTimezone(timezoneOffset, ":");
-		}
-	},
-	x: function(date, token, _localize) {
-		const timezoneOffset = date.getTimezoneOffset();
-		switch (token) {
-			case "x": return formatTimezoneWithOptionalMinutes(timezoneOffset);
-			case "xxxx":
-			case "xx": return formatTimezone(timezoneOffset);
-			default: return formatTimezone(timezoneOffset, ":");
-		}
-	},
-	O: function(date, token, _localize) {
-		const timezoneOffset = date.getTimezoneOffset();
-		switch (token) {
-			case "O":
-			case "OO":
-			case "OOO": return "GMT" + formatTimezoneShort(timezoneOffset, ":");
-			default: return "GMT" + formatTimezone(timezoneOffset, ":");
-		}
-	},
-	z: function(date, token, _localize) {
-		const timezoneOffset = date.getTimezoneOffset();
-		switch (token) {
-			case "z":
-			case "zz":
-			case "zzz": return "GMT" + formatTimezoneShort(timezoneOffset, ":");
-			default: return "GMT" + formatTimezone(timezoneOffset, ":");
-		}
-	},
-	t: function(date, token, _localize) {
-		return addLeadingZeros(Math.trunc(+date / 1e3), token.length);
-	},
-	T: function(date, token, _localize) {
-		return addLeadingZeros(+date, token.length);
-	}
-};
-function formatTimezoneShort(offset, delimiter = "") {
-	const sign = offset > 0 ? "-" : "+";
-	const absOffset = Math.abs(offset);
-	const hours = Math.trunc(absOffset / 60);
-	const minutes = absOffset % 60;
-	if (minutes === 0) return sign + String(hours);
-	return sign + String(hours) + delimiter + addLeadingZeros(minutes, 2);
-}
-function formatTimezoneWithOptionalMinutes(offset, delimiter) {
-	if (offset % 60 === 0) return (offset > 0 ? "-" : "+") + addLeadingZeros(Math.abs(offset) / 60, 2);
-	return formatTimezone(offset, delimiter);
-}
-function formatTimezone(offset, delimiter = "") {
-	const sign = offset > 0 ? "-" : "+";
-	const absOffset = Math.abs(offset);
-	const hours = addLeadingZeros(Math.trunc(absOffset / 60), 2);
-	const minutes = addLeadingZeros(absOffset % 60, 2);
-	return sign + hours + delimiter + minutes;
-}
-//#endregion
-//#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/_lib/format/longFormatters.js
-var dateLongFormatter = (pattern, formatLong) => {
-	switch (pattern) {
-		case "P": return formatLong.date({ width: "short" });
-		case "PP": return formatLong.date({ width: "medium" });
-		case "PPP": return formatLong.date({ width: "long" });
-		default: return formatLong.date({ width: "full" });
-	}
-};
-var timeLongFormatter = (pattern, formatLong) => {
-	switch (pattern) {
-		case "p": return formatLong.time({ width: "short" });
-		case "pp": return formatLong.time({ width: "medium" });
-		case "ppp": return formatLong.time({ width: "long" });
-		default: return formatLong.time({ width: "full" });
-	}
-};
-var dateTimeLongFormatter = (pattern, formatLong) => {
-	const matchResult = pattern.match(/(P+)(p+)?/) || [];
-	const datePattern = matchResult[1];
-	const timePattern = matchResult[2];
-	if (!timePattern) return dateLongFormatter(pattern, formatLong);
-	let dateTimeFormat;
-	switch (datePattern) {
-		case "P":
-			dateTimeFormat = formatLong.dateTime({ width: "short" });
-			break;
-		case "PP":
-			dateTimeFormat = formatLong.dateTime({ width: "medium" });
-			break;
-		case "PPP":
-			dateTimeFormat = formatLong.dateTime({ width: "long" });
-			break;
-		default:
-			dateTimeFormat = formatLong.dateTime({ width: "full" });
-			break;
-	}
-	return dateTimeFormat.replace("{{date}}", dateLongFormatter(datePattern, formatLong)).replace("{{time}}", timeLongFormatter(timePattern, formatLong));
-};
-var longFormatters = {
-	p: timeLongFormatter,
-	P: dateTimeLongFormatter
-};
-//#endregion
-//#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/_lib/protectedTokens.js
-var dayOfYearTokenRE = /^D+$/;
-var weekYearTokenRE = /^Y+$/;
-var throwTokens = [
-	"D",
-	"DD",
-	"YY",
-	"YYYY"
-];
-function isProtectedDayOfYearToken(token) {
-	return dayOfYearTokenRE.test(token);
-}
-function isProtectedWeekYearToken(token) {
-	return weekYearTokenRE.test(token);
-}
-function warnOrThrowProtectedError(token, format, input) {
-	const _message = message(token, format, input);
-	console.warn(_message);
-	if (throwTokens.includes(token)) throw new RangeError(_message);
-}
-function message(token, format, input) {
-	const subject = token[0] === "Y" ? "years" : "days of the month";
-	return `Use \`${token.toLowerCase()}\` instead of \`${token}\` (in \`${format}\`) for formatting ${subject} to the input \`${input}\`; see: https://github.com/date-fns/date-fns/blob/master/docs/unicodeTokens.md`;
-}
-//#endregion
-//#region ../../cache/modules/controle-financeiro-planilha-9bacd/node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/format.js
-var formattingTokensRegExp = /[yYQqMLwIdDecihHKkms]o|(\w)\1*|''|'(''|[^'])+('|$)|./g;
-var longFormattingTokensRegExp = /P+p+|P+|p+|''|'(''|[^'])+('|$)|./g;
-var escapedStringRegExp = /^'([^]*?)'?$/;
-var doubleQuoteRegExp = /''/g;
-var unescapedLatinCharacterRegExp = /[a-zA-Z]/;
-/**
-* The {@link format} function options.
-*/
-/**
-* @name format
-* @alias formatDate
-* @category Common Helpers
-* @summary Format the date.
-*
-* @description
-* Return the formatted date string in the given format. The result may vary by locale.
-*
-* > ⚠️ Please note that the `format` tokens differ from Moment.js and other libraries.
-* > See: https://github.com/date-fns/date-fns/blob/master/docs/unicodeTokens.md
-*
-* The characters wrapped between two single quotes characters (') are escaped.
-* Two single quotes in a row, whether inside or outside a quoted sequence, represent a 'real' single quote.
-* (see the last example)
-*
-* Format of the string is based on Unicode Technical Standard #35:
-* https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table
-* with a few additions (see note 7 below the table).
-*
-* Accepted patterns:
-* | Unit                            | Pattern | Result examples                   | Notes |
-* |---------------------------------|---------|-----------------------------------|-------|
-* | Era                             | G..GGG  | AD, BC                            |       |
-* |                                 | GGGG    | Anno Domini, Before Christ        | 2     |
-* |                                 | GGGGG   | A, B                              |       |
-* | Calendar year                   | y       | 44, 1, 1900, 2017                 | 5     |
-* |                                 | yo      | 44th, 1st, 0th, 17th              | 5,7   |
-* |                                 | yy      | 44, 01, 00, 17                    | 5     |
-* |                                 | yyy     | 044, 001, 1900, 2017              | 5     |
-* |                                 | yyyy    | 0044, 0001, 1900, 2017            | 5     |
-* |                                 | yyyyy   | ...                               | 3,5   |
-* | Local week-numbering year       | Y       | 44, 1, 1900, 2017                 | 5     |
-* |                                 | Yo      | 44th, 1st, 1900th, 2017th         | 5,7   |
-* |                                 | YY      | 44, 01, 00, 17                    | 5,8   |
-* |                                 | YYY     | 044, 001, 1900, 2017              | 5     |
-* |                                 | YYYY    | 0044, 0001, 1900, 2017            | 5,8   |
-* |                                 | YYYYY   | ...                               | 3,5   |
-* | ISO week-numbering year         | R       | -43, 0, 1, 1900, 2017             | 5,7   |
-* |                                 | RR      | -43, 00, 01, 1900, 2017           | 5,7   |
-* |                                 | RRR     | -043, 000, 001, 1900, 2017        | 5,7   |
-* |                                 | RRRR    | -0043, 0000, 0001, 1900, 2017     | 5,7   |
-* |                                 | RRRRR   | ...                               | 3,5,7 |
-* | Extended year                   | u       | -43, 0, 1, 1900, 2017             | 5     |
-* |                                 | uu      | -43, 01, 1900, 2017               | 5     |
-* |                                 | uuu     | -043, 001, 1900, 2017             | 5     |
-* |                                 | uuuu    | -0043, 0001, 1900, 2017           | 5     |
-* |                                 | uuuuu   | ...                               | 3,5   |
-* | Quarter (formatting)            | Q       | 1, 2, 3, 4                        |       |
-* |                                 | Qo      | 1st, 2nd, 3rd, 4th                | 7     |
-* |                                 | QQ      | 01, 02, 03, 04                    |       |
-* |                                 | QQQ     | Q1, Q2, Q3, Q4                    |       |
-* |                                 | QQQQ    | 1st quarter, 2nd quarter, ...     | 2     |
-* |                                 | QQQQQ   | 1, 2, 3, 4                        | 4     |
-* | Quarter (stand-alone)           | q       | 1, 2, 3, 4                        |       |
-* |                                 | qo      | 1st, 2nd, 3rd, 4th                | 7     |
-* |                                 | qq      | 01, 02, 03, 04                    |       |
-* |                                 | qqq     | Q1, Q2, Q3, Q4                    |       |
-* |                                 | qqqq    | 1st quarter, 2nd quarter, ...     | 2     |
-* |                                 | qqqqq   | 1, 2, 3, 4                        | 4     |
-* | Month (formatting)              | M       | 1, 2, ..., 12                     |       |
-* |                                 | Mo      | 1st, 2nd, ..., 12th               | 7     |
-* |                                 | MM      | 01, 02, ..., 12                   |       |
-* |                                 | MMM     | Jan, Feb, ..., Dec                |       |
-* |                                 | MMMM    | January, February, ..., December  | 2     |
-* |                                 | MMMMM   | J, F, ..., D                      |       |
-* | Month (stand-alone)             | L       | 1, 2, ..., 12                     |       |
-* |                                 | Lo      | 1st, 2nd, ..., 12th               | 7     |
-* |                                 | LL      | 01, 02, ..., 12                   |       |
-* |                                 | LLL     | Jan, Feb, ..., Dec                |       |
-* |                                 | LLLL    | January, February, ..., December  | 2     |
-* |                                 | LLLLL   | J, F, ..., D                      |       |
-* | Local week of year              | w       | 1, 2, ..., 53                     |       |
-* |                                 | wo      | 1st, 2nd, ..., 53th               | 7     |
-* |                                 | ww      | 01, 02, ..., 53                   |       |
-* | ISO week of year                | I       | 1, 2, ..., 53                     | 7     |
-* |                                 | Io      | 1st, 2nd, ..., 53th               | 7     |
-* |                                 | II      | 01, 02, ..., 53                   | 7     |
-* | Day of month                    | d       | 1, 2, ..., 31                     |       |
-* |                                 | do      | 1st, 2nd, ..., 31st               | 7     |
-* |                                 | dd      | 01, 02, ..., 31                   |       |
-* | Day of year                     | D       | 1, 2, ..., 365, 366               | 9     |
-* |                                 | Do      | 1st, 2nd, ..., 365th, 366th       | 7     |
-* |                                 | DD      | 01, 02, ..., 365, 366             | 9     |
-* |                                 | DDD     | 001, 002, ..., 365, 366           |       |
-* |                                 | DDDD    | ...                               | 3     |
-* | Day of week (formatting)        | E..EEE  | Mon, Tue, Wed, ..., Sun           |       |
-* |                                 | EEEE    | Monday, Tuesday, ..., Sunday      | 2     |
-* |                                 | EEEEE   | M, T, W, T, F, S, S               |       |
-* |                                 | EEEEEE  | Mo, Tu, We, Th, Fr, Sa, Su        |       |
-* | ISO day of week (formatting)    | i       | 1, 2, 3, ..., 7                   | 7     |
-* |                                 | io      | 1st, 2nd, ..., 7th                | 7     |
-* |                                 | ii      | 01, 02, ..., 07                   | 7     |
-* |                                 | iii     | Mon, Tue, Wed, ..., Sun           | 7     |
-* |                                 | iiii    | Monday, Tuesday, ..., Sunday      | 2,7   |
-* |                                 | iiiii   | M, T, W, T, F, S, S               | 7     |
-* |                                 | iiiiii  | Mo, Tu, We, Th, Fr, Sa, Su        | 7     |
-* | Local day of week (formatting)  | e       | 2, 3, 4, ..., 1                   |       |
-* |                                 | eo      | 2nd, 3rd, ..., 1st                | 7     |
-* |                                 | ee      | 02, 03, ..., 01                   |       |
-* |                                 | eee     | Mon, Tue, Wed, ..., Sun           |       |
-* |                                 | eeee    | Monday, Tuesday, ..., Sunday      | 2     |
-* |                                 | eeeee   | M, T, W, T, F, S, S               |       |
-* |                                 | eeeeee  | Mo, Tu, We, Th, Fr, Sa, Su        |       |
-* | Local day of week (stand-alone) | c       | 2, 3, 4, ..., 1                   |       |
-* |                                 | co      | 2nd, 3rd, ..., 1st                | 7     |
-* |                                 | cc      | 02, 03, ..., 01                   |       |
-* |                                 | ccc     | Mon, Tue, Wed, ..., Sun           |       |
-* |                                 | cccc    | Monday, Tuesday, ..., Sunday      | 2     |
-* |                                 | ccccc   | M, T, W, T, F, S, S               |       |
-* |                                 | cccccc  | Mo, Tu, We, Th, Fr, Sa, Su        |       |
-* | AM, PM                          | a..aa   | AM, PM                            |       |
-* |                                 | aaa     | am, pm                            |       |
-* |                                 | aaaa    | a.m., p.m.                        | 2     |
-* |                                 | aaaaa   | a, p                              |       |
-* | AM, PM, noon, midnight          | b..bb   | AM, PM, noon, midnight            |       |
-* |                                 | bbb     | am, pm, noon, midnight            |       |
-* |                                 | bbbb    | a.m., p.m., noon, midnight        | 2     |
-* |                                 | bbbbb   | a, p, n, mi                       |       |
-* | Flexible day period             | B..BBB  | at night, in the morning, ...     |       |
-* |                                 | BBBB    | at night, in the morning, ...     | 2     |
-* |                                 | BBBBB   | at night, in the morning, ...     |       |
-* | Hour [1-12]                     | h       | 1, 2, ..., 11, 12                 |       |
-* |                                 | ho      | 1st, 2nd, ..., 11th, 12th         | 7     |
-* |                                 | hh      | 01, 02, ..., 11, 12               |       |
-* | Hour [0-23]                     | H       | 0, 1, 2, ..., 23                  |       |
-* |                                 | Ho      | 0th, 1st, 2nd, ..., 23rd          | 7     |
-* |                                 | HH      | 00, 01, 02, ..., 23               |       |
-* | Hour [0-11]                     | K       | 1, 2, ..., 11, 0                  |       |
-* |                                 | Ko      | 1st, 2nd, ..., 11th, 0th          | 7     |
-* |                                 | KK      | 01, 02, ..., 11, 00               |       |
-* | Hour [1-24]                     | k       | 24, 1, 2, ..., 23                 |       |
-* |                                 | ko      | 24th, 1st, 2nd, ..., 23rd         | 7     |
-* |                                 | kk      | 24, 01, 02, ..., 23               |       |
-* | Minute                          | m       | 0, 1, ..., 59                     |       |
-* |                                 | mo      | 0th, 1st, ..., 59th               | 7     |
-* |                                 | mm      | 00, 01, ..., 59                   |       |
-* | Second                          | s       | 0, 1, ..., 59                     |       |
-* |                                 | so      | 0th, 1st, ..., 59th               | 7     |
-* |                                 | ss      | 00, 01, ..., 59                   |       |
-* | Fraction of second              | S       | 0, 1, ..., 9                      |       |
-* |                                 | SS      | 00, 01, ..., 99                   |       |
-* |                                 | SSS     | 000, 001, ..., 999                |       |
-* |                                 | SSSS    | ...                               | 3     |
-* | Timezone (ISO-8601 w/ Z)        | X       | -08, +0530, Z                     |       |
-* |                                 | XX      | -0800, +0530, Z                   |       |
-* |                                 | XXX     | -08:00, +05:30, Z                 |       |
-* |                                 | XXXX    | -0800, +0530, Z, +123456          | 2     |
-* |                                 | XXXXX   | -08:00, +05:30, Z, +12:34:56      |       |
-* | Timezone (ISO-8601 w/o Z)       | x       | -08, +0530, +00                   |       |
-* |                                 | xx      | -0800, +0530, +0000               |       |
-* |                                 | xxx     | -08:00, +05:30, +00:00            | 2     |
-* |                                 | xxxx    | -0800, +0530, +0000, +123456      |       |
-* |                                 | xxxxx   | -08:00, +05:30, +00:00, +12:34:56 |       |
-* | Timezone (GMT)                  | O...OOO | GMT-8, GMT+5:30, GMT+0            |       |
-* |                                 | OOOO    | GMT-08:00, GMT+05:30, GMT+00:00   | 2     |
-* | Timezone (specific non-locat.)  | z...zzz | GMT-8, GMT+5:30, GMT+0            | 6     |
-* |                                 | zzzz    | GMT-08:00, GMT+05:30, GMT+00:00   | 2,6   |
-* | Seconds timestamp               | t       | 512969520                         | 7     |
-* |                                 | tt      | ...                               | 3,7   |
-* | Milliseconds timestamp          | T       | 512969520900                      | 7     |
-* |                                 | TT      | ...                               | 3,7   |
-* | Long localized date             | P       | 04/29/1453                        | 7     |
-* |                                 | PP      | Apr 29, 1453                      | 7     |
-* |                                 | PPP     | April 29th, 1453                  | 7     |
-* |                                 | PPPP    | Friday, April 29th, 1453          | 2,7   |
-* | Long localized time             | p       | 12:00 AM                          | 7     |
-* |                                 | pp      | 12:00:00 AM                       | 7     |
-* |                                 | ppp     | 12:00:00 AM GMT+2                 | 7     |
-* |                                 | pppp    | 12:00:00 AM GMT+02:00             | 2,7   |
-* | Combination of date and time    | Pp      | 04/29/1453, 12:00 AM              | 7     |
-* |                                 | PPpp    | Apr 29, 1453, 12:00:00 AM         | 7     |
-* |                                 | PPPppp  | April 29th, 1453 at ...           | 7     |
-* |                                 | PPPPpppp| Friday, April 29th, 1453 at ...   | 2,7   |
-* Notes:
-* 1. "Formatting" units (e.g. formatting quarter) in the default en-US locale
-*    are the same as "stand-alone" units, but are different in some languages.
-*    "Formatting" units are declined according to the rules of the language
-*    in the context of a date. "Stand-alone" units are always nominative singular:
-*
-*    `format(new Date(2017, 10, 6), 'do LLLL', {locale: cs}) //=> '6. listopad'`
-*
-*    `format(new Date(2017, 10, 6), 'do MMMM', {locale: cs}) //=> '6. listopadu'`
-*
-* 2. Any sequence of the identical letters is a pattern, unless it is escaped by
-*    the single quote characters (see below).
-*    If the sequence is longer than listed in table (e.g. `EEEEEEEEEEE`)
-*    the output will be the same as default pattern for this unit, usually
-*    the longest one (in case of ISO weekdays, `EEEE`). Default patterns for units
-*    are marked with "2" in the last column of the table.
-*
-*    `format(new Date(2017, 10, 6), 'MMM') //=> 'Nov'`
-*
-*    `format(new Date(2017, 10, 6), 'MMMM') //=> 'November'`
-*
-*    `format(new Date(2017, 10, 6), 'MMMMM') //=> 'N'`
-*
-*    `format(new Date(2017, 10, 6), 'MMMMMM') //=> 'November'`
-*
-*    `format(new Date(2017, 10, 6), 'MMMMMMM') //=> 'November'`
-*
-* 3. Some patterns could be unlimited length (such as `yyyyyyyy`).
-*    The output will be padded with zeros to match the length of the pattern.
-*
-*    `format(new Date(2017, 10, 6), 'yyyyyyyy') //=> '00002017'`
-*
-* 4. `QQQQQ` and `qqqqq` could be not strictly numerical in some locales.
-*    These tokens represent the shortest form of the quarter.
-*
-* 5. The main difference between `y` and `u` patterns are B.C. years:
-*
-*    | Year | `y` | `u` |
-*    |------|-----|-----|
-*    | AC 1 |   1 |   1 |
-*    | BC 1 |   1 |   0 |
-*    | BC 2 |   2 |  -1 |
-*
-*    Also `yy` always returns the last two digits of a year,
-*    while `uu` pads single digit years to 2 characters and returns other years unchanged:
-*
-*    | Year | `yy` | `uu` |
-*    |------|------|------|
-*    | 1    |   01 |   01 |
-*    | 14   |   14 |   14 |
-*    | 376  |   76 |  376 |
-*    | 1453 |   53 | 1453 |
-*
-*    The same difference is true for local and ISO week-numbering years (`Y` and `R`),
-*    except local week-numbering years are dependent on `options.weekStartsOn`
-*    and `options.firstWeekContainsDate` (compare [getISOWeekYear](https://date-fns.org/docs/getISOWeekYear)
-*    and [getWeekYear](https://date-fns.org/docs/getWeekYear)).
-*
-* 6. Specific non-location timezones are currently unavailable in `date-fns`,
-*    so right now these tokens fall back to GMT timezones.
-*
-* 7. These patterns are not in the Unicode Technical Standard #35:
-*    - `i`: ISO day of week
-*    - `I`: ISO week of year
-*    - `R`: ISO week-numbering year
-*    - `t`: seconds timestamp
-*    - `T`: milliseconds timestamp
-*    - `o`: ordinal number modifier
-*    - `P`: long localized date
-*    - `p`: long localized time
-*
-* 8. `YY` and `YYYY` tokens represent week-numbering years but they are often confused with years.
-*    You should enable `options.useAdditionalWeekYearTokens` to use them. See: https://github.com/date-fns/date-fns/blob/master/docs/unicodeTokens.md
-*
-* 9. `D` and `DD` tokens represent days of the year but they are often confused with days of the month.
-*    You should enable `options.useAdditionalDayOfYearTokens` to use them. See: https://github.com/date-fns/date-fns/blob/master/docs/unicodeTokens.md
-*
-* @param date - The original date
-* @param format - The string of tokens
-* @param options - An object with options
-*
-* @returns The formatted date string
-*
-* @throws `date` must not be Invalid Date
-* @throws `options.locale` must contain `localize` property
-* @throws `options.locale` must contain `formatLong` property
-* @throws use `yyyy` instead of `YYYY` for formatting years using [format provided] to the input [input provided]; see: https://github.com/date-fns/date-fns/blob/master/docs/unicodeTokens.md
-* @throws use `yy` instead of `YY` for formatting years using [format provided] to the input [input provided]; see: https://github.com/date-fns/date-fns/blob/master/docs/unicodeTokens.md
-* @throws use `d` instead of `D` for formatting days of the month using [format provided] to the input [input provided]; see: https://github.com/date-fns/date-fns/blob/master/docs/unicodeTokens.md
-* @throws use `dd` instead of `DD` for formatting days of the month using [format provided] to the input [input provided]; see: https://github.com/date-fns/date-fns/blob/master/docs/unicodeTokens.md
-* @throws format string contains an unescaped latin alphabet character
-*
-* @example
-* // Represent 11 February 2014 in middle-endian format:
-* const result = format(new Date(2014, 1, 11), 'MM/dd/yyyy')
-* //=> '02/11/2014'
-*
-* @example
-* // Represent 2 July 2014 in Esperanto:
-* import { eoLocale } from 'date-fns/locale/eo'
-* const result = format(new Date(2014, 6, 2), "do 'de' MMMM yyyy", {
-*   locale: eoLocale
-* })
-* //=> '2-a de julio 2014'
-*
-* @example
-* // Escape string by single quote characters:
-* const result = format(new Date(2014, 6, 2, 15), "h 'o''clock'")
-* //=> "3 o'clock"
-*/
-function format(date, formatStr, options) {
-	const defaultOptions = getDefaultOptions();
-	const locale = options?.locale ?? defaultOptions.locale ?? enUS;
-	const firstWeekContainsDate = options?.firstWeekContainsDate ?? options?.locale?.options?.firstWeekContainsDate ?? defaultOptions.firstWeekContainsDate ?? defaultOptions.locale?.options?.firstWeekContainsDate ?? 1;
-	const weekStartsOn = options?.weekStartsOn ?? options?.locale?.options?.weekStartsOn ?? defaultOptions.weekStartsOn ?? defaultOptions.locale?.options?.weekStartsOn ?? 0;
-	const originalDate = toDate(date, options?.in);
-	if (!isValid(originalDate)) throw new RangeError("Invalid time value");
-	let parts = formatStr.match(longFormattingTokensRegExp).map((substring) => {
-		const firstCharacter = substring[0];
-		if (firstCharacter === "p" || firstCharacter === "P") {
-			const longFormatter = longFormatters[firstCharacter];
-			return longFormatter(substring, locale.formatLong);
-		}
-		return substring;
-	}).join("").match(formattingTokensRegExp).map((substring) => {
-		if (substring === "''") return {
-			isToken: false,
-			value: "'"
-		};
-		const firstCharacter = substring[0];
-		if (firstCharacter === "'") return {
-			isToken: false,
-			value: cleanEscapedString(substring)
-		};
-		if (formatters[firstCharacter]) return {
-			isToken: true,
-			value: substring
-		};
-		if (firstCharacter.match(unescapedLatinCharacterRegExp)) throw new RangeError("Format string contains an unescaped latin alphabet character `" + firstCharacter + "`");
-		return {
-			isToken: false,
-			value: substring
-		};
-	});
-	if (locale.localize.preprocessor) parts = locale.localize.preprocessor(originalDate, parts);
-	const formatterOptions = {
-		firstWeekContainsDate,
-		weekStartsOn,
-		locale
-	};
-	return parts.map((part) => {
-		if (!part.isToken) return part.value;
-		const token = part.value;
-		if (!options?.useAdditionalWeekYearTokens && isProtectedWeekYearToken(token) || !options?.useAdditionalDayOfYearTokens && isProtectedDayOfYearToken(token)) warnOrThrowProtectedError(token, formatStr, String(date));
-		const formatter = formatters[token[0]];
-		return formatter(originalDate, token, locale.localize, formatterOptions);
-	}).join("");
-}
-function cleanEscapedString(input) {
-	const matched = input.match(escapedStringRegExp);
-	if (!matched) return input;
-	return matched[1].replace(doubleQuoteRegExp, "'");
-}
-//#endregion
 //#region src/pages/Transactions.tsx
 function Transactions() {
 	const { transactions, categories, accounts, loadingData } = useFinanceStore();
@@ -78829,7 +79915,8 @@ function Transactions() {
 	const today = /* @__PURE__ */ new Date();
 	today.setHours(0, 0, 0, 0);
 	const filteredData = transactions.filter((t) => {
-		if (!t.description.toLowerCase().includes(search.toLowerCase())) return false;
+		const searchLower = search.toLowerCase();
+		if (!(t.description.toLowerCase().includes(searchLower) || t.tags && t.tags.toLowerCase().includes(searchLower))) return false;
 		const tDate = new Date(t.date);
 		tDate.setHours(0, 0, 0, 0);
 		if (quickFilter === "PREVISTO") return t.status === "PREVISTO" || tDate > today;
@@ -78864,111 +79951,101 @@ function Transactions() {
 		if (!open) setEditingTx(null);
 	};
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-		"data-uid": "src/pages/Transactions.tsx:81:5",
+		"data-uid": "src/pages/Transactions.tsx:86:5",
 		"data-prohibitions": "[editContent]",
 		className: "flex flex-col h-full bg-white rounded-md shadow-md border overflow-hidden p-6 animate-fade-in-up",
 		children: [
 			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-				"data-uid": "src/pages/Transactions.tsx:82:7",
+				"data-uid": "src/pages/Transactions.tsx:87:7",
 				"data-prohibitions": "[editContent]",
 				className: "flex justify-between items-center mb-6",
 				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-					"data-uid": "src/pages/Transactions.tsx:83:9",
+					"data-uid": "src/pages/Transactions.tsx:88:9",
 					"data-prohibitions": "[]",
 					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h1", {
-						"data-uid": "src/pages/Transactions.tsx:84:11",
+						"data-uid": "src/pages/Transactions.tsx:89:11",
 						"data-prohibitions": "[]",
 						className: "text-2xl font-bold text-primary",
 						children: "Transações"
 					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-						"data-uid": "src/pages/Transactions.tsx:85:11",
+						"data-uid": "src/pages/Transactions.tsx:90:11",
 						"data-prohibitions": "[]",
 						className: "text-sm text-muted-foreground",
 						children: "Gerencie seus lançamentos financeiros"
 					})]
-				}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-					"data-uid": "src/pages/Transactions.tsx:87:9",
+				}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+					"data-uid": "src/pages/Transactions.tsx:92:9",
 					"data-prohibitions": "[editContent]",
 					className: "flex gap-2",
-					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Button, {
-						"data-uid": "src/pages/Transactions.tsx:88:11",
-						"data-prohibitions": "[]",
-						variant: "outline",
-						className: "hidden sm:flex gap-2",
-						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Download, {
-							"data-uid": "src/pages/Transactions.tsx:89:13",
-							"data-prohibitions": "[editContent]",
-							className: "h-4 w-4"
-						}), " Exportar CSV"]
-					}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Sheet, {
-						"data-uid": "src/pages/Transactions.tsx:91:11",
+					children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Sheet, {
+						"data-uid": "src/pages/Transactions.tsx:93:11",
 						"data-prohibitions": "[editContent]",
 						open: isSheetOpen,
 						onOpenChange: handleSheetChange,
 						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(SheetTrigger, {
-							"data-uid": "src/pages/Transactions.tsx:92:13",
+							"data-uid": "src/pages/Transactions.tsx:94:13",
 							"data-prohibitions": "[]",
 							asChild: true,
 							children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Button, {
-								"data-uid": "src/pages/Transactions.tsx:93:15",
+								"data-uid": "src/pages/Transactions.tsx:95:15",
 								"data-prohibitions": "[]",
 								className: "gap-2 bg-green-600 hover:bg-green-700",
 								onClick: () => setEditingTx(null),
 								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Plus, {
-									"data-uid": "src/pages/Transactions.tsx:97:17",
+									"data-uid": "src/pages/Transactions.tsx:99:17",
 									"data-prohibitions": "[editContent]",
 									className: "h-4 w-4"
 								}), " Novo Lançamento"]
 							})
 						}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(SheetContent, {
-							"data-uid": "src/pages/Transactions.tsx:100:13",
+							"data-uid": "src/pages/Transactions.tsx:102:13",
 							"data-prohibitions": "[editContent]",
-							className: "overflow-y-auto",
+							className: "overflow-y-auto w-full sm:max-w-md",
 							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(SheetHeader, {
-								"data-uid": "src/pages/Transactions.tsx:101:15",
+								"data-uid": "src/pages/Transactions.tsx:103:15",
 								"data-prohibitions": "[editContent]",
 								children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SheetTitle, {
-									"data-uid": "src/pages/Transactions.tsx:102:17",
+									"data-uid": "src/pages/Transactions.tsx:104:17",
 									"data-prohibitions": "[editContent]",
 									children: editingTx ? "Editar Transação" : "Adicionar Transação"
 								})
 							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TransactionForm, {
-								"data-uid": "src/pages/Transactions.tsx:104:15",
+								"data-uid": "src/pages/Transactions.tsx:106:15",
 								"data-prohibitions": "[editContent]",
 								onSuccess: () => handleSheetChange(false),
 								initialData: editingTx
 							})]
 						})]
-					})]
+					})
 				})]
 			}),
 			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-				"data-uid": "src/pages/Transactions.tsx:110:7",
+				"data-uid": "src/pages/Transactions.tsx:112:7",
 				"data-prohibitions": "[editContent]",
 				className: "flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4",
 				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-					"data-uid": "src/pages/Transactions.tsx:111:9",
+					"data-uid": "src/pages/Transactions.tsx:113:9",
 					"data-prohibitions": "[]",
 					className: "relative w-full max-w-sm",
 					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Search, {
-						"data-uid": "src/pages/Transactions.tsx:112:11",
+						"data-uid": "src/pages/Transactions.tsx:114:11",
 						"data-prohibitions": "[editContent]",
 						className: "absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground"
 					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Input, {
-						"data-uid": "src/pages/Transactions.tsx:113:11",
+						"data-uid": "src/pages/Transactions.tsx:115:11",
 						"data-prohibitions": "[editContent]",
-						placeholder: "Buscar por descrição...",
+						placeholder: "Buscar descrição ou tag...",
 						className: "pl-8",
 						value: search,
 						onChange: (e) => setSearch(e.target.value)
 					})]
 				}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-					"data-uid": "src/pages/Transactions.tsx:121:9",
+					"data-uid": "src/pages/Transactions.tsx:123:9",
 					"data-prohibitions": "[editContent]",
 					className: "flex items-center bg-slate-100 p-1 rounded-md border shadow-sm",
 					children: [
 						/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, {
-							"data-uid": "src/pages/Transactions.tsx:122:11",
+							"data-uid": "src/pages/Transactions.tsx:124:11",
 							"data-prohibitions": "[editContent]",
 							variant: quickFilter === "ALL" ? "default" : "ghost",
 							size: "sm",
@@ -78977,7 +80054,7 @@ function Transactions() {
 							children: "Todos"
 						}),
 						/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, {
-							"data-uid": "src/pages/Transactions.tsx:130:11",
+							"data-uid": "src/pages/Transactions.tsx:132:11",
 							"data-prohibitions": "[editContent]",
 							variant: quickFilter === "PREVISTO" ? "default" : "ghost",
 							size: "sm",
@@ -78986,7 +80063,7 @@ function Transactions() {
 							children: "Previstos"
 						}),
 						/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, {
-							"data-uid": "src/pages/Transactions.tsx:141:11",
+							"data-uid": "src/pages/Transactions.tsx:143:11",
 							"data-prohibitions": "[editContent]",
 							variant: quickFilter === "VENCIDO" ? "default" : "ghost",
 							size: "sm",
@@ -78998,53 +80075,54 @@ function Transactions() {
 				})]
 			}),
 			/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-				"data-uid": "src/pages/Transactions.tsx:155:7",
+				"data-uid": "src/pages/Transactions.tsx:157:7",
 				"data-prohibitions": "[editContent]",
 				className: "rounded-md border flex-1 overflow-auto",
 				children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Table, {
-					"data-uid": "src/pages/Transactions.tsx:156:9",
+					"data-uid": "src/pages/Transactions.tsx:158:9",
 					"data-prohibitions": "[editContent]",
 					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TableHeader, {
-						"data-uid": "src/pages/Transactions.tsx:157:11",
+						"data-uid": "src/pages/Transactions.tsx:159:11",
 						"data-prohibitions": "[]",
 						className: "bg-gray-50 sticky top-0 z-10",
 						children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(TableRow, {
-							"data-uid": "src/pages/Transactions.tsx:158:13",
+							"data-uid": "src/pages/Transactions.tsx:160:13",
 							"data-prohibitions": "[]",
 							children: [
 								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TableHead, {
-									"data-uid": "src/pages/Transactions.tsx:159:15",
-									"data-prohibitions": "[]",
-									children: "Data"
-								}),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TableHead, {
-									"data-uid": "src/pages/Transactions.tsx:160:15",
-									"data-prohibitions": "[]",
-									children: "Descrição"
-								}),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TableHead, {
 									"data-uid": "src/pages/Transactions.tsx:161:15",
 									"data-prohibitions": "[]",
-									children: "Categoria"
+									className: "w-28",
+									children: "Data"
 								}),
 								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TableHead, {
 									"data-uid": "src/pages/Transactions.tsx:162:15",
 									"data-prohibitions": "[]",
-									children: "Conta"
+									children: "Descrição"
 								}),
 								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TableHead, {
 									"data-uid": "src/pages/Transactions.tsx:163:15",
 									"data-prohibitions": "[]",
-									children: "Status"
+									children: "Categoria"
 								}),
 								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TableHead, {
 									"data-uid": "src/pages/Transactions.tsx:164:15",
+									"data-prohibitions": "[]",
+									children: "Conta"
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TableHead, {
+									"data-uid": "src/pages/Transactions.tsx:165:15",
+									"data-prohibitions": "[]",
+									children: "Status"
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TableHead, {
+									"data-uid": "src/pages/Transactions.tsx:166:15",
 									"data-prohibitions": "[]",
 									className: "text-right",
 									children: "Valor"
 								}),
 								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TableHead, {
-									"data-uid": "src/pages/Transactions.tsx:165:15",
+									"data-uid": "src/pages/Transactions.tsx:167:15",
 									"data-prohibitions": "[]",
 									className: "text-center w-24",
 									children: "Ações"
@@ -79052,100 +80130,116 @@ function Transactions() {
 							]
 						})
 					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TableBody, {
-						"data-uid": "src/pages/Transactions.tsx:168:11",
+						"data-uid": "src/pages/Transactions.tsx:170:11",
 						"data-prohibitions": "[editContent]",
 						children: loadingData ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TableRow, {
-							"data-uid": "src/pages/Transactions.tsx:170:15",
+							"data-uid": "src/pages/Transactions.tsx:172:15",
 							"data-prohibitions": "[]",
 							children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TableCell, {
-								"data-uid": "src/pages/Transactions.tsx:171:17",
+								"data-uid": "src/pages/Transactions.tsx:173:17",
 								"data-prohibitions": "[]",
 								colSpan: 7,
 								className: "h-24 text-center text-muted-foreground",
 								children: "Carregando transações..."
 							})
 						}) : filteredData.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TableRow, {
-							"data-uid": "src/pages/Transactions.tsx:176:15",
+							"data-uid": "src/pages/Transactions.tsx:178:15",
 							"data-prohibitions": "[]",
 							children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TableCell, {
-								"data-uid": "src/pages/Transactions.tsx:177:17",
+								"data-uid": "src/pages/Transactions.tsx:179:17",
 								"data-prohibitions": "[]",
 								colSpan: 7,
 								className: "h-24 text-center text-muted-foreground",
 								children: "Nenhuma transação encontrada."
 							})
 						}) : filteredData.slice(0, 50).map((tx) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(TableRow, {
-							"data-uid": "src/pages/Transactions.tsx:183:17",
+							"data-uid": "src/pages/Transactions.tsx:185:17",
 							"data-prohibitions": "[editContent]",
 							children: [
 								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TableCell, {
-									"data-uid": "src/pages/Transactions.tsx:184:19",
+									"data-uid": "src/pages/Transactions.tsx:186:19",
 									"data-prohibitions": "[editContent]",
-									className: "whitespace-nowrap",
-									children: format(new Date(tx.date), "dd/MM/yyyy")
+									className: "whitespace-nowrap font-medium text-slate-600",
+									children: format$1(new Date(tx.date), "dd/MM/yyyy")
 								}),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TableCell, {
-									"data-uid": "src/pages/Transactions.tsx:187:19",
-									"data-prohibitions": "[editContent]",
-									className: "font-medium",
-									children: tx.description
-								}),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TableCell, {
-									"data-uid": "src/pages/Transactions.tsx:188:19",
-									"data-prohibitions": "[editContent]",
-									children: getCategoryName(tx.categoryId, tx.type)
-								}),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TableCell, {
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)(TableCell, {
 									"data-uid": "src/pages/Transactions.tsx:189:19",
 									"data-prohibitions": "[editContent]",
-									children: getAccountName(tx.accountId, tx.type)
-								}),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TableCell, {
-									"data-uid": "src/pages/Transactions.tsx:190:19",
-									"data-prohibitions": "[editContent]",
-									children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Badge, {
-										"data-uid": "src/pages/Transactions.tsx:191:21",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+										"data-uid": "src/pages/Transactions.tsx:190:21",
 										"data-prohibitions": "[editContent]",
-										variant: tx.status === "REALIZADO" ? "default" : tx.status === "PREVISTO" ? "secondary" : "destructive",
-										className: cn$1("text-[10px]", tx.status === "REALIZADO" && "bg-emerald-500 hover:bg-emerald-600"),
-										children: tx.status
-									})
+										className: "font-medium text-slate-900",
+										children: tx.description
+									}), tx.tags && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+										"data-uid": "src/pages/Transactions.tsx:192:23",
+										"data-prohibitions": "[editContent]",
+										className: "flex flex-wrap gap-1 mt-1",
+										children: tx.tags.split(",").filter(Boolean).map((t) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+											"data-uid": "src/pages/Transactions.tsx:197:29",
+											"data-prohibitions": "[editContent]",
+											className: "inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-medium bg-slate-100 text-slate-600 border border-slate-200",
+											children: t
+										}, t))
+									})]
 								}),
 								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TableCell, {
 									"data-uid": "src/pages/Transactions.tsx:207:19",
 									"data-prohibitions": "[editContent]",
-									className: cn$1("text-right font-medium", tx.type === "INCOME" ? "text-emerald-600" : "text-red-500"),
+									className: "text-xs text-slate-600",
+									children: getCategoryName(tx.categoryId, tx.type)
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TableCell, {
+									"data-uid": "src/pages/Transactions.tsx:210:19",
+									"data-prohibitions": "[editContent]",
+									className: "text-xs text-slate-600",
+									children: getAccountName(tx.accountId, tx.type)
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TableCell, {
+									"data-uid": "src/pages/Transactions.tsx:213:19",
+									"data-prohibitions": "[editContent]",
+									children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Badge, {
+										"data-uid": "src/pages/Transactions.tsx:214:21",
+										"data-prohibitions": "[editContent]",
+										variant: tx.status === "REALIZADO" ? "default" : tx.status === "PREVISTO" ? "secondary" : "destructive",
+										className: cn$1("text-[10px] font-semibold", tx.status === "REALIZADO" && "bg-emerald-500 hover:bg-emerald-600"),
+										children: tx.status
+									})
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TableCell, {
+									"data-uid": "src/pages/Transactions.tsx:230:19",
+									"data-prohibitions": "[editContent]",
+									className: cn$1("text-right font-bold", tx.type === "INCOME" ? "text-emerald-600" : "text-red-500"),
 									children: formatCurrency(tx.amount, tx.type)
 								}),
 								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TableCell, {
-									"data-uid": "src/pages/Transactions.tsx:215:19",
+									"data-uid": "src/pages/Transactions.tsx:238:19",
 									"data-prohibitions": "[]",
 									className: "text-center",
 									children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-										"data-uid": "src/pages/Transactions.tsx:216:21",
+										"data-uid": "src/pages/Transactions.tsx:239:21",
 										"data-prohibitions": "[]",
-										className: "flex justify-center gap-2",
+										className: "flex justify-center gap-1",
 										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, {
-											"data-uid": "src/pages/Transactions.tsx:217:23",
+											"data-uid": "src/pages/Transactions.tsx:240:23",
 											"data-prohibitions": "[]",
 											variant: "ghost",
 											size: "icon",
-											className: "h-8 w-8 text-slate-500 hover:text-blue-600",
+											className: "h-8 w-8 text-slate-400 hover:text-blue-600 hover:bg-blue-50",
 											onClick: () => handleEdit(tx),
 											children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Pencil, {
-												"data-uid": "src/pages/Transactions.tsx:223:25",
+												"data-uid": "src/pages/Transactions.tsx:246:25",
 												"data-prohibitions": "[editContent]",
 												className: "h-4 w-4"
 											})
 										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, {
-											"data-uid": "src/pages/Transactions.tsx:225:23",
+											"data-uid": "src/pages/Transactions.tsx:248:23",
 											"data-prohibitions": "[]",
 											variant: "ghost",
 											size: "icon",
-											className: "h-8 w-8 text-slate-500 hover:text-red-600",
+											className: "h-8 w-8 text-slate-400 hover:text-red-600 hover:bg-red-50",
 											onClick: () => setDeletingId(tx.id),
 											children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Trash2, {
-												"data-uid": "src/pages/Transactions.tsx:231:25",
+												"data-uid": "src/pages/Transactions.tsx:254:25",
 												"data-prohibitions": "[editContent]",
 												className: "h-4 w-4"
 											})
@@ -79158,7 +80252,7 @@ function Transactions() {
 				})
 			}),
 			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-				"data-uid": "src/pages/Transactions.tsx:241:7",
+				"data-uid": "src/pages/Transactions.tsx:264:7",
 				"data-prohibitions": "[editContent]",
 				className: "text-xs text-muted-foreground mt-2 text-right",
 				children: [
@@ -79170,7 +80264,7 @@ function Transactions() {
 				]
 			}),
 			/* @__PURE__ */ (0, import_jsx_runtime.jsx)(DeleteTransactionDialog, {
-				"data-uid": "src/pages/Transactions.tsx:245:7",
+				"data-uid": "src/pages/Transactions.tsx:268:7",
 				"data-prohibitions": "[editContent]",
 				id: deletingId,
 				open: !!deletingId,
@@ -79742,4 +80836,4 @@ var App = () => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(BrowserRouter, {
 }));
 //#endregion
 
-//# sourceMappingURL=index-C8PAt2LT.js.map
+//# sourceMappingURL=index-K6hEcr1t.js.map

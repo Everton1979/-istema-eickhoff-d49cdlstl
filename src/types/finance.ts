@@ -23,6 +23,7 @@ export interface Transaction {
   categoryId: string
   accountId: string
   status: TransactionStatus
+  tags?: string
 }
 
 export interface MonthlyMetric {

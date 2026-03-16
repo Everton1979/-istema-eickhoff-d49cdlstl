@@ -1,4 +1,4 @@
-import { RefreshCw, XCircle, Home } from 'lucide-react'
+import { RefreshCw, Home, Printer } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Link } from 'react-router-dom'
 import { useFinanceStore } from '@/stores/financeStore'
@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/select'
 import { useMemo } from 'react'
 import { MonthlyClosingDialog } from './MonthlyClosingDialog'
+import { ExpirationAlerts } from './ExpirationAlerts'
 
 export function DashboardHeader() {
   const { filters, setFilter, transactions } = useFinanceStore()
@@ -25,6 +26,10 @@ export function DashboardHeader() {
 
   const selectedYear = filters.years[0] || new Date().getFullYear().toString()
 
+  const handlePrint = () => {
+    window.print()
+  }
+
   return (
     <div className="bg-[#1e3a5f] text-white rounded-t-md px-4 py-2 flex items-center justify-between shadow-sm">
       <div className="flex items-center gap-2">
@@ -34,13 +39,22 @@ export function DashboardHeader() {
       </div>
 
       <div className="flex items-center gap-2 sm:gap-4">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={handlePrint}
+          className="h-7 text-xs bg-white text-blue-900 border-none hover:bg-gray-100 hidden md:flex gap-1"
+        >
+          <Printer className="w-3 h-3" /> Exportar PDF
+        </Button>
+
         <MonthlyClosingDialog />
 
         <div className="flex items-center gap-2">
-          <span className="text-xs font-medium text-blue-200">Ano:</span>
+          <span className="text-xs font-medium text-blue-200 hidden sm:inline">Ano:</span>
           <Select value={selectedYear} onValueChange={(val) => setFilter('years', [val])}>
-            <SelectTrigger className="h-7 w-[80px] sm:w-[100px] bg-[#152943] border-none text-white focus:ring-1 focus:ring-blue-400 text-xs">
-              <SelectValue placeholder="Selecione..." />
+            <SelectTrigger className="h-7 w-[70px] sm:w-[90px] bg-[#152943] border-none text-white focus:ring-1 focus:ring-blue-400 text-xs">
+              <SelectValue placeholder="Ano" />
             </SelectTrigger>
             <SelectContent>
               {years.map((y) => (
@@ -52,22 +66,17 @@ export function DashboardHeader() {
           </Select>
         </div>
 
-        <div className="flex items-center gap-1">
-          <Button variant="ghost" size="icon" className="h-6 w-6 text-white hover:bg-white/20">
-            <RefreshCw className="h-3 w-3" />
+        <div className="flex items-center gap-0.5">
+          <ExpirationAlerts />
+
+          <Button variant="ghost" size="icon" className="h-8 w-8 text-white hover:bg-white/20">
+            <RefreshCw className="h-3.5 w-3.5" />
           </Button>
           <Link to="/">
-            <Button variant="ghost" size="icon" className="h-6 w-6 text-white hover:bg-white/20">
-              <Home className="h-3 w-3" />
+            <Button variant="ghost" size="icon" className="h-8 w-8 text-white hover:bg-white/20">
+              <Home className="h-3.5 w-3.5" />
             </Button>
           </Link>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-6 w-6 text-white hover:bg-white/20 hidden sm:flex"
-          >
-            <XCircle className="h-3 w-3" />
-          </Button>
         </div>
       </div>
     </div>
