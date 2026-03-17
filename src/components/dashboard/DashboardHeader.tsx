@@ -2,6 +2,7 @@ import { RefreshCw, Home, Printer } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Link } from 'react-router-dom'
 import { useFinanceStore } from '@/stores/financeStore'
+import { useAuth } from '@/hooks/use-auth'
 import {
   Select,
   SelectContent,
@@ -15,6 +16,7 @@ import { ExpirationAlerts } from './ExpirationAlerts'
 
 export function DashboardHeader() {
   const { filters, setFilter, transactions } = useFinanceStore()
+  const { profile } = useAuth()
 
   const years = useMemo(() => {
     const y = new Set<string>()
@@ -48,7 +50,7 @@ export function DashboardHeader() {
           <Printer className="w-3 h-3" /> Exportar PDF
         </Button>
 
-        <MonthlyClosingDialog />
+        {profile?.role !== 'Visitante' && <MonthlyClosingDialog />}
 
         <div className="flex items-center gap-2">
           <span className="text-xs font-medium text-blue-200 hidden sm:inline">Ano:</span>

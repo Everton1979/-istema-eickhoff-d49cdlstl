@@ -1,4 +1,5 @@
 import { useFinanceStore } from '@/stores/financeStore'
+import { useAuth } from '@/hooks/use-auth'
 import { Card, CardContent } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
 import { Button } from '@/components/ui/button'
@@ -9,6 +10,7 @@ import { getWorkingDays } from '@/lib/holidays'
 
 export function SalesTargetProgress() {
   const { monthlyMetrics, saveMonthlyMetric, filters } = useFinanceStore()
+  const { profile } = useAuth()
   const [isEditing, setIsEditing] = useState(false)
   const [tempValue, setTempValue] = useState('')
 
@@ -84,7 +86,7 @@ export function SalesTargetProgress() {
               Meta de Vendas ({monthName})
             </h3>
           </div>
-          {!isEditing && (
+          {!isEditing && profile?.role !== 'Visitante' && (
             <Button
               variant="ghost"
               size="icon"

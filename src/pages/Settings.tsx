@@ -1,16 +1,22 @@
 import { useFinanceStore } from '@/stores/financeStore'
+import { useAuth } from '@/hooks/use-auth'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
+import { UserManagement } from '@/components/settings/UserManagement'
 import { useState, useEffect } from 'react'
 import { toast } from 'sonner'
 import { Save } from 'lucide-react'
 
 export default function Settings() {
   const { accounts, updateAccountInitialBalances } = useFinanceStore()
+  const { profile } = useAuth()
   const [balances, setBalances] = useState<Record<string, string>>({})
   const [saving, setSaving] = useState(false)
+
+  const isColaborador = profile?.role === 'Colaborador'
 
   useEffect(() => {
     const initial: Record<string, string> = {}
@@ -60,48 +66,77 @@ export default function Settings() {
         </p>
       </div>
 
-      <div className="max-w-2xl">
-        <Card>
-          <CardHeader>
-            <CardTitle>Saldos Iniciais das Contas</CardTitle>
-            <CardDescription>
-              Defina o saldo inicial para cada uma das suas contas. Isso afetará o cálculo do saldo
-              atual no dashboard.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            {accounts.map((acc) => (
-              <div
-                key={acc.id}
-                className="grid grid-cols-1 sm:grid-cols-4 items-center gap-2 sm:gap-4"
-              >
-                <Label htmlFor={`acc-${acc.id}`} className="sm:text-right font-medium col-span-1">
-                  {acc.name}
-                </Label>
-                <div className="sm:col-span-3">
-                  <Input
-                    id={`acc-${acc.id}`}
-                    type="number"
-                    step="0.01"
-                    value={balances[acc.id] ?? ''}
-                    onChange={(e) => handleChange(acc.id, e.target.value)}
-                    className="max-w-[200px]"
-                  />
+      <Tabs defaultValue="conta" className="max-w-4xl">
+        <TabsList className="mb-4">
+          <TabsTrigger value="conta">Saldos Iniciais</TabsTrigger>
+          {profile?.role === 'Administrador' && (
+            <TabsTrigger value="usuarios">Gestão de Usuários</TabsTrigger>
+          )}
+        </TabsList>
+
+        <TabsContent value="conta">
+          <Card>
+            <CardHeader>
+              <CardTitle>Saldos Iniciais das Contas</CardTitle>
+              <CardDescription>
+                {isColaborador
+                  ? 'Você não tem permissão para editar os saldos iniciais.'
+                  : 'Defina o saldo inicial para cada uma das suas contas. Isso afetará o cálculo do saldo atual no dashboard.'}
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              {accounts.map((acc) => (
+                <div
+                  key={acc.id}
+                  className="grid grid-cols-1 sm:grid-cols-4 items-center gap-2 sm:gap-4"
+                >
+                  <Label htmlFor={`acc-${acc.id}`} className="sm:text-right font-medium col-span-1">
+                    {acc.name}
+                  </Label>
+                  <div className="sm:col-span-3">
+                    <Input
+                      id={`acc-${acc.id}`}
+                      type="number"
+                      step="0.01"
+                      value={balances[acc.id] ?? ''}
+                      onChange={(e) => handleChange(acc.id, e.target.value)}
+                      className="max-w-[200px]"
+                      disabled={isColaborador}
+                    />
+                  </div>
                 </div>
-              </div>
-            ))}
-            <div className="pt-4 flex justify-end">
-              <Button
-                onClick={handleSave}
-                disabled={saving}
-                className="gap-2 bg-primary hover:bg-primary/90"
-              >
-                <Save className="h-4 w-4" /> {saving ? 'Salvando...' : 'Salvar Alterações'}
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+              ))}
+              {!isColaborador && (
+                <div className="pt-4 flex justify-end">
+                  <Button
+                    onClick={handleSave}
+                    disabled={saving}
+                    className="gap-2 bg-primary hover:bg-primary/90"
+                  >
+                    <Save className="h-4 w-4" /> {saving ? 'Salvando...' : 'Salvar Alterações'}
+                  </Button>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {profile?.role === 'Administrador' && (
+          <TabsContent value="usuarios">
+            <Card>
+              <CardHeader>
+                <CardTitle>Usuários e Permissões</CardTitle>
+                <CardDescription>
+                  Gerencie os papéis de acesso da sua equipe. Visitantes não podem alterar dados.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <UserManagement />
+              </CardContent>
+            </Card>
+          </TabsContent>
+        )}
+      </Tabs>
     </div>
   )
 }

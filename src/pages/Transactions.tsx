@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useFinanceStore } from '@/stores/financeStore'
+import { useAuth } from '@/hooks/use-auth'
 import {
   Table,
   TableBody,
@@ -21,6 +22,7 @@ import { Transaction } from '@/types/finance'
 
 export default function Transactions() {
   const { transactions, categories, accounts, loadingData } = useFinanceStore()
+  const { profile } = useAuth()
   const [search, setSearch] = useState('')
   const [quickFilter, setQuickFilter] = useState<'ALL' | 'PREVISTO' | 'VENCIDO'>('ALL')
   const [isSheetOpen, setIsSheetOpen] = useState(false)
@@ -90,22 +92,27 @@ export default function Transactions() {
           <p className="text-sm text-muted-foreground">Gerencie seus lançamentos financeiros</p>
         </div>
         <div className="flex gap-2">
-          <Sheet open={isSheetOpen} onOpenChange={handleSheetChange}>
-            <SheetTrigger asChild>
-              <Button
-                className="gap-2 bg-green-600 hover:bg-green-700"
-                onClick={() => setEditingTx(null)}
-              >
-                <Plus className="h-4 w-4" /> Novo Lançamento
-              </Button>
-            </SheetTrigger>
-            <SheetContent className="overflow-y-auto w-full sm:max-w-md">
-              <SheetHeader>
-                <SheetTitle>{editingTx ? 'Editar Transação' : 'Adicionar Transação'}</SheetTitle>
-              </SheetHeader>
-              <TransactionForm onSuccess={() => handleSheetChange(false)} initialData={editingTx} />
-            </SheetContent>
-          </Sheet>
+          {profile?.role !== 'Visitante' && (
+            <Sheet open={isSheetOpen} onOpenChange={handleSheetChange}>
+              <SheetTrigger asChild>
+                <Button
+                  className="gap-2 bg-green-600 hover:bg-green-700"
+                  onClick={() => setEditingTx(null)}
+                >
+                  <Plus className="h-4 w-4" /> Novo Lançamento
+                </Button>
+              </SheetTrigger>
+              <SheetContent className="overflow-y-auto w-full sm:max-w-md">
+                <SheetHeader>
+                  <SheetTitle>{editingTx ? 'Editar Transação' : 'Adicionar Transação'}</SheetTitle>
+                </SheetHeader>
+                <TransactionForm
+                  onSuccess={() => handleSheetChange(false)}
+                  initialData={editingTx}
+                />
+              </SheetContent>
+            </Sheet>
+          )}
         </div>
       </div>
 
@@ -164,7 +171,9 @@ export default function Transactions() {
               <TableHead>Conta</TableHead>
               <TableHead>Status</TableHead>
               <TableHead className="text-right">Valor</TableHead>
-              <TableHead className="text-center w-24">Ações</TableHead>
+              {(profile?.role === 'Administrador' || profile?.role === 'Colaborador') && (
+                <TableHead className="text-center w-24">Ações</TableHead>
+              )}
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -235,26 +244,30 @@ export default function Transactions() {
                   >
                     {formatCurrency(tx.amount, tx.type)}
                   </TableCell>
-                  <TableCell className="text-center">
-                    <div className="flex justify-center gap-1">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-8 w-8 text-slate-400 hover:text-blue-600 hover:bg-blue-50"
-                        onClick={() => handleEdit(tx)}
-                      >
-                        <Pencil className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-8 w-8 text-slate-400 hover:text-red-600 hover:bg-red-50"
-                        onClick={() => setDeletingId(tx.id)}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </TableCell>
+                  {(profile?.role === 'Administrador' || profile?.role === 'Colaborador') && (
+                    <TableCell className="text-center">
+                      <div className="flex justify-center gap-1">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 text-slate-400 hover:text-blue-600 hover:bg-blue-50"
+                          onClick={() => handleEdit(tx)}
+                        >
+                          <Pencil className="h-4 w-4" />
+                        </Button>
+                        {profile?.role === 'Administrador' && (
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8 text-slate-400 hover:text-red-600 hover:bg-red-50"
+                            onClick={() => setDeletingId(tx.id)}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        )}
+                      </div>
+                    </TableCell>
+                  )}
                 </TableRow>
               ))
             )}

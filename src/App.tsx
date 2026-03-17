@@ -11,13 +11,30 @@ import NotFound from './pages/NotFound'
 import Login from './pages/Login'
 import Layout from './components/Layout'
 
-const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  const { user, loading } = useAuth()
-  if (loading)
+const ProtectedRoute = ({
+  children,
+  allowedRoles,
+}: {
+  children: React.ReactNode
+  allowedRoles?: string[]
+}) => {
+  const { user, profile, loading } = useAuth()
+
+  if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-100">Carregando...</div>
     )
-  if (!user) return <Navigate to="/login" replace />
+  }
+
+  if (!user) {
+    return <Navigate to="/login" replace />
+  }
+
+  if (allowedRoles) {
+    if (!profile) return <Navigate to="/" replace />
+    if (!allowedRoles.includes(profile.role)) return <Navigate to="/" replace />
+  }
+
   return <>{children}</>
 }
 
@@ -39,7 +56,14 @@ const App = () => (
             >
               <Route path="/" element={<Index />} />
               <Route path="/transacoes" element={<Transactions />} />
-              <Route path="/configuracoes" element={<Settings />} />
+              <Route
+                path="/configuracoes"
+                element={
+                  <ProtectedRoute allowedRoles={['Administrador', 'Colaborador']}>
+                    <Settings />
+                  </ProtectedRoute>
+                }
+              />
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>

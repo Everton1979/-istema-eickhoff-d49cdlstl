@@ -103,7 +103,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
 
     const [txRes, settingsRes, metricsRes] = await Promise.all([
       supabase.from('transactions').select('*').order('date', { ascending: false }),
-      supabase.from('user_settings').select('*').eq('user_id', user.id).maybeSingle(),
+      supabase.from('user_settings').select('*').limit(1).maybeSingle(),
       supabase.from('monthly_metrics').select('*'),
     ])
 
@@ -246,29 +246,40 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
 
   const saveMonthlyMetric = async (metric: Omit<MonthlyMetric, 'id'>) => {
     if (!user) return
-    const { data, error } = await supabase
-      .from('monthly_metrics')
-      .upsert(
-        {
-          user_id: user.id,
-          month: metric.month,
-          year: metric.year,
-          orders_count: metric.orders_count,
-          total_system_sales: metric.total_system_sales,
-          raw_material_costs: metric.raw_material_costs,
-          sales_target: metric.sales_target || 0,
-          updated_at: new Date().toISOString(),
-        },
-        { onConflict: 'user_id,month,year' },
-      )
-      .select()
-      .single()
+
+    const existing = monthlyMetrics.find((m) => m.month === metric.month && m.year === metric.year)
+
+    const payload = {
+      month: metric.month,
+      year: metric.year,
+      orders_count: metric.orders_count,
+      total_system_sales: metric.total_system_sales,
+      raw_material_costs: metric.raw_material_costs,
+      sales_target: metric.sales_target || 0,
+      updated_at: new Date().toISOString(),
+    }
+
+    let result
+    if (existing) {
+      result = await supabase
+        .from('monthly_metrics')
+        .update(payload)
+        .eq('id', existing.id)
+        .select()
+        .single()
+    } else {
+      result = await supabase
+        .from('monthly_metrics')
+        .insert({ ...payload, user_id: user.id })
+        .select()
+        .single()
+    }
+
+    const { data, error } = result
 
     if (!error && data) {
       setMonthlyMetrics((prev) => {
-        const filtered = prev.filter(
-          (m) => m.id !== data.id && (m.month !== metric.month || m.year !== metric.year),
-        )
+        const filtered = prev.filter((m) => m.id !== data.id)
         return [
           ...filtered,
           {
@@ -287,13 +298,21 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
 
   const updateAccountInitialBalances = async (balances: Record<string, number>) => {
     if (!user) return { error: 'Not authenticated' }
+
+    const { data: existing } = await supabase
+      .from('user_settings')
+      .select('user_id')
+      .limit(1)
+      .maybeSingle()
+
     const { error } = await supabase.from('user_settings').upsert(
       {
-        user_id: user.id,
+        user_id: existing?.user_id || user.id,
         initial_balance_dinheiro: balances.acc1 ?? 0,
         initial_balance_stone: balances.acc2 ?? 0,
         initial_balance_pagbank: balances.acc3 ?? 0,
         initial_balance_pix: balances.acc4 ?? 0,
+        updated_at: new Date().toISOString(),
       },
       { onConflict: 'user_id' },
     )

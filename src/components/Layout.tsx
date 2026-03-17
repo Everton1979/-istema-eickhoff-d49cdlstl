@@ -8,13 +8,30 @@ import { HelpModal } from '@/components/HelpModal'
 
 export default function Layout() {
   const location = useLocation()
-  const { user, signOut } = useAuth()
+  const { user, profile, signOut } = useAuth()
 
-  const navItems = [
-    { name: 'Dashboard', path: '/', icon: LayoutDashboard },
-    { name: 'Transações', path: '/transacoes', icon: ReceiptText },
-    { name: 'Configurações', path: '/configuracoes', icon: Settings },
+  const allNavItems = [
+    {
+      name: 'Dashboard',
+      path: '/',
+      icon: LayoutDashboard,
+      allowed: ['Administrador', 'Colaborador', 'Visitante'],
+    },
+    {
+      name: 'Transações',
+      path: '/transacoes',
+      icon: ReceiptText,
+      allowed: ['Administrador', 'Colaborador', 'Visitante'],
+    },
+    {
+      name: 'Configurações',
+      path: '/configuracoes',
+      icon: Settings,
+      allowed: ['Administrador', 'Colaborador'],
+    },
   ]
+
+  const navItems = allNavItems.filter((item) => profile && item.allowed.includes(profile.role))
 
   const NavLinks = () => (
     <>
@@ -54,7 +71,12 @@ export default function Layout() {
           </nav>
 
           <div className="flex items-center gap-2 sm:gap-4">
-            <span className="text-sm hidden sm:block text-blue-200 mr-2">{user?.email}</span>
+            <div className="hidden sm:flex flex-col items-end mr-2">
+              <span className="text-sm font-medium text-blue-100">{user?.email}</span>
+              <span className="text-[10px] uppercase text-blue-300 font-semibold">
+                {profile?.role}
+              </span>
+            </div>
             <HelpModal />
             <Button
               variant="ghost"
@@ -76,6 +98,12 @@ export default function Layout() {
                 className="w-[240px] bg-primary text-white border-none pt-10"
               >
                 <div className="flex flex-col gap-4">
+                  <div className="mb-4 pb-4 border-b border-blue-800">
+                    <span className="block text-sm font-medium text-blue-100">{user?.email}</span>
+                    <span className="block text-[10px] uppercase text-blue-300 font-semibold mt-1">
+                      {profile?.role}
+                    </span>
+                  </div>
                   <NavLinks />
                 </div>
               </SheetContent>
