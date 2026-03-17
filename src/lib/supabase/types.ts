@@ -58,6 +58,7 @@ export type Database = {
           description: string
           id: string
           status: string
+          tags: string | null
           type: string
           user_id: string
         }
@@ -70,6 +71,7 @@ export type Database = {
           description: string
           id?: string
           status?: string
+          tags?: string | null
           type: string
           user_id: string
         }
@@ -82,6 +84,7 @@ export type Database = {
           description?: string
           id?: string
           status?: string
+          tags?: string | null
           type?: string
           user_id?: string
         }
@@ -286,6 +289,7 @@ export const Constants = {
 //   status: text (not null, default: 'REALIZADO'::text)
 //   date: timestamp with time zone (not null)
 //   created_at: timestamp with time zone (not null, default: now())
+//   tags: text (nullable, default: ''::text)
 // Table: user_settings
 //   user_id: uuid (not null)
 //   initial_balance_dinheiro: numeric (nullable, default: 0)

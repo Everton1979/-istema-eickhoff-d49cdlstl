@@ -4,6 +4,7 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { useAuth } from '@/hooks/use-auth'
+import { HelpModal } from '@/components/HelpModal'
 
 export default function Layout() {
   const location = useLocation()
@@ -52,13 +53,15 @@ export default function Layout() {
             <NavLinks />
           </nav>
 
-          <div className="flex items-center gap-4">
-            <span className="text-sm hidden sm:block text-blue-200">{user?.email}</span>
+          <div className="flex items-center gap-2 sm:gap-4">
+            <span className="text-sm hidden sm:block text-blue-200 mr-2">{user?.email}</span>
+            <HelpModal />
             <Button
               variant="ghost"
               size="icon"
               onClick={() => signOut()}
               className="text-white hover:bg-primary/80"
+              title="Sair"
             >
               <LogOut className="h-4 w-4" />
             </Button>
