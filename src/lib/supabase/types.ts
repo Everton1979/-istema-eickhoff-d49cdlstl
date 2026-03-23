@@ -114,6 +114,7 @@ export type Database = {
       user_settings: {
         Row: {
           created_at: string
+          initial_balance_banricompras: number | null
           initial_balance_dinheiro: number | null
           initial_balance_pagbank: number | null
           initial_balance_pix: number | null
@@ -123,6 +124,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          initial_balance_banricompras?: number | null
           initial_balance_dinheiro?: number | null
           initial_balance_pagbank?: number | null
           initial_balance_pix?: number | null
@@ -132,6 +134,7 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          initial_balance_banricompras?: number | null
           initial_balance_dinheiro?: number | null
           initial_balance_pagbank?: number | null
           initial_balance_pix?: number | null
@@ -324,6 +327,7 @@ export const Constants = {
 //   initial_balance_pix: numeric (nullable, default: 0)
 //   created_at: timestamp with time zone (not null, default: now())
 //   updated_at: timestamp with time zone (not null, default: now())
+//   initial_balance_banricompras: numeric (nullable, default: 0)
 
 // --- CONSTRAINTS ---
 // Table: monthly_metrics
