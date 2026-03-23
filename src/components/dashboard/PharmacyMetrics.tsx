@@ -2,6 +2,8 @@ import { useFinanceStore } from '@/stores/financeStore'
 import { useMemo } from 'react'
 import { Card, CardContent } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
+import { HelpCircle } from 'lucide-react'
 
 export function PharmacyMetrics() {
   const { filteredTransactions, filteredMonthlyMetrics } = useFinanceStore()
@@ -43,25 +45,39 @@ export function PharmacyMetrics() {
     )
 
   const items = [
-    { title: 'Ticket Médio', value: formatCurrency(metrics.ticketMedio), color: 'text-indigo-600' },
-    { title: 'Fator Médio', value: formatDecimal(metrics.fatorMedio), color: 'text-indigo-600' },
+    {
+      title: 'Ticket Médio',
+      tooltip: 'Valor médio por venda (Faturamento / Número de pedidos).',
+      value: formatCurrency(metrics.ticketMedio),
+      color: 'text-indigo-600',
+    },
+    {
+      title: 'Fator Médio',
+      tooltip: 'Relação entre faturamento e custo de matéria-prima.',
+      value: formatDecimal(metrics.fatorMedio),
+      color: 'text-indigo-600',
+    },
     {
       title: 'Margem Contribuição',
+      tooltip: 'Receita bruta menos custos variáveis (o que sobra para pagar custos fixos).',
       value: formatCurrency(metrics.margemContribuicao),
       color: metrics.margemContribuicao >= 0 ? 'text-emerald-600' : 'text-red-500',
     },
     {
       title: 'CFA Total (Fixas)',
+      tooltip: 'Soma de todas as despesas fixas administrativas.',
       value: formatCurrency(metrics.cfaTotal),
       color: 'text-orange-600',
     },
     {
       title: 'Mark-up Divisor',
+      tooltip: 'Índice para descontar margens do valor total.',
       value: formatDecimal(metrics.mkpDivisor),
       color: 'text-purple-600',
     },
     {
       title: 'Mark-up Multiplicador',
+      tooltip: 'Fator sobre o custo para encontrar o preço de venda.',
       value: formatDecimal(metrics.mkpMultiplier),
       color: 'text-purple-600',
     },
@@ -78,8 +94,16 @@ export function PharmacyMetrics() {
         {items.map((item, i) => (
           <Card key={i} className="rounded-sm shadow-none border-slate-200 bg-white">
             <CardContent className="p-2 text-center flex flex-col justify-center h-full">
-              <h4 className="text-[9px] font-semibold text-slate-500 uppercase leading-tight mb-1">
+              <h4 className="text-[9px] font-semibold text-slate-500 uppercase leading-tight mb-1 flex items-center justify-center gap-1">
                 {item.title}
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <HelpCircle className="w-3 h-3 text-slate-400 hover:text-slate-600 cursor-help" />
+                  </TooltipTrigger>
+                  <TooltipContent className="max-w-[200px] text-center" side="bottom">
+                    <p className="text-xs">{item.tooltip}</p>
+                  </TooltipContent>
+                </Tooltip>
               </h4>
               <p className={cn('text-sm md:text-base font-bold tracking-tight', item.color)}>
                 {item.value}

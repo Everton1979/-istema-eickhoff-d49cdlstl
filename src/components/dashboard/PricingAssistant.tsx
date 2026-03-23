@@ -2,8 +2,9 @@ import { useFinanceStore } from '@/stores/financeStore'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Calculator, ArrowRight } from 'lucide-react'
+import { Calculator, ArrowRight, HelpCircle } from 'lucide-react'
 import { useState, useMemo } from 'react'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 
 export function PricingAssistant() {
   const { monthlyMetrics, transactions } = useFinanceStore()
@@ -46,7 +47,20 @@ export function PricingAssistant() {
       <CardContent className="p-3">
         <div className="flex items-center gap-1.5 text-purple-700 mb-3">
           <Calculator className="w-4 h-4" />
-          <h3 className="text-xs font-bold uppercase tracking-wide">Assistente de Precificação</h3>
+          <h3 className="text-xs font-bold uppercase tracking-wide flex items-center gap-1">
+            Assistente de Precificação
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <HelpCircle className="w-3.5 h-3.5 text-purple-400 hover:text-purple-600 cursor-help" />
+              </TooltipTrigger>
+              <TooltipContent className="max-w-[200px] text-center" side="bottom">
+                <p className="text-xs">
+                  Ferramenta que projeta o preço de venda sugerido utilizando o Markup Multiplicador
+                  configurado.
+                </p>
+              </TooltipContent>
+            </Tooltip>
+          </h3>
         </div>
 
         <div className="flex items-center gap-3">
