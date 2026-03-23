@@ -21,7 +21,7 @@ import { cn } from '@/lib/utils'
 import { Transaction } from '@/types/finance'
 
 export default function Transactions() {
-  const { transactions, categories, accounts, loadingData } = useFinanceStore()
+  const { filteredTransactions, categories, accounts, loadingData } = useFinanceStore()
   const { profile } = useAuth()
   const [search, setSearch] = useState('')
   const [quickFilter, setQuickFilter] = useState<'ALL' | 'PREVISTO' | 'VENCIDO'>('ALL')
@@ -32,7 +32,7 @@ export default function Transactions() {
   const today = new Date()
   today.setHours(0, 0, 0, 0)
 
-  const filteredData = transactions.filter((t) => {
+  const filteredData = filteredTransactions.filter((t) => {
     const searchLower = search.toLowerCase()
     const matchesSearch =
       t.description.toLowerCase().includes(searchLower) ||
@@ -186,11 +186,11 @@ export default function Transactions() {
             ) : filteredData.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={7} className="h-24 text-center text-muted-foreground">
-                  Nenhuma transação encontrada.
+                  Nenhuma transação encontrada no período.
                 </TableCell>
               </TableRow>
             ) : (
-              filteredData.slice(0, 50).map((tx) => (
+              filteredData.map((tx) => (
                 <TableRow key={tx.id}>
                   <TableCell className="whitespace-nowrap font-medium text-slate-600">
                     {format(new Date(tx.date), 'dd/MM/yyyy')}
@@ -275,7 +275,7 @@ export default function Transactions() {
         </Table>
       </div>
       <div className="text-xs text-muted-foreground mt-2 text-right">
-        Mostrando {Math.min(filteredData.length, 50)} registros de {filteredData.length}.
+        Total de {filteredData.length} transações no período selecionado.
       </div>
 
       <DeleteTransactionDialog
