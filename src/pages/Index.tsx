@@ -11,6 +11,7 @@ import { SalesTargetProgress } from '@/components/dashboard/SalesTargetProgress'
 import { PricingAssistant } from '@/components/dashboard/PricingAssistant'
 import { PerformanceEvolutionChart } from '@/components/dashboard/PerformanceEvolutionChart'
 import { PrintableReport } from '@/components/dashboard/PrintableReport'
+import { StatusDetailPanel } from '@/components/dashboard/StatusDetailPanel'
 
 export default function Index() {
   return (
@@ -64,6 +65,8 @@ export default function Index() {
                 </div>
               </div>
             </div>
+
+            <StatusDetailPanel />
           </div>
         </div>
       </div>

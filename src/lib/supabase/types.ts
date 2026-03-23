@@ -48,6 +48,27 @@ export type Database = {
         }
         Relationships: []
       }
+      profiles: {
+        Row: {
+          email: string
+          id: string
+          role: string
+          updated_at: string | null
+        }
+        Insert: {
+          email: string
+          id: string
+          role?: string
+          updated_at?: string | null
+        }
+        Update: {
+          email?: string
+          id?: string
+          role?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       transactions: {
         Row: {
           account: string | null
@@ -125,7 +146,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_user_role: { Args: never; Returns: string }
     }
     Enums: {
       [_ in never]: never
@@ -278,6 +299,11 @@ export const Constants = {
 //   created_at: timestamp with time zone (not null, default: now())
 //   updated_at: timestamp with time zone (not null, default: now())
 //   sales_target: numeric (not null, default: 0)
+// Table: profiles
+//   id: uuid (not null)
+//   email: text (not null)
+//   role: text (not null, default: 'Visitante'::text)
+//   updated_at: timestamp with time zone (nullable, default: now())
 // Table: transactions
 //   id: uuid (not null, default: gen_random_uuid())
 //   user_id: uuid (not null)
@@ -304,6 +330,10 @@ export const Constants = {
 //   PRIMARY KEY monthly_metrics_pkey: PRIMARY KEY (id)
 //   FOREIGN KEY monthly_metrics_user_id_fkey: FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE
 //   UNIQUE monthly_metrics_user_id_month_year_key: UNIQUE (user_id, month, year)
+// Table: profiles
+//   FOREIGN KEY profiles_id_fkey: FOREIGN KEY (id) REFERENCES auth.users(id) ON DELETE CASCADE
+//   PRIMARY KEY profiles_pkey: PRIMARY KEY (id)
+//   CHECK profiles_role_check: CHECK ((role = ANY (ARRAY['Administrador'::text, 'Colaborador'::text, 'Visitante'::text])))
 // Table: transactions
 //   PRIMARY KEY transactions_pkey: PRIMARY KEY (id)
 //   FOREIGN KEY transactions_user_id_fkey: FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE
@@ -313,14 +343,64 @@ export const Constants = {
 
 // --- ROW LEVEL SECURITY POLICIES ---
 // Table: monthly_metrics
-//   Policy "Users can manage their own monthly metrics" (ALL, PERMISSIVE) roles={public}
-//     USING: (auth.uid() = user_id)
+//   Policy "Admin and Colaborador can insert monthly metrics" (INSERT, PERMISSIVE) roles={authenticated}
+//     WITH CHECK: (get_user_role() = ANY (ARRAY['Administrador'::text, 'Colaborador'::text]))
+//   Policy "Admin and Colaborador can update monthly metrics" (UPDATE, PERMISSIVE) roles={authenticated}
+//     USING: (get_user_role() = ANY (ARRAY['Administrador'::text, 'Colaborador'::text]))
+//   Policy "Admin can delete monthly metrics" (DELETE, PERMISSIVE) roles={authenticated}
+//     USING: (get_user_role() = 'Administrador'::text)
+//   Policy "Authenticated users can read monthly metrics" (SELECT, PERMISSIVE) roles={authenticated}
+//     USING: true
+// Table: profiles
+//   Policy "Admins can read all profiles" (SELECT, PERMISSIVE) roles={authenticated}
+//     USING: (get_user_role() = 'Administrador'::text)
+//   Policy "Admins can update profiles" (UPDATE, PERMISSIVE) roles={authenticated}
+//     USING: (get_user_role() = 'Administrador'::text)
+//   Policy "Users can read own profile" (SELECT, PERMISSIVE) roles={authenticated}
+//     USING: (auth.uid() = id)
 // Table: transactions
-//   Policy "Users can manage their own transactions" (ALL, PERMISSIVE) roles={public}
-//     USING: (auth.uid() = user_id)
+//   Policy "Admin and Colaborador can insert transactions" (INSERT, PERMISSIVE) roles={authenticated}
+//     WITH CHECK: (get_user_role() = ANY (ARRAY['Administrador'::text, 'Colaborador'::text]))
+//   Policy "Admin and Colaborador can update transactions" (UPDATE, PERMISSIVE) roles={authenticated}
+//     USING: (get_user_role() = ANY (ARRAY['Administrador'::text, 'Colaborador'::text]))
+//   Policy "Admin can delete transactions" (DELETE, PERMISSIVE) roles={authenticated}
+//     USING: (get_user_role() = 'Administrador'::text)
+//   Policy "Authenticated users can read transactions" (SELECT, PERMISSIVE) roles={authenticated}
+//     USING: true
 // Table: user_settings
-//   Policy "Users can manage their own settings" (ALL, PERMISSIVE) roles={public}
-//     USING: (auth.uid() = user_id)
+//   Policy "Admin can delete user settings" (DELETE, PERMISSIVE) roles={authenticated}
+//     USING: (get_user_role() = 'Administrador'::text)
+//   Policy "Admin can insert user settings" (INSERT, PERMISSIVE) roles={authenticated}
+//     WITH CHECK: (get_user_role() = 'Administrador'::text)
+//   Policy "Admin can update user settings" (UPDATE, PERMISSIVE) roles={authenticated}
+//     USING: (get_user_role() = 'Administrador'::text)
+//   Policy "Authenticated users can read user settings" (SELECT, PERMISSIVE) roles={authenticated}
+//     USING: true
+
+// --- DATABASE FUNCTIONS ---
+// FUNCTION get_user_role()
+//   CREATE OR REPLACE FUNCTION public.get_user_role()
+//    RETURNS text
+//    LANGUAGE sql
+//    STABLE SECURITY DEFINER
+//    SET search_path TO 'public'
+//   AS $function$
+//     SELECT role FROM profiles WHERE id = auth.uid();
+//   $function$
+//
+// FUNCTION handle_new_user()
+//   CREATE OR REPLACE FUNCTION public.handle_new_user()
+//    RETURNS trigger
+//    LANGUAGE plpgsql
+//    SECURITY DEFINER
+//   AS $function$
+//   BEGIN
+//     INSERT INTO public.profiles (id, email, role)
+//     VALUES (NEW.id, NEW.email, 'Visitante');
+//     RETURN NEW;
+//   END;
+//   $function$
+//
 
 // --- INDEXES ---
 // Table: monthly_metrics
