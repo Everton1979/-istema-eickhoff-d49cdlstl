@@ -105,9 +105,9 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
     if (!user) return
 
     const [txRes, settingsRes, metricsRes] = await Promise.all([
-      supabase.from('transactions').select('*').order('date', { ascending: false }),
+      supabase.from('transactions').select('*').order('date', { ascending: false }).limit(10000),
       supabase.from('user_settings').select('*').limit(1).maybeSingle(),
-      supabase.from('monthly_metrics').select('*'),
+      supabase.from('monthly_metrics').select('*').limit(5000),
     ])
 
     if (txRes.data) {
@@ -335,9 +335,19 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
 
   const filteredTransactions = useMemo(() => {
     return transactions.filter((tx) => {
-      const txDate = new Date(tx.date)
-      const txYear = txDate.getFullYear().toString()
-      const txMonth = (txDate.getMonth() + 1).toString().padStart(2, '0')
+      let txYear = ''
+      let txMonth = ''
+
+      if (tx.date.includes('T')) {
+        const datePart = tx.date.split('T')[0]
+        const parts = datePart.split('-')
+        txYear = parts[0]
+        txMonth = parts[1]
+      } else {
+        const txDate = new Date(tx.date)
+        txYear = txDate.getFullYear().toString()
+        txMonth = (txDate.getMonth() + 1).toString().padStart(2, '0')
+      }
 
       if (filters.years.length > 0 && !filters.years.includes(txYear)) return false
       if (filters.months.length > 0 && !filters.months.includes(txMonth)) return false
