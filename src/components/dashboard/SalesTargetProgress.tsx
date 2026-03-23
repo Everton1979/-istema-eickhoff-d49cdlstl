@@ -9,12 +9,12 @@ import { useState, useMemo } from 'react'
 import { getWorkingDays } from '@/lib/holidays'
 
 export function SalesTargetProgress() {
-  const { monthlyMetrics, saveMonthlyMetric, filters } = useFinanceStore()
+  const { monthlyMetrics, saveMonthlyMetric, filters, transactions } = useFinanceStore()
   const { profile } = useAuth()
   const [isEditing, setIsEditing] = useState(false)
   const [tempValue, setTempValue] = useState('')
 
-  const { metric, monthName, workingDays } = useMemo(() => {
+  const { metric, monthName, workingDays, achieved } = useMemo(() => {
     const currentYear = parseInt(filters.years[0] || new Date().getFullYear().toString())
     const currentMonth =
       filters.months.length > 0 ? parseInt(filters.months[0]) : new Date().getMonth() + 1
@@ -36,6 +36,19 @@ export function SalesTargetProgress() {
     const found = monthlyMetrics.find((m) => m.year === currentYear && m.month === currentMonth)
     const wDays = getWorkingDays(currentYear, currentMonth)
 
+    let inc = 0
+    transactions.forEach((tx) => {
+      const d = new Date(tx.date)
+      if (
+        d.getFullYear() === currentYear &&
+        d.getMonth() + 1 === currentMonth &&
+        tx.type === 'INCOME' &&
+        tx.status === 'REALIZADO'
+      ) {
+        inc += tx.amount
+      }
+    })
+
     return {
       metric: found || {
         month: currentMonth,
@@ -48,12 +61,14 @@ export function SalesTargetProgress() {
       },
       monthName: `${monthLabels[currentMonth - 1]}/${currentYear}`,
       workingDays: wDays,
+      achieved: inc,
     }
-  }, [monthlyMetrics, filters])
+  }, [monthlyMetrics, filters, transactions])
 
   const target = metric.sales_target
-  const sales = metric.total_system_sales
-  const percentage = target > 0 ? Math.min((sales / target) * 100, 100) : 0
+  const remaining = Math.max(0, target - achieved)
+  const remainingPct = target > 0 ? (remaining / target) * 100 : 0
+  const achievedPct = target > 0 ? Math.min((achieved / target) * 100, 100) : 0
   const dailyTarget = workingDays > 0 ? target / workingDays : 0
 
   const handleEdit = () => {
@@ -130,27 +145,36 @@ export function SalesTargetProgress() {
         ) : (
           <div className="flex justify-between items-end mb-1">
             <div>
-              <p className="text-[10px] text-gray-500 font-medium">Realizado</p>
-              <p className="text-sm font-bold text-gray-800">{formatCurrency(sales)}</p>
+              <p className="text-[10px] text-gray-500 font-medium">Meta Mês</p>
+              <p className="text-sm font-bold text-gray-800">{formatCurrency(target)}</p>
             </div>
             <div className="text-right">
-              <p className="text-[10px] text-gray-500 font-medium">Objetivo</p>
-              <p className="text-sm font-bold text-emerald-600">{formatCurrency(target)}</p>
+              <p className="text-[10px] text-gray-500 font-medium">Realizado</p>
+              <p className="text-sm font-bold text-emerald-600">{formatCurrency(achieved)}</p>
             </div>
           </div>
         )}
 
-        <div className="space-y-1 mt-1">
-          <Progress value={percentage} className="h-2 bg-gray-100" />
-          <div className="flex justify-between items-center text-[10px]">
-            <p className="text-gray-500 font-medium">
-              Meta Diária:{' '}
-              <span className="text-emerald-600 font-bold">{formatCurrency(dailyTarget)}</span>{' '}
-              <span className="text-gray-400">({workingDays} dias úteis)</span>
-            </p>
-            <p className="font-medium text-emerald-600 ml-2 whitespace-nowrap">
-              {percentage.toFixed(1)}% alc.
-            </p>
+        <div className="space-y-1 mt-1.5">
+          <Progress value={achievedPct} className="h-2 bg-gray-100" />
+          <div className="flex justify-between items-start text-[10px] mt-1">
+            <div className="flex flex-col">
+              <p className="text-gray-500 font-medium">
+                Diária:{' '}
+                <span className="text-gray-800 font-bold">{formatCurrency(dailyTarget)}</span>
+              </p>
+              <span className="text-gray-400 text-[8px] -mt-0.5">({workingDays} dias úteis)</span>
+            </div>
+            {target > 0 && (
+              <div className="flex flex-col items-end">
+                <span className="font-bold text-orange-500">
+                  Falta: {formatCurrency(remaining)}
+                </span>
+                <span className="text-orange-400 font-medium text-[9px] -mt-0.5">
+                  ({remainingPct.toFixed(1)}% restando)
+                </span>
+              </div>
+            )}
           </div>
         </div>
       </CardContent>
