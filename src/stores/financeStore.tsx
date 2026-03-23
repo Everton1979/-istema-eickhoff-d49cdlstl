@@ -8,6 +8,7 @@ export const ACCOUNTS: Account[] = [
   { id: 'acc2', name: 'Stone', initialBalance: 0 },
   { id: 'acc3', name: 'Pagbank', initialBalance: 0 },
   { id: 'acc4', name: 'PIX', initialBalance: 0 },
+  { id: 'acc5', name: 'Banricompras', initialBalance: 0 },
 ]
 
 export const CATEGORIES: Category[] = [
@@ -58,6 +59,7 @@ const mapAccountToDB = (acc: string) => {
   if (acc === 'acc2') return 'stone'
   if (acc === 'acc3') return 'pagbank'
   if (acc === 'acc4') return 'pix'
+  if (acc === 'acc5') return 'banricompras'
   return null
 }
 const mapAccountFromDB = (acc: string | null) => {
@@ -66,6 +68,7 @@ const mapAccountFromDB = (acc: string | null) => {
   if (acc === 'stone') return 'acc2'
   if (acc === 'pagbank') return 'acc3'
   if (acc === 'pix') return 'acc4'
+  if (acc === 'banricompras') return 'acc5'
   return ''
 }
 
@@ -137,13 +140,15 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
       )
     }
 
-    let accBalances = { acc1: 0, acc2: 0, acc3: 0, acc4: 0 }
+    let accBalances = { acc1: 0, acc2: 0, acc3: 0, acc4: 0, acc5: 0 }
     if (settingsRes.data) {
+      const data = settingsRes.data as any
       accBalances = {
-        acc1: Number(settingsRes.data.initial_balance_dinheiro || 0),
-        acc2: Number(settingsRes.data.initial_balance_stone || 0),
-        acc3: Number(settingsRes.data.initial_balance_pagbank || 0),
-        acc4: Number(settingsRes.data.initial_balance_pix || 0),
+        acc1: Number(data.initial_balance_dinheiro || 0),
+        acc2: Number(data.initial_balance_stone || 0),
+        acc3: Number(data.initial_balance_pagbank || 0),
+        acc4: Number(data.initial_balance_pix || 0),
+        acc5: Number(data.initial_balance_banricompras || 0),
       }
     }
 
@@ -152,6 +157,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
       { id: 'acc2', name: 'Stone', initialBalance: accBalances.acc2 },
       { id: 'acc3', name: 'Pagbank', initialBalance: accBalances.acc3 },
       { id: 'acc4', name: 'PIX', initialBalance: accBalances.acc4 },
+      { id: 'acc5', name: 'Banricompras', initialBalance: accBalances.acc5 },
     ])
 
     setLoadingData(false)
@@ -305,17 +311,19 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
       .limit(1)
       .maybeSingle()
 
-    const { error } = await supabase.from('user_settings').upsert(
-      {
-        user_id: existing?.user_id || user.id,
-        initial_balance_dinheiro: balances.acc1 ?? 0,
-        initial_balance_stone: balances.acc2 ?? 0,
-        initial_balance_pagbank: balances.acc3 ?? 0,
-        initial_balance_pix: balances.acc4 ?? 0,
-        updated_at: new Date().toISOString(),
-      },
-      { onConflict: 'user_id' },
-    )
+    const payload: any = {
+      user_id: existing?.user_id || user.id,
+      initial_balance_dinheiro: balances.acc1 ?? 0,
+      initial_balance_stone: balances.acc2 ?? 0,
+      initial_balance_pagbank: balances.acc3 ?? 0,
+      initial_balance_pix: balances.acc4 ?? 0,
+      initial_balance_banricompras: balances.acc5 ?? 0,
+      updated_at: new Date().toISOString(),
+    }
+
+    const { error } = await supabase
+      .from('user_settings')
+      .upsert(payload, { onConflict: 'user_id' })
 
     if (!error) {
       setAccounts((prev) =>
