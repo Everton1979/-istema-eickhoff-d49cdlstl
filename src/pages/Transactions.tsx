@@ -20,10 +20,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 import { TransactionForm } from '@/components/transactions/TransactionForm'
 import { DeleteTransactionDialog } from '@/components/transactions/DeleteTransactionDialog'
-import { Plus, Search, Pencil, Trash2, Info } from 'lucide-react'
-import { cn } from '@/lib/utils'
+import { Plus, Search, Pencil, Trash2, Info, Download } from 'lucide-react'
+import { cn, getTagColor } from '@/lib/utils'
 import { Transaction } from '@/types/finance'
 
 const MONTHS_PT = [
@@ -64,7 +70,6 @@ export default function Transactions() {
 
     if (!matchesSearch) return false
 
-    // Parse explicitly to avoid local timezone offset shifting the day
     const datePart = t.date.split('T')[0]
     const [year, month, day] = datePart.split('-').map(Number)
 
@@ -73,7 +78,6 @@ export default function Transactions() {
     }
 
     const tDate = new Date(year, month - 1, day)
-
     const today = new Date()
     today.setHours(0, 0, 0, 0)
 
@@ -118,14 +122,50 @@ export default function Transactions() {
     if (!open) setEditingTx(null)
   }
 
+  const handleExportCSV = () => {
+    const headers = ['Data', 'Descrição', 'Categoria', 'Conta', 'Status', 'Valor', 'Tags']
+    const rows = filteredData.map((tx) => [
+      tx.date.split('T')[0].split('-').reverse().join('/'),
+      `"${tx.description.replace(/"/g, '""')}"`,
+      `"${getCategoryName(tx.categoryId, tx.type)}"`,
+      `"${getAccountName(tx.accountId, tx.type)}"`,
+      tx.status,
+      tx.type === 'EXPENSE' ? -tx.amount : tx.amount,
+      `"${tx.tags || ''}"`,
+    ])
+    const csvContent = [headers.join(','), ...rows.map((r) => r.join(','))].join('\n')
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.setAttribute('download', `transacoes_${new Date().getTime()}.csv`)
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+  }
+
   return (
-    <div className="flex flex-col bg-white rounded-md shadow-md border p-4 sm:p-6 animate-fade-in-up mb-8 w-full">
-      <div className="flex justify-between items-center mb-6">
+    <div className="flex flex-col bg-white rounded-md shadow-md border p-4 sm:p-6 animate-fade-in-up mb-8 w-full print:shadow-none print:border-none print:p-0 print:m-0">
+      <div className="flex justify-between items-center mb-6 print:mb-4">
         <div>
           <h1 className="text-2xl font-bold text-primary">Transações</h1>
-          <p className="text-sm text-muted-foreground">Gerencie seus lançamentos financeiros</p>
+          <p className="text-sm text-muted-foreground print:hidden">
+            Gerencie seus lançamentos financeiros
+          </p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 print:hidden">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="gap-2 text-slate-600">
+                <Download className="h-4 w-4" /> Exportar
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={handleExportCSV}>Exportar para CSV</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => window.print()}>Salvar como PDF</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
           {profile?.role !== 'Visitante' && (
             <Sheet open={isSheetOpen} onOpenChange={handleSheetChange}>
               <SheetTrigger asChild>
@@ -150,7 +190,7 @@ export default function Transactions() {
         </div>
       </div>
 
-      <div className="bg-blue-50 text-blue-700 p-3 rounded-md mb-6 flex flex-col sm:flex-row sm:items-center gap-2 text-sm border border-blue-100 shadow-sm">
+      <div className="bg-blue-50 text-blue-700 p-3 rounded-md mb-6 flex flex-col sm:flex-row sm:items-center gap-2 text-sm border border-blue-100 shadow-sm print:hidden">
         <div className="flex items-center gap-2">
           <Info className="w-4 h-4 shrink-0" />
           <span>
@@ -162,7 +202,7 @@ export default function Transactions() {
         </span>
       </div>
 
-      <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 mb-4">
+      <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 mb-4 print:hidden">
         <div className="flex flex-col sm:flex-row w-full lg:w-auto gap-2">
           <div className="relative w-full sm:w-[260px]">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -222,10 +262,10 @@ export default function Transactions() {
         </div>
       </div>
 
-      <div className="rounded-md border bg-white relative">
-        <div className="overflow-x-auto overflow-y-auto max-h-[60vh] w-full custom-scrollbar">
-          <Table className="min-w-[800px] w-full">
-            <TableHeader className="bg-slate-50 sticky top-0 z-10 shadow-sm border-b">
+      <div className="rounded-md border bg-white relative print:border-none print:shadow-none">
+        <div className="overflow-x-auto overflow-y-auto max-h-[60vh] print:max-h-none print:overflow-visible w-full custom-scrollbar">
+          <Table className="min-w-[800px] w-full print:min-w-full">
+            <TableHeader className="bg-slate-50 sticky top-0 z-10 shadow-sm border-b print:static">
               <TableRow>
                 <TableHead className="w-28">Data</TableHead>
                 <TableHead>Descrição</TableHead>
@@ -234,7 +274,7 @@ export default function Transactions() {
                 <TableHead>Status</TableHead>
                 <TableHead className="text-right">Valor</TableHead>
                 {(profile?.role === 'Administrador' || profile?.role === 'Colaborador') && (
-                  <TableHead className="text-center w-24">Ações</TableHead>
+                  <TableHead className="text-center w-24 print:hidden">Ações</TableHead>
                 )}
               </TableRow>
             </TableHeader>
@@ -253,7 +293,7 @@ export default function Transactions() {
                 </TableRow>
               ) : (
                 filteredData.map((tx) => (
-                  <TableRow key={tx.id} className="hover:bg-slate-50/50">
+                  <TableRow key={tx.id} className="hover:bg-slate-50/50 print:break-inside-avoid">
                     <TableCell className="whitespace-nowrap font-medium text-slate-600">
                       {tx.date.split('T')[0].split('-').reverse().join('/')}
                     </TableCell>
@@ -264,14 +304,20 @@ export default function Transactions() {
                           {tx.tags
                             .split(',')
                             .filter(Boolean)
-                            .map((t) => (
-                              <span
-                                key={t}
-                                className="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-medium bg-slate-100 text-slate-600 border border-slate-200"
-                              >
-                                {t}
-                              </span>
-                            ))}
+                            .map((t) => {
+                              const trimmed = t.trim()
+                              return (
+                                <span
+                                  key={trimmed}
+                                  className={cn(
+                                    'inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-medium border',
+                                    getTagColor(trimmed),
+                                  )}
+                                >
+                                  {trimmed}
+                                </span>
+                              )
+                            })}
                         </div>
                       )}
                     </TableCell>
@@ -292,7 +338,10 @@ export default function Transactions() {
                         }
                         className={cn(
                           'text-[10px] font-semibold',
-                          tx.status === 'REALIZADO' && 'bg-emerald-500 hover:bg-emerald-600',
+                          tx.status === 'REALIZADO' &&
+                            'bg-emerald-500 hover:bg-emerald-600 print:bg-emerald-100 print:text-emerald-800',
+                          tx.status === 'PREVISTO' && 'print:bg-slate-100 print:text-slate-800',
+                          tx.status === 'VENCIDO' && 'print:bg-red-100 print:text-red-800',
                         )}
                       >
                         {tx.status}
@@ -307,7 +356,7 @@ export default function Transactions() {
                       {formatCurrency(tx.amount, tx.type)}
                     </TableCell>
                     {(profile?.role === 'Administrador' || profile?.role === 'Colaborador') && (
-                      <TableCell className="text-center">
+                      <TableCell className="text-center print:hidden">
                         <div className="flex justify-center gap-1">
                           <Button
                             variant="ghost"
@@ -338,7 +387,7 @@ export default function Transactions() {
         </div>
       </div>
 
-      <div className="flex justify-between items-center mt-4 pt-2 border-t text-sm">
+      <div className="flex justify-between items-center mt-4 pt-2 border-t text-sm print:hidden">
         <div className="text-muted-foreground text-xs hidden sm:block">
           Role a tabela para ver mais lançamentos se houver.
         </div>

@@ -18,12 +18,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { Badge } from '@/components/ui/badge'
 import { useFinanceStore } from '@/stores/financeStore'
 import { useToast } from '@/hooks/use-toast'
 import { useEffect, useState, useMemo } from 'react'
 import { Transaction } from '@/types/finance'
 import { X, Plus, Tag as TagIcon } from 'lucide-react'
+import { cn, getTagColor } from '@/lib/utils'
 
 const formSchema = z
   .object({
@@ -322,20 +322,22 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
                 {tagsList.length > 0 && (
                   <div className="flex flex-wrap gap-1.5 mt-2">
                     {tagsList.map((t) => (
-                      <Badge
+                      <span
                         key={t}
-                        variant="secondary"
-                        className="flex items-center gap-1 pl-2 pr-1 py-1"
+                        className={cn(
+                          'flex items-center gap-1 pl-2 pr-1 py-1 rounded text-xs font-medium border',
+                          getTagColor(t),
+                        )}
                       >
                         {t}
                         <button
                           type="button"
                           onClick={() => removeTag(t)}
-                          className="text-slate-500 hover:text-red-500 rounded-full p-0.5 hover:bg-slate-200 transition-colors"
+                          className="hover:text-red-600 rounded-full p-0.5 hover:bg-black/10 transition-colors"
                         >
                           <X className="w-3 h-3" />
                         </button>
-                      </Badge>
+                      </span>
                     ))}
                   </div>
                 )}
@@ -352,7 +354,10 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
                             type="button"
                             key={t}
                             onClick={() => addTag(t)}
-                            className="text-[10px] bg-slate-100 hover:bg-slate-200 text-slate-600 px-2 py-0.5 rounded-full transition-colors border border-slate-200"
+                            className={cn(
+                              'text-[10px] px-2 py-0.5 rounded-full transition-colors border hover:opacity-80',
+                              getTagColor(t),
+                            )}
                           >
                             {t}
                           </button>
