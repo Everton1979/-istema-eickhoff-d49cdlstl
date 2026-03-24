@@ -6,15 +6,18 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 import { HelpCircle } from 'lucide-react'
 
 export function KpiCards() {
-  const { filteredTransactions, categories } = useFinanceStore()
+  const { filteredTransactions, categories, filters } = useFinanceStore()
 
   const metrics = useMemo(() => {
     let receitas = 0
     let despesas = 0
     let custosVariaveis = 0
+    let custosFixos = 0
+
+    const targetStatuses = filters.statuses.length > 0 ? filters.statuses : ['REALIZADO']
 
     filteredTransactions.forEach((tx) => {
-      if (tx.status === 'REALIZADO') {
+      if (targetStatuses.includes(tx.status)) {
         if (tx.type === 'INCOME') {
           receitas += tx.amount
         } else {
@@ -22,6 +25,8 @@ export function KpiCards() {
           const cat = categories.find((c) => c.id === tx.categoryId)
           if (cat?.isVariable) {
             custosVariaveis += tx.amount
+          } else {
+            custosFixos += tx.amount
           }
         }
       }
@@ -29,12 +34,11 @@ export function KpiCards() {
 
     const margem = receitas - custosVariaveis
     const lucro = receitas - despesas
-    // Simplified break-even calculation for mock purposes
-    const pontoEquilibrio =
-      despesas - custosVariaveis > 0 ? (despesas - custosVariaveis) / (margem / receitas || 1) : 0
+    const indiceMargem = receitas > 0 ? margem / receitas : 0
+    const pontoEquilibrio = indiceMargem > 0 ? custosFixos / indiceMargem : 0
 
     return { receitas, despesas, margem, lucro, pontoEquilibrio }
-  }, [filteredTransactions, categories])
+  }, [filteredTransactions, categories, filters])
 
   const formatCurrency = (val: number) =>
     new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(

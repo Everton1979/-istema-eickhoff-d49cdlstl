@@ -7,37 +7,30 @@ import { useState, useMemo } from 'react'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 
 export function PricingAssistant() {
-  const { monthlyMetrics, transactions } = useFinanceStore()
+  const { filteredMonthlyMetrics, filteredTransactions, filters } = useFinanceStore()
   const [cost, setCost] = useState('')
 
   const markupMultiplier = useMemo(() => {
-    if (monthlyMetrics.length === 0) return 1
-
-    const sorted = [...monthlyMetrics].sort((a, b) =>
-      b.year !== a.year ? b.year - a.year : b.month - a.month,
-    )
-    const latest = sorted[0]
+    if (filteredMonthlyMetrics.length === 0) return 1
 
     let cfa = 0
     let varExp = 0
 
-    transactions.forEach((t) => {
-      const d = new Date(t.date)
-      if (
-        d.getMonth() + 1 === latest.month &&
-        d.getFullYear() === latest.year &&
-        t.type === 'EXPENSE'
-      ) {
+    const targetStatuses = filters.statuses.length > 0 ? filters.statuses : ['REALIZADO']
+
+    filteredTransactions.forEach((t) => {
+      if (t.type === 'EXPENSE' && targetStatuses.includes(t.status)) {
         if (t.categoryId === 'FIXA') cfa += t.amount
         if (t.categoryId === 'VARIAVEL') varExp += t.amount
       }
     })
 
-    const sales = latest.total_system_sales
-    const raw = latest.raw_material_costs
+    const sales = filteredMonthlyMetrics.reduce((sum, m) => sum + m.total_system_sales, 0)
+    const raw = filteredMonthlyMetrics.reduce((sum, m) => sum + m.raw_material_costs, 0)
+
     const divisor = sales > 0 ? (sales - (cfa + varExp + raw)) / sales : 0
     return divisor > 0 ? 1 / divisor : 1
-  }, [monthlyMetrics, transactions])
+  }, [filteredMonthlyMetrics, filteredTransactions, filters])
 
   const numericCost = parseFloat(cost)
   const suggestedPrice = !isNaN(numericCost) && numericCost > 0 ? numericCost * markupMultiplier : 0

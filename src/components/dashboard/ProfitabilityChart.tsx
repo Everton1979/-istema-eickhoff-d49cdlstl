@@ -13,7 +13,7 @@ import { useFinanceStore } from '@/stores/financeStore'
 import { ChartContainer, ChartTooltipContent } from '@/components/ui/chart'
 
 export function ProfitabilityChart() {
-  const { filteredTransactions, categories } = useFinanceStore()
+  const { filteredTransactions, categories, filters } = useFinanceStore()
 
   const data = useMemo(() => {
     const monthsData: Record<string, any> = {}
@@ -32,7 +32,11 @@ export function ProfitabilityChart() {
       'DEZ',
     ]
 
+    const targetStatuses = filters.statuses.length > 0 ? filters.statuses : ['REALIZADO']
+
     filteredTransactions.forEach((tx) => {
+      if (!targetStatuses.includes(tx.status)) return
+
       const date = new Date(tx.date)
       const m = date.getMonth()
       const key = `${date.getFullYear()}-${m}`
@@ -58,7 +62,7 @@ export function ProfitabilityChart() {
         'Lucro líquido': (d.receitas - d.despesas) * 0.85, // mock tax deduction
       }))
       .slice(-12)
-  }, [filteredTransactions, categories])
+  }, [filteredTransactions, categories, filters])
 
   return (
     <div className="bg-white p-2 rounded-sm border shadow-sm flex flex-col h-full">

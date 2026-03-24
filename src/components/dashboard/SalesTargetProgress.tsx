@@ -36,6 +36,7 @@ export function SalesTargetProgress() {
     const found = monthlyMetrics.find((m) => m.year === currentYear && m.month === currentMonth)
     const wDays = getWorkingDays(currentYear, currentMonth)
 
+    const targetStatuses = filters.statuses.length > 0 ? filters.statuses : ['REALIZADO']
     let inc = 0
     transactions.forEach((tx) => {
       const d = new Date(tx.date)
@@ -43,7 +44,7 @@ export function SalesTargetProgress() {
         d.getFullYear() === currentYear &&
         d.getMonth() + 1 === currentMonth &&
         tx.type === 'INCOME' &&
-        tx.status === 'REALIZADO'
+        targetStatuses.includes(tx.status)
       ) {
         inc += tx.amount
       }

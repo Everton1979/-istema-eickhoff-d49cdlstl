@@ -40,7 +40,12 @@ export function PerformanceEvolutionChart() {
 
       transactions.forEach((t) => {
         const td = new Date(t.date)
-        if (td.getMonth() + 1 === m && td.getFullYear() === y && t.type === 'EXPENSE') {
+        if (
+          td.getMonth() + 1 === m &&
+          td.getFullYear() === y &&
+          t.type === 'EXPENSE' &&
+          t.status === 'REALIZADO'
+        ) {
           if (t.categoryId === 'FIXA') cfa += t.amount
           if (t.categoryId === 'VARIAVEL') varExp += t.amount
         }

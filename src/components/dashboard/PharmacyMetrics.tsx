@@ -6,7 +6,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 import { HelpCircle } from 'lucide-react'
 
 export function PharmacyMetrics() {
-  const { filteredTransactions, filteredMonthlyMetrics } = useFinanceStore()
+  const { filteredTransactions, filteredMonthlyMetrics, filters } = useFinanceStore()
 
   const metrics = useMemo(() => {
     const totalSales = filteredMonthlyMetrics.reduce((sum, m) => sum + m.total_system_sales, 0)
@@ -18,9 +18,10 @@ export function PharmacyMetrics() {
 
     let cfaTotal = 0
     let varExpenses = 0
+    const targetStatuses = filters.statuses.length > 0 ? filters.statuses : ['REALIZADO']
 
     filteredTransactions.forEach((t) => {
-      if (t.type === 'EXPENSE') {
+      if (t.type === 'EXPENSE' && targetStatuses.includes(t.status)) {
         if (t.categoryId === 'FIXA') cfaTotal += t.amount
         if (t.categoryId === 'VARIAVEL') varExpenses += t.amount
       }
@@ -35,7 +36,7 @@ export function PharmacyMetrics() {
     const mkpMultiplier = mkpDivisor > 0 ? 1 / mkpDivisor : 0
 
     return { ticketMedio, fatorMedio, margemContribuicao, cfaTotal, mkpDivisor, mkpMultiplier }
-  }, [filteredTransactions, filteredMonthlyMetrics])
+  }, [filteredTransactions, filteredMonthlyMetrics, filters])
 
   const formatCurrency = (val: number) =>
     new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val)

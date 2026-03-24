@@ -14,7 +14,7 @@ import { useFinanceStore } from '@/stores/financeStore'
 import { ChartContainer, ChartTooltipContent } from '@/components/ui/chart'
 
 export function CashFlowChart() {
-  const { filteredTransactions } = useFinanceStore()
+  const { filteredTransactions, filters } = useFinanceStore()
 
   const data = useMemo(() => {
     const monthsData: Record<
@@ -36,7 +36,11 @@ export function CashFlowChart() {
       'DEZ',
     ]
 
+    const targetStatuses = filters.statuses.length > 0 ? filters.statuses : ['REALIZADO']
+
     filteredTransactions.forEach((tx) => {
+      if (!targetStatuses.includes(tx.status)) return
+
       const date = new Date(tx.date)
       const m = date.getMonth()
       const y = date.getFullYear()
@@ -53,7 +57,7 @@ export function CashFlowChart() {
       .sort((a, b) => a.sortKey.localeCompare(b.sortKey))
       .map((d) => ({ ...d, saldo: d.entradas - d.saidas }))
       .slice(-12) // Last 12 periods
-  }, [filteredTransactions])
+  }, [filteredTransactions, filters])
 
   return (
     <div className="bg-white p-2 rounded-sm border shadow-sm flex flex-col h-full">

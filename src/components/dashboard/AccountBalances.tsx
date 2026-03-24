@@ -3,14 +3,16 @@ import { useMemo } from 'react'
 import { ScrollArea } from '@/components/ui/scroll-area'
 
 export function AccountBalances() {
-  const { filteredTransactions } = useFinanceStore()
+  const { filteredTransactions, filters } = useFinanceStore()
 
   const { totalIncome, breakdowns } = useMemo(() => {
     let total = 0
     const pmTotals: Record<string, number> = {}
 
+    const targetStatuses = filters.statuses.length > 0 ? filters.statuses : ['REALIZADO']
+
     filteredTransactions.forEach((tx) => {
-      if (tx.type === 'INCOME' && tx.status === 'REALIZADO') {
+      if (tx.type === 'INCOME' && targetStatuses.includes(tx.status)) {
         total += tx.amount
         const pm = tx.paymentMethodId || 'outros'
         pmTotals[pm] = (pmTotals[pm] || 0) + tx.amount
@@ -30,7 +32,7 @@ export function AccountBalances() {
       .sort((a, b) => b.amount - a.amount)
 
     return { totalIncome: total, breakdowns: bdowns }
-  }, [filteredTransactions])
+  }, [filteredTransactions, filters])
 
   const formatCurrency = (val: number) =>
     new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(
