@@ -1,9 +1,9 @@
 import { useFinanceStore } from '@/stores/financeStore'
 import { Card, CardContent } from '@/components/ui/card'
-import { Progress } from '@/components/ui/progress'
-import { TrendingUp, CheckCircle2, AlertCircle } from 'lucide-react'
+import { TrendingUp, CheckCircle2, AlertCircle, HelpCircle } from 'lucide-react'
 import { useMemo } from 'react'
 import { cn } from '@/lib/utils'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 
 export function BreakEvenMonitor() {
   const { filteredTransactions, categories, filters } = useFinanceStore()
@@ -63,8 +63,25 @@ export function BreakEvenMonitor() {
         <div className="flex items-start justify-between mb-2">
           <div className="flex items-center gap-1.5 text-slate-700">
             <TrendingUp className="w-4 h-4" />
-            <h3 className="text-xs font-bold uppercase tracking-wide">
+            <h3 className="text-xs font-bold uppercase tracking-wide flex items-center gap-1">
               Monitor Ponto de Equilíbrio
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <HelpCircle className="w-3.5 h-3.5 text-slate-400 hover:text-slate-600 cursor-help" />
+                </TooltipTrigger>
+                <TooltipContent className="max-w-[250px] text-center" side="bottom">
+                  <div className="text-xs space-y-1">
+                    <p>
+                      Indica o momento em que a receita cobre todos os custos (fixos e variáveis).
+                    </p>
+                    <p className="text-[10px] text-slate-300">
+                      <span className="font-semibold text-red-400">{'< 100%'}</span>: Prejuízo |{' '}
+                      <span className="font-semibold text-yellow-400">{'= 100%'}</span>: Zero a zero
+                      | <span className="font-semibold text-emerald-400">{'> 100%'}</span>: Lucro
+                    </p>
+                  </div>
+                </TooltipContent>
+              </Tooltip>
             </h3>
           </div>
           {isProfitable && (
