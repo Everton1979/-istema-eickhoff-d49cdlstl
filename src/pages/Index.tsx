@@ -1,8 +1,8 @@
 import { DashboardHeader } from '@/components/dashboard/DashboardHeader'
 import { SidebarFilters } from '@/components/dashboard/SidebarFilters'
 import { KpiCards } from '@/components/dashboard/KpiCards'
-import { CashFlowChart } from '@/components/dashboard/CashFlowChart'
-import { ProfitabilityChart } from '@/components/dashboard/ProfitabilityChart'
+import { BreakEvenMonitor } from '@/components/dashboard/BreakEvenMonitor'
+import { UpcomingCommitments } from '@/components/dashboard/UpcomingCommitments'
 import { AccountBalances } from '@/components/dashboard/AccountBalances'
 import { PharmacyMetrics } from '@/components/dashboard/PharmacyMetrics'
 import { ExpenseDistribution } from '@/components/dashboard/ExpenseDistribution'
@@ -48,8 +48,8 @@ export default function Index() {
                   <PerformanceEvolutionChart />
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2 flex-1 min-h-[200px]">
-                  <CashFlowChart />
-                  <ProfitabilityChart />
+                  <BreakEvenMonitor />
+                  <UpcomingCommitments />
                 </div>
               </div>
 
