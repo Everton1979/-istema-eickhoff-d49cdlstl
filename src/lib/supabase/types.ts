@@ -78,6 +78,7 @@ export type Database = {
           date: string
           description: string
           id: string
+          payment_method: string | null
           status: string
           tags: string | null
           type: string
@@ -91,6 +92,7 @@ export type Database = {
           date: string
           description: string
           id?: string
+          payment_method?: string | null
           status?: string
           tags?: string | null
           type: string
@@ -104,6 +106,7 @@ export type Database = {
           date?: string
           description?: string
           id?: string
+          payment_method?: string | null
           status?: string
           tags?: string | null
           type?: string
@@ -118,6 +121,7 @@ export type Database = {
           initial_balance_dinheiro: number | null
           initial_balance_pagbank: number | null
           initial_balance_pix: number | null
+          initial_balance_sicredi: number | null
           initial_balance_stone: number | null
           updated_at: string
           user_id: string
@@ -128,6 +132,7 @@ export type Database = {
           initial_balance_dinheiro?: number | null
           initial_balance_pagbank?: number | null
           initial_balance_pix?: number | null
+          initial_balance_sicredi?: number | null
           initial_balance_stone?: number | null
           updated_at?: string
           user_id: string
@@ -138,6 +143,7 @@ export type Database = {
           initial_balance_dinheiro?: number | null
           initial_balance_pagbank?: number | null
           initial_balance_pix?: number | null
+          initial_balance_sicredi?: number | null
           initial_balance_stone?: number | null
           updated_at?: string
           user_id?: string
@@ -319,6 +325,7 @@ export const Constants = {
 //   date: timestamp with time zone (not null)
 //   created_at: timestamp with time zone (not null, default: now())
 //   tags: text (nullable, default: ''::text)
+//   payment_method: text (nullable)
 // Table: user_settings
 //   user_id: uuid (not null)
 //   initial_balance_dinheiro: numeric (nullable, default: 0)
@@ -328,6 +335,7 @@ export const Constants = {
 //   created_at: timestamp with time zone (not null, default: now())
 //   updated_at: timestamp with time zone (not null, default: now())
 //   initial_balance_banricompras: numeric (nullable, default: 0)
+//   initial_balance_sicredi: numeric (nullable, default: 0)
 
 // --- CONSTRAINTS ---
 // Table: monthly_metrics
