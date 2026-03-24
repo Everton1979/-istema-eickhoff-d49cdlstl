@@ -13,6 +13,13 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { TransactionForm } from '@/components/transactions/TransactionForm'
 import { DeleteTransactionDialog } from '@/components/transactions/DeleteTransactionDialog'
 import { Plus, Search, Pencil, Trash2, Info } from 'lucide-react'
@@ -38,6 +45,7 @@ export default function Transactions() {
   const { filteredTransactions, categories, accounts, loadingData, filters } = useFinanceStore()
   const { profile } = useAuth()
   const [search, setSearch] = useState('')
+  const [dayFilter, setDayFilter] = useState<string>('ALL')
   const [quickFilter, setQuickFilter] = useState<'ALL' | 'PREVISTO' | 'VENCIDO'>('ALL')
   const [isSheetOpen, setIsSheetOpen] = useState(false)
   const [editingTx, setEditingTx] = useState<Transaction | null>(null)
@@ -59,6 +67,11 @@ export default function Transactions() {
     // Parse explicitly to avoid local timezone offset shifting the day
     const datePart = t.date.split('T')[0]
     const [year, month, day] = datePart.split('-').map(Number)
+
+    if (dayFilter !== 'ALL' && day !== parseInt(dayFilter, 10)) {
+      return false
+    }
+
     const tDate = new Date(year, month - 1, day)
 
     const today = new Date()
@@ -149,18 +162,33 @@ export default function Transactions() {
         </span>
       </div>
 
-      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-4">
-        <div className="relative w-full max-w-sm">
-          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder="Buscar descrição ou tag..."
-            className="pl-8"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
+      <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 mb-4">
+        <div className="flex flex-col sm:flex-row w-full lg:w-auto gap-2">
+          <div className="relative w-full sm:w-[260px]">
+            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Buscar descrição ou tag..."
+              className="pl-8"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </div>
+          <Select value={dayFilter} onValueChange={setDayFilter}>
+            <SelectTrigger className="w-full sm:w-[140px]">
+              <SelectValue placeholder="Dia" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="ALL">Todos os dias</SelectItem>
+              {Array.from({ length: 31 }, (_, i) => i + 1).map((d) => (
+                <SelectItem key={d} value={d.toString()}>
+                  Dia {d.toString().padStart(2, '0')}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
 
-        <div className="flex items-center bg-slate-100 p-1 rounded-md border shadow-sm w-full md:w-auto overflow-x-auto">
+        <div className="flex items-center bg-slate-100 p-1 rounded-md border shadow-sm w-full sm:w-auto overflow-x-auto">
           <Button
             variant={quickFilter === 'ALL' ? 'default' : 'ghost'}
             size="sm"
