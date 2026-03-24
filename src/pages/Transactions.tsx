@@ -62,34 +62,50 @@ export default function Transactions() {
       ? filters.months.map((m) => MONTHS_PT[parseInt(m, 10) - 1]).join(', ')
       : 'Todos os meses'
 
-  const filteredData = filteredTransactions.filter((t) => {
-    const searchLower = search.toLowerCase()
-    const matchesSearch =
-      t.description.toLowerCase().includes(searchLower) ||
-      (t.tags && t.tags.toLowerCase().includes(searchLower))
+  const filteredData = filteredTransactions
+    .filter((t) => {
+      const searchLower = search.toLowerCase()
+      const matchesSearch =
+        t.description.toLowerCase().includes(searchLower) ||
+        (t.tags && t.tags.toLowerCase().includes(searchLower))
 
-    if (!matchesSearch) return false
+      if (!matchesSearch) return false
 
-    const datePart = t.date.split('T')[0]
-    const [year, month, day] = datePart.split('-').map(Number)
+      const datePart = t.date.split('T')[0]
+      const [year, month, day] = datePart.split('-').map(Number)
 
-    if (dayFilter !== 'ALL' && day !== parseInt(dayFilter, 10)) {
-      return false
-    }
+      if (dayFilter !== 'ALL' && day !== parseInt(dayFilter, 10)) {
+        return false
+      }
 
-    const tDate = new Date(year, month - 1, day)
-    const today = new Date()
-    today.setHours(0, 0, 0, 0)
+      const tDate = new Date(year, month - 1, day)
+      const today = new Date()
+      today.setHours(0, 0, 0, 0)
 
-    if (quickFilter === 'PREVISTO') {
-      return t.status === 'PREVISTO' || tDate > today
-    }
-    if (quickFilter === 'VENCIDO') {
-      return tDate < today && t.status !== 'REALIZADO'
-    }
+      if (quickFilter === 'PREVISTO') {
+        return t.status === 'PREVISTO' || tDate > today
+      }
+      if (quickFilter === 'VENCIDO') {
+        return tDate < today && t.status !== 'REALIZADO'
+      }
 
-    return true
-  })
+      return true
+    })
+    .sort((a, b) => {
+      const dateA = a.date.split('T')[0]
+      const dateB = b.date.split('T')[0]
+
+      if (dateA !== dateB) {
+        return dateB.localeCompare(dateA) // Ordem decrescente de data
+      }
+
+      // Dentro do mesmo dia, as receitas (INCOME) aparecem primeiro
+      if (a.type === 'INCOME' && b.type === 'EXPENSE') return -1
+      if (a.type === 'EXPENSE' && b.type === 'INCOME') return 1
+
+      // Se forem do mesmo tipo, mantém a ordem cronológica original baseada na string completa
+      return b.date.localeCompare(a.date)
+    })
 
   const getCategoryName = (id: string, type: string) => {
     if (type === 'INCOME') return '-'
