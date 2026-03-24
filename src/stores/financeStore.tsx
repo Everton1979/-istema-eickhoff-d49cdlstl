@@ -1,14 +1,16 @@
 import React, { createContext, useContext, useState, useMemo, useEffect } from 'react'
-import { Transaction, Account, Category, MonthlyMetric } from '@/types/finance'
+import { Transaction, Account, Category, MonthlyMetric, PaymentMethod } from '@/types/finance'
 import { supabase } from '@/lib/supabase/client'
 import { useAuth } from '@/hooks/use-auth'
 
-export const ACCOUNTS: Account[] = [
-  { id: 'acc1', name: 'Dinheiro', initialBalance: 0 },
-  { id: 'acc2', name: 'Stone', initialBalance: 0 },
-  { id: 'acc3', name: 'Pagbank', initialBalance: 0 },
-  { id: 'acc4', name: 'PIX', initialBalance: 0 },
-  { id: 'acc5', name: 'Banricompras', initialBalance: 0 },
+export const ACCOUNTS: Account[] = [{ id: 'sicredi', name: 'Sicredi', initialBalance: 0 }]
+
+export const PAYMENT_METHODS: PaymentMethod[] = [
+  { id: 'dinheiro', name: 'Dinheiro' },
+  { id: 'stone', name: 'Stone' },
+  { id: 'pagbank', name: 'Pagbank' },
+  { id: 'pix', name: 'PIX' },
+  { id: 'banricompras', name: 'Banricompras' },
 ]
 
 export const CATEGORIES: Category[] = [
@@ -53,24 +55,12 @@ const mapCategoryFromDB = (cat: string | null) => {
   return cat === 'fixa' ? 'FIXA' : 'VARIAVEL'
 }
 
-const mapAccountToDB = (acc: string) => {
-  if (!acc) return null
-  if (acc === 'acc1') return 'dinheiro'
-  if (acc === 'acc2') return 'stone'
-  if (acc === 'acc3') return 'pagbank'
-  if (acc === 'acc4') return 'pix'
-  if (acc === 'acc5') return 'banricompras'
-  return null
-}
-const mapAccountFromDB = (acc: string | null) => {
-  if (!acc) return ''
-  if (acc === 'dinheiro') return 'acc1'
-  if (acc === 'stone') return 'acc2'
-  if (acc === 'pagbank') return 'acc3'
-  if (acc === 'pix') return 'acc4'
-  if (acc === 'banricompras') return 'acc5'
-  return ''
-}
+// All transactions unify into 'sicredi' account
+const mapAccountToDB = (acc: string) => 'sicredi'
+const mapAccountFromDB = (acc: string | null) => 'sicredi'
+
+const mapPaymentMethodToDB = (pm: string | undefined) => pm || null
+const mapPaymentMethodFromDB = (pm: string | null) => pm || ''
 
 const ensureUtcNoon = (dateStr: string) => {
   if (dateStr.includes('T')) return dateStr
@@ -120,6 +110,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
           type: mapTypeFromDB(d.type) as any,
           categoryId: mapCategoryFromDB(d.category),
           accountId: mapAccountFromDB(d.account),
+          paymentMethodId: mapPaymentMethodFromDB(d.payment_method),
           status: d.status as any,
           tags: d.tags || '',
         })),
@@ -140,25 +131,15 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
       )
     }
 
-    let accBalances = { acc1: 0, acc2: 0, acc3: 0, acc4: 0, acc5: 0 }
+    let accBalances = { sicredi: 0 }
     if (settingsRes.data) {
       const data = settingsRes.data as any
       accBalances = {
-        acc1: Number(data.initial_balance_dinheiro || 0),
-        acc2: Number(data.initial_balance_stone || 0),
-        acc3: Number(data.initial_balance_pagbank || 0),
-        acc4: Number(data.initial_balance_pix || 0),
-        acc5: Number(data.initial_balance_banricompras || 0),
+        sicredi: Number(data.initial_balance_sicredi || 0),
       }
     }
 
-    setAccounts([
-      { id: 'acc1', name: 'Dinheiro', initialBalance: accBalances.acc1 },
-      { id: 'acc2', name: 'Stone', initialBalance: accBalances.acc2 },
-      { id: 'acc3', name: 'Pagbank', initialBalance: accBalances.acc3 },
-      { id: 'acc4', name: 'PIX', initialBalance: accBalances.acc4 },
-      { id: 'acc5', name: 'Banricompras', initialBalance: accBalances.acc5 },
-    ])
+    setAccounts([{ id: 'sicredi', name: 'Sicredi', initialBalance: accBalances.sicredi }])
 
     setLoadingData(false)
   }
@@ -178,7 +159,8 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
       amount: tx.amount,
       type: dbType,
       category: dbType === 'despesa' ? mapCategoryToDB(tx.categoryId) : null,
-      account: dbType === 'receita' ? mapAccountToDB(tx.accountId) : null,
+      account: mapAccountToDB(tx.accountId),
+      payment_method: dbType === 'receita' ? mapPaymentMethodToDB(tx.paymentMethodId) : null,
       status: tx.status,
       date: formattedDate,
       tags: tx.tags || '',
@@ -195,6 +177,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
         type: mapTypeFromDB(data.type) as any,
         categoryId: mapCategoryFromDB(data.category),
         accountId: mapAccountFromDB(data.account),
+        paymentMethodId: mapPaymentMethodFromDB((data as any).payment_method),
         status: data.status as any,
         tags: (data as any).tags || '',
       }
@@ -210,6 +193,8 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
     if (tx.type !== undefined) updateData.type = mapTypeToDB(tx.type)
     if (tx.categoryId !== undefined) updateData.category = mapCategoryToDB(tx.categoryId)
     if (tx.accountId !== undefined) updateData.account = mapAccountToDB(tx.accountId)
+    if (tx.paymentMethodId !== undefined)
+      updateData.payment_method = mapPaymentMethodToDB(tx.paymentMethodId)
     if (tx.status !== undefined) updateData.status = tx.status
     if (tx.date !== undefined) updateData.date = ensureUtcNoon(tx.date)
     if (tx.tags !== undefined) updateData.tags = tx.tags
@@ -233,6 +218,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
                 type: mapTypeFromDB(data.type) as any,
                 categoryId: mapCategoryFromDB(data.category),
                 accountId: mapAccountFromDB(data.account),
+                paymentMethodId: mapPaymentMethodFromDB((data as any).payment_method),
                 status: data.status as any,
                 tags: (data as any).tags || '',
               }
@@ -313,11 +299,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
 
     const payload: any = {
       user_id: existing?.user_id || user.id,
-      initial_balance_dinheiro: balances.acc1 ?? 0,
-      initial_balance_stone: balances.acc2 ?? 0,
-      initial_balance_pagbank: balances.acc3 ?? 0,
-      initial_balance_pix: balances.acc4 ?? 0,
-      initial_balance_banricompras: balances.acc5 ?? 0,
+      initial_balance_sicredi: balances.sicredi ?? 0,
       updated_at: new Date().toISOString(),
     }
 

@@ -18,7 +18,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { useFinanceStore } from '@/stores/financeStore'
+import { useFinanceStore, PAYMENT_METHODS } from '@/stores/financeStore'
 import { useToast } from '@/hooks/use-toast'
 import { useEffect, useState, useMemo } from 'react'
 import { Transaction } from '@/types/finance'
@@ -32,16 +32,16 @@ const formSchema = z
     amount: z.coerce.number().min(0.01, 'Valor deve ser maior que zero'),
     type: z.enum(['INCOME', 'EXPENSE']),
     categoryId: z.string().optional(),
-    accountId: z.string().optional(),
+    paymentMethodId: z.string().optional(),
     status: z.enum(['PREVISTO', 'REALIZADO', 'VENCIDO']),
     tags: z.string().optional(),
   })
   .superRefine((data, ctx) => {
-    if (data.type === 'INCOME' && !data.accountId) {
+    if (data.type === 'INCOME' && !data.paymentMethodId) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        message: 'Método de entrada é obrigatório para receitas',
-        path: ['accountId'],
+        message: 'Meio de pagamento é obrigatório para receitas',
+        path: ['paymentMethodId'],
       })
     }
     if (data.type === 'EXPENSE' && !data.categoryId) {
@@ -66,7 +66,7 @@ interface TransactionFormProps {
 }
 
 export function TransactionForm({ onSuccess, initialData }: TransactionFormProps) {
-  const { accounts, transactions, addTransaction, updateTransaction } = useFinanceStore()
+  const { transactions, addTransaction, updateTransaction } = useFinanceStore()
   const { toast } = useToast()
   const [loading, setLoading] = useState(false)
 
@@ -95,7 +95,7 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
         type: initialData.type,
         status: initialData.status,
         categoryId: initialData.categoryId || '',
-        accountId: initialData.accountId || '',
+        paymentMethodId: initialData.paymentMethodId || '',
         tags: initialData.tags || '',
       }
     : {
@@ -105,7 +105,7 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
         type: 'EXPENSE' as const,
         status: 'REALIZADO' as const,
         categoryId: '',
-        accountId: '',
+        paymentMethodId: '',
         tags: '',
       }
 
@@ -122,7 +122,7 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
         form.setValue('categoryId', '')
         form.setValue('status', 'REALIZADO')
       } else {
-        form.setValue('accountId', '')
+        form.setValue('paymentMethodId', '')
       }
     }
   }, [type, form, initialData])
@@ -152,7 +152,8 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
           values.type === 'INCOME' ? 'Receita Registrada' : values.description || 'Despesa',
         status: values.type === 'INCOME' ? 'REALIZADO' : values.status,
         categoryId: values.type === 'EXPENSE' ? values.categoryId || 'FIXA' : '',
-        accountId: values.type === 'INCOME' ? values.accountId || 'acc1' : '',
+        accountId: 'sicredi', // Auto-assigned unified account
+        paymentMethodId: values.type === 'INCOME' ? values.paymentMethodId || '' : '',
         tags: tagsList.join(','),
       }
 
@@ -373,20 +374,20 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
             <div className="animate-in fade-in slide-in-from-top-2 duration-300">
               <FormField
                 control={form.control}
-                name="accountId"
+                name="paymentMethodId"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Método de entrada</FormLabel>
+                    <FormLabel>Meio de Pagamento</FormLabel>
                     <Select onValueChange={field.onChange} value={field.value || undefined}>
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="Método" />
+                          <SelectValue placeholder="Selecione..." />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {accounts.map((a) => (
-                          <SelectItem key={a.id} value={a.id}>
-                            {a.name}
+                        {PAYMENT_METHODS.map((pm) => (
+                          <SelectItem key={pm.id} value={pm.id}>
+                            {pm.name}
                           </SelectItem>
                         ))}
                       </SelectContent>

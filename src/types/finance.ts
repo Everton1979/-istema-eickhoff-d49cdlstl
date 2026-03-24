@@ -14,6 +14,11 @@ export interface Account {
   initialBalance: number
 }
 
+export interface PaymentMethod {
+  id: string
+  name: string
+}
+
 export interface Transaction {
   id: string
   date: string
@@ -22,6 +27,7 @@ export interface Transaction {
   type: TransactionType
   categoryId: string
   accountId: string
+  paymentMethodId?: string
   status: TransactionStatus
   tags?: string
 }
