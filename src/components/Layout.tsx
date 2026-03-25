@@ -1,5 +1,5 @@
 import { Outlet, Link, useLocation } from 'react-router-dom'
-import { LayoutDashboard, ReceiptText, Settings, BookOpen, Menu, LogOut } from 'lucide-react'
+import { LayoutDashboard, ReceiptText, Users, BookOpen, Menu, LogOut } from 'lucide-react'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
@@ -30,10 +30,10 @@ export default function Layout() {
       allowed: ['Administrador', 'Colaborador', 'Visitante'],
     },
     {
-      name: 'Configurações',
-      path: '/configuracoes',
-      icon: Settings,
-      allowed: ['Administrador', 'Colaborador'],
+      name: 'Usuários',
+      path: '/usuarios',
+      icon: Users,
+      allowed: ['Administrador'],
     },
   ]
 

@@ -33,9 +33,9 @@ const GLOSSARY_TERMS = [
     title: 'Margem de Contribuição',
     category: 'Caixa e Geral',
     definition:
-      'O valor que sobra da receita bruta após subtrair os custos variáveis operacionais e os insumos (matéria-prima). É o que contribui para pagar as despesas fixas e gerar lucro.',
+      'O valor que sobra da receita bruta após subtrair os custos variáveis operacionais e os insumos (matéria-prima + embalagens). É o que contribui para pagar as despesas fixas e gerar lucro.',
     calculation:
-      'Receitas - (Custos Variáveis Operacionais + Custo de Insumos). Ex: Se receita = R$ 10.000 e Custos var/insumos = R$ 4.000, Margem = R$ 6.000.',
+      'Receitas - (Custos Variáveis Operacionais + Custo de Insumos). Ex: Se receita = R$ 10.000 e Custos var/insumos = R$ 4.000, Margem = R$ 6.000. (Nota: No fechamento mensal, os custos de insumos já integram Matéria-Prima e Embalagens juntos).',
     reference:
       'Quanto maior, melhor. Margens positivas e robustas indicam que a operação consegue cobrir o custo fixo mais rapidamente.',
     trend: 'up',
@@ -78,10 +78,11 @@ const GLOSSARY_TERMS = [
     title: 'Fator Médio',
     category: 'Métricas de Performance',
     definition:
-      'Relação que indica quantas vezes o faturamento supera o custo direto de matéria-prima.',
-    calculation: 'Faturamento Total (Sistema) / Custo de Matéria-Prima.',
+      'Relação que indica quantas vezes o faturamento supera o custo direto de insumos (matéria-prima + embalagens).',
+    calculation:
+      'Faturamento Total (Sistema) / (Custo de Matéria-Prima + Custo de Embalagem). (Nota: No fechamento mensal, estes valores já são informados juntos).',
     reference:
-      'Quanto maior, melhor. Tradicionalmente no setor magistral, valores entre 3 a 5 são comuns, dependendo do mix de produtos (cosméticos vs medicamentos).',
+      'Quanto maior, melhor. Um bom fator médio fica entre 5,0 e 6,5, dependendo do mix de produtos (cosméticos vs medicamentos).',
     trend: 'up',
   },
   {
@@ -113,7 +114,7 @@ const GLOSSARY_TERMS = [
     definition:
       'O ponto de equilíbrio unitário. É o valor mínimo médio pelo qual cada fórmula deve ser vendida para não gerar prejuízo à operação.',
     calculation:
-      '(CFA Total + Despesas Variáveis Operacionais + Custo Matéria Prima) / Número de Pedidos.',
+      '(CFA Total + Despesas Variáveis Operacionais + [Custo Matéria Prima + Custo Embalagem]) / Número de Pedidos. (Nota: Os custos de MP e Embalagens já estão agrupados no fechamento).',
     reference:
       'Indicador de balizamento. Quanto menor, mais eficiente é o laboratório. Suas vendas devem sempre ter um ticket médio superior a este valor.',
     trend: 'neutral',

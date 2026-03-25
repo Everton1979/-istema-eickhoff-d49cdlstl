@@ -6,7 +6,7 @@ import { FinanceProvider } from '@/stores/financeStore'
 import { AuthProvider, useAuth } from '@/hooks/use-auth'
 import Index from './pages/Index'
 import Transactions from './pages/Transactions'
-import Settings from './pages/Settings'
+import Users from './pages/Users'
 import Glossary from './pages/Glossary'
 import NotFound from './pages/NotFound'
 import Login from './pages/Login'
@@ -58,11 +58,12 @@ const App = () => (
               <Route path="/" element={<Index />} />
               <Route path="/transacoes" element={<Transactions />} />
               <Route path="/glossario" element={<Glossary />} />
+              <Route path="/configuracoes" element={<Navigate to="/usuarios" replace />} />
               <Route
-                path="/configuracoes"
+                path="/usuarios"
                 element={
-                  <ProtectedRoute allowedRoles={['Administrador', 'Colaborador']}>
-                    <Settings />
+                  <ProtectedRoute allowedRoles={['Administrador']}>
+                    <Users />
                   </ProtectedRoute>
                 }
               />
