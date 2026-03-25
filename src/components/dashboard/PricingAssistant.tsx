@@ -45,7 +45,7 @@ export function PricingAssistant() {
   const suggestedPrice = !isNaN(numericCost) && numericCost > 0 ? numericCost * markupMultiplier : 0
 
   return (
-    <Card className="rounded-sm shadow-sm h-full flex flex-col justify-center border-t-4 border-t-purple-500 bg-gradient-to-br from-white to-purple-50/30">
+    <Card className="rounded-sm shadow-sm w-full flex flex-col justify-center border-t-4 border-t-purple-500 bg-gradient-to-br from-white to-purple-50/30">
       <CardContent className="p-3">
         <div className="flex items-center gap-1.5 text-purple-700 mb-3">
           <Calculator className="w-4 h-4" />

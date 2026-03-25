@@ -25,37 +25,46 @@ export default function Index() {
           </div>
 
           {/* Main Dashboard Area */}
-          <div className="flex-1 bg-[#f1f5f9] p-2 flex flex-col gap-2 overflow-y-auto">
-            <div className="flex flex-col xl:flex-row gap-2">
-              <div className="flex-1 flex flex-col gap-2">
-                <KpiCards />
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-2 h-auto min-h-[90px]">
-                  <SalesTargetProgress />
-                  <PricingAssistant />
-                </div>
-              </div>
-              <div className="xl:w-[250px] shrink-0">
-                <ExpenseDistribution />
-              </div>
+          <div className="flex-1 bg-[#f1f5f9] p-3 flex flex-col gap-3 overflow-y-auto">
+            {/* Top row: KPIs */}
+            <KpiCards />
+
+            {/* Second row: Performance Chart (Large & prominent) */}
+            <div className="w-full">
+              <PerformanceEvolutionChart />
             </div>
 
+            {/* Third row: Pharmacy Metrics */}
             <PharmacyMetrics />
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-2 flex-1 min-h-[400px]">
-              {/* Left large column */}
-              <div className="lg:col-span-2 flex flex-col gap-2">
-                <div className="flex-1 min-h-[220px]">
-                  <PerformanceEvolutionChart />
+            {/* Fourth row: Main tools and monitors */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 flex-1 min-h-[400px]">
+              {/* Left Column (Monitors) */}
+              <div className="lg:col-span-4 flex flex-col gap-3">
+                <div className="shrink-0">
+                  <SalesTargetProgress />
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-2 flex-1 min-h-[200px]">
+                <div className="flex-1 min-h-[200px] h-full">
                   <BreakEvenMonitor />
-                  <UpcomingCommitments />
                 </div>
               </div>
 
-              {/* Right smaller column */}
-              <div className="flex flex-col gap-2">
+              {/* Middle Column (Expenses) */}
+              <div className="lg:col-span-4 flex flex-col gap-3">
                 <div className="flex-1 min-h-[200px] h-full">
+                  <UpcomingCommitments />
+                </div>
+                <div className="shrink-0">
+                  <ExpenseDistribution />
+                </div>
+              </div>
+
+              {/* Right Column (Tools & Accounts) */}
+              <div className="lg:col-span-4 flex flex-col gap-3">
+                <div className="shrink-0">
+                  <PricingAssistant />
+                </div>
+                <div className="flex-1 min-h-[200px] h-full overflow-hidden">
                   <AccountBalances />
                 </div>
               </div>

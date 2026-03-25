@@ -120,7 +120,7 @@ export function SalesTargetProgress() {
     }).format(val)
 
   return (
-    <Card className="rounded-sm shadow-sm h-full flex flex-col justify-center border-t-4 border-t-emerald-500 relative">
+    <Card className="rounded-sm shadow-sm w-full flex flex-col justify-center border-t-4 border-t-emerald-500 relative">
       <CardContent className="p-3">
         <div className="flex justify-between items-start mb-2">
           <div className="flex items-center gap-1.5 text-emerald-600">

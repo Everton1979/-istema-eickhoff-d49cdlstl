@@ -1,6 +1,5 @@
 import { useFinanceStore, PAYMENT_METHODS } from '@/stores/financeStore'
 import { useMemo } from 'react'
-import { ScrollArea } from '@/components/ui/scroll-area'
 
 export function AccountBalances() {
   const { filteredTransactions, filters } = useFinanceStore()
@@ -41,50 +40,41 @@ export function AccountBalances() {
 
   return (
     <div className="bg-white rounded-sm border shadow-sm flex flex-col h-full overflow-hidden">
-      <div className="grid grid-cols-2 bg-[#1e3a8a] text-white text-[10px] font-bold py-1.5 px-2">
-        <div>Conta / Origem</div>
-        <div className="text-right">Entradas (Período)</div>
+      <div className="bg-[#1e3a8a] text-white text-xs font-bold py-2 px-3 flex justify-between items-center shrink-0">
+        <span>Contas / Origem (Entradas)</span>
+        <span className="bg-blue-800/50 px-2 py-0.5 rounded text-[10px] tracking-wide">
+          {formatCurrency(totalIncome)}
+        </span>
       </div>
-      <ScrollArea className="flex-1">
-        <div className="flex flex-col">
-          {/* Header Row for Sicredi */}
-          <div className="grid grid-cols-[1fr_auto] gap-2 items-center text-xs py-2 px-2 border-b bg-blue-50/50">
-            <div className="font-bold text-gray-800">Sicredi (Consolidado)</div>
-            <div className="flex items-center justify-end gap-1.5">
-              <div className="font-mono px-1.5 py-0.5 rounded-sm text-right text-emerald-700 bg-emerald-100 font-bold">
-                {formatCurrency(totalIncome)}
-              </div>
-            </div>
-          </div>
-
-          {/* Breakdowns */}
-          {breakdowns.length > 0 ? (
-            breakdowns.map((item) => (
+      <div className="p-2 flex-1 overflow-y-auto bg-slate-50/50">
+        {breakdowns.length > 0 ? (
+          <div className="grid grid-cols-2 gap-2">
+            {breakdowns.map((item) => (
               <div
                 key={item.id}
-                className="grid grid-cols-[1fr_auto] gap-2 items-center text-xs py-1.5 px-2 pl-6 border-b last:border-0 hover:bg-slate-50 transition-colors"
+                className="bg-white border rounded-sm p-2 flex flex-col justify-center items-center text-center hover:border-blue-200 hover:shadow-sm transition-all"
               >
-                <div className="font-medium text-slate-600 truncate flex items-center gap-1.5">
-                  <div className="w-1 h-1 rounded-full bg-slate-300" />
+                <span
+                  className="text-[10px] text-slate-500 font-medium uppercase truncate w-full mb-1"
+                  title={item.name}
+                >
                   {item.name}
-                </div>
-                <div className="flex items-center justify-end gap-2">
-                  <div className="font-mono text-slate-700 text-right">
-                    {formatCurrency(item.amount)}
-                  </div>
-                  <div className="text-[10px] text-slate-400 font-medium min-w-[35px] text-right">
-                    {item.percentage.toFixed(1)}%
-                  </div>
-                </div>
+                </span>
+                <span className="text-xs font-bold text-slate-700">
+                  {formatCurrency(item.amount)}
+                </span>
+                <span className="text-[9px] text-emerald-600 font-semibold bg-emerald-50 px-1.5 py-0.5 rounded-sm mt-1">
+                  {item.percentage.toFixed(1)}%
+                </span>
               </div>
-            ))
-          ) : (
-            <div className="py-4 text-center text-xs text-slate-400">
-              Nenhuma entrada no período
-            </div>
-          )}
-        </div>
-      </ScrollArea>
+            ))}
+          </div>
+        ) : (
+          <div className="flex items-center justify-center text-xs text-slate-400 h-full min-h-[100px]">
+            Nenhuma entrada no período
+          </div>
+        )}
+      </div>
     </div>
   )
 }
