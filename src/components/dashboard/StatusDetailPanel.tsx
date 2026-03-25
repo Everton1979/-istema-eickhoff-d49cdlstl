@@ -28,15 +28,26 @@ const MONTHS = [
 ]
 
 export function StatusDetailPanel() {
-  const { filteredTransactions, filters } = useFinanceStore()
+  const { transactions, filters } = useFinanceStore()
 
   const data = useMemo(() => {
     // Only show if at least one status is selected
     if (filters.statuses.length === 0) return []
 
     const monthlyData: Record<number, { entradas: number; saidas: number; saldo: number }> = {}
+    const targetYear = filters.years[0] || new Date().getFullYear().toString()
 
-    filteredTransactions.forEach((tx) => {
+    transactions.forEach((tx) => {
+      let txYear = ''
+      if (tx.date.includes('T')) {
+        txYear = tx.date.split('-')[0]
+      } else {
+        txYear = new Date(tx.date).getFullYear().toString()
+      }
+
+      if (txYear !== targetYear) return
+      if (!filters.statuses.includes(tx.status)) return
+
       const month = new Date(tx.date).getMonth()
       if (!monthlyData[month]) {
         monthlyData[month] = { entradas: 0, saidas: 0, saldo: 0 }
@@ -52,7 +63,7 @@ export function StatusDetailPanel() {
         ...vals,
       }))
       .sort((a, b) => a.month - b.month)
-  }, [filteredTransactions, filters.statuses])
+  }, [transactions, filters.statuses, filters.years])
 
   if (filters.statuses.length === 0) return null
 
@@ -64,7 +75,7 @@ export function StatusDetailPanel() {
       <CardHeader className="py-3 px-4 bg-slate-50 border-b">
         <CardTitle className="text-sm font-bold text-slate-700 uppercase tracking-wide flex items-center gap-2">
           <ListOrdered className="w-4 h-4 text-blue-500" />
-          Detalhamento Mensal
+          Detalhamento Mensal ({filters.years[0] || new Date().getFullYear()})
           <span className="text-[10px] font-normal bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full normal-case ml-2">
             {filters.statuses.join(', ')}
           </span>
@@ -73,7 +84,7 @@ export function StatusDetailPanel() {
       <CardContent className="p-0">
         {data.length === 0 ? (
           <div className="p-6 text-center text-sm text-slate-500">
-            Nenhum dado encontrado para o período e status selecionados.
+            Nenhum dado encontrado para o ano e status selecionados.
           </div>
         ) : (
           <Table>

@@ -16,51 +16,78 @@ export function SalesTargetProgress() {
 
   const { metric, monthName, workingDays, achieved } = useMemo(() => {
     const currentYear = parseInt(filters.years[0] || new Date().getFullYear().toString())
-    const currentMonth =
-      filters.months.length > 0 ? parseInt(filters.months[0]) : new Date().getMonth() + 1
-    const monthLabels = [
-      'Jan',
-      'Fev',
-      'Mar',
-      'Abr',
-      'Mai',
-      'Jun',
-      'Jul',
-      'Ago',
-      'Set',
-      'Out',
-      'Nov',
-      'Dez',
-    ]
-
-    const found = monthlyMetrics.find((m) => m.year === currentYear && m.month === currentMonth)
-    const wDays = getWorkingDays(currentYear, currentMonth)
-
     const targetStatuses = filters.statuses.length > 0 ? filters.statuses : ['REALIZADO']
+
+    let target = 0
     let inc = 0
-    transactions.forEach((tx) => {
-      const d = new Date(tx.date)
-      if (
-        d.getFullYear() === currentYear &&
-        d.getMonth() + 1 === currentMonth &&
-        tx.type === 'INCOME' &&
-        targetStatuses.includes(tx.status)
-      ) {
-        inc += tx.amount
-      }
-    })
+    let wDays = 0
+    let mName = ''
+    let defaultMonth = 1
+
+    if (filters.months.length === 0) {
+      target = monthlyMetrics
+        .filter((m) => m.year === currentYear)
+        .reduce((sum, m) => sum + m.sales_target, 0)
+
+      transactions.forEach((tx) => {
+        const d = new Date(tx.date)
+        if (
+          d.getFullYear() === currentYear &&
+          tx.type === 'INCOME' &&
+          targetStatuses.includes(tx.status)
+        ) {
+          inc += tx.amount
+        }
+      })
+      wDays = 252 // approx yearly
+      mName = `Ano ${currentYear}`
+    } else {
+      const currentMonth = parseInt(filters.months[0])
+      defaultMonth = currentMonth
+      const monthLabels = [
+        'Jan',
+        'Fev',
+        'Mar',
+        'Abr',
+        'Mai',
+        'Jun',
+        'Jul',
+        'Ago',
+        'Set',
+        'Out',
+        'Nov',
+        'Dez',
+      ]
+
+      const found = monthlyMetrics.find((m) => m.year === currentYear && m.month === currentMonth)
+      target = found?.sales_target || 0
+      wDays = getWorkingDays(currentYear, currentMonth)
+      mName = `${monthLabels[currentMonth - 1]}/${currentYear}`
+
+      transactions.forEach((tx) => {
+        const d = new Date(tx.date)
+        if (
+          d.getFullYear() === currentYear &&
+          d.getMonth() + 1 === currentMonth &&
+          tx.type === 'INCOME' &&
+          targetStatuses.includes(tx.status)
+        ) {
+          inc += tx.amount
+        }
+      })
+    }
 
     return {
-      metric: found || {
-        month: currentMonth,
+      metric: {
+        id: '',
+        month: defaultMonth,
         year: currentYear,
-        sales_target: 0,
+        sales_target: target,
+        orders_count: 0,
         total_system_sales: 0,
         raw_material_costs: 0,
-        orders_count: 0,
-        id: '',
       },
-      monthName: `${monthLabels[currentMonth - 1]}/${currentYear}`,
+      monthName: mName,
       workingDays: wDays,
       achieved: inc,
     }
@@ -102,7 +129,7 @@ export function SalesTargetProgress() {
               Meta de Vendas ({monthName})
             </h3>
           </div>
-          {!isEditing && profile?.role !== 'Visitante' && (
+          {!isEditing && profile?.role !== 'Visitante' && filters.months.length > 0 && (
             <Button
               variant="ghost"
               size="icon"

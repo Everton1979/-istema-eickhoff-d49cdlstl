@@ -27,6 +27,7 @@ export function DashboardHeader() {
   }, [transactions])
 
   const selectedYear = filters.years[0] || new Date().getFullYear().toString()
+  const selectedMonth = filters.months[0] || 'all'
 
   const handlePrint = () => {
     window.print()
@@ -53,7 +54,31 @@ export function DashboardHeader() {
         {profile?.role !== 'Visitante' && <MonthlyClosingDialog />}
 
         <div className="flex items-center gap-2">
-          <span className="text-xs font-medium text-blue-200 hidden sm:inline">Ano:</span>
+          <span className="text-xs font-medium text-blue-200 hidden sm:inline">Período:</span>
+          <Select
+            value={selectedMonth}
+            onValueChange={(val) => setFilter('months', val === 'all' ? [] : [val])}
+          >
+            <SelectTrigger className="h-7 w-[90px] sm:w-[110px] bg-[#152943] border-none text-white focus:ring-1 focus:ring-blue-400 text-xs">
+              <SelectValue placeholder="Mês" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Ano Todo</SelectItem>
+              <SelectItem value="01">Janeiro</SelectItem>
+              <SelectItem value="02">Fevereiro</SelectItem>
+              <SelectItem value="03">Março</SelectItem>
+              <SelectItem value="04">Abril</SelectItem>
+              <SelectItem value="05">Maio</SelectItem>
+              <SelectItem value="06">Junho</SelectItem>
+              <SelectItem value="07">Julho</SelectItem>
+              <SelectItem value="08">Agosto</SelectItem>
+              <SelectItem value="09">Setembro</SelectItem>
+              <SelectItem value="10">Outubro</SelectItem>
+              <SelectItem value="11">Novembro</SelectItem>
+              <SelectItem value="12">Dezembro</SelectItem>
+            </SelectContent>
+          </Select>
+
           <Select value={selectedYear} onValueChange={(val) => setFilter('years', [val])}>
             <SelectTrigger className="h-7 w-[70px] sm:w-[90px] bg-[#152943] border-none text-white focus:ring-1 focus:ring-blue-400 text-xs">
               <SelectValue placeholder="Ano" />

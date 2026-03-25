@@ -6,12 +6,16 @@ import { ListFilter } from 'lucide-react'
 export function SidebarFilters() {
   const { filters, setFilter } = useFinanceStore()
 
-  const toggleFilter = (key: keyof typeof filters, value: string) => {
-    const current = filters[key] as string[]
-    const updated = current.includes(value)
-      ? current.filter((v) => v !== value)
-      : [...current, value]
-    setFilter(key, updated)
+  const toggleMonth = (m: string) => {
+    setFilter('months', filters.months.includes(m) ? [] : [m])
+  }
+
+  const toggleStatus = (status: string) => {
+    const current = filters.statuses as string[]
+    const updated = current.includes(status)
+      ? current.filter((v) => v !== status)
+      : [...current, status]
+    setFilter('statuses', updated)
   }
 
   const FilterSection = ({ title, children }: { title: string; children: React.ReactNode }) => (
@@ -46,7 +50,7 @@ export function SidebarFilters() {
           {months.map((m, i) => (
             <button
               key={m}
-              onClick={() => toggleFilter('months', m)}
+              onClick={() => toggleMonth(m)}
               className={cn(
                 'text-[10px] py-1 rounded-sm text-center transition-colors border',
                 filters.months.includes(m)
@@ -65,7 +69,7 @@ export function SidebarFilters() {
           {['Previsto', 'Realizado', 'Vencido'].map((status) => (
             <button
               key={status}
-              onClick={() => toggleFilter('statuses', status.toUpperCase())}
+              onClick={() => toggleStatus(status.toUpperCase())}
               className={cn(
                 'text-xs py-1 px-2 rounded-sm text-left transition-colors border',
                 filters.statuses.includes(status.toUpperCase())

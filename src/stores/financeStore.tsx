@@ -55,7 +55,6 @@ const mapCategoryFromDB = (cat: string | null) => {
   return cat === 'fixa' ? 'FIXA' : 'VARIAVEL'
 }
 
-// All transactions unify into 'sicredi' account
 const mapAccountToDB = (acc: string) => 'sicredi'
 const mapAccountFromDB = (acc: string | null) => 'sicredi'
 
@@ -75,7 +74,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
   const [loadingData, setLoadingData] = useState(true)
   const [filters, setFilters] = useState<FinanceFilters>({
     years: [new Date().getFullYear().toString()],
-    months: [],
+    months: [(new Date().getMonth() + 1).toString().padStart(2, '0')],
     statuses: [],
   })
 

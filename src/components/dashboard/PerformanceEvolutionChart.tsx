@@ -20,16 +20,29 @@ import {
 } from '@/components/ui/select'
 
 export function PerformanceEvolutionChart() {
-  const { monthlyMetrics, transactions } = useFinanceStore()
+  const { monthlyMetrics, transactions, filters } = useFinanceStore()
   const [monthsCount, setMonthsCount] = useState<number>(6)
 
   const data = useMemo(() => {
     const result = []
-    const now = new Date()
+    const refYear = parseInt(filters.years[0] || new Date().getFullYear().toString())
 
-    // We want the last N months, ending in the current month
+    let refMonth = new Date().getMonth()
+    if (filters.months.length > 0) {
+      refMonth = parseInt(filters.months[0]) - 1
+    } else {
+      if (refYear < new Date().getFullYear()) {
+        refMonth = 11 // December for past years
+      } else {
+        refMonth = new Date().getMonth()
+      }
+    }
+
+    const endDate = new Date(refYear, refMonth, 1)
+
+    // We want the last N months, ending in the selected month
     for (let i = monthsCount - 1; i >= 0; i--) {
-      const d = new Date(now.getFullYear(), now.getMonth() - i, 1)
+      const d = new Date(endDate.getFullYear(), endDate.getMonth() - i, 1)
       const m = d.getMonth() + 1
       const y = d.getFullYear()
 
@@ -65,7 +78,7 @@ export function PerformanceEvolutionChart() {
       })
     }
     return result
-  }, [monthlyMetrics, transactions, monthsCount])
+  }, [monthlyMetrics, transactions, monthsCount, filters])
 
   return (
     <div className="bg-white p-2 rounded-sm border shadow-sm flex flex-col h-full">
