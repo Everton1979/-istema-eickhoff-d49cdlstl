@@ -108,6 +108,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
           amount: Number(d.amount),
           type: mapTypeFromDB(d.type) as any,
           categoryId: mapCategoryFromDB(d.category),
+          subcategoryId: d.subcategory || '',
           accountId: mapAccountFromDB(d.account),
           paymentMethodId: mapPaymentMethodFromDB(d.payment_method),
           status: d.status as any,
@@ -158,6 +159,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
       amount: tx.amount,
       type: dbType,
       category: dbType === 'despesa' ? mapCategoryToDB(tx.categoryId) : null,
+      subcategory: dbType === 'despesa' ? tx.subcategoryId || null : null,
       account: mapAccountToDB(tx.accountId),
       payment_method: dbType === 'receita' ? mapPaymentMethodToDB(tx.paymentMethodId) : null,
       status: tx.status,
@@ -175,6 +177,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
         amount: Number(data.amount),
         type: mapTypeFromDB(data.type) as any,
         categoryId: mapCategoryFromDB(data.category),
+        subcategoryId: (data as any).subcategory || '',
         accountId: mapAccountFromDB(data.account),
         paymentMethodId: mapPaymentMethodFromDB((data as any).payment_method),
         status: data.status as any,
@@ -191,6 +194,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
     if (tx.amount !== undefined) updateData.amount = tx.amount
     if (tx.type !== undefined) updateData.type = mapTypeToDB(tx.type)
     if (tx.categoryId !== undefined) updateData.category = mapCategoryToDB(tx.categoryId)
+    if (tx.subcategoryId !== undefined) updateData.subcategory = tx.subcategoryId || null
     if (tx.accountId !== undefined) updateData.account = mapAccountToDB(tx.accountId)
     if (tx.paymentMethodId !== undefined)
       updateData.payment_method = mapPaymentMethodToDB(tx.paymentMethodId)
@@ -216,6 +220,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
                 amount: Number(data.amount),
                 type: mapTypeFromDB(data.type) as any,
                 categoryId: mapCategoryFromDB(data.category),
+                subcategoryId: (data as any).subcategory || '',
                 accountId: mapAccountFromDB(data.account),
                 paymentMethodId: mapPaymentMethodFromDB((data as any).payment_method),
                 status: data.status as any,

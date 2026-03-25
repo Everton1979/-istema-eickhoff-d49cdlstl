@@ -32,6 +32,7 @@ const formSchema = z
     amount: z.coerce.number().min(0.01, 'Valor deve ser maior que zero'),
     type: z.enum(['INCOME', 'EXPENSE']),
     categoryId: z.string().optional(),
+    subcategoryId: z.string().optional(),
     paymentMethodId: z.string().optional(),
     status: z.enum(['PREVISTO', 'REALIZADO', 'VENCIDO']),
     tags: z.string().optional(),
@@ -44,12 +45,21 @@ const formSchema = z
         path: ['paymentMethodId'],
       })
     }
-    if (data.type === 'EXPENSE' && !data.categoryId) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: 'Categoria é obrigatória para despesas',
-        path: ['categoryId'],
-      })
+    if (data.type === 'EXPENSE') {
+      if (!data.categoryId) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'Categoria é obrigatória para despesas',
+          path: ['categoryId'],
+        })
+      }
+      if (data.categoryId === 'VARIAVEL' && !data.subcategoryId) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'Subcategoria é obrigatória para despesas variáveis',
+          path: ['subcategoryId'],
+        })
+      }
     }
   })
 
@@ -88,6 +98,7 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
         type: initialData.type,
         status: initialData.status,
         categoryId: initialData.categoryId || '',
+        subcategoryId: initialData.subcategoryId || '',
         paymentMethodId: initialData.paymentMethodId || '',
         tags: initialData.tags || '',
       }
@@ -98,6 +109,7 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
         type: 'EXPENSE' as const,
         status: 'REALIZADO' as const,
         categoryId: '',
+        subcategoryId: '',
         paymentMethodId: '',
         tags: '',
       }
@@ -108,16 +120,21 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
   })
 
   const type = form.watch('type')
+  const categoryId = form.watch('categoryId')
 
   useEffect(() => {
     if (!initialData) {
       if (type === 'INCOME') {
         form.setValue('categoryId', '')
+        form.setValue('subcategoryId', '')
       } else {
         form.setValue('paymentMethodId', '')
+        if (categoryId !== 'VARIAVEL') {
+          form.setValue('subcategoryId', '')
+        }
       }
     }
-  }, [type, form, initialData])
+  }, [type, categoryId, form, initialData])
 
   const addTag = (tagToAdd?: string) => {
     const val = (tagToAdd || tagInput).trim()
@@ -143,6 +160,10 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
         description: values.description,
         status: values.status,
         categoryId: values.type === 'EXPENSE' ? values.categoryId || 'FIXA' : '',
+        subcategoryId:
+          values.type === 'EXPENSE' && values.categoryId === 'VARIAVEL'
+            ? values.subcategoryId || ''
+            : '',
         accountId: 'sicredi', // Auto-assigned unified account
         paymentMethodId: values.type === 'INCOME' ? values.paymentMethodId || '' : '',
         tags: tagsList.join(','),
@@ -278,6 +299,31 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
                   </FormItem>
                 )}
               />
+
+              {categoryId === 'VARIAVEL' && (
+                <FormField
+                  control={form.control}
+                  name="subcategoryId"
+                  render={({ field }) => (
+                    <FormItem className="animate-in fade-in slide-in-from-top-2 duration-300">
+                      <FormLabel>Subcategoria</FormLabel>
+                      <Select onValueChange={field.onChange} value={field.value || undefined}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Selecione..." />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="materia_prima">Matéria-prima</SelectItem>
+                          <SelectItem value="embalagens">Embalagens</SelectItem>
+                          <SelectItem value="outros">Outros</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              )}
 
               <div className="space-y-2">
                 <FormLabel className="flex items-center gap-1.5">

@@ -107,12 +107,16 @@ export default function Transactions() {
       return b.date.localeCompare(a.date)
     })
 
-  const getCategoryName = (id: string, type: string) => {
-    if (type === 'INCOME') return '-'
-    if (!id) return '-'
-    if (id === 'FIXA') return 'Fixa'
-    if (id === 'VARIAVEL') return 'Variável'
-    return categories.find((c) => c.id === id)?.name || id
+  const getCategoryName = (tx: Transaction) => {
+    if (tx.type === 'INCOME') return '-'
+    if (!tx.categoryId) return '-'
+    let name = tx.categoryId === 'FIXA' ? 'Fixa' : 'Variável'
+    if (tx.categoryId === 'VARIAVEL' && tx.subcategoryId) {
+      if (tx.subcategoryId === 'materia_prima') name += ' (Matéria-prima)'
+      else if (tx.subcategoryId === 'embalagens') name += ' (Embalagens)'
+      else if (tx.subcategoryId === 'outros') name += ' (Outros)'
+    }
+    return name
   }
 
   const getAccountName = (id: string, type: string) => {
@@ -143,7 +147,7 @@ export default function Transactions() {
     const rows = filteredData.map((tx) => [
       tx.date.split('T')[0].split('-').reverse().join('/'),
       `"${tx.description.replace(/"/g, '""')}"`,
-      `"${getCategoryName(tx.categoryId, tx.type)}"`,
+      `"${getCategoryName(tx)}"`,
       `"${getAccountName(tx.accountId, tx.type)}"`,
       tx.status,
       tx.type === 'EXPENSE' ? -tx.amount : tx.amount,
@@ -337,9 +341,7 @@ export default function Transactions() {
                         </div>
                       )}
                     </TableCell>
-                    <TableCell className="text-xs text-slate-600">
-                      {getCategoryName(tx.categoryId, tx.type)}
-                    </TableCell>
+                    <TableCell className="text-xs text-slate-600">{getCategoryName(tx)}</TableCell>
                     <TableCell className="text-xs text-slate-600">
                       {getAccountName(tx.accountId, tx.type)}
                     </TableCell>

@@ -14,21 +14,25 @@ export function PricingAssistant() {
     if (filteredMonthlyMetrics.length === 0) return 1
 
     let cfa = 0
-    let varExp = 0
+    let varExpOperacional = 0
 
     const targetStatuses = filters.statuses.length > 0 ? filters.statuses : ['REALIZADO']
 
     filteredTransactions.forEach((t) => {
       if (t.type === 'EXPENSE' && targetStatuses.includes(t.status)) {
         if (t.categoryId === 'FIXA') cfa += t.amount
-        if (t.categoryId === 'VARIAVEL') varExp += t.amount
+        if (t.categoryId === 'VARIAVEL') {
+          if (t.subcategoryId !== 'materia_prima' && t.subcategoryId !== 'embalagens') {
+            varExpOperacional += t.amount
+          }
+        }
       }
     })
 
     const sales = filteredMonthlyMetrics.reduce((sum, m) => sum + m.total_system_sales, 0)
     const raw = filteredMonthlyMetrics.reduce((sum, m) => sum + m.raw_material_costs, 0)
 
-    const divisor = sales > 0 ? (sales - (cfa + varExp + raw)) / sales : 0
+    const divisor = sales > 0 ? (sales - (cfa + varExpOperacional + raw)) / sales : 0
     return divisor > 0 ? 1 / divisor : 1
   }, [filteredMonthlyMetrics, filteredTransactions, filters])
 

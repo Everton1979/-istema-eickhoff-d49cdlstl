@@ -49,7 +49,7 @@ export function PerformanceEvolutionChart() {
       const metric = monthlyMetrics.find((x) => x.year === y && x.month === m)
 
       let cfa = 0
-      let varExp = 0
+      let varExpOperacional = 0
 
       transactions.forEach((t) => {
         const td = new Date(t.date)
@@ -60,15 +60,19 @@ export function PerformanceEvolutionChart() {
           t.status === 'REALIZADO'
         ) {
           if (t.categoryId === 'FIXA') cfa += t.amount
-          if (t.categoryId === 'VARIAVEL') varExp += t.amount
+          if (t.categoryId === 'VARIAVEL') {
+            if (t.subcategoryId !== 'materia_prima' && t.subcategoryId !== 'embalagens') {
+              varExpOperacional += t.amount
+            }
+          }
         }
       })
 
       const sales = metric?.total_system_sales || 0
       const raw = metric?.raw_material_costs || 0
-      const margem = sales - (raw + varExp)
+      const margem = sales - (raw + varExpOperacional)
 
-      const divisor = sales > 0 ? (sales - (cfa + varExp + raw)) / sales : 0
+      const divisor = sales > 0 ? (sales - (cfa + varExpOperacional + raw)) / sales : 0
       const markup = divisor > 0 ? 1 / divisor : 1
 
       result.push({

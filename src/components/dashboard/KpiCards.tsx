@@ -6,12 +6,17 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 import { HelpCircle } from 'lucide-react'
 
 export function KpiCards() {
-  const { filteredTransactions, categories, filters } = useFinanceStore()
+  const { filteredTransactions, filteredMonthlyMetrics, categories, filters } = useFinanceStore()
 
   const metrics = useMemo(() => {
+    const totalRawMaterial = filteredMonthlyMetrics.reduce(
+      (sum, m) => sum + m.raw_material_costs,
+      0,
+    )
+
     let receitas = 0
-    let despesas = 0
-    let custosVariaveis = 0
+    let despesasFluxo = 0
+    let custosVariaveisOperacionais = 0
     let custosFixos = 0
 
     const targetStatuses = filters.statuses.length > 0 ? filters.statuses : ['REALIZADO']
@@ -21,10 +26,12 @@ export function KpiCards() {
         if (tx.type === 'INCOME') {
           receitas += tx.amount
         } else {
-          despesas += tx.amount
+          despesasFluxo += tx.amount
           const cat = categories.find((c) => c.id === tx.categoryId)
           if (cat?.isVariable) {
-            custosVariaveis += tx.amount
+            if (tx.subcategoryId !== 'materia_prima' && tx.subcategoryId !== 'embalagens') {
+              custosVariaveisOperacionais += tx.amount
+            }
           } else {
             custosFixos += tx.amount
           }
@@ -32,13 +39,13 @@ export function KpiCards() {
       }
     })
 
-    const margem = receitas - custosVariaveis
-    const lucro = receitas - despesas
+    const margem = receitas - (custosVariaveisOperacionais + totalRawMaterial)
+    const lucro = receitas - despesasFluxo
     const indiceMargem = receitas > 0 ? margem / receitas : 0
     const pontoEquilibrio = indiceMargem > 0 ? custosFixos / indiceMargem : 0
 
-    return { receitas, despesas, margem, lucro, pontoEquilibrio }
-  }, [filteredTransactions, categories, filters])
+    return { receitas, despesas: despesasFluxo, margem, lucro, pontoEquilibrio }
+  }, [filteredTransactions, filteredMonthlyMetrics, categories, filters])
 
   const formatCurrency = (val: number) =>
     new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(
@@ -55,21 +62,21 @@ export function KpiCards() {
     },
     {
       title: 'DESPESAS E CUSTOS',
-      tooltip: 'Soma de todas as saídas (fixas e variáveis).',
+      tooltip: 'Soma de todas as saídas de caixa (fixas e variáveis).',
       value: -metrics.despesas,
       color: 'text-red-500',
       border: 'border-t-red-500',
     },
     {
       title: 'MARGEM DE CONTRIBUIÇÃO',
-      tooltip: 'Receita bruta menos custos variáveis (o que sobra para pagar custos fixos).',
+      tooltip: 'Receita bruta menos custos variáveis operacionais e insumos (Fechamento).',
       value: metrics.margem,
       color: 'text-blue-600',
       border: 'border-t-blue-500',
     },
     {
-      title: 'LUCRO LÍQUIDO',
-      tooltip: 'Resultado final (Receitas - Despesas Totais).',
+      title: 'LUCRO LÍQUIDO (CAIXA)',
+      tooltip: 'Resultado final de caixa (Receitas - Despesas Totais).',
       value: metrics.lucro,
       color: 'text-blue-600',
       border: 'border-t-blue-500',

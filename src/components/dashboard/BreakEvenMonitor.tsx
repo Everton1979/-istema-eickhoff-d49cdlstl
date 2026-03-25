@@ -6,11 +6,16 @@ import { cn } from '@/lib/utils'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 
 export function BreakEvenMonitor() {
-  const { filteredTransactions, categories, filters } = useFinanceStore()
+  const { filteredTransactions, filteredMonthlyMetrics, categories, filters } = useFinanceStore()
 
   const metrics = useMemo(() => {
+    const totalRawMaterial = filteredMonthlyMetrics.reduce(
+      (sum, m) => sum + m.raw_material_costs,
+      0,
+    )
+
     let receitas = 0
-    let custosVariaveis = 0
+    let custosVariaveisOperacionais = 0
     let custosFixos = 0
 
     const targetStatuses = filters.statuses.length > 0 ? filters.statuses : ['REALIZADO']
@@ -22,7 +27,9 @@ export function BreakEvenMonitor() {
         } else {
           const cat = categories.find((c) => c.id === tx.categoryId)
           if (cat?.isVariable) {
-            custosVariaveis += tx.amount
+            if (tx.subcategoryId !== 'materia_prima' && tx.subcategoryId !== 'embalagens') {
+              custosVariaveisOperacionais += tx.amount
+            }
           } else {
             custosFixos += tx.amount
           }
@@ -30,12 +37,12 @@ export function BreakEvenMonitor() {
       }
     })
 
-    const margem = receitas - custosVariaveis
+    const margem = receitas - (custosVariaveisOperacionais + totalRawMaterial)
     const indiceMargem = receitas > 0 ? margem / receitas : 0
     const pontoEquilibrio = indiceMargem > 0 ? custosFixos / indiceMargem : 0
 
     return { receitas, pontoEquilibrio }
-  }, [filteredTransactions, categories, filters])
+  }, [filteredTransactions, filteredMonthlyMetrics, categories, filters])
 
   const formatCurrency = (val: number) =>
     new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val)
@@ -72,7 +79,8 @@ export function BreakEvenMonitor() {
                 <TooltipContent className="max-w-[250px] text-center" side="bottom">
                   <div className="text-xs space-y-1">
                     <p>
-                      Indica o momento em que a receita cobre todos os custos (fixos e variáveis).
+                      Indica o momento em que a receita cobre todos os custos (fixos e variáveis
+                      estratégicos).
                     </p>
                     <p className="text-[10px] text-slate-300">
                       <span className="font-semibold text-red-400">{'< 100%'}</span>: Prejuízo |{' '}

@@ -26,6 +26,7 @@ export interface Transaction {
   amount: number
   type: TransactionType
   categoryId: string
+  subcategoryId?: string
   accountId: string
   paymentMethodId?: string
   status: TransactionStatus

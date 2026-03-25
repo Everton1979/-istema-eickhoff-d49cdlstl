@@ -17,25 +17,43 @@ export function PharmacyMetrics() {
     )
 
     let cfaTotal = 0
-    let varExpenses = 0
+    let varExpOperacional = 0
     const targetStatuses = filters.statuses.length > 0 ? filters.statuses : ['REALIZADO']
 
     filteredTransactions.forEach((t) => {
       if (t.type === 'EXPENSE' && targetStatuses.includes(t.status)) {
         if (t.categoryId === 'FIXA') cfaTotal += t.amount
-        if (t.categoryId === 'VARIAVEL') varExpenses += t.amount
+        if (t.categoryId === 'VARIAVEL') {
+          if (t.subcategoryId !== 'materia_prima' && t.subcategoryId !== 'embalagens') {
+            varExpOperacional += t.amount
+          }
+        }
       }
     })
 
     const ticketMedio = totalOrders > 0 ? totalSales / totalOrders : 0
     const fatorMedio = totalRawMaterial > 0 ? totalSales / totalRawMaterial : 0
-    const margemContribuicao = totalSales - (varExpenses + totalRawMaterial)
+    const margemContribuicao = totalSales - (varExpOperacional + totalRawMaterial)
 
     const mkpDivisor =
-      totalSales > 0 ? (totalSales - (cfaTotal + varExpenses + totalRawMaterial)) / totalSales : 0
+      totalSales > 0
+        ? (totalSales - (cfaTotal + varExpOperacional + totalRawMaterial)) / totalSales
+        : 0
     const mkpMultiplier = mkpDivisor > 0 ? 1 / mkpDivisor : 0
+    const custoFixoPorFormula = totalOrders > 0 ? cfaTotal / totalOrders : 0
+    const precoMinimoPorFormula =
+      totalOrders > 0 ? (cfaTotal + varExpOperacional + totalRawMaterial) / totalOrders : 0
 
-    return { ticketMedio, fatorMedio, margemContribuicao, cfaTotal, mkpDivisor, mkpMultiplier }
+    return {
+      ticketMedio,
+      fatorMedio,
+      margemContribuicao,
+      cfaTotal,
+      mkpDivisor,
+      mkpMultiplier,
+      custoFixoPorFormula,
+      precoMinimoPorFormula,
+    }
   }, [filteredTransactions, filteredMonthlyMetrics, filters])
 
   const formatCurrency = (val: number) =>
@@ -60,7 +78,8 @@ export function PharmacyMetrics() {
     },
     {
       title: 'Margem Contribuição',
-      tooltip: 'Receita bruta menos custos variáveis (o que sobra para pagar custos fixos).',
+      tooltip:
+        'Receita bruta menos custos variáveis e insumos (o que sobra para pagar custos fixos).',
       value: formatCurrency(metrics.margemContribuicao),
       color: metrics.margemContribuicao >= 0 ? 'text-emerald-600' : 'text-red-500',
     },
@@ -71,13 +90,25 @@ export function PharmacyMetrics() {
       color: 'text-orange-600',
     },
     {
+      title: 'Custo Fixo / Fórmula',
+      tooltip: 'Quanto cada fórmula carrega do custo fixo.',
+      value: formatCurrency(metrics.custoFixoPorFormula),
+      color: 'text-orange-600',
+    },
+    {
+      title: 'Preço Mín. / Fórmula',
+      tooltip: 'Ponto de equilíbrio unitário (Custo Fixo + Var. Operacional + Insumos / Fórmulas).',
+      value: formatCurrency(metrics.precoMinimoPorFormula),
+      color: 'text-purple-600',
+    },
+    {
       title: 'Mark-up Divisor',
       tooltip: 'Índice para descontar margens do valor total.',
       value: formatDecimal(metrics.mkpDivisor),
       color: 'text-purple-600',
     },
     {
-      title: 'Mark-up Multiplicador',
+      title: 'Mark-up Mult.',
       tooltip: 'Fator sobre o custo para encontrar o preço de venda.',
       value: formatDecimal(metrics.mkpMultiplier),
       color: 'text-purple-600',
@@ -91,7 +122,7 @@ export function PharmacyMetrics() {
           Pharmacy Analytics (Fechamento)
         </h3>
       </div>
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2">
+      <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2">
         {items.map((item, i) => (
           <Card key={i} className="rounded-sm shadow-none border-slate-200 bg-white">
             <CardContent className="p-2 text-center flex flex-col justify-center h-full">

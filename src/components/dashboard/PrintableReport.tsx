@@ -3,7 +3,7 @@ import { useMemo } from 'react'
 import { format } from 'date-fns'
 
 export function PrintableReport() {
-  const { filteredTransactions, filteredMonthlyMetrics, filters, categories } = useFinanceStore()
+  const { filteredTransactions, filteredMonthlyMetrics, filters } = useFinanceStore()
 
   const currentYear = filters.years[0] || new Date().getFullYear().toString()
   const currentMonth = filters.months.length > 0 ? filters.months[0] : ''
@@ -11,6 +11,7 @@ export function PrintableReport() {
   const metrics = useMemo(() => {
     let receitas = 0
     let despesas = 0
+    let varExpOperacional = 0
     let custosVariaveis = 0
     let fixas = 0
 
@@ -21,7 +22,12 @@ export function PrintableReport() {
         } else {
           despesas += tx.amount
           if (tx.categoryId === 'FIXA') fixas += tx.amount
-          if (tx.categoryId === 'VARIAVEL') custosVariaveis += tx.amount
+          if (tx.categoryId === 'VARIAVEL') {
+            custosVariaveis += tx.amount
+            if (tx.subcategoryId !== 'materia_prima' && tx.subcategoryId !== 'embalagens') {
+              varExpOperacional += tx.amount
+            }
+          }
         }
       }
     })
@@ -35,7 +41,7 @@ export function PrintableReport() {
     const ticket = orders > 0 ? totalSales / orders : 0
 
     const divisor =
-      totalSales > 0 ? (totalSales - (fixas + custosVariaveis + rawMaterial)) / totalSales : 0
+      totalSales > 0 ? (totalSales - (fixas + varExpOperacional + rawMaterial)) / totalSales : 0
     const markup = divisor > 0 ? 1 / divisor : 1
 
     return {
@@ -81,13 +87,15 @@ export function PrintableReport() {
                 </td>
               </tr>
               <tr className="border-b border-slate-100">
-                <td className="py-2 text-slate-600">Despesas Totais</td>
+                <td className="py-2 text-slate-600">Despesas Totais (Caixa)</td>
                 <td className="py-2 text-right font-bold text-red-600">
                   {formatCurrency(metrics.despesas)}
                 </td>
               </tr>
               <tr className="bg-slate-50">
-                <td className="py-2 px-2 font-semibold text-slate-800">Lucro Operacional</td>
+                <td className="py-2 px-2 font-semibold text-slate-800">
+                  Lucro Operacional (Caixa)
+                </td>
                 <td className="py-2 px-2 text-right font-bold text-slate-800">
                   {formatCurrency(metrics.lucro)}
                 </td>
@@ -153,7 +161,12 @@ export function PrintableReport() {
                     {t.description}
                     {t.tags && <span className="text-slate-400 ml-1">[{t.tags}]</span>}
                   </td>
-                  <td className="py-1.5 px-2">{t.categoryId === 'FIXA' ? 'Fixa' : 'Variável'}</td>
+                  <td className="py-1.5 px-2">
+                    {t.categoryId === 'FIXA' ? 'Fixa' : 'Variável'}{' '}
+                    {t.subcategoryId
+                      ? `(${t.subcategoryId === 'materia_prima' ? 'Matéria-prima' : t.subcategoryId === 'embalagens' ? 'Embalagens' : 'Outros'})`
+                      : ''}
+                  </td>
                   <td className="py-1.5 px-2 text-right text-red-600 font-medium">
                     {formatCurrency(t.amount)}
                   </td>
