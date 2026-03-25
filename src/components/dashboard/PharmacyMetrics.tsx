@@ -4,6 +4,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { HelpCircle } from 'lucide-react'
+import { Link } from 'react-router-dom'
 
 export function PharmacyMetrics() {
   const { filteredTransactions, filteredMonthlyMetrics, filters } = useFinanceStore()
@@ -69,18 +70,21 @@ export function PharmacyMetrics() {
 
   const items = [
     {
+      id: 'ticket-medio',
       title: 'Ticket Médio',
       tooltip: 'Valor médio por venda (Faturamento / Número de pedidos).',
       value: formatCurrency(metrics.ticketMedio),
       color: 'text-indigo-600',
     },
     {
+      id: 'fator-medio',
       title: 'Fator Médio',
       tooltip: 'Relação entre faturamento e custo de matéria-prima.',
       value: formatDecimal(metrics.fatorMedio),
       color: 'text-indigo-600',
     },
     {
+      id: 'margem-de-contribuicao',
       title: 'Margem Contribuição',
       tooltip:
         'Receita bruta menos custos variáveis e insumos (o que sobra para pagar custos fixos).',
@@ -88,30 +92,35 @@ export function PharmacyMetrics() {
       color: metrics.margemContribuicao >= 0 ? 'text-emerald-600' : 'text-red-500',
     },
     {
+      id: 'cfa-total',
       title: 'CFA Total (Fixas)',
       tooltip: 'Soma de todas as despesas fixas administrativas.',
       value: formatCurrency(metrics.cfaTotal),
       color: 'text-orange-600',
     },
     {
+      id: 'custo-fixo-formula',
       title: 'Custo Fixo / Fórmula',
       tooltip: 'Quanto cada fórmula carrega do custo fixo.',
       value: formatCurrency(metrics.custoFixoPorFormula),
       color: 'text-orange-600',
     },
     {
+      id: 'preco-min-formula',
       title: 'Preço Mín. / Fórmula',
       tooltip: 'Ponto de equilíbrio unitário (Custo Fixo + Var. Operacional + Insumos / Fórmulas).',
       value: formatCurrency(metrics.precoMinimoPorFormula),
       color: 'text-purple-600',
     },
     {
+      id: 'markup-divisor',
       title: 'Mark-up Divisor',
       tooltip: 'Índice para descontar margens do valor total.',
       value: formatDecimal(metrics.mkpDivisor),
       color: 'text-purple-600',
     },
     {
+      id: 'markup-mult',
       title: 'Mark-up Mult.',
       tooltip: 'Fator sobre o custo para encontrar o preço de venda.',
       value: formatDecimal(metrics.mkpMultiplier),
@@ -134,10 +143,15 @@ export function PharmacyMetrics() {
                 {item.title}
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <HelpCircle className="w-3 h-3 text-slate-400 hover:text-slate-600 cursor-help" />
+                    <Link to={`/glossario#${item.id}`}>
+                      <HelpCircle className="w-3 h-3 text-slate-400 hover:text-blue-600 cursor-pointer" />
+                    </Link>
                   </TooltipTrigger>
                   <TooltipContent className="max-w-[200px] text-center" side="bottom">
                     <p className="text-xs">{item.tooltip}</p>
+                    <p className="text-[9px] text-blue-300 mt-1 border-t border-slate-700/50 pt-1">
+                      Clique para ver no Glossário
+                    </p>
                   </TooltipContent>
                 </Tooltip>
               </h4>

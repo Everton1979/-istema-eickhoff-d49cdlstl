@@ -5,6 +5,7 @@ import { Label } from '@/components/ui/label'
 import { Calculator, ArrowRight, HelpCircle } from 'lucide-react'
 import { useState, useMemo } from 'react'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
+import { Link } from 'react-router-dom'
 
 export function PricingAssistant() {
   const { filteredMonthlyMetrics, filteredTransactions, filters } = useFinanceStore()
@@ -52,12 +53,17 @@ export function PricingAssistant() {
             Assistente de Precificação
             <Tooltip>
               <TooltipTrigger asChild>
-                <HelpCircle className="w-3.5 h-3.5 text-purple-400 hover:text-purple-600 cursor-help" />
+                <Link to="/glossario#assistente-precificacao">
+                  <HelpCircle className="w-3.5 h-3.5 text-purple-400 hover:text-purple-600 cursor-pointer" />
+                </Link>
               </TooltipTrigger>
               <TooltipContent className="max-w-[200px] text-center" side="bottom">
                 <p className="text-xs">
                   Ferramenta que projeta o preço de venda sugerido utilizando o Markup Multiplicador
                   configurado.
+                </p>
+                <p className="text-[9px] text-purple-300 mt-1 border-t border-slate-700/50 pt-1">
+                  Clique para ver no Glossário
                 </p>
               </TooltipContent>
             </Tooltip>

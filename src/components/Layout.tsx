@@ -1,5 +1,5 @@
 import { Outlet, Link, useLocation } from 'react-router-dom'
-import { LayoutDashboard, ReceiptText, Settings, Menu, LogOut } from 'lucide-react'
+import { LayoutDashboard, ReceiptText, Settings, BookOpen, Menu, LogOut } from 'lucide-react'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
@@ -21,6 +21,12 @@ export default function Layout() {
       name: 'Transações',
       path: '/transacoes',
       icon: ReceiptText,
+      allowed: ['Administrador', 'Colaborador', 'Visitante'],
+    },
+    {
+      name: 'Glossário',
+      path: '/glossario',
+      icon: BookOpen,
       allowed: ['Administrador', 'Colaborador', 'Visitante'],
     },
     {
@@ -62,7 +68,7 @@ export default function Layout() {
               <div className="w-6 h-6 bg-white rounded-sm flex items-center justify-center text-primary text-xs">
                 CF
               </div>
-              Controle Financeiro 5.3
+              Controle Financeiro 5.4
             </div>
           </div>
 

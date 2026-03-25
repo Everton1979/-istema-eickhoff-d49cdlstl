@@ -4,6 +4,7 @@ import { TrendingUp, CheckCircle2, AlertCircle, HelpCircle } from 'lucide-react'
 import { useMemo } from 'react'
 import { cn } from '@/lib/utils'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
+import { Link } from 'react-router-dom'
 
 export function BreakEvenMonitor() {
   const { filteredTransactions, filteredMonthlyMetrics, categories, filters } = useFinanceStore()
@@ -78,7 +79,9 @@ export function BreakEvenMonitor() {
               Monitor Ponto de Equilíbrio
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <HelpCircle className="w-3.5 h-3.5 text-slate-400 hover:text-slate-600 cursor-help" />
+                  <Link to="/glossario#monitor-ponto-equilibrio">
+                    <HelpCircle className="w-3.5 h-3.5 text-slate-400 hover:text-blue-600 cursor-pointer" />
+                  </Link>
                 </TooltipTrigger>
                 <TooltipContent className="max-w-[250px] text-center" side="bottom">
                   <div className="text-xs space-y-1">
@@ -90,6 +93,9 @@ export function BreakEvenMonitor() {
                       <span className="font-semibold text-red-400">{'< 100%'}</span>: Prejuízo |{' '}
                       <span className="font-semibold text-yellow-400">{'= 100%'}</span>: Zero a zero
                       | <span className="font-semibold text-emerald-400">{'> 100%'}</span>: Lucro
+                    </p>
+                    <p className="text-[9px] text-blue-300 mt-1 border-t border-slate-700/50 pt-1">
+                      Clique para ver no Glossário
                     </p>
                   </div>
                 </TooltipContent>

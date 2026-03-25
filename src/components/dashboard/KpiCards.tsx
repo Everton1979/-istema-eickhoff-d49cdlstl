@@ -4,6 +4,7 @@ import { cn } from '@/lib/utils'
 import { useMemo } from 'react'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { HelpCircle } from 'lucide-react'
+import { Link } from 'react-router-dom'
 
 export function KpiCards() {
   const { filteredTransactions, filteredMonthlyMetrics, categories, filters } = useFinanceStore()
@@ -58,6 +59,7 @@ export function KpiCards() {
 
   const kpis = [
     {
+      id: 'receitas-operacionais',
       title: 'RECEITAS OPERACIONAIS',
       tooltip: 'Total de entradas financeiras no período.',
       value: metrics.receitas,
@@ -65,6 +67,7 @@ export function KpiCards() {
       border: 'border-t-blue-500',
     },
     {
+      id: 'despesas-e-custos',
       title: 'DESPESAS E CUSTOS',
       tooltip: 'Soma de todas as saídas de caixa (fixas e variáveis).',
       value: -metrics.despesas,
@@ -72,6 +75,7 @@ export function KpiCards() {
       border: 'border-t-red-500',
     },
     {
+      id: 'margem-de-contribuicao',
       title: 'MARGEM DE CONTRIBUIÇÃO',
       tooltip: 'Receita bruta menos custos variáveis operacionais e insumos (Fechamento).',
       value: metrics.margem,
@@ -79,6 +83,7 @@ export function KpiCards() {
       border: 'border-t-blue-500',
     },
     {
+      id: 'lucro-liquido',
       title: 'LUCRO LÍQUIDO (CAIXA)',
       tooltip: 'Resultado final de caixa (Receitas - Despesas Totais).',
       value: metrics.lucro,
@@ -86,6 +91,7 @@ export function KpiCards() {
       border: 'border-t-blue-500',
     },
     {
+      id: 'ponto-de-equilibrio',
       title: 'PONTO DE EQUILÍBRIO (YTD)',
       tooltip: 'Faturamento necessário para cobrir todos os custos (Lucro zero).',
       value: metrics.pontoEquilibrio,
@@ -103,10 +109,15 @@ export function KpiCards() {
               {kpi.title}
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <HelpCircle className="w-3 h-3 text-gray-400 hover:text-gray-600 cursor-help" />
+                  <Link to={`/glossario#${kpi.id}`}>
+                    <HelpCircle className="w-3 h-3 text-gray-400 hover:text-blue-600 cursor-pointer" />
+                  </Link>
                 </TooltipTrigger>
                 <TooltipContent className="max-w-[200px] text-center" side="bottom">
                   <p className="text-xs">{kpi.tooltip}</p>
+                  <p className="text-[9px] text-blue-300 mt-1 border-t border-slate-700/50 pt-1">
+                    Clique para ver no Glossário
+                  </p>
                 </TooltipContent>
               </Tooltip>
             </h3>

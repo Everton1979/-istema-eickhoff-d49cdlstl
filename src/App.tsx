@@ -7,6 +7,7 @@ import { AuthProvider, useAuth } from '@/hooks/use-auth'
 import Index from './pages/Index'
 import Transactions from './pages/Transactions'
 import Settings from './pages/Settings'
+import Glossary from './pages/Glossary'
 import NotFound from './pages/NotFound'
 import Login from './pages/Login'
 import Layout from './components/Layout'
@@ -42,7 +43,7 @@ const App = () => (
   <BrowserRouter future={{ v7_startTransition: false, v7_relativeSplatPath: false }}>
     <AuthProvider>
       <FinanceProvider>
-        <TooltipProvider>
+        <TooltipProvider delayDuration={100}>
           <Toaster />
           <Sonner />
           <Routes>
@@ -56,6 +57,7 @@ const App = () => (
             >
               <Route path="/" element={<Index />} />
               <Route path="/transacoes" element={<Transactions />} />
+              <Route path="/glossario" element={<Glossary />} />
               <Route
                 path="/configuracoes"
                 element={
