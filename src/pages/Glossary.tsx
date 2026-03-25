@@ -47,7 +47,7 @@ const GLOSSARY_TERMS = [
     definition: 'Resultado final de caixa no período analisado.',
     calculation: 'Receitas Totais - Despesas Totais.',
     reference:
-      'Quanto maior, melhor. Indica se a empresa gerou caixa excedente após pagar todas as obrigações no período.',
+      'Quanto maior, melhor. Indica se a empresa gerou caixa excedente após pagar todas as obrigações no período. O ideal é que seja maior que 15% do valor dos custos totais.',
     trend: 'up',
   },
   {
@@ -93,7 +93,18 @@ const GLOSSARY_TERMS = [
       'Soma de todas as despesas que não variam diretamente com a quantidade produzida (ex: aluguel, salários, contador, energia básica).',
     calculation: 'Soma de todas as transações financeiras categorizadas como "Fixa".',
     reference:
-      'Quanto menor, melhor. Manter o CFA controlado é o principal fator para reduzir o risco do seu Ponto de Equilíbrio.',
+      'Quanto menor, melhor. Manter o CFA controlado é o principal fator para reduzir o risco do seu Ponto de Equilíbrio. O ideal é que seja menor que 35%.',
+    trend: 'down',
+  },
+  {
+    id: 'custo-variavel',
+    title: 'Custos Variáveis',
+    category: 'Métricas de Performance',
+    definition:
+      'Soma de todas as despesas que variam diretamente de acordo com o volume de produção ou vendas (ex: impostos, taxas de cartão, comissões).',
+    calculation: 'Soma de todas as transações financeiras categorizadas como "Variável".',
+    reference:
+      'Quanto menor, melhor. O ideal é que seja menor que 40% para garantir uma margem de contribuição saudável.',
     trend: 'down',
   },
   {
