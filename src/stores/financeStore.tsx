@@ -247,7 +247,8 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
       orders_count: metric.orders_count,
       total_system_sales: metric.total_system_sales,
       raw_material_costs: metric.raw_material_costs,
-      sales_target: metric.sales_target || 0,
+      sales_target:
+        metric.sales_target !== undefined ? metric.sales_target : existing?.sales_target || 0,
       updated_at: new Date().toISOString(),
     }
 

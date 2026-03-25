@@ -51,17 +51,23 @@ export function MonthlyClosingDialog() {
         setCosts('')
       }
     }
-  }, [month, year, monthlyMetrics, open])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [month, year, open])
 
   const handleSave = async () => {
     try {
       setLoading(true)
+      const existing = monthlyMetrics.find(
+        (m) => m.month.toString().padStart(2, '0') === month && m.year.toString() === year,
+      )
+
       await saveMonthlyMetric({
         month: parseInt(month, 10),
         year: parseInt(year, 10),
         orders_count: parseInt(orders || '0', 10),
         total_system_sales: parseFloat(sales || '0'),
         raw_material_costs: parseFloat(costs || '0'),
+        sales_target: existing ? existing.sales_target : 0,
       })
       toast({ title: 'Sucesso', description: 'Fechamento mensal salvo com sucesso.' })
       setOpen(false)
