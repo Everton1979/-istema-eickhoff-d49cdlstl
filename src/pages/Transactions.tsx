@@ -114,6 +114,7 @@ export default function Transactions() {
     if (tx.categoryId === 'VARIAVEL' && tx.subcategoryId) {
       if (tx.subcategoryId === 'materia_prima') name += ' (Matéria-prima)'
       else if (tx.subcategoryId === 'embalagens') name += ' (Embalagens)'
+      else if (tx.subcategoryId === 'medicamentos_drogaria') name += ' (Medicamentos)'
       else if (tx.subcategoryId === 'outros') name += ' (Outros)'
     }
     return name

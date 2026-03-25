@@ -80,6 +80,7 @@ export type Database = {
           id: string
           payment_method: string | null
           status: string
+          subcategory: string | null
           tags: string | null
           type: string
           user_id: string
@@ -94,6 +95,7 @@ export type Database = {
           id?: string
           payment_method?: string | null
           status?: string
+          subcategory?: string | null
           tags?: string | null
           type: string
           user_id: string
@@ -108,6 +110,7 @@ export type Database = {
           id?: string
           payment_method?: string | null
           status?: string
+          subcategory?: string | null
           tags?: string | null
           type?: string
           user_id?: string
@@ -326,6 +329,7 @@ export const Constants = {
 //   created_at: timestamp with time zone (not null, default: now())
 //   tags: text (nullable, default: ''::text)
 //   payment_method: text (nullable)
+//   subcategory: text (nullable)
 // Table: user_settings
 //   user_id: uuid (not null)
 //   initial_balance_dinheiro: numeric (nullable, default: 0)

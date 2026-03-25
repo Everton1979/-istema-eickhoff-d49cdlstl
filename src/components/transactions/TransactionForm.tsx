@@ -316,6 +316,9 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
                         <SelectContent>
                           <SelectItem value="materia_prima">Matéria-prima</SelectItem>
                           <SelectItem value="embalagens">Embalagens</SelectItem>
+                          <SelectItem value="medicamentos_drogaria">
+                            Medicamentos (Drogaria)
+                          </SelectItem>
                           <SelectItem value="outros">Outros</SelectItem>
                         </SelectContent>
                       </Select>

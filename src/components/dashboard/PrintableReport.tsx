@@ -24,7 +24,11 @@ export function PrintableReport() {
           if (tx.categoryId === 'FIXA') fixas += tx.amount
           if (tx.categoryId === 'VARIAVEL') {
             custosVariaveis += tx.amount
-            if (tx.subcategoryId !== 'materia_prima' && tx.subcategoryId !== 'embalagens') {
+            if (
+              tx.subcategoryId !== 'materia_prima' &&
+              tx.subcategoryId !== 'embalagens' &&
+              tx.subcategoryId !== 'medicamentos_drogaria'
+            ) {
               varExpOperacional += tx.amount
             }
           }
@@ -164,7 +168,7 @@ export function PrintableReport() {
                   <td className="py-1.5 px-2">
                     {t.categoryId === 'FIXA' ? 'Fixa' : 'Variável'}{' '}
                     {t.subcategoryId
-                      ? `(${t.subcategoryId === 'materia_prima' ? 'Matéria-prima' : t.subcategoryId === 'embalagens' ? 'Embalagens' : 'Outros'})`
+                      ? `(${t.subcategoryId === 'materia_prima' ? 'Matéria-prima' : t.subcategoryId === 'embalagens' ? 'Embalagens' : t.subcategoryId === 'medicamentos_drogaria' ? 'Medicamentos (Drogaria)' : 'Outros'})`
                       : ''}
                   </td>
                   <td className="py-1.5 px-2 text-right text-red-600 font-medium">

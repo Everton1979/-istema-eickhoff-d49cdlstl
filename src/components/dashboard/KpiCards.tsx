@@ -29,7 +29,11 @@ export function KpiCards() {
           despesasFluxo += tx.amount
           const cat = categories.find((c) => c.id === tx.categoryId)
           if (cat?.isVariable) {
-            if (tx.subcategoryId !== 'materia_prima' && tx.subcategoryId !== 'embalagens') {
+            if (
+              tx.subcategoryId !== 'materia_prima' &&
+              tx.subcategoryId !== 'embalagens' &&
+              tx.subcategoryId !== 'medicamentos_drogaria'
+            ) {
               custosVariaveisOperacionais += tx.amount
             }
           } else {

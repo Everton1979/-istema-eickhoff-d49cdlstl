@@ -24,7 +24,11 @@ export function PharmacyMetrics() {
       if (t.type === 'EXPENSE' && targetStatuses.includes(t.status)) {
         if (t.categoryId === 'FIXA') cfaTotal += t.amount
         if (t.categoryId === 'VARIAVEL') {
-          if (t.subcategoryId !== 'materia_prima' && t.subcategoryId !== 'embalagens') {
+          if (
+            t.subcategoryId !== 'materia_prima' &&
+            t.subcategoryId !== 'embalagens' &&
+            t.subcategoryId !== 'medicamentos_drogaria'
+          ) {
             varExpOperacional += t.amount
           }
         }

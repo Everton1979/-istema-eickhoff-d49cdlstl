@@ -61,7 +61,11 @@ export function PerformanceEvolutionChart() {
         ) {
           if (t.categoryId === 'FIXA') cfa += t.amount
           if (t.categoryId === 'VARIAVEL') {
-            if (t.subcategoryId !== 'materia_prima' && t.subcategoryId !== 'embalagens') {
+            if (
+              t.subcategoryId !== 'materia_prima' &&
+              t.subcategoryId !== 'embalagens' &&
+              t.subcategoryId !== 'medicamentos_drogaria'
+            ) {
               varExpOperacional += t.amount
             }
           }
