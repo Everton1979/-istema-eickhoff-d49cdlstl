@@ -1,10 +1,11 @@
 import { useFinanceStore } from '@/stores/financeStore'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { cn } from '@/lib/utils'
-import { ListFilter } from 'lucide-react'
+import { ListFilter, Wallet } from 'lucide-react'
+import { useMemo } from 'react'
 
 export function SidebarFilters() {
-  const { filters, setFilter } = useFinanceStore()
+  const { filters, setFilter, filteredTransactions } = useFinanceStore()
 
   const toggleMonth = (m: string) => {
     setFilter('months', filters.months.includes(m) ? [] : [m])
@@ -17,6 +18,21 @@ export function SidebarFilters() {
       : [...current, status]
     setFilter('statuses', updated)
   }
+
+  const summary = useMemo(() => {
+    let entradas = 0
+    let saidas = 0
+
+    filteredTransactions.forEach((tx) => {
+      if (tx.type === 'INCOME') entradas += tx.amount
+      else saidas += tx.amount
+    })
+
+    return { entradas, saidas, saldo: entradas - saidas }
+  }, [filteredTransactions])
+
+  const formatCurrency = (val: number) =>
+    new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val)
 
   const FilterSection = ({ title, children }: { title: string; children: React.ReactNode }) => (
     <div className="mb-4">
@@ -82,6 +98,44 @@ export function SidebarFilters() {
           ))}
         </div>
       </FilterSection>
+
+      <div className="mt-6 border-t border-slate-200 pt-4 px-1">
+        <h3 className="text-xs font-semibold text-slate-600 mb-3 flex items-center gap-1.5">
+          <Wallet className="w-3.5 h-3.5 text-blue-500" /> Resumo Rápido
+        </h3>
+        <div className="flex flex-col gap-2">
+          <div className="bg-white p-2 rounded-sm border border-emerald-100 shadow-sm flex flex-col">
+            <span className="text-[9px] text-slate-500 uppercase font-bold mb-0.5">Entradas</span>
+            <span className="text-xs font-bold text-emerald-600 leading-none">
+              {formatCurrency(summary.entradas)}
+            </span>
+          </div>
+          <div className="bg-white p-2 rounded-sm border border-red-100 shadow-sm flex flex-col">
+            <span className="text-[9px] text-slate-500 uppercase font-bold mb-0.5">Saídas</span>
+            <span className="text-xs font-bold text-red-500 leading-none">
+              {formatCurrency(summary.saidas)}
+            </span>
+          </div>
+          <div
+            className={cn(
+              'bg-white p-2 rounded-sm border shadow-sm flex flex-col mt-1',
+              summary.saldo >= 0 ? 'border-blue-100' : 'border-orange-100',
+            )}
+          >
+            <span className="text-[9px] text-slate-500 uppercase font-bold mb-0.5">
+              Saldo Filtrado
+            </span>
+            <span
+              className={cn(
+                'text-xs font-bold leading-none',
+                summary.saldo >= 0 ? 'text-blue-600' : 'text-orange-600',
+              )}
+            >
+              {formatCurrency(summary.saldo)}
+            </span>
+          </div>
+        </div>
+      </div>
     </ScrollArea>
   )
 }

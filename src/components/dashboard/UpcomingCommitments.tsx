@@ -1,6 +1,6 @@
 import { useFinanceStore } from '@/stores/financeStore'
 import { Card, CardContent } from '@/components/ui/card'
-import { CalendarClock, AlertCircle } from 'lucide-react'
+import { CalendarClock, AlertCircle, CalendarDays } from 'lucide-react'
 import { useMemo } from 'react'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { cn } from '@/lib/utils'
@@ -9,21 +9,24 @@ export function UpcomingCommitments() {
   const { transactions } = useFinanceStore()
 
   const upcoming = useMemo(() => {
-    const now = new Date()
-    now.setHours(0, 0, 0, 0)
-
-    const nextWeek = new Date(now)
-    nextWeek.setDate(now.getDate() + 7)
-    nextWeek.setHours(23, 59, 59, 999)
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
 
     return transactions
       .filter((tx) => {
-        if (tx.type !== 'EXPENSE' || tx.status !== 'PREVISTO') return false
+        if (tx.type !== 'EXPENSE' || tx.status === 'REALIZADO') return false
         const txDate = new Date(tx.date)
-        return txDate >= now && txDate <= nextWeek
+        txDate.setHours(0, 0, 0, 0)
+
+        // Show only what is due today or overdue
+        return txDate.getTime() <= today.getTime()
       })
-      .sort((a, b) => b.amount - a.amount)
-      .slice(0, 5) // Top 5
+      .sort((a, b) => {
+        const da = new Date(a.date).getTime()
+        const db = new Date(b.date).getTime()
+        if (da !== db) return da - db // Sort by oldest first
+        return b.amount - a.amount
+      })
   }, [transactions])
 
   const formatCurrency = (val: number) =>
@@ -49,29 +52,34 @@ export function UpcomingCommitments() {
       <CardContent className="p-0 flex flex-col h-full">
         <div className="bg-slate-50 border-b px-3 py-2 flex items-center justify-between">
           <div className="flex items-center gap-1.5 text-slate-700">
-            <CalendarClock className="w-4 h-4 text-orange-500" />
-            <h3 className="text-xs font-bold uppercase tracking-wide">Compromissos (7 Dias)</h3>
+            <CalendarDays className="w-4 h-4 text-orange-500" />
+            <h3 className="text-xs font-bold uppercase tracking-wide">Compromissos de Hoje</h3>
           </div>
-          <span className="text-[9px] bg-slate-200 text-slate-600 px-1.5 py-0.5 rounded-sm font-medium">
-            Top 5
-          </span>
+          {upcoming.length > 0 && (
+            <span className="text-[9px] bg-slate-200 text-slate-600 px-1.5 py-0.5 rounded-sm font-medium">
+              {upcoming.length} pendentes
+            </span>
+          )}
         </div>
 
         <ScrollArea className="flex-1">
           {upcoming.length > 0 ? (
-            <div className="flex flex-col divide-y divide-slate-100">
+            <div className="flex flex-col divide-y divide-slate-100 pb-2">
               {upcoming.map((tx) => {
                 const dueToday = isToday(tx.date)
                 return (
                   <div
                     key={tx.id}
-                    className="p-2 flex items-center justify-between hover:bg-slate-50 transition-colors"
+                    className={cn(
+                      'p-2 flex items-center justify-between transition-colors',
+                      dueToday ? 'hover:bg-slate-50' : 'bg-red-50/50 hover:bg-red-50',
+                    )}
                   >
                     <div className="flex items-center gap-2 overflow-hidden">
                       <div
                         className={cn(
                           'flex flex-col items-center justify-center min-w-[32px] rounded-sm py-0.5 px-1 text-[9px] font-bold text-center leading-tight',
-                          dueToday ? 'bg-red-100 text-red-700' : 'bg-slate-100 text-slate-600',
+                          !dueToday ? 'bg-red-100 text-red-700' : 'bg-slate-100 text-slate-600',
                         )}
                       >
                         <span>{formatDate(tx.date).split('/')[0]}</span>
@@ -82,10 +90,14 @@ export function UpcomingCommitments() {
                       <div className="truncate">
                         <p className="text-xs font-medium text-slate-700 truncate flex items-center gap-1">
                           {tx.description}
-                          {dueToday && <AlertCircle className="w-3 h-3 text-red-500 shrink-0" />}
+                          {!dueToday && <AlertCircle className="w-3 h-3 text-red-500 shrink-0" />}
                         </p>
                         <p className="text-[9px] text-slate-400 truncate">
-                          {tx.categoryId === 'FIXA' ? 'Desp. Fixa' : 'Desp. Variável'}
+                          {!dueToday
+                            ? 'Atrasado'
+                            : tx.categoryId === 'FIXA'
+                              ? 'Desp. Fixa'
+                              : 'Desp. Variável'}
                         </p>
                       </div>
                     </div>
@@ -100,9 +112,9 @@ export function UpcomingCommitments() {
             <div className="flex flex-col items-center justify-center h-full text-slate-400 p-4 min-h-[120px]">
               <CalendarClock className="w-6 h-6 mb-1 opacity-20" />
               <p className="text-xs text-center">
-                Nenhum compromisso previsto
+                Nenhum compromisso pendente
                 <br />
-                para os próximos 7 dias.
+                para o dia de hoje.
               </p>
             </div>
           )}

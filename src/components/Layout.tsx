@@ -41,28 +41,35 @@ export default function Layout() {
 
   const NavLinks = () => (
     <>
-      {navItems.map((item) => (
-        <Link
-          key={item.path}
-          to={item.path}
-          className={cn(
-            'flex items-center gap-2 px-4 py-2 text-sm font-medium transition-colors hover:text-white',
-            location.pathname === item.path
-              ? 'text-white border-b-2 border-green-500'
-              : 'text-blue-100',
-          )}
-        >
-          <item.icon className="w-4 h-4" />
-          {item.name}
-        </Link>
-      ))}
+      {navItems.map((item) => {
+        const isPrimary = item.name === 'Dashboard' || item.name === 'Transações'
+        const isActive = location.pathname === item.path
+
+        return (
+          <Link
+            key={item.path}
+            to={item.path}
+            className={cn(
+              'flex items-center gap-2 px-4 py-2 text-sm transition-colors',
+              isActive
+                ? 'text-white border-b-2 border-green-500 font-bold'
+                : 'text-blue-100 hover:text-white',
+              isPrimary && !isActive ? 'font-bold' : 'font-medium',
+              isPrimary && 'text-blue-50',
+            )}
+          >
+            <item.icon className={cn('w-4 h-4', isPrimary && 'text-green-400')} />
+            {item.name}
+          </Link>
+        )
+      })}
     </>
   )
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-100">
       <header className="bg-primary text-primary-foreground shadow-md sticky top-0 z-30">
-        <div className="container mx-auto px-4 h-14 flex items-center justify-between">
+        <div className="w-full px-4 md:px-6 h-14 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2 font-bold text-lg tracking-tight">
               <div className="w-6 h-6 bg-white rounded-sm flex items-center justify-center text-primary text-xs">
@@ -118,7 +125,7 @@ export default function Layout() {
         </div>
       </header>
 
-      <main className="flex-1 container mx-auto p-4 flex flex-col gap-4 overflow-hidden">
+      <main className="flex-1 w-full px-4 md:px-6 py-4 flex flex-col gap-4 overflow-hidden">
         <Outlet />
       </main>
     </div>

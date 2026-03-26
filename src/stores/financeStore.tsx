@@ -39,6 +39,7 @@ interface FinanceContextType {
   filteredMonthlyMetrics: MonthlyMetric[]
   updateAccountInitialBalances: (balances: Record<string, number>) => Promise<{ error: any }>
   loadingData: boolean
+  fetchData: () => Promise<void>
 }
 
 const FinanceContext = createContext<FinanceContextType | undefined>(undefined)
@@ -373,6 +374,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
         filteredMonthlyMetrics,
         updateAccountInitialBalances,
         loadingData,
+        fetchData,
       }}
     >
       {children}

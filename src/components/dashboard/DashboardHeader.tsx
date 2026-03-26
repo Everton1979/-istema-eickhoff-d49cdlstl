@@ -1,6 +1,5 @@
-import { RefreshCw, Home, Printer } from 'lucide-react'
+import { RefreshCw, Printer } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Link } from 'react-router-dom'
 import { useFinanceStore } from '@/stores/financeStore'
 import { useAuth } from '@/hooks/use-auth'
 import {
@@ -10,13 +9,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { MonthlyClosingDialog } from './MonthlyClosingDialog'
 import { ExpirationAlerts } from './ExpirationAlerts'
+import { cn } from '@/lib/utils'
 
 export function DashboardHeader() {
-  const { filters, setFilter, transactions } = useFinanceStore()
+  const { filters, setFilter, transactions, fetchData } = useFinanceStore()
   const { profile } = useAuth()
+  const [isRefreshing, setIsRefreshing] = useState(false)
 
   const years = useMemo(() => {
     const y = new Set<string>()
@@ -31,6 +32,12 @@ export function DashboardHeader() {
 
   const handlePrint = () => {
     window.print()
+  }
+
+  const handleRefresh = async () => {
+    setIsRefreshing(true)
+    await fetchData()
+    setIsRefreshing(false)
   }
 
   return (
@@ -96,14 +103,15 @@ export function DashboardHeader() {
         <div className="flex items-center gap-0.5">
           <ExpirationAlerts />
 
-          <Button variant="ghost" size="icon" className="h-8 w-8 text-white hover:bg-white/20">
-            <RefreshCw className="h-3.5 w-3.5" />
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8 text-white hover:bg-white/20"
+            onClick={handleRefresh}
+            disabled={isRefreshing}
+          >
+            <RefreshCw className={cn('h-3.5 w-3.5', isRefreshing && 'animate-spin')} />
           </Button>
-          <Link to="/">
-            <Button variant="ghost" size="icon" className="h-8 w-8 text-white hover:bg-white/20">
-              <Home className="h-3.5 w-3.5" />
-            </Button>
-          </Link>
         </div>
       </div>
     </div>
