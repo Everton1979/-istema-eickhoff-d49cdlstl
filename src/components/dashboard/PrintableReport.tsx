@@ -74,7 +74,7 @@ export function PrintableReport() {
 
       <div className="mb-6 page-break-inside-avoid">
         <h2 className="text-lg font-bold text-slate-800 border-b border-slate-800 pb-1 mb-3">
-          Extrato de Lançamentos
+          Extrato de Despesas
         </h2>
         <table className="w-full text-xs text-left border-collapse">
           <thead>
@@ -87,39 +87,32 @@ export function PrintableReport() {
           </thead>
           <tbody>
             {filteredTransactions
+              .filter((t) => t.type === 'EXPENSE')
               .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
               .map((t) => (
                 <tr key={t.id} className="border-b border-slate-200">
                   <td className="py-1.5 px-2 whitespace-nowrap">
-                    {format(new Date(t.date), 'dd/MM/yyyy')}
+                    {t.date.split('T')[0].split('-').reverse().join('/')}
                   </td>
                   <td className="py-1.5 px-2">
                     {t.description}
                     {t.tags && <span className="text-slate-400 ml-1">[{t.tags}]</span>}
                   </td>
                   <td className="py-1.5 px-2">
-                    {t.type === 'INCOME'
-                      ? 'Receita'
-                      : t.categoryId === 'FIXA'
-                        ? 'Fixa'
-                        : 'Variável'}{' '}
-                    {t.type === 'EXPENSE' && t.subcategoryId
-                      ? `(${t.subcategoryId === 'materia_prima' ? 'Matéria-prima' : t.subcategoryId === 'embalagens' ? 'Embalagens' : t.subcategoryId === 'medicamentos_drogaria' ? 'Medicamentos (Drogaria)' : 'Outros'})`
+                    {t.categoryId === 'FIXA' ? 'Fixa' : 'Variável'}
+                    {t.subcategoryId
+                      ? ` (${t.subcategoryId === 'materia_prima' ? 'Matéria-prima' : t.subcategoryId === 'embalagens' ? 'Embalagens' : t.subcategoryId === 'medicamentos_drogaria' ? 'Medicamentos' : 'Outros'})`
                       : ''}
                   </td>
-                  <td
-                    className={`py-1.5 px-2 text-right font-medium whitespace-nowrap ${
-                      t.type === 'INCOME' ? 'text-emerald-600' : 'text-red-600'
-                    }`}
-                  >
-                    {t.type === 'INCOME' ? '+' : '-'} {formatCurrency(t.amount)}
+                  <td className="py-1.5 px-2 text-right font-medium whitespace-nowrap text-red-600">
+                    - {formatCurrency(t.amount)}
                   </td>
                 </tr>
               ))}
           </tbody>
         </table>
         <p className="text-[10px] text-slate-500 mt-2 italic">
-          * Todos os lançamentos do período selecionado estão listados acima.
+          * Apenas as despesas do período selecionado estão listadas acima, em ordem cronológica.
         </p>
       </div>
 
