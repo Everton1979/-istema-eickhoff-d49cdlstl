@@ -47,7 +47,7 @@ const GLOSSARY_TERMS = [
     definition: 'Resultado final de caixa no período analisado.',
     calculation: 'Receitas Totais - Despesas Totais.',
     reference:
-      'Quanto maior, melhor. Indica se a empresa gerou caixa excedente após pagar todas as obrigações no período. O ideal é que seja maior que 15% do valor dos custos totais.',
+      'Quanto maior, melhor. Indica se a empresa gerou caixa excedente após pagar todas as obrigações no período.',
     trend: 'up',
   },
   {
@@ -135,10 +135,10 @@ const GLOSSARY_TERMS = [
     title: 'Mark-up Divisor',
     category: 'Métricas de Performance',
     definition:
-      'Um índice utilizado internamente para descontar as margens do valor total e estruturar o preço base de venda.',
-    calculation: '(Vendas - Custos Totais) / Vendas.',
+      'Índice que representa a proporção do custo direto em relação ao custo total no ponto de equilíbrio.',
+    calculation: 'Custo de Insumos (MP + EMB) / Custos Totais.',
     reference:
-      'Acompanha a margem de rentabilidade; quanto mais próximo de 1, maior a margem agregada aos produtos.',
+      'Quanto menor o divisor, maior o multiplicador necessário para cobrir todos os custos da operação.',
     trend: 'neutral',
   },
   {
@@ -146,11 +146,22 @@ const GLOSSARY_TERMS = [
     title: 'Mark-up Multiplicador',
     category: 'Métricas de Performance',
     definition:
-      'O fator de multiplicação que você aplica sobre o custo direto (MP + Embalagem) para encontrar o preço final ideal de prateleira.',
-    calculation: '1 / Mark-up Divisor.',
+      'Fator aplicado sobre o custo direto (MP + Embalagem) para encontrar o preço de venda de Ponto de Equilíbrio.',
+    calculation: '1 / Mark-up Divisor (ou Custos Totais / Custo MP).',
     reference:
-      'Varia de laboratório para laboratório. O ideal é que seja suficiente para cobrir os custos e deixar o lucro desejado. Geralmente entre 3.0x e 5.0x no setor.',
+      'Valor ideal para balizar o preço mínimo. Vender abaixo deste fator significa operar em prejuízo.',
     trend: 'neutral',
+  },
+  {
+    id: 'markup-realizado',
+    title: 'Mark-up Praticado',
+    category: 'Métricas de Performance',
+    definition:
+      'Multiplicador efetivamente realizado pela farmácia no período, considerando as vendas totais e os custos de insumos.',
+    calculation: 'Faturamento Total / Custo de Insumos (MP + EMB).',
+    reference:
+      'Deve ser sempre superior ao Mark-up Alvo (P.E.). Quanto maior a diferença, maior o lucro da operação.',
+    trend: 'up',
   },
 
   // --- FERRAMENTAS ---
@@ -170,10 +181,10 @@ const GLOSSARY_TERMS = [
     title: 'Assistente de Precificação',
     category: 'Ferramentas do Dashboard',
     definition:
-      'Calculadora rápida que utiliza o Mark-up Multiplicador real da sua operação (do fechamento mensal) para sugerir um preço de venda.',
-    calculation: 'Custo Informado (MP + Embalagem) * Mark-up Multiplicador atual.',
+      'Calculadora que utiliza o Mark-up Multiplicador real da sua operação para sugerir o preço de Ponto de Equilíbrio.',
+    calculation: 'Custo Informado (MP + Embalagem) * Mark-up Multiplicador.',
     reference:
-      'Ferramenta de uso diário para garantir que orçamentos novos ou formulações não sejam vendidos abaixo da margem de segurança do laboratório.',
+      'Ferramenta para garantir que orçamentos não sejam vendidos abaixo do custo operacional mínimo da farmácia.',
     trend: 'neutral',
   },
 ]

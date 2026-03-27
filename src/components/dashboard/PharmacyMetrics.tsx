@@ -41,11 +41,8 @@ export function PharmacyMetrics() {
     const margemContribuicao = totalSales - (varExpOperacional + totalRawMaterial)
 
     const custoTotal = cfaTotal + varExpOperacional + totalRawMaterial
-    const faturamentoIdeal = custoTotal / 0.85
-    const mkpTarget = totalRawMaterial > 0 ? faturamentoIdeal / totalRawMaterial : 0
-
-    const mkpDivisorRealizado = totalSales > 0 ? (totalSales - custoTotal) / totalSales : 0
-    const mkpRealizado = mkpDivisorRealizado > 0 ? 1 / mkpDivisorRealizado : 0
+    const mkpTarget = totalRawMaterial > 0 ? custoTotal / totalRawMaterial : 0
+    const mkpRealizado = totalRawMaterial > 0 ? totalSales / totalRawMaterial : 0
 
     const lucroLiquidoPct = totalSales > 0 ? ((totalSales - custoTotal) / totalSales) * 100 : 0
 
@@ -115,9 +112,9 @@ export function PharmacyMetrics() {
       color: 'text-orange-600',
     },
     {
-      id: 'markup-alvo',
-      title: 'Mark-up Alvo (15%)',
-      tooltip: 'Multiplicador necessário para atingir 15% de margem de lucro líquido.',
+      id: 'markup-mult',
+      title: 'Mark-up Alvo (P.E.)',
+      tooltip: 'Multiplicador mínimo necessário para cobrir todos os custos (Ponto de Equilíbrio).',
       value: formatDecimal(metrics.mkpTarget),
       color: 'text-purple-600',
     },
@@ -146,7 +143,10 @@ export function PharmacyMetrics() {
       </div>
       <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2">
         {items.map((item, i) => (
-          <Card key={i} className="rounded-sm shadow-none border-slate-200 bg-white">
+          <Card
+            key={i}
+            className="rounded-sm shadow-none border-slate-200 bg-white hover:border-blue-200 transition-colors"
+          >
             <CardContent className="p-2 text-center flex flex-col justify-center h-full">
               <h4 className="text-[9px] font-semibold text-slate-500 uppercase leading-tight mb-1 flex items-center justify-center gap-1">
                 {item.title}
