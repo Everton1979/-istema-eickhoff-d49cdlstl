@@ -3,7 +3,7 @@ import { useMemo } from 'react'
 import { format } from 'date-fns'
 
 export function PrintableReport() {
-  const { filteredTransactions, filteredMonthlyMetrics, filters } = useFinanceStore()
+  const { filteredTransactions, filters } = useFinanceStore()
 
   const currentYear = filters.years[0] || new Date().getFullYear().toString()
   const currentMonth = filters.months.length > 0 ? filters.months[0] : ''
@@ -11,9 +11,6 @@ export function PrintableReport() {
   const metrics = useMemo(() => {
     let receitas = 0
     let despesas = 0
-    let varExpOperacional = 0
-    let custosVariaveis = 0
-    let fixas = 0
 
     filteredTransactions.forEach((tx) => {
       if (tx.status === 'REALIZADO') {
@@ -21,46 +18,18 @@ export function PrintableReport() {
           receitas += tx.amount
         } else {
           despesas += tx.amount
-          if (tx.categoryId === 'FIXA') fixas += tx.amount
-          if (tx.categoryId === 'VARIAVEL') {
-            custosVariaveis += tx.amount
-            if (
-              tx.subcategoryId !== 'materia_prima' &&
-              tx.subcategoryId !== 'embalagens' &&
-              tx.subcategoryId !== 'medicamentos_drogaria'
-            ) {
-              varExpOperacional += tx.amount
-            }
-          }
         }
       }
     })
 
-    const totalSales = filteredMonthlyMetrics.reduce((sum, m) => sum + m.total_system_sales, 0)
-    const target = filteredMonthlyMetrics.reduce((sum, m) => sum + m.sales_target, 0)
-    const rawMaterial = filteredMonthlyMetrics.reduce((sum, m) => sum + m.raw_material_costs, 0)
-    const orders = filteredMonthlyMetrics.reduce((sum, m) => sum + m.orders_count, 0)
-
     const lucro = receitas - despesas
-    const ticket = orders > 0 ? totalSales / orders : 0
-
-    const divisor =
-      totalSales > 0 ? (totalSales - (fixas + varExpOperacional + rawMaterial)) / totalSales : 0
-    const markup = divisor > 0 ? 1 / divisor : 1
 
     return {
       receitas,
       despesas,
       lucro,
-      totalSales,
-      target,
-      rawMaterial,
-      ticket,
-      markup,
-      fixas,
-      custosVariaveis,
     }
-  }, [filteredTransactions, filteredMonthlyMetrics])
+  }, [filteredTransactions])
 
   const formatCurrency = (val: number) =>
     new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val)
@@ -77,73 +46,35 @@ export function PrintableReport() {
         </p>
       </div>
 
-      <div className="grid grid-cols-2 gap-6 mb-8">
-        <div>
-          <h2 className="text-lg font-bold text-slate-800 border-b pb-1 mb-3">
-            Resumo Operacional
-          </h2>
-          <table className="w-full text-sm">
-            <tbody>
-              <tr className="border-b border-slate-100">
-                <td className="py-2 text-slate-600">Receitas (Realizadas)</td>
-                <td className="py-2 text-right font-bold text-emerald-600">
-                  {formatCurrency(metrics.receitas)}
-                </td>
-              </tr>
-              <tr className="border-b border-slate-100">
-                <td className="py-2 text-slate-600">Despesas Totais (Caixa)</td>
-                <td className="py-2 text-right font-bold text-red-600">
-                  {formatCurrency(metrics.despesas)}
-                </td>
-              </tr>
-              <tr className="bg-slate-50">
-                <td className="py-2 px-2 font-semibold text-slate-800">
-                  Lucro Operacional (Caixa)
-                </td>
-                <td className="py-2 px-2 text-right font-bold text-slate-800">
-                  {formatCurrency(metrics.lucro)}
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <div>
-          <h2 className="text-lg font-bold text-slate-800 border-b pb-1 mb-3">
-            Métricas da Farmácia (Fechamento)
-          </h2>
-          <table className="w-full text-sm">
-            <tbody>
-              <tr className="border-b border-slate-100">
-                <td className="py-2 text-slate-600">Vendas do Sistema</td>
-                <td className="py-2 text-right font-bold">{formatCurrency(metrics.totalSales)}</td>
-              </tr>
-              <tr className="border-b border-slate-100">
-                <td className="py-2 text-slate-600">Meta de Vendas</td>
-                <td className="py-2 text-right font-bold text-slate-800">
-                  {formatCurrency(metrics.target)}
-                </td>
-              </tr>
-              <tr className="border-b border-slate-100">
-                <td className="py-2 text-slate-600">Ticket Médio</td>
-                <td className="py-2 text-right font-bold text-blue-600">
-                  {formatCurrency(metrics.ticket)}
-                </td>
-              </tr>
-              <tr className="bg-slate-50">
-                <td className="py-2 px-2 font-semibold text-slate-800">Markup (Multiplicador)</td>
-                <td className="py-2 px-2 text-right font-bold text-purple-600">
-                  {metrics.markup.toFixed(2)}x
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+      <div className="mb-8 max-w-md">
+        <h2 className="text-lg font-bold text-slate-800 border-b pb-1 mb-3">Resumo Operacional</h2>
+        <table className="w-full text-sm">
+          <tbody>
+            <tr className="border-b border-slate-100">
+              <td className="py-2 text-slate-600">Receitas (Realizadas)</td>
+              <td className="py-2 text-right font-bold text-emerald-600">
+                {formatCurrency(metrics.receitas)}
+              </td>
+            </tr>
+            <tr className="border-b border-slate-100">
+              <td className="py-2 text-slate-600">Despesas Totais (Caixa)</td>
+              <td className="py-2 text-right font-bold text-red-600">
+                {formatCurrency(metrics.despesas)}
+              </td>
+            </tr>
+            <tr className="bg-slate-50">
+              <td className="py-2 px-2 font-semibold text-slate-800">Lucro Operacional (Caixa)</td>
+              <td className="py-2 px-2 text-right font-bold text-slate-800">
+                {formatCurrency(metrics.lucro)}
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
 
       <div className="mb-6 page-break-inside-avoid">
         <h2 className="text-lg font-bold text-slate-800 border-b border-slate-800 pb-1 mb-3">
-          Extrato de Despesas
+          Extrato de Lançamentos
         </h2>
         <table className="w-full text-xs text-left border-collapse">
           <thead>
@@ -156,22 +87,32 @@ export function PrintableReport() {
           </thead>
           <tbody>
             {filteredTransactions
-              .filter((t) => t.type === 'EXPENSE')
+              .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
               .map((t) => (
                 <tr key={t.id} className="border-b border-slate-200">
-                  <td className="py-1.5 px-2">{format(new Date(t.date), 'dd/MM/yyyy')}</td>
+                  <td className="py-1.5 px-2 whitespace-nowrap">
+                    {format(new Date(t.date), 'dd/MM/yyyy')}
+                  </td>
                   <td className="py-1.5 px-2">
                     {t.description}
                     {t.tags && <span className="text-slate-400 ml-1">[{t.tags}]</span>}
                   </td>
                   <td className="py-1.5 px-2">
-                    {t.categoryId === 'FIXA' ? 'Fixa' : 'Variável'}{' '}
-                    {t.subcategoryId
+                    {t.type === 'INCOME'
+                      ? 'Receita'
+                      : t.categoryId === 'FIXA'
+                        ? 'Fixa'
+                        : 'Variável'}{' '}
+                    {t.type === 'EXPENSE' && t.subcategoryId
                       ? `(${t.subcategoryId === 'materia_prima' ? 'Matéria-prima' : t.subcategoryId === 'embalagens' ? 'Embalagens' : t.subcategoryId === 'medicamentos_drogaria' ? 'Medicamentos (Drogaria)' : 'Outros'})`
                       : ''}
                   </td>
-                  <td className="py-1.5 px-2 text-right text-red-600 font-medium">
-                    {formatCurrency(t.amount)}
+                  <td
+                    className={`py-1.5 px-2 text-right font-medium whitespace-nowrap ${
+                      t.type === 'INCOME' ? 'text-emerald-600' : 'text-red-600'
+                    }`}
+                  >
+                    {t.type === 'INCOME' ? '+' : '-'} {formatCurrency(t.amount)}
                   </td>
                 </tr>
               ))}
