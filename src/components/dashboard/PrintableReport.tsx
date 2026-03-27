@@ -143,7 +143,7 @@ export function PrintableReport() {
 
       <div className="mb-6 page-break-inside-avoid">
         <h2 className="text-lg font-bold text-slate-800 border-b border-slate-800 pb-1 mb-3">
-          Extrato de Despesas (Top 30)
+          Extrato de Despesas
         </h2>
         <table className="w-full text-xs text-left border-collapse">
           <thead>
@@ -157,7 +157,6 @@ export function PrintableReport() {
           <tbody>
             {filteredTransactions
               .filter((t) => t.type === 'EXPENSE')
-              .slice(0, 30)
               .map((t) => (
                 <tr key={t.id} className="border-b border-slate-200">
                   <td className="py-1.5 px-2">{format(new Date(t.date), 'dd/MM/yyyy')}</td>
@@ -178,11 +177,9 @@ export function PrintableReport() {
               ))}
           </tbody>
         </table>
-        {filteredTransactions.filter((t) => t.type === 'EXPENSE').length > 30 && (
-          <p className="text-[10px] text-slate-500 mt-2 italic">
-            * Listando apenas as 30 despesas mais recentes no período selecionado.
-          </p>
-        )}
+        <p className="text-[10px] text-slate-500 mt-2 italic">
+          * Todos os lançamentos do período selecionado estão listados acima.
+        </p>
       </div>
 
       <div className="mt-12 text-center text-[10px] text-slate-400 border-t pt-4">
