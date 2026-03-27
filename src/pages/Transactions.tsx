@@ -143,7 +143,7 @@ export default function Transactions() {
     if (!open) setEditingTx(null)
   }
 
-  const handleExportCSV = () => {
+  const handleExportExcel = () => {
     const headers = ['Data', 'Descrição', 'Categoria', 'Conta', 'Status', 'Valor', 'Tags']
     const rows = filteredData.map((tx) => [
       tx.date.split('T')[0].split('-').reverse().join('/'),
@@ -154,7 +154,7 @@ export default function Transactions() {
       tx.type === 'EXPENSE' ? -tx.amount : tx.amount,
       `"${tx.tags || ''}"`,
     ])
-    const csvContent = [headers.join(','), ...rows.map((r) => r.join(','))].join('\n')
+    const csvContent = '\uFEFF' + [headers.join(';'), ...rows.map((r) => r.join(';'))].join('\n')
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
     const url = URL.createObjectURL(blob)
     const link = document.createElement('a')
@@ -182,7 +182,7 @@ export default function Transactions() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={handleExportCSV}>Exportar para CSV</DropdownMenuItem>
+              <DropdownMenuItem onClick={handleExportExcel}>Exportar para Excel</DropdownMenuItem>
               <DropdownMenuItem onClick={() => window.print()}>Salvar como PDF</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

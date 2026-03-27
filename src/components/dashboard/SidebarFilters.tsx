@@ -12,11 +12,13 @@ export function SidebarFilters() {
   }
 
   const toggleStatus = (status: string) => {
+    const upperStatus = status.toUpperCase()
     const current = filters.statuses as string[]
-    const updated = current.includes(status)
-      ? current.filter((v) => v !== status)
-      : [...current, status]
-    setFilter('statuses', updated)
+    if (current.includes(upperStatus)) {
+      setFilter('statuses', [])
+    } else {
+      setFilter('statuses', [upperStatus])
+    }
   }
 
   const summary = useMemo(() => {
@@ -85,7 +87,7 @@ export function SidebarFilters() {
           {['Previsto', 'Realizado', 'Vencido'].map((status) => (
             <button
               key={status}
-              onClick={() => toggleStatus(status.toUpperCase())}
+              onClick={() => toggleStatus(status)}
               className={cn(
                 'text-xs py-1 px-2 rounded-sm text-left transition-colors border',
                 filters.statuses.includes(status.toUpperCase())
@@ -111,8 +113,13 @@ export function SidebarFilters() {
             </span>
           </div>
           <div className="bg-white p-2 rounded-sm border border-red-100 shadow-sm flex flex-col">
-            <span className="text-[9px] text-slate-500 uppercase font-bold mb-0.5">Saídas</span>
-            <span className="text-xs font-bold text-red-500 leading-none">
+            <span className="text-[9px] text-slate-500 uppercase font-bold mb-0.5 leading-tight">
+              Saídas{' '}
+              <span className="text-[8px] normal-case font-medium block mt-[1px]">
+                (Realizadas + Previstas)
+              </span>
+            </span>
+            <span className="text-xs font-bold text-red-500 leading-none mt-1">
               {formatCurrency(summary.saidas)}
             </span>
           </div>

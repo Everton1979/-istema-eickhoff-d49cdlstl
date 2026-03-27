@@ -68,7 +68,7 @@ export function KpiCards() {
     },
     {
       id: 'despesas-e-custos',
-      title: 'DESPESAS E CUSTOS',
+      title: 'DESPESAS E CUSTOS (REALIZADAS)',
       tooltip: 'Soma de todas as saídas de caixa (fixas e variáveis).',
       value: -metrics.despesas,
       color: 'text-red-500',
