@@ -11,17 +11,17 @@ import { cn } from '@/lib/utils'
 export function PricingAssistant() {
   const { filteredMonthlyMetrics, filteredTransactions, filters } = useFinanceStore()
   const [cost, setCost] = useState('')
-  const [sellPrice, setSalePrice] = useState('')
+  const [sellPrice, setSellPrice] = useState('')
 
-  const { markupMultiplier, divisor } = useMemo(() => {
-    let cfa = 0
+  const { mkpTarget, precoMinimoPorFormula } = useMemo(() => {
+    let cfaTotal = 0
     let varExpOperacional = 0
 
     const targetStatuses = filters.statuses.length > 0 ? filters.statuses : ['REALIZADO']
 
     filteredTransactions.forEach((t) => {
       if (t.type === 'EXPENSE' && targetStatuses.includes(t.status)) {
-        if (t.categoryId === 'FIXA') cfa += t.amount
+        if (t.categoryId === 'FIXA') cfaTotal += t.amount
         if (t.categoryId === 'VARIAVEL') {
           if (
             t.subcategoryId !== 'materia_prima' &&
@@ -34,21 +34,33 @@ export function PricingAssistant() {
       }
     })
 
-    const raw = filteredMonthlyMetrics.reduce((sum, m) => sum + m.raw_material_costs, 0)
-    const custoTotal = cfa + varExpOperacional + raw
+    const totalRawMaterial = filteredMonthlyMetrics.reduce(
+      (sum, m) => sum + m.raw_material_costs,
+      0,
+    )
+    const totalOrders = filteredMonthlyMetrics.reduce((sum, m) => sum + m.orders_count, 0)
+    const custoTotal = cfaTotal + varExpOperacional + totalRawMaterial
 
-    const div = custoTotal > 0 ? raw / custoTotal : 1
-    const mult = raw > 0 ? custoTotal / raw : 1
+    const mkp = totalRawMaterial > 0 ? custoTotal / totalRawMaterial : 0
+    const minPrice = totalOrders > 0 ? custoTotal / totalOrders : 0
 
-    return { markupMultiplier: mult, divisor: div }
+    return { mkpTarget: mkp, precoMinimoPorFormula: minPrice }
   }, [filteredMonthlyMetrics, filteredTransactions, filters])
 
-  const numericCost = parseFloat(cost)
-  const suggestedPrice = !isNaN(numericCost) && numericCost > 0 ? numericCost * markupMultiplier : 0
+  const handleCostChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value
+    setCost(val)
+    const numericCost = parseFloat(val)
+    if (!isNaN(numericCost) && numericCost > 0) {
+      setSellPrice((numericCost * mkpTarget).toFixed(2))
+    } else {
+      setSellPrice('')
+    }
+  }
 
   const numericSell = parseFloat(sellPrice)
   const isTestingPrice = !isNaN(numericSell) && numericSell > 0
-  const isProfitable = isTestingPrice && numericSell >= suggestedPrice
+  const isProfitable = isTestingPrice && numericSell >= precoMinimoPorFormula
 
   return (
     <Card className="rounded-sm shadow-sm w-full flex flex-col justify-center border-t-4 border-t-blue-500 bg-gradient-to-br from-white to-blue-50/30 h-full min-h-[140px]">
@@ -65,9 +77,8 @@ export function PricingAssistant() {
               </TooltipTrigger>
               <TooltipContent className="max-w-[250px] text-center" side="bottom">
                 <p className="text-xs">
-                  Calcula o preço mínimo de venda (ponto de equilíbrio) com base nos seus custos
-                  totais do período selecionado. Digite o preço praticado para verificar se a venda
-                  gera lucro ou prejuízo.
+                  Sugere o preço de venda com base no seu Mark-up Alvo e compara o valor final com o
+                  Preço Mínimo por Fórmula.
                 </p>
                 <p className="text-[9px] text-blue-300 mt-1 border-t border-blue-200/50 pt-1">
                   Clique para ver no Glossário
@@ -92,7 +103,7 @@ export function PricingAssistant() {
                   step="0.01"
                   className="h-7 text-xs pl-7 bg-white shadow-inner focus-visible:ring-blue-400"
                   value={cost}
-                  onChange={(e) => setCost(e.target.value)}
+                  onChange={handleCostChange}
                   placeholder="0.00"
                 />
               </div>
@@ -127,7 +138,7 @@ export function PricingAssistant() {
                       : 'bg-white focus-visible:ring-blue-400',
                   )}
                   value={sellPrice}
-                  onChange={(e) => setSalePrice(e.target.value)}
+                  onChange={(e) => setSellPrice(e.target.value)}
                   placeholder="0.00"
                 />
               </div>
@@ -136,7 +147,7 @@ export function PricingAssistant() {
 
           <div
             className={cn(
-              'flex items-center justify-between p-2 rounded-sm border shadow-sm transition-colors',
+              'flex flex-col p-2 rounded-sm border shadow-sm transition-colors',
               isTestingPrice
                 ? isProfitable
                   ? 'bg-emerald-50 border-emerald-200'
@@ -144,47 +155,64 @@ export function PricingAssistant() {
                 : 'bg-white border-blue-100',
             )}
           >
-            <div>
-              <Label
-                className={cn(
-                  'text-[10px] uppercase tracking-wider block',
-                  isTestingPrice
-                    ? isProfitable
-                      ? 'text-emerald-700'
-                      : 'text-red-700'
-                    : 'text-blue-600/70',
-                )}
-              >
-                Preço Mínimo (P.E.)
-              </Label>
-              <p
-                className={cn(
-                  'text-sm font-bold font-mono tracking-tight mt-0.5',
-                  isTestingPrice
-                    ? isProfitable
-                      ? 'text-emerald-800'
-                      : 'text-red-800'
-                    : 'text-blue-700',
-                )}
-              >
-                R$ {suggestedPrice.toFixed(2)}
-              </p>
-            </div>
+            <div className="flex items-center justify-between">
+              <div>
+                <Label
+                  className={cn(
+                    'text-[10px] uppercase tracking-wider block',
+                    isTestingPrice
+                      ? isProfitable
+                        ? 'text-emerald-700'
+                        : 'text-red-700'
+                      : 'text-blue-600/70',
+                  )}
+                >
+                  Preço Mín. / Fórmula
+                </Label>
+                <p
+                  className={cn(
+                    'text-sm font-bold font-mono tracking-tight mt-0.5',
+                    isTestingPrice
+                      ? isProfitable
+                        ? 'text-emerald-800'
+                        : 'text-red-800'
+                      : 'text-blue-700',
+                  )}
+                >
+                  R$ {precoMinimoPorFormula.toFixed(2)}
+                </p>
+              </div>
 
+              {isTestingPrice && (
+                <div className="flex items-center animate-fade-in">
+                  {isProfitable ? (
+                    <div className="flex flex-col items-end">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-600 mb-0.5" />
+                      <span className="text-[9px] font-bold text-emerald-700 uppercase">
+                        Venda Saudável
+                      </span>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col items-end">
+                      <AlertTriangle className="w-4 h-4 text-red-600 mb-0.5" />
+                      <span className="text-[9px] font-bold text-red-700 uppercase">
+                        Abaixo do Mínimo
+                      </span>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
             {isTestingPrice && (
-              <div className="flex items-center animate-fade-in">
+              <div className="mt-1.5 border-t border-black/5 pt-1.5">
                 {isProfitable ? (
-                  <div className="flex flex-col items-end">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-600 mb-0.5" />
-                    <span className="text-[9px] font-bold text-emerald-700 uppercase">
-                      Lucrativo
-                    </span>
-                  </div>
+                  <p className="text-[9px] text-emerald-600 font-medium text-center">
+                    Valor atinge o preço mín./fórmula
+                  </p>
                 ) : (
-                  <div className="flex flex-col items-end">
-                    <AlertTriangle className="w-4 h-4 text-red-600 mb-0.5" />
-                    <span className="text-[9px] font-bold text-red-700 uppercase">Prejuízo</span>
-                  </div>
+                  <p className="text-[9px] text-red-600 font-medium text-center">
+                    Valor é menor que preço mín./fórmula
+                  </p>
                 )}
               </div>
             )}
@@ -192,11 +220,7 @@ export function PricingAssistant() {
         </div>
         <div className="mt-2 text-[9px] text-slate-500 text-center bg-white/50 py-1 rounded border border-blue-100/50 flex justify-center gap-3">
           <span>
-            Divisor: <span className="font-bold text-blue-600">{divisor.toFixed(2)}</span>
-          </span>
-          <span>
-            Multiplicador P.E.:{' '}
-            <span className="font-bold text-blue-600">{markupMultiplier.toFixed(2)}x</span>
+            Mark-up Alvo: <span className="font-bold text-blue-600">{mkpTarget.toFixed(2)}x</span>
           </span>
         </div>
       </CardContent>
