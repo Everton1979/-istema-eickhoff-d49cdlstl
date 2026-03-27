@@ -12,8 +12,6 @@ export function PricingAssistant() {
   const [cost, setCost] = useState('')
 
   const markupMultiplier = useMemo(() => {
-    if (filteredMonthlyMetrics.length === 0) return 1
-
     let cfa = 0
     let varExpOperacional = 0
 
@@ -34,20 +32,26 @@ export function PricingAssistant() {
       }
     })
 
-    const sales = filteredMonthlyMetrics.reduce((sum, m) => sum + m.total_system_sales, 0)
     const raw = filteredMonthlyMetrics.reduce((sum, m) => sum + m.raw_material_costs, 0)
 
-    const divisor = sales > 0 ? (sales - (cfa + varExpOperacional + raw)) / sales : 0
-    return divisor > 0 ? 1 / divisor : 1
+    // Custo Total = Despesas Fixas + Despesas Variáveis Operacionais + Custo de Matéria-Prima/Embalagem
+    const custoTotal = cfa + varExpOperacional + raw
+
+    // Faturamento Ideal para atingir 15% de margem de lucro líquida
+    // Custo Total deve representar 85% (100% - 15%) do Faturamento Ideal
+    const faturamentoIdeal = custoTotal / 0.85
+
+    // Multiplicador aplicado sobre o custo direto (Matéria-prima + Embalagem)
+    return raw > 0 ? faturamentoIdeal / raw : 1
   }, [filteredMonthlyMetrics, filteredTransactions, filters])
 
   const numericCost = parseFloat(cost)
   const suggestedPrice = !isNaN(numericCost) && numericCost > 0 ? numericCost * markupMultiplier : 0
 
   return (
-    <Card className="rounded-sm shadow-sm w-full flex flex-col justify-center border-t-4 border-t-purple-500 bg-gradient-to-br from-white to-purple-50/30">
-      <CardContent className="p-3">
-        <div className="flex items-center gap-1.5 text-purple-700 mb-3">
+    <Card className="rounded-sm shadow-sm w-full flex flex-col justify-center border-t-4 border-t-purple-500 bg-gradient-to-br from-white to-purple-50/30 h-full min-h-[140px]">
+      <CardContent className="p-3 flex flex-col h-full justify-between">
+        <div className="flex items-center gap-1.5 text-purple-700 mb-2">
           <Calculator className="w-4 h-4" />
           <h3 className="text-xs font-bold uppercase tracking-wide flex items-center gap-1">
             Assistente de Precificação
@@ -57,10 +61,11 @@ export function PricingAssistant() {
                   <HelpCircle className="w-3.5 h-3.5 text-purple-400 hover:text-purple-600 cursor-pointer" />
                 </Link>
               </TooltipTrigger>
-              <TooltipContent className="max-w-[200px] text-center" side="bottom">
+              <TooltipContent className="max-w-[250px] text-center" side="bottom">
                 <p className="text-xs">
-                  Ferramenta que projeta o preço de venda sugerido utilizando o Markup Multiplicador
-                  configurado.
+                  Calcula o preço de venda sugerido com base nos seus custos totais do período
+                  selecionado, aplicando um multiplicador dinâmico para garantir uma margem de lucro
+                  líquido de 15%.
                 </p>
                 <p className="text-[9px] text-purple-300 mt-1 border-t border-slate-700/50 pt-1">
                   Clique para ver no Glossário
@@ -101,9 +106,9 @@ export function PricingAssistant() {
             </p>
           </div>
         </div>
-        <div className="mt-2 text-[9px] text-gray-400 text-center">
-          Baseado no Markup atual:{' '}
-          <span className="font-semibold text-purple-600">{markupMultiplier.toFixed(2)}x</span>
+        <div className="mt-2 text-[9px] text-gray-500 text-center bg-white/50 py-1 rounded border border-purple-100/50">
+          Multiplicador Dinâmico (15% Lucro):{' '}
+          <span className="font-bold text-purple-600">{markupMultiplier.toFixed(2)}x</span>
         </div>
       </CardContent>
     </Card>

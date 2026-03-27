@@ -40,24 +40,28 @@ export function PharmacyMetrics() {
     const fatorMedio = totalRawMaterial > 0 ? totalSales / totalRawMaterial : 0
     const margemContribuicao = totalSales - (varExpOperacional + totalRawMaterial)
 
-    const mkpDivisor =
-      totalSales > 0
-        ? (totalSales - (cfaTotal + varExpOperacional + totalRawMaterial)) / totalSales
-        : 0
-    const mkpMultiplier = mkpDivisor > 0 ? 1 / mkpDivisor : 0
+    const custoTotal = cfaTotal + varExpOperacional + totalRawMaterial
+    const faturamentoIdeal = custoTotal / 0.85
+    const mkpTarget = totalRawMaterial > 0 ? faturamentoIdeal / totalRawMaterial : 0
+
+    const mkpDivisorRealizado = totalSales > 0 ? (totalSales - custoTotal) / totalSales : 0
+    const mkpRealizado = mkpDivisorRealizado > 0 ? 1 / mkpDivisorRealizado : 0
+
+    const lucroLiquidoPct = totalSales > 0 ? ((totalSales - custoTotal) / totalSales) * 100 : 0
+
     const custoFixoPorFormula = totalOrders > 0 ? cfaTotal / totalOrders : 0
-    const precoMinimoPorFormula =
-      totalOrders > 0 ? (cfaTotal + varExpOperacional + totalRawMaterial) / totalOrders : 0
+    const precoMinimoPorFormula = totalOrders > 0 ? custoTotal / totalOrders : 0
 
     return {
       ticketMedio,
       fatorMedio,
       margemContribuicao,
       cfaTotal,
-      mkpDivisor,
-      mkpMultiplier,
+      mkpTarget,
+      mkpRealizado,
       custoFixoPorFormula,
       precoMinimoPorFormula,
+      lucroLiquidoPct,
     }
   }, [filteredTransactions, filteredMonthlyMetrics, filters])
 
@@ -77,13 +81,6 @@ export function PharmacyMetrics() {
       color: 'text-indigo-600',
     },
     {
-      id: 'fator-medio',
-      title: 'Fator Médio',
-      tooltip: 'Relação entre faturamento e custo de matéria-prima.',
-      value: formatDecimal(metrics.fatorMedio),
-      color: 'text-indigo-600',
-    },
-    {
       id: 'margem-de-contribuicao',
       title: 'Margem Contribuição',
       tooltip:
@@ -92,11 +89,16 @@ export function PharmacyMetrics() {
       color: metrics.margemContribuicao >= 0 ? 'text-emerald-600' : 'text-red-500',
     },
     {
-      id: 'cfa-total',
-      title: 'CFA Total (Fixas)',
-      tooltip: 'Soma de todas as despesas fixas administrativas.',
-      value: formatCurrency(metrics.cfaTotal),
-      color: 'text-orange-600',
+      id: 'lucro-liquido-pct',
+      title: 'Lucro Líquido Real (%)',
+      tooltip: 'Percentual de lucro líquido realizado no período, com base no faturamento.',
+      value: `${metrics.lucroLiquidoPct.toFixed(1)}%`,
+      color:
+        metrics.lucroLiquidoPct >= 15
+          ? 'text-emerald-600'
+          : metrics.lucroLiquidoPct > 0
+            ? 'text-yellow-600'
+            : 'text-red-500',
     },
     {
       id: 'custo-fixo-formula',
@@ -110,29 +112,36 @@ export function PharmacyMetrics() {
       title: 'Preço Mín. / Fórmula',
       tooltip: 'Ponto de equilíbrio unitário (Custo Fixo + Var. Operacional + Insumos / Fórmulas).',
       value: formatCurrency(metrics.precoMinimoPorFormula),
+      color: 'text-orange-600',
+    },
+    {
+      id: 'markup-alvo',
+      title: 'Mark-up Alvo (15%)',
+      tooltip: 'Multiplicador necessário para atingir 15% de margem de lucro líquido.',
+      value: formatDecimal(metrics.mkpTarget),
       color: 'text-purple-600',
     },
     {
-      id: 'markup-divisor',
-      title: 'Mark-up Divisor',
-      tooltip: 'Índice para descontar margens do valor total.',
-      value: formatDecimal(metrics.mkpDivisor),
+      id: 'markup-realizado',
+      title: 'Mark-up Praticado',
+      tooltip: 'Multiplicador efetivamente realizado no período (Faturamento / Custo MP).',
+      value: formatDecimal(metrics.mkpRealizado),
       color: 'text-purple-600',
     },
     {
-      id: 'markup-mult',
-      title: 'Mark-up Mult.',
-      tooltip: 'Fator sobre o custo para encontrar o preço de venda.',
-      value: formatDecimal(metrics.mkpMultiplier),
-      color: 'text-purple-600',
+      id: 'fator-medio',
+      title: 'Fator Médio',
+      tooltip: 'Relação entre faturamento e custo de matéria-prima.',
+      value: formatDecimal(metrics.fatorMedio),
+      color: 'text-slate-600',
     },
   ]
 
   return (
     <div className="bg-slate-50 p-2 rounded-sm border border-slate-200 mt-2">
-      <div className="flex items-center gap-2 mb-2 px-1">
+      <div className="flex items-center justify-between mb-2 px-1">
         <h3 className="text-xs font-bold text-slate-700 uppercase tracking-wide">
-          Pharmacy Analytics (Fechamento)
+          Pharmacy Analytics (Cenário Ideal vs Real)
         </h3>
       </div>
       <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2">

@@ -349,7 +349,7 @@ export const Constants = {
 // Table: profiles
 //   FOREIGN KEY profiles_id_fkey: FOREIGN KEY (id) REFERENCES auth.users(id) ON DELETE CASCADE
 //   PRIMARY KEY profiles_pkey: PRIMARY KEY (id)
-//   CHECK profiles_role_check: CHECK ((role = ANY (ARRAY['Administrador'::text, 'Colaborador'::text, 'Visitante'::text])))
+//   CHECK profiles_role_check: CHECK ((role = 'Administrador'::text))
 // Table: transactions
 //   PRIMARY KEY transactions_pkey: PRIMARY KEY (id)
 //   FOREIGN KEY transactions_user_id_fkey: FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE
@@ -410,12 +410,12 @@ export const Constants = {
 //    LANGUAGE plpgsql
 //    SECURITY DEFINER
 //   AS $function$
-//   BEGIN
-//     INSERT INTO public.profiles (id, email, role)
-//     VALUES (NEW.id, NEW.email, 'Visitante');
-//     RETURN NEW;
-//   END;
-//   $function$
+//     BEGIN
+//       INSERT INTO public.profiles (id, email, role)
+//       VALUES (NEW.id, NEW.email, 'Administrador');
+//       RETURN NEW;
+//     END;
+//     $function$
 //
 
 // --- INDEXES ---
