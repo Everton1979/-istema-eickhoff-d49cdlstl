@@ -15,19 +15,19 @@ export default function Layout() {
       name: 'Dashboard',
       path: '/',
       icon: LayoutDashboard,
-      allowed: ['Administrador', 'Colaborador', 'Visitante'],
+      allowed: ['Administrador'],
     },
     {
       name: 'Transações',
       path: '/transacoes',
       icon: ReceiptText,
-      allowed: ['Administrador', 'Colaborador', 'Visitante'],
+      allowed: ['Administrador'],
     },
     {
       name: 'Glossário',
       path: '/glossario',
       icon: BookOpen,
-      allowed: ['Administrador', 'Colaborador', 'Visitante'],
+      allowed: ['Administrador'],
     },
     {
       name: 'Usuários',

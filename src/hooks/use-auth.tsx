@@ -5,14 +5,13 @@ import { supabase } from '@/lib/supabase/client'
 export interface UserProfile {
   id: string
   email: string
-  role: 'Administrador' | 'Colaborador' | 'Visitante'
+  role: 'Administrador'
 }
 
 interface AuthContextType {
   user: User | null
   profile: UserProfile | null
   session: Session | null
-  signUp: (email: string, password: string) => Promise<{ error: any }>
   signIn: (email: string, password: string) => Promise<{ error: any }>
   signOut: () => Promise<{ error: any }>
   loading: boolean
@@ -75,15 +74,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [])
 
-  const signUp = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: { emailRedirectTo: `${window.location.origin}/` },
-    })
-    return { error }
-  }
-
   const signIn = async (email: string, password: string) => {
     const { error } = await supabase.auth.signInWithPassword({ email, password })
     return { error }
@@ -95,7 +85,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }
 
   return (
-    <AuthContext.Provider value={{ user, profile, session, signUp, signIn, signOut, loading }}>
+    <AuthContext.Provider value={{ user, profile, session, signIn, signOut, loading }}>
       {children}
     </AuthContext.Provider>
   )

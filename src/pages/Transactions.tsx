@@ -223,7 +223,7 @@ export default function Transactions() {
               </DropdownMenuContent>
             </DropdownMenu>
 
-            {profile?.role !== 'Visitante' && (
+            {profile?.role === 'Administrador' && (
               <Sheet open={isSheetOpen} onOpenChange={handleSheetChange}>
                 <SheetTrigger asChild>
                   <Button
@@ -332,7 +332,7 @@ export default function Transactions() {
                   <TableHead>Conta</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead className="text-right">Valor</TableHead>
-                  {(profile?.role === 'Administrador' || profile?.role === 'Colaborador') && (
+                  {profile?.role === 'Administrador' && (
                     <TableHead className="text-center w-24">Ações</TableHead>
                   )}
                 </TableRow>
@@ -411,7 +411,7 @@ export default function Transactions() {
                       >
                         {formatCurrency(tx.amount, tx.type)}
                       </TableCell>
-                      {(profile?.role === 'Administrador' || profile?.role === 'Colaborador') && (
+                      {profile?.role === 'Administrador' && (
                         <TableCell className="text-center">
                           <div className="flex justify-center gap-1">
                             <Button
@@ -422,16 +422,14 @@ export default function Transactions() {
                             >
                               <Pencil className="h-4 w-4" />
                             </Button>
-                            {profile?.role === 'Administrador' && (
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                className="h-8 w-8 text-slate-400 hover:text-red-600 hover:bg-red-50"
-                                onClick={() => setDeletingId(tx.id)}
-                              >
-                                <Trash2 className="h-4 w-4" />
-                              </Button>
-                            )}
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-8 w-8 text-slate-400 hover:text-red-600 hover:bg-red-50"
+                              onClick={() => setDeletingId(tx.id)}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
                           </div>
                         </TableCell>
                       )}

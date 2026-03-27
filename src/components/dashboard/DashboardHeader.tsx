@@ -118,7 +118,7 @@ export function DashboardHeader() {
           <Printer className="w-3 h-3" /> Exportar PDF
         </Button>
 
-        {profile?.role !== 'Visitante' && <MonthlyClosingDialog />}
+        {profile?.role === 'Administrador' && <MonthlyClosingDialog />}
 
         <div className="flex items-center gap-2">
           <span className="text-xs font-medium text-blue-200 hidden sm:inline">Período:</span>

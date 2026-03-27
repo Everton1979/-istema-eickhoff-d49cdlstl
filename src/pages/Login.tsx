@@ -7,11 +7,10 @@ import { useNavigate, Navigate } from 'react-router-dom'
 import { LayoutDashboard } from 'lucide-react'
 
 export default function Login() {
-  const [isLogin, setIsLogin] = useState(true)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
-  const { signIn, signUp, user, loading: authLoading } = useAuth()
+  const { signIn, user, loading: authLoading } = useAuth()
   const navigate = useNavigate()
 
   if (authLoading) {
@@ -27,18 +26,14 @@ export default function Login() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
-    const { error } = isLogin ? await signIn(email, password) : await signUp(email, password)
+    const { error } = await signIn(email, password)
 
     setLoading(false)
     if (error) {
-      toast.error(error.message)
+      toast.error('Email ou senha incorretos.')
     } else {
-      toast.success(
-        isLogin
-          ? 'Login realizado com sucesso!'
-          : 'Conta criada! Verifique seu email se necessário.',
-      )
-      if (isLogin) navigate('/')
+      toast.success('Login realizado com sucesso!')
+      navigate('/')
     }
   }
 
@@ -50,9 +45,7 @@ export default function Login() {
             <LayoutDashboard className="w-6 h-6" />
           </div>
         </div>
-        <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">
-          {isLogin ? 'Entrar no Sistema' : 'Criar Nova Conta'}
-        </h2>
+        <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">Entrar no Sistema</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
@@ -72,18 +65,9 @@ export default function Login() {
             className="w-full bg-[#1e3a8a] hover:bg-[#1e3a8a]/90"
             disabled={loading}
           >
-            {loading ? 'Aguarde...' : isLogin ? 'Entrar' : 'Cadastrar'}
+            {loading ? 'Aguarde...' : 'Entrar'}
           </Button>
         </form>
-        <div className="mt-4 text-center">
-          <button
-            type="button"
-            onClick={() => setIsLogin(!isLogin)}
-            className="text-sm text-[#1e3a8a] hover:underline"
-          >
-            {isLogin ? 'Não tem uma conta? Cadastre-se' : 'Já tem uma conta? Entre'}
-          </button>
-        </div>
       </div>
     </div>
   )
