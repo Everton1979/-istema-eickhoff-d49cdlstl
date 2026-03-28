@@ -103,20 +103,6 @@ export function PharmacyMetrics() {
       color: 'text-orange-600',
     },
     {
-      id: 'preco-min-formula',
-      title: 'Preço Mín. / Fórmula',
-      tooltip: 'Ponto de equilíbrio unitário (Custo Fixo + Var. Operacional + Insumos / Fórmulas).',
-      value: formatCurrency(metrics.precoMinimoPorFormula),
-      color: 'text-orange-600',
-    },
-    {
-      id: 'markup-mult',
-      title: 'Mark-up Alvo (P.E.)',
-      tooltip: 'Multiplicador mínimo necessário para cobrir todos os custos (Ponto de Equilíbrio).',
-      value: formatDecimal(metrics.mkpTarget),
-      color: 'text-purple-600',
-    },
-    {
       id: 'markup-realizado',
       title: 'Mark-up Praticado',
       tooltip: 'Multiplicador efetivamente realizado no período (Faturamento / Custo MP).',
@@ -132,7 +118,7 @@ export function PharmacyMetrics() {
           Pharmacy Analytics (Cenário Ideal vs Real)
         </h3>
       </div>
-      <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2">
         {items.map((item, i) => (
           <Card
             key={i}
