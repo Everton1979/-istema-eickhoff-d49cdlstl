@@ -3,7 +3,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Calculator, HelpCircle, AlertTriangle, CheckCircle2, Info } from 'lucide-react'
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useMemo } from 'react'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { Link } from 'react-router-dom'
 import { cn } from '@/lib/utils'
@@ -14,21 +14,48 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { Transaction } from '@/types/finance'
 
 export function PricingAssistant() {
-  const { filteredMonthlyMetrics, filteredTransactions, filters } = useFinanceStore()
+  const { monthlyMetrics, transactions } = useFinanceStore()
   const [cost, setCost] = useState('')
   const [sellPrice, setSellPrice] = useState('')
   const [tipoFormula, setTipoFormula] = useState<'capsulas' | 'dermato'>('capsulas')
 
   const stats = useMemo(() => {
+    // 1. Calcula a janela de 3 meses fechados (ignorando o mês atual)
+    const now = new Date()
+    const last3Months = Array.from({ length: 3 }).map((_, i) => {
+      const d = new Date(now.getFullYear(), now.getMonth() - (i + 1), 1)
+      return { month: d.getMonth() + 1, year: d.getFullYear() }
+    })
+
+    const isTxInTarget = (tx: Transaction, targets: { month: number; year: number }[]) => {
+      const txDate = tx.date.includes('T') ? new Date(tx.date) : new Date(`${tx.date}T12:00:00Z`)
+      const m = txDate.getMonth() + 1
+      const y = txDate.getFullYear()
+      return targets.some((t) => t.month === m && t.year === y)
+    }
+
+    // 2. Filtra os dados históricos consolidados
+    let historyMetrics = monthlyMetrics.filter((m) =>
+      last3Months.some((t) => t.month === m.month && t.year === m.year),
+    )
+    let historyTx = transactions.filter((t) => isTxInTarget(t, last3Months))
+
+    let isUsingFallback = false
+    // Fallback: Se não houver dados nos últimos 3 meses (ex: cliente novo), utiliza os dados atuais disponíveis
+    if (historyMetrics.length === 0 && historyTx.length === 0) {
+      historyMetrics = monthlyMetrics
+      historyTx = transactions
+      isUsingFallback = true
+    }
+
     let cfaTotal = 0
     let varExpOperacional = 0
 
-    const targetStatuses = filters.statuses.length > 0 ? filters.statuses : ['REALIZADO']
-
-    filteredTransactions.forEach((t) => {
-      if (t.type === 'EXPENSE' && targetStatuses.includes(t.status)) {
+    historyTx.forEach((t) => {
+      if (t.type === 'EXPENSE' && t.status === 'REALIZADO') {
         if (t.categoryId === 'FIXA') cfaTotal += t.amount
         if (t.categoryId === 'VARIAVEL') {
           if (
@@ -42,29 +69,36 @@ export function PricingAssistant() {
       }
     })
 
-    const vendas_caps = filteredMonthlyMetrics.reduce((sum, m) => sum + (m.vendas_capsulas || 0), 0)
-    const vendas_derm = filteredMonthlyMetrics.reduce((sum, m) => sum + (m.vendas_dermato || 0), 0)
-    const n_caps = filteredMonthlyMetrics.reduce(
-      (sum, m) => sum + (m.num_formulas_capsulas || 0),
-      0,
-    )
-    const n_derm = filteredMonthlyMetrics.reduce((sum, m) => sum + (m.num_formulas_dermato || 0), 0)
-    const mpemb_caps = filteredMonthlyMetrics.reduce(
-      (sum, m) => sum + (m.custo_mp_emb_capsulas || 0),
-      0,
-    )
-    const mpemb_derm = filteredMonthlyMetrics.reduce(
-      (sum, m) => sum + (m.custo_mp_emb_dermato || 0),
-      0,
-    )
+    const vendas_caps = historyMetrics.reduce((sum, m) => sum + (m.vendas_capsulas || 0), 0)
+    const vendas_derm = historyMetrics.reduce((sum, m) => sum + (m.vendas_dermato || 0), 0)
+    const n_caps = historyMetrics.reduce((sum, m) => sum + (m.num_formulas_capsulas || 0), 0)
+    const n_derm = historyMetrics.reduce((sum, m) => sum + (m.num_formulas_dermato || 0), 0)
+    const mpemb_caps = historyMetrics.reduce((sum, m) => sum + (m.custo_mp_emb_capsulas || 0), 0)
+    const mpemb_derm = historyMetrics.reduce((sum, m) => sum + (m.custo_mp_emb_dermato || 0), 0)
 
+    const vendas_totais = vendas_caps + vendas_derm
     const formulasTotais = n_caps + n_derm
     const custoOperacionalTotal = cfaTotal + varExpOperacional
-    const precoMinimoPorFormula = formulasTotais > 0 ? custoOperacionalTotal / formulasTotais : 0
 
     const n_grupo = tipoFormula === 'capsulas' ? n_caps : n_derm
     const vendas_grupo = tipoFormula === 'capsulas' ? vendas_caps : vendas_derm
     const mpemb_grupo = tipoFormula === 'capsulas' ? mpemb_caps : mpemb_derm
+
+    // 3. Rateio do Custo Fixo específico por Setor (Baseado na representatividade de receita)
+    let peso_setor = 0.5 // Padrão equilibrado
+    if (vendas_totais > 0) {
+      peso_setor = vendas_grupo / vendas_totais
+    } else if (formulasTotais > 0) {
+      peso_setor = n_grupo / formulasTotais
+    }
+
+    const custoOperacionalSetor = custoOperacionalTotal * peso_setor
+    const precoMinimoPorFormula =
+      n_grupo > 0
+        ? custoOperacionalSetor / n_grupo
+        : formulasTotais > 0
+          ? custoOperacionalTotal / formulasTotais
+          : 0
 
     const precoMedioIdeal = n_grupo > 0 ? vendas_grupo / n_grupo : 0
     const mkpMultiplicador = mpemb_grupo > 0 ? vendas_grupo / mpemb_grupo : 0
@@ -73,11 +107,9 @@ export function PricingAssistant() {
       precoMinimoPorFormula,
       precoMedioIdeal,
       mkpMultiplicador,
+      isUsingFallback,
     }
-  }, [filteredMonthlyMetrics, filteredTransactions, filters, tipoFormula])
-
-  // Optional: Auto-fill suggested price into sell price if user hasn't typed anything
-  // But let's keep it manual as per original logic.
+  }, [monthlyMetrics, transactions, tipoFormula])
 
   const numericCost = parseFloat(cost) || 0
   const numericSell = parseFloat(sellPrice) || 0
@@ -101,7 +133,7 @@ export function PricingAssistant() {
   }, [numericSell, precoSugerido, pisoSeguranca, isTestingPrice])
 
   return (
-    <Card className="rounded-sm shadow-sm w-full flex flex-col justify-center border-t-4 border-t-blue-500 bg-gradient-to-br from-white to-blue-50/30 h-full min-h-[140px]">
+    <Card className="rounded-sm shadow-sm w-full flex flex-col justify-center border-t-4 border-t-blue-500 bg-gradient-to-br from-white to-blue-50/30 h-full min-h-[140px] relative">
       <CardContent className="p-3 flex flex-col h-full justify-between">
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-1.5 text-blue-700">
@@ -114,10 +146,14 @@ export function PricingAssistant() {
                     <HelpCircle className="w-3.5 h-3.5 text-blue-400 hover:text-blue-600 cursor-pointer" />
                   </Link>
                 </TooltipTrigger>
-                <TooltipContent className="max-w-[250px] text-center" side="bottom">
-                  <p className="text-xs">
-                    Calcula o preço sugerido garantindo a Trava de Segurança (Custo MP/Emb + Preço
-                    Mínimo). Avalia a saúde em relação ao Preço Médio Ideal.
+                <TooltipContent className="max-w-[280px] text-center" side="bottom">
+                  <p className="text-xs mb-1">
+                    Calcula o preço sugerido garantindo o Piso de Segurança (Custo Direto + Custo
+                    Fixo rateado do Setor).
+                  </p>
+                  <p className="text-[10px] text-slate-400">
+                    Baseado no histórico consolidado{' '}
+                    {stats.isUsingFallback ? '(Dados Atuais)' : '(Últimos 3 meses fechados)'}.
                   </p>
                 </TooltipContent>
               </Tooltip>
@@ -296,50 +332,59 @@ export function PricingAssistant() {
           </div>
         </div>
 
-        <div className="mt-2 text-[9px] text-slate-500 text-center bg-white/50 py-1.5 px-1 rounded border border-blue-100/50 flex flex-wrap justify-center gap-x-3 gap-y-1">
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <span className="cursor-help flex items-center gap-0.5">
-                MKP Setor:{' '}
-                <span className="font-bold text-blue-600">
-                  {stats.mkpMultiplicador.toFixed(2)}x
+        <div className="mt-2 relative">
+          {stats.isUsingFallback && (
+            <div className="absolute -top-3 left-1/2 -translate-x-1/2 text-[8px] text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded-sm border border-amber-200 whitespace-nowrap z-10 opacity-90">
+              Usando dados do mês atual (Histórico em formação)
+            </div>
+          )}
+          <div className="text-[9px] text-slate-500 text-center bg-white/50 py-1.5 px-1 rounded border border-blue-100/50 flex flex-wrap justify-center gap-x-3 gap-y-1">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span className="cursor-help flex items-center gap-0.5">
+                  MKP Setor:{' '}
+                  <span className="font-bold text-blue-600">
+                    {stats.mkpMultiplicador.toFixed(2)}x
+                  </span>
                 </span>
-              </span>
-            </TooltipTrigger>
-            <TooltipContent className="max-w-[200px] text-center" side="top">
-              <p className="text-xs">Multiplicador histórico do setor (Vendas / Custo MP+Emb).</p>
-            </TooltipContent>
-          </Tooltip>
-          <span className="text-blue-200 hidden sm:inline">|</span>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <span className="cursor-help flex items-center gap-0.5">
-                PM Ideal:{' '}
-                <span className="font-bold text-emerald-600">
-                  R$ {stats.precoMedioIdeal.toFixed(2)}
+              </TooltipTrigger>
+              <TooltipContent className="max-w-[200px] text-center" side="top">
+                <p className="text-xs">Multiplicador histórico do setor (Vendas / Custo MP+Emb).</p>
+              </TooltipContent>
+            </Tooltip>
+            <span className="text-blue-200 hidden sm:inline">|</span>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span className="cursor-help flex items-center gap-0.5">
+                  PM Ideal:{' '}
+                  <span className="font-bold text-emerald-600">
+                    R$ {stats.precoMedioIdeal.toFixed(2)}
+                  </span>
                 </span>
-              </span>
-            </TooltipTrigger>
-            <TooltipContent className="max-w-[200px] text-center" side="top">
-              <p className="text-xs">
-                Preço Médio Ideal (Ticket Médio Histórico) do laboratório selecionado.
-              </p>
-            </TooltipContent>
-          </Tooltip>
-          <span className="text-blue-200 hidden sm:inline">|</span>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <span className="cursor-help flex items-center gap-0.5">
-                Custo Min/Fórm:{' '}
-                <span className="font-bold text-slate-600">
-                  R$ {stats.precoMinimoPorFormula.toFixed(2)}
+              </TooltipTrigger>
+              <TooltipContent className="max-w-[200px] text-center" side="top">
+                <p className="text-xs">
+                  Preço Médio Ideal (Ticket Médio Histórico) do laboratório selecionado.
+                </p>
+              </TooltipContent>
+            </Tooltip>
+            <span className="text-blue-200 hidden sm:inline">|</span>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span className="cursor-help flex items-center gap-0.5">
+                  Custo Op./Fórm:{' '}
+                  <span className="font-bold text-slate-600">
+                    R$ {stats.precoMinimoPorFormula.toFixed(2)}
+                  </span>
                 </span>
-              </span>
-            </TooltipTrigger>
-            <TooltipContent className="max-w-[200px] text-center" side="top">
-              <p className="text-xs">Custo Fixo + Variável rateado por fórmula geral.</p>
-            </TooltipContent>
-          </Tooltip>
+              </TooltipTrigger>
+              <TooltipContent className="max-w-[200px] text-center" side="top">
+                <p className="text-xs">
+                  Custo Fixo e Variável do <b>setor</b> rateado por fórmula.
+                </p>
+              </TooltipContent>
+            </Tooltip>
+          </div>
         </div>
       </CardContent>
     </Card>
