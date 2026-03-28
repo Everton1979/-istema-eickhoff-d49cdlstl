@@ -83,16 +83,18 @@ export function PricingAssistant() {
   useEffect(() => {
     const numericCost = parseFloat(cost)
     if (!isNaN(numericCost) && numericCost > 0) {
-      setSellPrice((numericCost * mkpAlvo).toFixed(2))
+      const suggested = Math.max(numericCost * mkpAlvo, numericCost + custoFixoPorFormula)
+      setSellPrice(suggested.toFixed(2))
     }
-  }, [mkpAlvo])
+  }, [mkpAlvo, custoFixoPorFormula])
 
   const handleCostChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value
     setCost(val)
     const numericCost = parseFloat(val)
     if (!isNaN(numericCost) && numericCost > 0) {
-      setSellPrice((numericCost * mkpAlvo).toFixed(2))
+      const suggested = Math.max(numericCost * mkpAlvo, numericCost + custoFixoPorFormula)
+      setSellPrice(suggested.toFixed(2))
     } else {
       setSellPrice('')
     }
@@ -103,8 +105,9 @@ export function PricingAssistant() {
   const isTestingPrice = !isNaN(numericSell) && numericSell > 0
   const hasCost = !isNaN(numericCost) && numericCost > 0
 
-  const precoSugerido = hasCost ? numericCost * mkpAlvo : 0
   const pisoSeguranca = hasCost ? numericCost + custoFixoPorFormula : custoFixoPorFormula
+  const precoSugeridoBase = hasCost ? numericCost * mkpAlvo : 0
+  const precoSugerido = hasCost ? Math.max(precoSugeridoBase, pisoSeguranca) : 0
 
   const status = useMemo(() => {
     if (!isTestingPrice) return 'neutral'
@@ -129,8 +132,8 @@ export function PricingAssistant() {
                 </TooltipTrigger>
                 <TooltipContent className="max-w-[250px] text-center" side="bottom">
                   <p className="text-xs">
-                    Calcula o preço sugerido multiplicando o custo de insumos pelo Mark-up Alvo do
-                    setor.
+                    Calcula o preço sugerido pelo Mark-up Alvo, garantindo que nunca seja menor que
+                    o Piso de Segurança (Custo MP/Emb + Custo Fixo).
                   </p>
                 </TooltipContent>
               </Tooltip>
