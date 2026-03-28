@@ -102,11 +102,13 @@ export function PricingAssistant() {
 
     const precoMedioIdeal = n_grupo > 0 ? vendas_grupo / n_grupo : 0
     const mkpMultiplicador = mpemb_grupo > 0 ? vendas_grupo / mpemb_grupo : 0
+    const custoMedioInsumo = n_grupo > 0 ? mpemb_grupo / n_grupo : 0
 
     return {
       precoMinimoPorFormula,
       precoMedioIdeal,
       mkpMultiplicador,
+      custoMedioInsumo,
       isUsingFallback,
     }
   }, [monthlyMetrics, transactions, tipoFormula])
@@ -117,13 +119,24 @@ export function PricingAssistant() {
   const isTestingPrice = numericSell > 0
   const hasCost = numericCost > 0
 
+  const mkpAlvo = stats.mkpMultiplicador > 0 ? stats.mkpMultiplicador : 5.75
+  let mkpDinamico = mkpAlvo
+  if (numericCost > 0 && stats.custoMedioInsumo > 0) {
+    // Curva elástica: (Custo Médio / Custo Atual) ^ 0.5
+    // Garante que custo alto = menor markup, custo baixo = maior markup
+    mkpDinamico = mkpAlvo * Math.pow(stats.custoMedioInsumo / numericCost, 0.5)
+    // Limites de segurança razoáveis (piso de markup marginal)
+    mkpDinamico = Math.max(2.5, Math.min(mkpDinamico, 15.0))
+  }
+
   const pisoSeguranca = hasCost
     ? numericCost + stats.precoMinimoPorFormula
     : stats.precoMinimoPorFormula
-  const precoSugeridoBase = hasCost ? numericCost * stats.mkpMultiplicador : 0
+  const precoSugeridoBase = hasCost ? numericCost * mkpDinamico : 0
   const precoSugerido = hasCost ? Math.max(precoSugeridoBase, pisoSeguranca) : 0
 
-  const suggestedIsHealthy = precoSugerido >= stats.precoMedioIdeal
+  const isHittingFloor = hasCost && pisoSeguranca > precoSugeridoBase
+  const suggestedIsHealthy = !isHittingFloor
 
   const praticadoStatus = useMemo(() => {
     if (!isTestingPrice) return 'neutral'
@@ -148,8 +161,8 @@ export function PricingAssistant() {
                 </TooltipTrigger>
                 <TooltipContent className="max-w-[280px] text-center" side="bottom">
                   <p className="text-xs mb-1">
-                    Calcula o preço sugerido garantindo o Piso de Segurança (Custo Direto + Custo
-                    Fixo rateado do Setor).
+                    Sugere o preço usando <b>Markup Dinâmico</b> (inversamente proporcional ao custo
+                    do insumo), sempre respeitando o Piso de Segurança.
                   </p>
                   <p className="text-[10px] text-slate-400">
                     Baseado no histórico consolidado{' '}
@@ -266,31 +279,46 @@ export function PricingAssistant() {
                     <TooltipContent className="max-w-[200px] text-center" side="top">
                       <p className="text-xs">
                         {suggestedIsHealthy
-                          ? 'Precificação igual ou superior ao Preço Médio Ideal. Margem saudável!'
-                          : 'Precificação abaixo do Preço Médio Ideal. Fique atento à margem desta fórmula.'}
+                          ? 'Precificação saudável com base na curva elástica de Markup.'
+                          : 'Atenção: A curva de Markup geraria um valor abaixo do Piso de Segurança. Preço ajustado para cobrir custos operacionais.'}
+                      </p>
+                      <p className="text-[10px] mt-1 text-slate-400">
+                        Markup elástico alvo: {mkpDinamico.toFixed(2)}x
                       </p>
                     </TooltipContent>
                   </Tooltip>
                 )}
               </Label>
-              <div className="flex items-center justify-between mt-0.5">
-                <p
-                  className={cn(
-                    'text-sm font-bold font-mono tracking-tight',
-                    hasCost
-                      ? suggestedIsHealthy
-                        ? 'text-emerald-800'
-                        : 'text-red-800'
-                      : 'text-blue-700',
+              <div className="flex items-end justify-between mt-0.5">
+                <div>
+                  <p
+                    className={cn(
+                      'text-sm font-bold font-mono tracking-tight leading-none',
+                      hasCost
+                        ? suggestedIsHealthy
+                          ? 'text-emerald-800'
+                          : 'text-amber-700'
+                        : 'text-blue-700',
+                    )}
+                  >
+                    R$ {precoSugerido.toFixed(2)}
+                  </p>
+                  {hasCost && (
+                    <p
+                      className={cn(
+                        'text-[8px] mt-1 font-medium',
+                        suggestedIsHealthy ? 'text-emerald-600/80' : 'text-amber-600/80',
+                      )}
+                    >
+                      MKP: {mkpDinamico.toFixed(2)}x
+                    </p>
                   )}
-                >
-                  R$ {precoSugerido.toFixed(2)}
-                </p>
+                </div>
                 {hasCost && suggestedIsHealthy && (
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 mb-0.5" />
                 )}
                 {hasCost && !suggestedIsHealthy && (
-                  <AlertTriangle className="w-3.5 h-3.5 text-red-600" />
+                  <AlertTriangle className="w-4 h-4 text-amber-500 mb-0.5" />
                 )}
               </div>
             </div>
@@ -342,14 +370,13 @@ export function PricingAssistant() {
             <Tooltip>
               <TooltipTrigger asChild>
                 <span className="cursor-help flex items-center gap-0.5">
-                  MKP Setor:{' '}
-                  <span className="font-bold text-blue-600">
-                    {stats.mkpMultiplicador.toFixed(2)}x
-                  </span>
+                  MKP Médio: <span className="font-bold text-blue-600">{mkpAlvo.toFixed(2)}x</span>
                 </span>
               </TooltipTrigger>
               <TooltipContent className="max-w-[200px] text-center" side="top">
-                <p className="text-xs">Multiplicador histórico do setor (Vendas / Custo MP+Emb).</p>
+                <p className="text-xs">
+                  Markup médio histórico do setor. Usado como base para a curva elástica.
+                </p>
               </TooltipContent>
             </Tooltip>
             <span className="text-blue-200 hidden sm:inline">|</span>
