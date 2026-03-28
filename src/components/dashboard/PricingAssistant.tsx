@@ -21,7 +21,7 @@ export function PricingAssistant() {
   const [sellPrice, setSellPrice] = useState('')
   const [tipoFormula, setTipoFormula] = useState<'capsulas' | 'dermato'>('capsulas')
 
-  const { fatorDivisor, precoMinimoPorFormula, cfPercent } = useMemo(() => {
+  const { cof, precoMinimoMedio } = useMemo(() => {
     let cfaTotal = 0
     let varExpOperacional = 0
 
@@ -65,22 +65,16 @@ export function PricingAssistant() {
     const cf_rateado = cfaTotal * pesoGrupo
     const var_rateado = varExpOperacional * pesoGrupo
 
-    const vendas_grupo = tipoFormula === 'capsulas' ? vendas_caps : vendas_derm
     const n_grupo = tipoFormula === 'capsulas' ? n_caps : n_derm
     const mpemb_grupo = tipoFormula === 'capsulas' ? mpemb_caps : mpemb_derm
 
-    const CF_percent = vendas_grupo > 0 ? cf_rateado / vendas_grupo : 0
-    const margem = 0.15 // 15%
-    const TOTAL_percent = CF_percent + margem
-    const divisor = 1 - TOTAL_percent
-
+    const custoOperacionalFormula = n_grupo > 0 ? (cf_rateado + var_rateado) / n_grupo : 0
     const custoTotalGrupo = cf_rateado + var_rateado + mpemb_grupo
     const precoMinimo = n_grupo > 0 ? custoTotalGrupo / n_grupo : 0
 
     return {
-      fatorDivisor: divisor > 0 ? divisor : 1,
-      precoMinimoPorFormula: precoMinimo,
-      cfPercent: CF_percent,
+      cof: custoOperacionalFormula,
+      precoMinimoMedio: precoMinimo,
     }
   }, [filteredMonthlyMetrics, filteredTransactions, filters, tipoFormula])
 
@@ -88,24 +82,27 @@ export function PricingAssistant() {
   useEffect(() => {
     const numericCost = parseFloat(cost)
     if (!isNaN(numericCost) && numericCost > 0) {
-      setSellPrice((numericCost / fatorDivisor).toFixed(2))
+      setSellPrice((numericCost + cof).toFixed(2))
     }
-  }, [fatorDivisor]) // purposefully omitting cost and sellPrice to allow manual edits
+  }, [cof]) // purposefully omitting cost and sellPrice to allow manual edits
 
   const handleCostChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value
     setCost(val)
     const numericCost = parseFloat(val)
     if (!isNaN(numericCost) && numericCost > 0) {
-      setSellPrice((numericCost / fatorDivisor).toFixed(2))
+      setSellPrice((numericCost + cof).toFixed(2))
     } else {
       setSellPrice('')
     }
   }
 
   const numericSell = parseFloat(sellPrice)
+  const numericCost = parseFloat(cost)
   const isTestingPrice = !isNaN(numericSell) && numericSell > 0
-  const isProfitable = isTestingPrice && numericSell >= precoMinimoPorFormula
+  const actualMinimumForThisFormula =
+    !isNaN(numericCost) && numericCost > 0 ? numericCost + cof : cof
+  const isProfitable = isTestingPrice && numericSell >= actualMinimumForThisFormula
 
   return (
     <Card className="rounded-sm shadow-sm w-full flex flex-col justify-center border-t-4 border-t-blue-500 bg-gradient-to-br from-white to-blue-50/30 h-full min-h-[140px]">
@@ -114,7 +111,7 @@ export function PricingAssistant() {
           <div className="flex items-center gap-1.5 text-blue-700">
             <Calculator className="w-4 h-4" />
             <h3 className="text-xs font-bold uppercase tracking-wide flex items-center gap-1">
-              Assistente de Precificação (RTC)
+              Assistente de Precificação (Custo Aditivo)
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Link to="/glossario#assistente-precificacao">
@@ -123,8 +120,8 @@ export function PricingAssistant() {
                 </TooltipTrigger>
                 <TooltipContent className="max-w-[250px] text-center" side="bottom">
                   <p className="text-xs">
-                    Calcula o preço ideal protegendo 15% de margem com base no rateio proporcional
-                    de custos fixos do grupo selecionado.
+                    Calcula o preço sugerido somando o Custo dos Insumos (CVU) ao Custo Operacional
+                    por Fórmula (COF) rateado do grupo.
                   </p>
                 </TooltipContent>
               </Tooltip>
@@ -225,7 +222,7 @@ export function PricingAssistant() {
                       : 'text-blue-600/70',
                   )}
                 >
-                  Preço Mín. / Fórmula
+                  Preço Mínimo Desta Fórmula
                 </Label>
                 <p
                   className={cn(
@@ -237,7 +234,7 @@ export function PricingAssistant() {
                       : 'text-blue-700',
                   )}
                 >
-                  R$ {precoMinimoPorFormula.toFixed(2)}
+                  R$ {actualMinimumForThisFormula.toFixed(2)}
                 </p>
               </div>
 
@@ -247,14 +244,14 @@ export function PricingAssistant() {
                     <div className="flex flex-col items-end">
                       <CheckCircle2 className="w-4 h-4 text-emerald-600 mb-0.5" />
                       <span className="text-[9px] font-bold text-emerald-700 uppercase">
-                        Venda Saudável
+                        Cobre Custos
                       </span>
                     </div>
                   ) : (
                     <div className="flex flex-col items-end">
                       <AlertTriangle className="w-4 h-4 text-red-600 mb-0.5" />
                       <span className="text-[9px] font-bold text-red-700 uppercase">
-                        Abaixo do Mínimo
+                        Prejuízo Operacional
                       </span>
                     </div>
                   )}
@@ -264,13 +261,33 @@ export function PricingAssistant() {
           </div>
         </div>
         <div className="mt-2 text-[9px] text-slate-500 text-center bg-white/50 py-1 rounded border border-blue-100/50 flex justify-center gap-3">
-          <span>
-            Fator Divisor:{' '}
-            <span className="font-bold text-blue-600">{fatorDivisor.toFixed(4)}</span>
-          </span>
-          <span>
-            CF: <span className="font-bold text-blue-600">{(cfPercent * 100).toFixed(1)}%</span>
-          </span>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <span className="cursor-help">
+                COF (Custo Operacional/Fórmula):{' '}
+                <span className="font-bold text-blue-600">R$ {cof.toFixed(2)}</span>
+              </span>
+            </TooltipTrigger>
+            <TooltipContent className="max-w-[200px] text-center" side="top">
+              <p className="text-xs">
+                Custos Fixos e Variáveis (exceto insumos) divididos pelo número de fórmulas.
+              </p>
+            </TooltipContent>
+          </Tooltip>
+          <span className="text-blue-200">|</span>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <span className="cursor-help">
+                Custo Médio Setor:{' '}
+                <span className="font-bold text-blue-600">R$ {precoMinimoMedio.toFixed(2)}</span>
+              </span>
+            </TooltipTrigger>
+            <TooltipContent className="max-w-[200px] text-center" side="top">
+              <p className="text-xs">
+                Média histórica do custo total (insumos + operacional) por fórmula do setor.
+              </p>
+            </TooltipContent>
+          </Tooltip>
         </div>
       </CardContent>
     </Card>

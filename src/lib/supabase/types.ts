@@ -12,38 +12,56 @@ export type Database = {
       monthly_metrics: {
         Row: {
           created_at: string
+          custo_mp_emb_capsulas: number
+          custo_mp_emb_dermato: number
           id: string
           month: number
+          num_formulas_capsulas: number
+          num_formulas_dermato: number
           orders_count: number
           raw_material_costs: number
           sales_target: number
           total_system_sales: number
           updated_at: string
           user_id: string
+          vendas_capsulas: number
+          vendas_dermato: number
           year: number
         }
         Insert: {
           created_at?: string
+          custo_mp_emb_capsulas?: number
+          custo_mp_emb_dermato?: number
           id?: string
           month: number
+          num_formulas_capsulas?: number
+          num_formulas_dermato?: number
           orders_count?: number
           raw_material_costs?: number
           sales_target?: number
           total_system_sales?: number
           updated_at?: string
           user_id: string
+          vendas_capsulas?: number
+          vendas_dermato?: number
           year: number
         }
         Update: {
           created_at?: string
+          custo_mp_emb_capsulas?: number
+          custo_mp_emb_dermato?: number
           id?: string
           month?: number
+          num_formulas_capsulas?: number
+          num_formulas_dermato?: number
           orders_count?: number
           raw_material_costs?: number
           sales_target?: number
           total_system_sales?: number
           updated_at?: string
           user_id?: string
+          vendas_capsulas?: number
+          vendas_dermato?: number
           year?: number
         }
         Relationships: []
@@ -311,6 +329,12 @@ export const Constants = {
 //   created_at: timestamp with time zone (not null, default: now())
 //   updated_at: timestamp with time zone (not null, default: now())
 //   sales_target: numeric (not null, default: 0)
+//   num_formulas_capsulas: integer (not null, default: 0)
+//   vendas_capsulas: numeric (not null, default: 0)
+//   custo_mp_emb_capsulas: numeric (not null, default: 0)
+//   num_formulas_dermato: integer (not null, default: 0)
+//   vendas_dermato: numeric (not null, default: 0)
+//   custo_mp_emb_dermato: numeric (not null, default: 0)
 // Table: profiles
 //   id: uuid (not null)
 //   email: text (not null)

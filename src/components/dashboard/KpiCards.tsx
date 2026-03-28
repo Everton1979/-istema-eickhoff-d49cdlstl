@@ -48,8 +48,9 @@ export function KpiCards() {
     const lucro = receitas - despesasFluxo
     const indiceMargem = receitas > 0 ? margem / receitas : 0
     const pontoEquilibrio = indiceMargem > 0 ? custosFixos / indiceMargem : 0
+    const margemSeguranca = receitas > 0 ? ((receitas - pontoEquilibrio) / receitas) * 100 : 0
 
-    return { receitas, despesas: despesasFluxo, margem, lucro, pontoEquilibrio }
+    return { receitas, despesas: despesasFluxo, margem, lucro, pontoEquilibrio, margemSeguranca }
   }, [filteredTransactions, filteredMonthlyMetrics, categories, filters])
 
   const formatCurrency = (val: number) =>
@@ -57,12 +58,17 @@ export function KpiCards() {
       val,
     )
 
+  const formatPercent = (val: number) =>
+    new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(
+      val,
+    ) + '%'
+
   const kpis = [
     {
       id: 'receitas-operacionais',
       title: 'RECEITAS OPERACIONAIS',
       tooltip: 'Total de entradas financeiras no período.',
-      value: metrics.receitas,
+      value: formatCurrency(metrics.receitas),
       color: 'text-blue-600',
       border: 'border-t-blue-500',
     },
@@ -70,7 +76,7 @@ export function KpiCards() {
       id: 'despesas-e-custos',
       title: 'DESPESAS E CUSTOS (REALIZADAS)',
       tooltip: 'Soma de todas as saídas de caixa (fixas e variáveis).',
-      value: -metrics.despesas,
+      value: formatCurrency(-metrics.despesas),
       color: 'text-red-500',
       border: 'border-t-red-500',
     },
@@ -78,7 +84,7 @@ export function KpiCards() {
       id: 'margem-de-contribuicao',
       title: 'MARGEM DE CONTRIBUIÇÃO',
       tooltip: 'Receita bruta menos custos variáveis operacionais e insumos (Fechamento).',
-      value: metrics.margem,
+      value: formatCurrency(metrics.margem),
       color: 'text-blue-600',
       border: 'border-t-blue-500',
     },
@@ -86,22 +92,30 @@ export function KpiCards() {
       id: 'lucro-liquido',
       title: 'LUCRO LÍQUIDO (CAIXA)',
       tooltip: 'Resultado final de caixa (Receitas - Despesas Totais).',
-      value: metrics.lucro,
+      value: formatCurrency(metrics.lucro),
+      color: metrics.lucro >= 0 ? 'text-emerald-600' : 'text-red-600',
+      border: metrics.lucro >= 0 ? 'border-t-emerald-500' : 'border-t-red-500',
+    },
+    {
+      id: 'ponto-de-equilibrio',
+      title: 'PONTO DE EQUILÍBRIO',
+      tooltip: 'Faturamento necessário para cobrir todos os custos (Lucro zero).',
+      value: formatCurrency(metrics.pontoEquilibrio),
       color: 'text-blue-600',
       border: 'border-t-blue-500',
     },
     {
-      id: 'ponto-de-equilibrio',
-      title: 'PONTO DE EQUILÍBRIO (YTD)',
-      tooltip: 'Faturamento necessário para cobrir todos os custos (Lucro zero).',
-      value: metrics.pontoEquilibrio,
-      color: 'text-blue-600',
-      border: 'border-t-blue-500',
+      id: 'margem-de-seguranca',
+      title: 'MARGEM DE SEGURANÇA',
+      tooltip: 'Percentual de queda nas vendas suportado antes de gerar prejuízo.',
+      value: formatPercent(metrics.margemSeguranca),
+      color: metrics.margemSeguranca > 0 ? 'text-emerald-600' : 'text-red-600',
+      border: metrics.margemSeguranca > 0 ? 'border-t-emerald-500' : 'border-t-red-500',
     },
   ]
 
   return (
-    <div className="grid grid-cols-2 lg:grid-cols-5 gap-2 mb-2">
+    <div className="grid grid-cols-2 lg:grid-cols-6 gap-2 mb-2">
       {kpis.map((kpi, i) => (
         <Card key={i} className={cn('rounded-sm border-t-4 shadow-sm', kpi.border)}>
           <CardContent className="p-2 text-center flex flex-col justify-center h-full">
@@ -121,9 +135,7 @@ export function KpiCards() {
                 </TooltipContent>
               </Tooltip>
             </h3>
-            <p className={cn('text-xl font-bold tracking-tight', kpi.color)}>
-              {formatCurrency(kpi.value)}
-            </p>
+            <p className={cn('text-xl font-bold tracking-tight', kpi.color)}>{kpi.value}</p>
           </CardContent>
         </Card>
       ))}
