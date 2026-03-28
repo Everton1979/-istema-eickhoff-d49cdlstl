@@ -2,7 +2,7 @@ import { useFinanceStore } from '@/stores/financeStore'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Calculator, HelpCircle, AlertTriangle, CheckCircle2 } from 'lucide-react'
+import { Calculator, HelpCircle, AlertTriangle, CheckCircle2, Info } from 'lucide-react'
 import { useState, useMemo, useEffect } from 'react'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { Link } from 'react-router-dom'
@@ -21,7 +21,7 @@ export function PricingAssistant() {
   const [sellPrice, setSellPrice] = useState('')
   const [tipoFormula, setTipoFormula] = useState<'capsulas' | 'dermato'>('capsulas')
 
-  const { mkpAlvo, custoFixoPorFormula } = useMemo(() => {
+  const stats = useMemo(() => {
     let cfaTotal = 0
     let varExpOperacional = 0
 
@@ -58,58 +58,42 @@ export function PricingAssistant() {
       0,
     )
 
-    const vendasTotais = vendas_caps + vendas_derm
-    const pesoGrupo =
-      vendasTotais > 0 ? (tipoFormula === 'capsulas' ? vendas_caps : vendas_derm) / vendasTotais : 0
-
-    const cf_rateado = cfaTotal * pesoGrupo
-    const var_rateado = varExpOperacional * pesoGrupo
+    const formulasTotais = n_caps + n_derm
+    const custoOperacionalTotal = cfaTotal + varExpOperacional
+    const precoMinimoPorFormula = formulasTotais > 0 ? custoOperacionalTotal / formulasTotais : 0
 
     const n_grupo = tipoFormula === 'capsulas' ? n_caps : n_derm
+    const vendas_grupo = tipoFormula === 'capsulas' ? vendas_caps : vendas_derm
     const mpemb_grupo = tipoFormula === 'capsulas' ? mpemb_caps : mpemb_derm
 
-    const custoFixoTotalGrupo = cf_rateado + var_rateado
-    const custoTotalGrupo = custoFixoTotalGrupo + mpemb_grupo
-
-    const markUpAlvo = mpemb_grupo > 0 ? custoTotalGrupo / mpemb_grupo : 0
-    const custoFixoForm = n_grupo > 0 ? custoFixoTotalGrupo / n_grupo : 0
+    const precoMedioIdeal = n_grupo > 0 ? vendas_grupo / n_grupo : 0
+    const mkpMultiplicador = mpemb_grupo > 0 ? vendas_grupo / mpemb_grupo : 0
 
     return {
-      mkpAlvo: markUpAlvo,
-      custoFixoPorFormula: custoFixoForm,
+      precoMinimoPorFormula,
+      precoMedioIdeal,
+      mkpMultiplicador,
     }
   }, [filteredMonthlyMetrics, filteredTransactions, filters, tipoFormula])
 
-  useEffect(() => {
-    const numericCost = parseFloat(cost)
-    if (!isNaN(numericCost) && numericCost > 0) {
-      const suggested = Math.max(numericCost * mkpAlvo, numericCost + custoFixoPorFormula)
-      setSellPrice(suggested.toFixed(2))
-    }
-  }, [mkpAlvo, custoFixoPorFormula])
+  // Optional: Auto-fill suggested price into sell price if user hasn't typed anything
+  // But let's keep it manual as per original logic.
 
-  const handleCostChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const val = e.target.value
-    setCost(val)
-    const numericCost = parseFloat(val)
-    if (!isNaN(numericCost) && numericCost > 0) {
-      const suggested = Math.max(numericCost * mkpAlvo, numericCost + custoFixoPorFormula)
-      setSellPrice(suggested.toFixed(2))
-    } else {
-      setSellPrice('')
-    }
-  }
+  const numericCost = parseFloat(cost) || 0
+  const numericSell = parseFloat(sellPrice) || 0
 
-  const numericSell = parseFloat(sellPrice)
-  const numericCost = parseFloat(cost)
-  const isTestingPrice = !isNaN(numericSell) && numericSell > 0
-  const hasCost = !isNaN(numericCost) && numericCost > 0
+  const isTestingPrice = numericSell > 0
+  const hasCost = numericCost > 0
 
-  const pisoSeguranca = hasCost ? numericCost + custoFixoPorFormula : custoFixoPorFormula
-  const precoSugeridoBase = hasCost ? numericCost * mkpAlvo : 0
+  const pisoSeguranca = hasCost
+    ? numericCost + stats.precoMinimoPorFormula
+    : stats.precoMinimoPorFormula
+  const precoSugeridoBase = hasCost ? numericCost * stats.mkpMultiplicador : 0
   const precoSugerido = hasCost ? Math.max(precoSugeridoBase, pisoSeguranca) : 0
 
-  const status = useMemo(() => {
+  const suggestedIsHealthy = precoSugerido >= stats.precoMedioIdeal
+
+  const praticadoStatus = useMemo(() => {
     if (!isTestingPrice) return 'neutral'
     if (numericSell >= precoSugerido) return 'ideal'
     if (numericSell >= pisoSeguranca) return 'warning'
@@ -123,7 +107,7 @@ export function PricingAssistant() {
           <div className="flex items-center gap-1.5 text-blue-700">
             <Calculator className="w-4 h-4" />
             <h3 className="text-xs font-bold uppercase tracking-wide flex items-center gap-1">
-              Assistente de Precificação (Mark-up Alvo)
+              Assistente de Precificação
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Link to="/glossario#assistente-precificacao">
@@ -132,8 +116,8 @@ export function PricingAssistant() {
                 </TooltipTrigger>
                 <TooltipContent className="max-w-[250px] text-center" side="bottom">
                   <p className="text-xs">
-                    Calcula o preço sugerido pelo Mark-up Alvo, garantindo que nunca seja menor que
-                    o Piso de Segurança (Custo MP/Emb + Custo Fixo).
+                    Calcula o preço sugerido garantindo a Trava de Segurança (Custo MP/Emb + Preço
+                    Mínimo). Avalia a saúde em relação ao Preço Médio Ideal.
                   </p>
                 </TooltipContent>
               </Tooltip>
@@ -170,7 +154,7 @@ export function PricingAssistant() {
                   step="0.01"
                   className="h-7 text-xs pl-7 bg-white shadow-inner focus-visible:ring-blue-400"
                   value={cost}
-                  onChange={handleCostChange}
+                  onChange={(e) => setCost(e.target.value)}
                   placeholder="0.00"
                 />
               </div>
@@ -185,9 +169,9 @@ export function PricingAssistant() {
                   className={cn(
                     'absolute left-2 top-1.5 text-xs font-medium',
                     isTestingPrice
-                      ? status === 'ideal'
+                      ? praticadoStatus === 'ideal'
                         ? 'text-emerald-600'
-                        : status === 'warning'
+                        : praticadoStatus === 'warning'
                           ? 'text-amber-600'
                           : 'text-red-600'
                       : 'text-slate-500',
@@ -201,9 +185,9 @@ export function PricingAssistant() {
                   className={cn(
                     'h-7 text-xs pl-7 shadow-inner transition-colors',
                     isTestingPrice
-                      ? status === 'ideal'
+                      ? praticadoStatus === 'ideal'
                         ? 'bg-emerald-50 border-emerald-300 text-emerald-700 focus-visible:ring-emerald-400'
-                        : status === 'warning'
+                        : praticadoStatus === 'warning'
                           ? 'bg-amber-50 border-amber-300 text-amber-700 focus-visible:ring-amber-400'
                           : 'bg-red-50 border-red-300 text-red-700 focus-visible:ring-red-400'
                       : 'bg-white focus-visible:ring-blue-400',
@@ -220,32 +204,57 @@ export function PricingAssistant() {
             <div
               className={cn(
                 'flex flex-col p-2 rounded-sm border shadow-sm transition-colors',
-                isTestingPrice
-                  ? status === 'ideal'
+                hasCost
+                  ? suggestedIsHealthy
                     ? 'bg-emerald-50 border-emerald-200'
-                    : 'bg-white border-blue-100'
+                    : 'bg-red-50 border-red-200'
                   : 'bg-white border-blue-100',
               )}
             >
               <Label
                 className={cn(
-                  'text-[9px] uppercase tracking-wider block',
-                  isTestingPrice && status === 'ideal' ? 'text-emerald-700' : 'text-blue-600/70',
+                  'text-[9px] uppercase tracking-wider flex items-center gap-1',
+                  hasCost
+                    ? suggestedIsHealthy
+                      ? 'text-emerald-700'
+                      : 'text-red-700'
+                    : 'text-blue-600/70',
                 )}
               >
-                Preço Sugerido (Alvo)
+                Preço Sugerido
+                {hasCost && (
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Info className="w-3 h-3 opacity-60 cursor-help" />
+                    </TooltipTrigger>
+                    <TooltipContent className="max-w-[200px] text-center" side="top">
+                      <p className="text-xs">
+                        {suggestedIsHealthy
+                          ? 'Precificação igual ou superior ao Preço Médio Ideal. Margem saudável!'
+                          : 'Precificação abaixo do Preço Médio Ideal. Fique atento à margem desta fórmula.'}
+                      </p>
+                    </TooltipContent>
+                  </Tooltip>
+                )}
               </Label>
               <div className="flex items-center justify-between mt-0.5">
                 <p
                   className={cn(
                     'text-sm font-bold font-mono tracking-tight',
-                    isTestingPrice && status === 'ideal' ? 'text-emerald-800' : 'text-blue-700',
+                    hasCost
+                      ? suggestedIsHealthy
+                        ? 'text-emerald-800'
+                        : 'text-red-800'
+                      : 'text-blue-700',
                   )}
                 >
                   R$ {precoSugerido.toFixed(2)}
                 </p>
-                {isTestingPrice && status === 'ideal' && (
+                {hasCost && suggestedIsHealthy && (
                   <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                )}
+                {hasCost && !suggestedIsHealthy && (
+                  <AlertTriangle className="w-3.5 h-3.5 text-red-600" />
                 )}
               </div>
             </div>
@@ -253,24 +262,16 @@ export function PricingAssistant() {
             <div
               className={cn(
                 'flex flex-col p-2 rounded-sm border shadow-sm transition-colors',
-                isTestingPrice
-                  ? status === 'danger'
-                    ? 'bg-red-50 border-red-200'
-                    : status === 'warning'
-                      ? 'bg-amber-50 border-amber-200'
-                      : 'bg-white border-slate-200'
+                isTestingPrice && praticadoStatus === 'danger'
+                  ? 'bg-red-50 border-red-200'
                   : 'bg-white border-slate-200',
               )}
             >
               <Label
                 className={cn(
                   'text-[9px] uppercase tracking-wider block',
-                  isTestingPrice
-                    ? status === 'danger'
-                      ? 'text-red-700'
-                      : status === 'warning'
-                        ? 'text-amber-700'
-                        : 'text-slate-500'
+                  isTestingPrice && praticadoStatus === 'danger'
+                    ? 'text-red-700'
                     : 'text-slate-500',
                 )}
               >
@@ -280,52 +281,63 @@ export function PricingAssistant() {
                 <p
                   className={cn(
                     'text-sm font-bold font-mono tracking-tight',
-                    isTestingPrice
-                      ? status === 'danger'
-                        ? 'text-red-800'
-                        : status === 'warning'
-                          ? 'text-amber-800'
-                          : 'text-slate-700'
+                    isTestingPrice && praticadoStatus === 'danger'
+                      ? 'text-red-800'
                       : 'text-slate-700',
                   )}
                 >
                   R$ {pisoSeguranca.toFixed(2)}
                 </p>
-                {isTestingPrice && status === 'danger' && (
+                {isTestingPrice && praticadoStatus === 'danger' && (
                   <AlertTriangle className="w-3.5 h-3.5 text-red-600" />
                 )}
               </div>
             </div>
           </div>
         </div>
-        <div className="mt-2 text-[9px] text-slate-500 text-center bg-white/50 py-1 rounded border border-blue-100/50 flex justify-center gap-3">
+
+        <div className="mt-2 text-[9px] text-slate-500 text-center bg-white/50 py-1.5 px-1 rounded border border-blue-100/50 flex flex-wrap justify-center gap-x-3 gap-y-1">
           <Tooltip>
             <TooltipTrigger asChild>
-              <span className="cursor-help">
-                Mark-up Alvo Setor:{' '}
-                <span className="font-bold text-blue-600">{mkpAlvo.toFixed(2)}x</span>
+              <span className="cursor-help flex items-center gap-0.5">
+                MKP Setor:{' '}
+                <span className="font-bold text-blue-600">
+                  {stats.mkpMultiplicador.toFixed(2)}x
+                </span>
               </span>
             </TooltipTrigger>
             <TooltipContent className="max-w-[200px] text-center" side="top">
-              <p className="text-xs">
-                Multiplicador histórico necessário para cobrir todos os custos neste setor.
-              </p>
+              <p className="text-xs">Multiplicador histórico do setor (Vendas / Custo MP+Emb).</p>
             </TooltipContent>
           </Tooltip>
-          <span className="text-blue-200">|</span>
+          <span className="text-blue-200 hidden sm:inline">|</span>
           <Tooltip>
             <TooltipTrigger asChild>
-              <span className="cursor-help">
-                Custo Fixo/Fórmula:{' '}
-                <span className="font-bold text-slate-600">
-                  R$ {custoFixoPorFormula.toFixed(2)}
+              <span className="cursor-help flex items-center gap-0.5">
+                PM Ideal:{' '}
+                <span className="font-bold text-emerald-600">
+                  R$ {stats.precoMedioIdeal.toFixed(2)}
                 </span>
               </span>
             </TooltipTrigger>
             <TooltipContent className="max-w-[200px] text-center" side="top">
               <p className="text-xs">
-                Custos operacionais rateados pelo número de fórmulas. Compõe o Piso de Segurança.
+                Preço Médio Ideal (Ticket Médio Histórico) do laboratório selecionado.
               </p>
+            </TooltipContent>
+          </Tooltip>
+          <span className="text-blue-200 hidden sm:inline">|</span>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <span className="cursor-help flex items-center gap-0.5">
+                Custo Min/Fórm:{' '}
+                <span className="font-bold text-slate-600">
+                  R$ {stats.precoMinimoPorFormula.toFixed(2)}
+                </span>
+              </span>
+            </TooltipTrigger>
+            <TooltipContent className="max-w-[200px] text-center" side="top">
+              <p className="text-xs">Custo Fixo + Variável rateado por fórmula geral.</p>
             </TooltipContent>
           </Tooltip>
         </div>
