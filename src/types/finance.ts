@@ -41,4 +41,10 @@ export interface MonthlyMetric {
   total_system_sales: number
   raw_material_costs: number
   sales_target: number
+  num_formulas_capsulas: number
+  vendas_capsulas: number
+  custo_mp_emb_capsulas: number
+  num_formulas_dermato: number
+  vendas_dermato: number
+  custo_mp_emb_dermato: number
 }

@@ -128,6 +128,12 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
           total_system_sales: Number(m.total_system_sales),
           raw_material_costs: Number(m.raw_material_costs),
           sales_target: Number(m.sales_target || 0),
+          num_formulas_capsulas: Number(m.num_formulas_capsulas || 0),
+          vendas_capsulas: Number(m.vendas_capsulas || 0),
+          custo_mp_emb_capsulas: Number(m.custo_mp_emb_capsulas || 0),
+          num_formulas_dermato: Number(m.num_formulas_dermato || 0),
+          vendas_dermato: Number(m.vendas_dermato || 0),
+          custo_mp_emb_dermato: Number(m.custo_mp_emb_dermato || 0),
         })),
       )
     }
@@ -246,14 +252,27 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
 
     const existing = monthlyMetrics.find((m) => m.month === metric.month && m.year === metric.year)
 
+    const orders_count = (metric.num_formulas_capsulas || 0) + (metric.num_formulas_dermato || 0)
+    const total_system_sales = (metric.vendas_capsulas || 0) + (metric.vendas_dermato || 0)
+    const raw_material_costs =
+      (metric.custo_mp_emb_capsulas || 0) + (metric.custo_mp_emb_dermato || 0)
+
     const payload = {
       month: metric.month,
       year: metric.year,
-      orders_count: metric.orders_count,
-      total_system_sales: metric.total_system_sales,
-      raw_material_costs: metric.raw_material_costs,
+      orders_count: metric.orders_count !== undefined ? metric.orders_count : orders_count,
+      total_system_sales:
+        metric.total_system_sales !== undefined ? metric.total_system_sales : total_system_sales,
+      raw_material_costs:
+        metric.raw_material_costs !== undefined ? metric.raw_material_costs : raw_material_costs,
       sales_target:
         metric.sales_target !== undefined ? metric.sales_target : existing?.sales_target || 0,
+      num_formulas_capsulas: metric.num_formulas_capsulas || 0,
+      vendas_capsulas: metric.vendas_capsulas || 0,
+      custo_mp_emb_capsulas: metric.custo_mp_emb_capsulas || 0,
+      num_formulas_dermato: metric.num_formulas_dermato || 0,
+      vendas_dermato: metric.vendas_dermato || 0,
+      custo_mp_emb_dermato: metric.custo_mp_emb_dermato || 0,
       updated_at: new Date().toISOString(),
     }
 
@@ -288,6 +307,12 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
             total_system_sales: Number(data.total_system_sales),
             raw_material_costs: Number(data.raw_material_costs),
             sales_target: Number(data.sales_target || 0),
+            num_formulas_capsulas: Number(data.num_formulas_capsulas || 0),
+            vendas_capsulas: Number(data.vendas_capsulas || 0),
+            custo_mp_emb_capsulas: Number(data.custo_mp_emb_capsulas || 0),
+            num_formulas_dermato: Number(data.num_formulas_dermato || 0),
+            vendas_dermato: Number(data.vendas_dermato || 0),
+            custo_mp_emb_dermato: Number(data.custo_mp_emb_dermato || 0),
           },
         ]
       })

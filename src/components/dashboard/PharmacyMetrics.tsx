@@ -37,7 +37,6 @@ export function PharmacyMetrics() {
     })
 
     const ticketMedio = totalOrders > 0 ? totalSales / totalOrders : 0
-    const fatorMedio = totalRawMaterial > 0 ? totalSales / totalRawMaterial : 0
     const margemContribuicao = totalSales - (varExpOperacional + totalRawMaterial)
 
     const custoTotal = cfaTotal + varExpOperacional + totalRawMaterial
@@ -51,7 +50,6 @@ export function PharmacyMetrics() {
 
     return {
       ticketMedio,
-      fatorMedio,
       margemContribuicao,
       cfaTotal,
       mkpTarget,
@@ -124,13 +122,6 @@ export function PharmacyMetrics() {
       tooltip: 'Multiplicador efetivamente realizado no período (Faturamento / Custo MP).',
       value: formatDecimal(metrics.mkpRealizado),
       color: 'text-purple-600',
-    },
-    {
-      id: 'fator-medio',
-      title: 'Fator Médio',
-      tooltip: 'Relação entre faturamento e custo de matéria-prima.',
-      value: formatDecimal(metrics.fatorMedio),
-      color: 'text-slate-600',
     },
   ]
 

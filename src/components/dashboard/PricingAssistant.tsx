@@ -3,17 +3,25 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Calculator, HelpCircle, AlertTriangle, CheckCircle2 } from 'lucide-react'
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { Link } from 'react-router-dom'
 import { cn } from '@/lib/utils'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 
 export function PricingAssistant() {
   const { filteredMonthlyMetrics, filteredTransactions, filters } = useFinanceStore()
   const [cost, setCost] = useState('')
   const [sellPrice, setSellPrice] = useState('')
+  const [tipoFormula, setTipoFormula] = useState<'capsulas' | 'dermato'>('capsulas')
 
-  const { mkpTarget, precoMinimoPorFormula } = useMemo(() => {
+  const { fatorDivisor, precoMinimoPorFormula, cfPercent } = useMemo(() => {
     let cfaTotal = 0
     let varExpOperacional = 0
 
@@ -34,25 +42,62 @@ export function PricingAssistant() {
       }
     })
 
-    const totalRawMaterial = filteredMonthlyMetrics.reduce(
-      (sum, m) => sum + m.raw_material_costs,
+    const vendas_caps = filteredMonthlyMetrics.reduce((sum, m) => sum + (m.vendas_capsulas || 0), 0)
+    const vendas_derm = filteredMonthlyMetrics.reduce((sum, m) => sum + (m.vendas_dermato || 0), 0)
+    const n_caps = filteredMonthlyMetrics.reduce(
+      (sum, m) => sum + (m.num_formulas_capsulas || 0),
       0,
     )
-    const totalOrders = filteredMonthlyMetrics.reduce((sum, m) => sum + m.orders_count, 0)
-    const custoTotal = cfaTotal + varExpOperacional + totalRawMaterial
+    const n_derm = filteredMonthlyMetrics.reduce((sum, m) => sum + (m.num_formulas_dermato || 0), 0)
+    const mpemb_caps = filteredMonthlyMetrics.reduce(
+      (sum, m) => sum + (m.custo_mp_emb_capsulas || 0),
+      0,
+    )
+    const mpemb_derm = filteredMonthlyMetrics.reduce(
+      (sum, m) => sum + (m.custo_mp_emb_dermato || 0),
+      0,
+    )
 
-    const mkp = totalRawMaterial > 0 ? custoTotal / totalRawMaterial : 0
-    const minPrice = totalOrders > 0 ? custoTotal / totalOrders : 0
+    const vendasTotais = vendas_caps + vendas_derm
+    const pesoGrupo =
+      vendasTotais > 0 ? (tipoFormula === 'capsulas' ? vendas_caps : vendas_derm) / vendasTotais : 0
 
-    return { mkpTarget: mkp, precoMinimoPorFormula: minPrice }
-  }, [filteredMonthlyMetrics, filteredTransactions, filters])
+    const cf_rateado = cfaTotal * pesoGrupo
+    const var_rateado = varExpOperacional * pesoGrupo
+
+    const vendas_grupo = tipoFormula === 'capsulas' ? vendas_caps : vendas_derm
+    const n_grupo = tipoFormula === 'capsulas' ? n_caps : n_derm
+    const mpemb_grupo = tipoFormula === 'capsulas' ? mpemb_caps : mpemb_derm
+
+    const CF_percent = vendas_grupo > 0 ? cf_rateado / vendas_grupo : 0
+    const margem = 0.15 // 15%
+    const TOTAL_percent = CF_percent + margem
+    const divisor = 1 - TOTAL_percent
+
+    const custoTotalGrupo = cf_rateado + var_rateado + mpemb_grupo
+    const precoMinimo = n_grupo > 0 ? custoTotalGrupo / n_grupo : 0
+
+    return {
+      fatorDivisor: divisor > 0 ? divisor : 1,
+      precoMinimoPorFormula: precoMinimo,
+      cfPercent: CF_percent,
+    }
+  }, [filteredMonthlyMetrics, filteredTransactions, filters, tipoFormula])
+
+  // Recalculate ideal price when parameters change
+  useEffect(() => {
+    const numericCost = parseFloat(cost)
+    if (!isNaN(numericCost) && numericCost > 0) {
+      setSellPrice((numericCost / fatorDivisor).toFixed(2))
+    }
+  }, [fatorDivisor]) // purposefully omitting cost and sellPrice to allow manual edits
 
   const handleCostChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value
     setCost(val)
     const numericCost = parseFloat(val)
     if (!isNaN(numericCost) && numericCost > 0) {
-      setSellPrice((numericCost * mkpTarget).toFixed(2))
+      setSellPrice((numericCost / fatorDivisor).toFixed(2))
     } else {
       setSellPrice('')
     }
@@ -65,34 +110,47 @@ export function PricingAssistant() {
   return (
     <Card className="rounded-sm shadow-sm w-full flex flex-col justify-center border-t-4 border-t-blue-500 bg-gradient-to-br from-white to-blue-50/30 h-full min-h-[140px]">
       <CardContent className="p-3 flex flex-col h-full justify-between">
-        <div className="flex items-center gap-1.5 text-blue-700 mb-2">
-          <Calculator className="w-4 h-4" />
-          <h3 className="text-xs font-bold uppercase tracking-wide flex items-center gap-1">
-            Assistente de Precificação
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Link to="/glossario#assistente-precificacao">
-                  <HelpCircle className="w-3.5 h-3.5 text-blue-400 hover:text-blue-600 cursor-pointer" />
-                </Link>
-              </TooltipTrigger>
-              <TooltipContent className="max-w-[250px] text-center" side="bottom">
-                <p className="text-xs">
-                  Sugere o preço de venda com base no seu Mark-up Alvo e compara o valor final com o
-                  Preço Mínimo por Fórmula.
-                </p>
-                <p className="text-[9px] text-blue-300 mt-1 border-t border-blue-200/50 pt-1">
-                  Clique para ver no Glossário
-                </p>
-              </TooltipContent>
-            </Tooltip>
-          </h3>
+        <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center gap-1.5 text-blue-700">
+            <Calculator className="w-4 h-4" />
+            <h3 className="text-xs font-bold uppercase tracking-wide flex items-center gap-1">
+              Assistente de Precificação (RTC)
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Link to="/glossario#assistente-precificacao">
+                    <HelpCircle className="w-3.5 h-3.5 text-blue-400 hover:text-blue-600 cursor-pointer" />
+                  </Link>
+                </TooltipTrigger>
+                <TooltipContent className="max-w-[250px] text-center" side="bottom">
+                  <p className="text-xs">
+                    Calcula o preço ideal protegendo 15% de margem com base no rateio proporcional
+                    de custos fixos do grupo selecionado.
+                  </p>
+                </TooltipContent>
+              </Tooltip>
+            </h3>
+          </div>
+
+          <Select value={tipoFormula} onValueChange={(val: any) => setTipoFormula(val)}>
+            <SelectTrigger className="h-6 w-[100px] text-[10px] bg-white border-blue-200 text-blue-800 focus:ring-1 focus:ring-blue-400">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="capsulas" className="text-xs">
+                Cápsulas
+              </SelectItem>
+              <SelectItem value="dermato" className="text-xs">
+                Dermato
+              </SelectItem>
+            </SelectContent>
+          </Select>
         </div>
 
         <div className="flex flex-col gap-2">
           <div className="flex gap-2">
             <div className="flex-1">
               <Label className="text-[10px] text-slate-500 uppercase tracking-wider mb-1 block">
-                Custo (MP+Emb)
+                CVU (MP+Emb)
               </Label>
               <div className="relative">
                 <span className="absolute left-2 top-1.5 text-xs text-slate-500 font-medium">
@@ -203,24 +261,15 @@ export function PricingAssistant() {
                 </div>
               )}
             </div>
-            {isTestingPrice && (
-              <div className="mt-1.5 border-t border-black/5 pt-1.5">
-                {isProfitable ? (
-                  <p className="text-[9px] text-emerald-600 font-medium text-center">
-                    Valor atinge o preço mín./fórmula
-                  </p>
-                ) : (
-                  <p className="text-[9px] text-red-600 font-medium text-center">
-                    Valor é menor que preço mín./fórmula
-                  </p>
-                )}
-              </div>
-            )}
           </div>
         </div>
         <div className="mt-2 text-[9px] text-slate-500 text-center bg-white/50 py-1 rounded border border-blue-100/50 flex justify-center gap-3">
           <span>
-            Mark-up Alvo: <span className="font-bold text-blue-600">{mkpTarget.toFixed(2)}x</span>
+            Fator Divisor:{' '}
+            <span className="font-bold text-blue-600">{fatorDivisor.toFixed(4)}</span>
+          </span>
+          <span>
+            CF: <span className="font-bold text-blue-600">{(cfPercent * 100).toFixed(1)}%</span>
           </span>
         </div>
       </CardContent>

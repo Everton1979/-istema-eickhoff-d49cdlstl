@@ -19,6 +19,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { ScrollArea } from '@/components/ui/scroll-area'
 
 export function MonthlyClosingDialog() {
   const { monthlyMetrics, saveMonthlyMetric, filters } = useFinanceStore()
@@ -32,9 +33,16 @@ export function MonthlyClosingDialog() {
 
   const [month, setMonth] = useState(currentMonth)
   const [year, setYear] = useState(currentYear)
-  const [orders, setOrders] = useState('')
-  const [sales, setSales] = useState('')
-  const [costs, setCosts] = useState('')
+
+  // Cápsulas
+  const [ordersCaps, setOrdersCaps] = useState('')
+  const [salesCaps, setSalesCaps] = useState('')
+  const [costsCaps, setCostsCaps] = useState('')
+
+  // Dermato
+  const [ordersDerm, setOrdersDerm] = useState('')
+  const [salesDerm, setSalesDerm] = useState('')
+  const [costsDerm, setCostsDerm] = useState('')
 
   useEffect(() => {
     if (open) {
@@ -42,17 +50,34 @@ export function MonthlyClosingDialog() {
         (m) => m.month.toString().padStart(2, '0') === month && m.year.toString() === year,
       )
       if (existing) {
-        setOrders(existing.orders_count.toString())
-        setSales(existing.total_system_sales.toString())
-        setCosts(existing.raw_material_costs.toString())
+        setOrdersCaps(existing.num_formulas_capsulas?.toString() || '')
+        setSalesCaps(existing.vendas_capsulas?.toString() || '')
+        setCostsCaps(existing.custo_mp_emb_capsulas?.toString() || '')
+
+        setOrdersDerm(existing.num_formulas_dermato?.toString() || '')
+        setSalesDerm(existing.vendas_dermato?.toString() || '')
+        setCostsDerm(existing.custo_mp_emb_dermato?.toString() || '')
+
+        // Fallback for older data that wasn't split
+        if (
+          !existing.num_formulas_capsulas &&
+          !existing.num_formulas_dermato &&
+          existing.orders_count > 0
+        ) {
+          setOrdersCaps(existing.orders_count.toString())
+          setSalesCaps(existing.total_system_sales.toString())
+          setCostsCaps(existing.raw_material_costs.toString())
+        }
       } else {
-        setOrders('')
-        setSales('')
-        setCosts('')
+        setOrdersCaps('')
+        setSalesCaps('')
+        setCostsCaps('')
+        setOrdersDerm('')
+        setSalesDerm('')
+        setCostsDerm('')
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [month, year, open])
+  }, [month, year, open, monthlyMetrics])
 
   const handleSave = async () => {
     try {
@@ -61,14 +86,29 @@ export function MonthlyClosingDialog() {
         (m) => m.month.toString().padStart(2, '0') === month && m.year.toString() === year,
       )
 
+      const nCaps = parseInt(ordersCaps || '0', 10)
+      const vCaps = parseFloat(salesCaps || '0')
+      const cCaps = parseFloat(costsCaps || '0')
+
+      const nDerm = parseInt(ordersDerm || '0', 10)
+      const vDerm = parseFloat(salesDerm || '0')
+      const cDerm = parseFloat(costsDerm || '0')
+
       await saveMonthlyMetric({
         month: parseInt(month, 10),
         year: parseInt(year, 10),
-        orders_count: parseInt(orders || '0', 10),
-        total_system_sales: parseFloat(sales || '0'),
-        raw_material_costs: parseFloat(costs || '0'),
+        num_formulas_capsulas: nCaps,
+        vendas_capsulas: vCaps,
+        custo_mp_emb_capsulas: cCaps,
+        num_formulas_dermato: nDerm,
+        vendas_dermato: vDerm,
+        custo_mp_emb_dermato: cDerm,
+        orders_count: nCaps + nDerm,
+        total_system_sales: vCaps + vDerm,
+        raw_material_costs: cCaps + cDerm,
         sales_target: existing ? existing.sales_target : 0,
-      })
+      } as any)
+
       toast({ title: 'Sucesso', description: 'Fechamento mensal salvo com sucesso.' })
       setOpen(false)
     } catch (error) {
@@ -106,80 +146,123 @@ export function MonthlyClosingDialog() {
           <FileBarChart className="w-3 h-3" /> Fechamento Mensal
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
+      <DialogContent className="sm:max-w-[450px] p-0">
+        <DialogHeader className="p-6 pb-2">
           <DialogTitle>Lançar Fechamento Mensal</DialogTitle>
         </DialogHeader>
-        <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label>Mês</Label>
-              <Select value={month} onValueChange={setMonth}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {monthsList.map((m) => (
-                    <SelectItem key={m.value} value={m.value}>
-                      {m.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+
+        <ScrollArea className="max-h-[60vh] px-6 pb-6">
+          <div className="grid gap-5">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Mês</Label>
+                <Select value={month} onValueChange={setMonth}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {monthsList.map((m) => (
+                      <SelectItem key={m.value} value={m.value}>
+                        {m.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label>Ano</Label>
+                <Select value={year} onValueChange={setYear}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {yearsList.map((y) => (
+                      <SelectItem key={y} value={y}>
+                        {y}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
-            <div className="space-y-2">
-              <Label>Ano</Label>
-              <Select value={year} onValueChange={setYear}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {yearsList.map((y) => (
-                    <SelectItem key={y} value={y}>
-                      {y}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+
+            <div className="bg-slate-50 border border-slate-200 rounded-md p-3 space-y-3">
+              <h4 className="text-sm font-bold text-slate-700">Grupo: Cápsulas</h4>
+              <div className="space-y-2">
+                <Label className="text-xs">Número de Fórmulas</Label>
+                <Input
+                  className="h-8 text-sm"
+                  type="number"
+                  value={ordersCaps}
+                  onChange={(e) => setOrdersCaps(e.target.value)}
+                  placeholder="Ex: 250"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label className="text-xs">Vendas Mensais (R$)</Label>
+                <Input
+                  className="h-8 text-sm"
+                  type="number"
+                  step="0.01"
+                  value={salesCaps}
+                  onChange={(e) => setSalesCaps(e.target.value)}
+                  placeholder="Ex: 40000.00"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label className="text-xs">Custo de MP/Embalagem (R$)</Label>
+                <Input
+                  className="h-8 text-sm"
+                  type="number"
+                  step="0.01"
+                  value={costsCaps}
+                  onChange={(e) => setCostsCaps(e.target.value)}
+                  placeholder="Ex: 8000.00"
+                />
+              </div>
             </div>
-          </div>
 
-          <div className="space-y-2">
-            <Label>Número de pedidos / Fórmulas</Label>
-            <Input
-              type="number"
-              value={orders}
-              onChange={(e) => setOrders(e.target.value)}
-              placeholder="Ex: 450"
-            />
-          </div>
+            <div className="bg-slate-50 border border-slate-200 rounded-md p-3 space-y-3">
+              <h4 className="text-sm font-bold text-slate-700">Grupo: Dermato</h4>
+              <div className="space-y-2">
+                <Label className="text-xs">Número de Fórmulas</Label>
+                <Input
+                  className="h-8 text-sm"
+                  type="number"
+                  value={ordersDerm}
+                  onChange={(e) => setOrdersDerm(e.target.value)}
+                  placeholder="Ex: 200"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label className="text-xs">Vendas Mensais (R$)</Label>
+                <Input
+                  className="h-8 text-sm"
+                  type="number"
+                  step="0.01"
+                  value={salesDerm}
+                  onChange={(e) => setSalesDerm(e.target.value)}
+                  placeholder="Ex: 35000.00"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label className="text-xs">Custo de MP/Embalagem (R$)</Label>
+                <Input
+                  className="h-8 text-sm"
+                  type="number"
+                  step="0.01"
+                  value={costsDerm}
+                  onChange={(e) => setCostsDerm(e.target.value)}
+                  placeholder="Ex: 7000.00"
+                />
+              </div>
+            </div>
 
-          <div className="space-y-2">
-            <Label>Vendas Mensais do Sistema (R$)</Label>
-            <Input
-              type="number"
-              step="0.01"
-              value={sales}
-              onChange={(e) => setSales(e.target.value)}
-              placeholder="Ex: 75000.00"
-            />
+            <Button onClick={handleSave} disabled={loading} className="w-full">
+              {loading ? 'Salvando...' : 'Salvar Dados'}
+            </Button>
           </div>
-
-          <div className="space-y-2">
-            <Label>Custo de Matérias Primas/Embalagem (R$)</Label>
-            <Input
-              type="number"
-              step="0.01"
-              value={costs}
-              onChange={(e) => setCosts(e.target.value)}
-              placeholder="Ex: 15000.00"
-            />
-          </div>
-
-          <Button onClick={handleSave} disabled={loading} className="w-full mt-2">
-            {loading ? 'Salvando...' : 'Salvar Dados'}
-          </Button>
-        </div>
+        </ScrollArea>
       </DialogContent>
     </Dialog>
   )
