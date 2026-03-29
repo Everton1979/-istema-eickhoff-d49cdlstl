@@ -46,11 +46,11 @@ export function KpiCards() {
 
     const margem = receitas - (custosVariaveisOperacionais + totalRawMaterial)
     const lucro = receitas - despesasFluxo
+    const ebitda = margem - custosFixos
     const indiceMargem = receitas > 0 ? margem / receitas : 0
     const pontoEquilibrio = indiceMargem > 0 ? custosFixos / indiceMargem : 0
-    const margemSeguranca = receitas > 0 ? ((receitas - pontoEquilibrio) / receitas) * 100 : 0
 
-    return { receitas, despesas: despesasFluxo, margem, lucro, pontoEquilibrio, margemSeguranca }
+    return { receitas, despesas: despesasFluxo, margem, lucro, ebitda, pontoEquilibrio }
   }, [filteredTransactions, filteredMonthlyMetrics, categories, filters])
 
   const formatCurrency = (val: number) =>
@@ -58,15 +58,10 @@ export function KpiCards() {
       val,
     )
 
-  const formatPercent = (val: number) =>
-    new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(
-      val,
-    ) + '%'
-
   const kpis = [
     {
       id: 'receitas-operacionais',
-      title: 'RECEITAS OPERACIONAIS',
+      title: 'RECEITAS',
       tooltip: 'Total de entradas financeiras no período.',
       value: formatCurrency(metrics.receitas),
       color: 'text-blue-600',
@@ -74,43 +69,43 @@ export function KpiCards() {
     },
     {
       id: 'despesas-e-custos',
-      title: 'DESPESAS E CUSTOS (REALIZADAS)',
+      title: 'DESPESAS E CUSTOS',
       tooltip: 'Soma de todas as saídas de caixa (fixas e variáveis).',
       value: formatCurrency(-metrics.despesas),
       color: 'text-red-500',
       border: 'border-t-red-500',
     },
     {
-      id: 'margem-de-contribuicao',
-      title: 'MARGEM DE CONTRIBUIÇÃO',
-      tooltip: 'Receita bruta menos custos variáveis operacionais e insumos (Fechamento).',
-      value: formatCurrency(metrics.margem),
-      color: 'text-blue-600',
-      border: 'border-t-blue-500',
-    },
-    {
       id: 'lucro-liquido',
-      title: 'LUCRO LÍQUIDO (CAIXA)',
+      title: 'LUCRO LÍQUIDO',
       tooltip: 'Resultado final de caixa (Receitas - Despesas Totais).',
       value: formatCurrency(metrics.lucro),
       color: metrics.lucro >= 0 ? 'text-emerald-600' : 'text-red-600',
       border: metrics.lucro >= 0 ? 'border-t-emerald-500' : 'border-t-red-500',
     },
     {
-      id: 'ponto-de-equilibrio',
-      title: 'PONTO DE EQUILÍBRIO',
-      tooltip: 'Faturamento necessário para cobrir todos os custos (Lucro zero).',
-      value: formatCurrency(metrics.pontoEquilibrio),
+      id: 'ebitda',
+      title: 'EBITDA',
+      tooltip: 'Geração de caixa operacional (Margem de Contribuição - Custos Fixos).',
+      value: formatCurrency(metrics.ebitda),
+      color: metrics.ebitda >= 0 ? 'text-emerald-600' : 'text-red-600',
+      border: metrics.ebitda >= 0 ? 'border-t-emerald-500' : 'border-t-red-500',
+    },
+    {
+      id: 'margem-de-contribuicao',
+      title: 'MARGEM DE CONTRIBUIÇÃO',
+      tooltip: 'Receita bruta menos custos variáveis operacionais e insumos.',
+      value: formatCurrency(metrics.margem),
       color: 'text-blue-600',
       border: 'border-t-blue-500',
     },
     {
-      id: 'margem-de-seguranca',
-      title: 'MARGEM DE SEGURANÇA',
-      tooltip: 'Percentual de queda nas vendas suportado antes de gerar prejuízo.',
-      value: formatPercent(metrics.margemSeguranca),
-      color: metrics.margemSeguranca > 0 ? 'text-emerald-600' : 'text-red-600',
-      border: metrics.margemSeguranca > 0 ? 'border-t-emerald-500' : 'border-t-red-500',
+      id: 'ponto-de-equilibrio',
+      title: 'PONTO DE EQUILÍBRIO',
+      tooltip: 'Faturamento necessário para cobrir a parcela fixa de custos.',
+      value: formatCurrency(metrics.pontoEquilibrio),
+      color: 'text-slate-600',
+      border: 'border-t-slate-500',
     },
   ]
 

@@ -146,35 +146,31 @@ export function PricingAssistant() {
   }, [numericSell, precoSugerido, pisoSeguranca, isTestingPrice])
 
   return (
-    <Card className="rounded-sm shadow-sm w-full flex flex-col justify-center border-t-4 border-t-blue-500 bg-gradient-to-br from-white to-blue-50/30 h-full min-h-[140px] relative">
-      <CardContent className="p-3 flex flex-col h-full justify-between">
-        <div className="flex items-center justify-between mb-2">
-          <div className="flex items-center gap-1.5 text-blue-700">
-            <Calculator className="w-4 h-4" />
-            <h3 className="text-xs font-bold uppercase tracking-wide flex items-center gap-1">
-              Assistente de Precificação
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Link to="/glossario#assistente-precificacao">
-                    <HelpCircle className="w-3.5 h-3.5 text-blue-400 hover:text-blue-600 cursor-pointer" />
-                  </Link>
-                </TooltipTrigger>
-                <TooltipContent className="max-w-[280px] text-center" side="bottom">
-                  <p className="text-xs mb-1">
-                    Sugere o preço usando <b>Markup Dinâmico</b> (inversamente proporcional ao custo
-                    do insumo), sempre respeitando o Piso de Segurança.
-                  </p>
-                  <p className="text-[10px] text-slate-400">
-                    Baseado no histórico consolidado{' '}
-                    {stats.isUsingFallback ? '(Dados Atuais)' : '(Últimos 3 meses fechados)'}.
-                  </p>
-                </TooltipContent>
-              </Tooltip>
-            </h3>
-          </div>
-
+    <div className="w-full flex flex-col justify-center bg-gradient-to-br from-white to-blue-50/30 h-full min-h-[140px] relative rounded-b-xl">
+      <div className="p-4 md:p-6 flex flex-col h-full justify-between">
+        <div className="flex items-center gap-3 w-full justify-between md:justify-start mb-6">
+          <span className="text-sm font-bold text-blue-900 uppercase tracking-wide flex items-center gap-2">
+            <Calculator className="w-5 h-5" /> Configurar Cenário:
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Link to="/glossario#assistente-precificacao">
+                  <HelpCircle className="w-4 h-4 text-blue-400 hover:text-blue-600 cursor-pointer" />
+                </Link>
+              </TooltipTrigger>
+              <TooltipContent className="max-w-[280px] text-center" side="bottom">
+                <p className="text-xs mb-1">
+                  Sugere o preço usando <b>Markup Dinâmico</b> (inversamente proporcional ao custo
+                  do insumo), sempre respeitando o Piso de Segurança.
+                </p>
+                <p className="text-[10px] text-slate-400">
+                  Baseado no histórico consolidado{' '}
+                  {stats.isUsingFallback ? '(Dados Atuais)' : '(Últimos 3 meses fechados)'}.
+                </p>
+              </TooltipContent>
+            </Tooltip>
+          </span>
           <Select value={tipoFormula} onValueChange={(val: any) => setTipoFormula(val)}>
-            <SelectTrigger className="h-6 w-[100px] text-[10px] bg-white border-blue-200 text-blue-800 focus:ring-1 focus:ring-blue-400">
+            <SelectTrigger className="h-10 w-[160px] text-sm font-bold bg-white border-blue-300 text-blue-900 focus:ring-2 focus:ring-blue-500 shadow-sm">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -188,20 +184,20 @@ export function PricingAssistant() {
           </Select>
         </div>
 
-        <div className="flex flex-col gap-2">
-          <div className="flex gap-2">
+        <div className="flex flex-col md:flex-row gap-6 items-start">
+          <div className="flex gap-4 flex-1 w-full">
             <div className="flex-1">
-              <Label className="text-[10px] text-slate-500 uppercase tracking-wider mb-1 block">
-                Custo (MP+Emb)
+              <Label className="text-xs font-bold text-slate-600 uppercase tracking-wider mb-2 block">
+                Custo (MP + Emb)
               </Label>
               <div className="relative">
-                <span className="absolute left-2 top-1.5 text-xs text-slate-500 font-medium">
+                <span className="absolute left-3 top-2.5 text-sm text-slate-500 font-medium">
                   R$
                 </span>
                 <Input
                   type="number"
                   step="0.01"
-                  className="h-7 text-xs pl-7 bg-white shadow-inner focus-visible:ring-blue-400"
+                  className="h-10 text-sm font-bold pl-9 bg-white shadow-inner border-slate-300 focus-visible:ring-blue-500"
                   value={cost}
                   onChange={(e) => setCost(e.target.value)}
                   placeholder="0.00"
@@ -210,13 +206,13 @@ export function PricingAssistant() {
             </div>
 
             <div className="flex-1">
-              <Label className="text-[10px] text-slate-500 uppercase tracking-wider mb-1 block">
-                Preço Praticado
+              <Label className="text-xs font-bold text-slate-600 uppercase tracking-wider mb-2 block">
+                Preço Praticado (Teste)
               </Label>
               <div className="relative">
                 <span
                   className={cn(
-                    'absolute left-2 top-1.5 text-xs font-medium',
+                    'absolute left-3 top-2.5 text-sm font-medium',
                     isTestingPrice
                       ? praticadoStatus === 'ideal'
                         ? 'text-emerald-600'
@@ -232,7 +228,7 @@ export function PricingAssistant() {
                   type="number"
                   step="0.01"
                   className={cn(
-                    'h-7 text-xs pl-7 shadow-inner transition-colors',
+                    'h-10 text-sm font-bold pl-9 shadow-inner transition-colors',
                     isTestingPrice
                       ? praticadoStatus === 'ideal'
                         ? 'bg-emerald-50 border-emerald-300 text-emerald-700 focus-visible:ring-emerald-400'
@@ -249,10 +245,10 @@ export function PricingAssistant() {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-2 gap-4 flex-1 w-full">
             <div
               className={cn(
-                'flex flex-col p-2 rounded-sm border shadow-sm transition-colors',
+                'flex flex-col p-4 rounded-lg border-2 shadow-md transition-colors relative overflow-hidden',
                 hasCost
                   ? suggestedIsHealthy
                     ? 'bg-emerald-50 border-emerald-200'
@@ -260,9 +256,10 @@ export function PricingAssistant() {
                   : 'bg-white border-blue-100',
               )}
             >
+              <div className="absolute top-0 left-0 w-1 h-full bg-current opacity-20"></div>
               <Label
                 className={cn(
-                  'text-[9px] uppercase tracking-wider flex items-center gap-1',
+                  'text-xs font-bold uppercase tracking-wider flex items-center gap-1.5',
                   hasCost
                     ? suggestedIsHealthy
                       ? 'text-emerald-700'
@@ -289,11 +286,11 @@ export function PricingAssistant() {
                   </Tooltip>
                 )}
               </Label>
-              <div className="flex items-end justify-between mt-0.5">
+              <div className="flex items-end justify-between mt-2">
                 <div>
                   <p
                     className={cn(
-                      'text-sm font-bold font-mono tracking-tight leading-none',
+                      'text-2xl font-black font-mono tracking-tight leading-none',
                       hasCost
                         ? suggestedIsHealthy
                           ? 'text-emerald-800'
@@ -304,36 +301,40 @@ export function PricingAssistant() {
                     R$ {precoSugerido.toFixed(2)}
                   </p>
                   {hasCost && (
-                    <p
-                      className={cn(
-                        'text-[8px] mt-1 font-medium',
-                        suggestedIsHealthy ? 'text-emerald-600/80' : 'text-amber-600/80',
-                      )}
-                    >
-                      MKP: {mkpDinamico.toFixed(2)}x
-                    </p>
+                    <div className="mt-2 bg-white/50 px-2 py-0.5 rounded text-xs inline-block">
+                      <span className="text-slate-500">MKP Alvo: </span>
+                      <span
+                        className={cn(
+                          'font-bold',
+                          suggestedIsHealthy ? 'text-emerald-700' : 'text-amber-700',
+                        )}
+                      >
+                        {mkpDinamico.toFixed(2)}x
+                      </span>
+                    </div>
                   )}
                 </div>
                 {hasCost && suggestedIsHealthy && (
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 mb-0.5" />
+                  <CheckCircle2 className="w-8 h-8 text-emerald-500 opacity-80 mb-1" />
                 )}
                 {hasCost && !suggestedIsHealthy && (
-                  <AlertTriangle className="w-4 h-4 text-amber-500 mb-0.5" />
+                  <AlertTriangle className="w-8 h-8 text-amber-500 opacity-80 mb-1" />
                 )}
               </div>
             </div>
 
             <div
               className={cn(
-                'flex flex-col p-2 rounded-sm border shadow-sm transition-colors',
+                'flex flex-col p-4 rounded-lg border-2 shadow-sm transition-colors relative overflow-hidden',
                 isTestingPrice && praticadoStatus === 'danger'
                   ? 'bg-red-50 border-red-200'
                   : 'bg-white border-slate-200',
               )}
             >
+              <div className="absolute top-0 left-0 w-1 h-full bg-current opacity-20"></div>
               <Label
                 className={cn(
-                  'text-[9px] uppercase tracking-wider block',
+                  'text-xs font-bold uppercase tracking-wider block',
                   isTestingPrice && praticadoStatus === 'danger'
                     ? 'text-red-700'
                     : 'text-slate-500',
@@ -341,10 +342,10 @@ export function PricingAssistant() {
               >
                 Piso de Segurança
               </Label>
-              <div className="flex items-center justify-between mt-0.5">
+              <div className="flex items-center justify-between mt-2">
                 <p
                   className={cn(
-                    'text-sm font-bold font-mono tracking-tight',
+                    'text-2xl font-black font-mono tracking-tight',
                     isTestingPrice && praticadoStatus === 'danger'
                       ? 'text-red-800'
                       : 'text-slate-700',
@@ -353,24 +354,25 @@ export function PricingAssistant() {
                   R$ {pisoSeguranca.toFixed(2)}
                 </p>
                 {isTestingPrice && praticadoStatus === 'danger' && (
-                  <AlertTriangle className="w-3.5 h-3.5 text-red-600" />
+                  <AlertTriangle className="w-6 h-6 text-red-500" />
                 )}
               </div>
             </div>
           </div>
         </div>
 
-        <div className="mt-2 relative">
+        <div className="mt-6 pt-4 border-t border-blue-200/50 relative">
           {stats.isUsingFallback && (
             <div className="absolute -top-3 left-1/2 -translate-x-1/2 text-[8px] text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded-sm border border-amber-200 whitespace-nowrap z-10 opacity-90">
               Usando dados do mês atual (Histórico em formação)
             </div>
           )}
-          <div className="text-[9px] text-slate-500 text-center bg-white/50 py-1.5 px-1 rounded border border-blue-100/50 flex flex-wrap justify-center gap-x-3 gap-y-1">
+          <div className="text-xs text-slate-600 text-center flex flex-wrap justify-center gap-x-6 gap-y-2">
             <Tooltip>
               <TooltipTrigger asChild>
-                <span className="cursor-help flex items-center gap-0.5">
-                  MKP Médio: <span className="font-bold text-blue-600">{mkpAlvo.toFixed(2)}x</span>
+                <span className="cursor-help flex items-center gap-1">
+                  Histórico Setor (MKP Médio):{' '}
+                  <span className="font-black text-blue-700 text-sm">{mkpAlvo.toFixed(2)}x</span>
                 </span>
               </TooltipTrigger>
               <TooltipContent className="max-w-[200px] text-center" side="top">
@@ -379,12 +381,12 @@ export function PricingAssistant() {
                 </p>
               </TooltipContent>
             </Tooltip>
-            <span className="text-blue-200 hidden sm:inline">|</span>
+            <span className="text-blue-300 hidden sm:inline">|</span>
             <Tooltip>
               <TooltipTrigger asChild>
-                <span className="cursor-help flex items-center gap-0.5">
-                  PM Ideal:{' '}
-                  <span className="font-bold text-emerald-600">
+                <span className="cursor-help flex items-center gap-1">
+                  PM Ideal (Ticket):{' '}
+                  <span className="font-black text-emerald-700 text-sm">
                     R$ {stats.precoMedioIdeal.toFixed(2)}
                   </span>
                 </span>
@@ -395,12 +397,12 @@ export function PricingAssistant() {
                 </p>
               </TooltipContent>
             </Tooltip>
-            <span className="text-blue-200 hidden sm:inline">|</span>
+            <span className="text-blue-300 hidden sm:inline">|</span>
             <Tooltip>
               <TooltipTrigger asChild>
-                <span className="cursor-help flex items-center gap-0.5">
-                  Custo Op./Fórm:{' '}
-                  <span className="font-bold text-slate-600">
+                <span className="cursor-help flex items-center gap-1">
+                  Custo Fixo + Var / Fórm:{' '}
+                  <span className="font-black text-slate-700 text-sm">
                     R$ {stats.precoMinimoPorFormula.toFixed(2)}
                   </span>
                 </span>
@@ -413,7 +415,7 @@ export function PricingAssistant() {
             </Tooltip>
           </div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   )
 }

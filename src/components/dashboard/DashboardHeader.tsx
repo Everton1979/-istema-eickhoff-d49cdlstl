@@ -10,7 +10,6 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { useMemo, useState } from 'react'
-import { MonthlyClosingDialog } from './MonthlyClosingDialog'
 import { ExpirationAlerts } from './ExpirationAlerts'
 import { cn } from '@/lib/utils'
 
@@ -118,9 +117,7 @@ export function DashboardHeader() {
           <Printer className="w-3 h-3" /> Exportar PDF
         </Button>
 
-        {profile?.role === 'Administrador' && <MonthlyClosingDialog />}
-
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 ml-4">
           <span className="text-xs font-medium text-blue-200 hidden sm:inline">Período:</span>
           <Select
             value={selectedMonth}

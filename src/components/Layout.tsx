@@ -1,131 +1,124 @@
-import { Outlet, Link, useLocation } from 'react-router-dom'
-import { LayoutDashboard, ReceiptText, Users, BookOpen, Menu, LogOut } from 'lucide-react'
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
-import { Button } from '@/components/ui/button'
-import { cn } from '@/lib/utils'
+import { Link, Outlet, useLocation } from 'react-router-dom'
+import { LayoutDashboard, Receipt, Users, BookOpen, LogOut } from 'lucide-react'
 import { useAuth } from '@/hooks/use-auth'
-import { HelpModal } from '@/components/HelpModal'
+import { MonthlyClosingDialog } from '@/components/dashboard/MonthlyClosingDialog'
+import { cn } from '@/lib/utils'
 
 export default function Layout() {
+  const { profile, signOut } = useAuth()
   const location = useLocation()
-  const { user, profile, signOut } = useAuth()
-
-  const allNavItems = [
-    {
-      name: 'Dashboard',
-      path: '/',
-      icon: LayoutDashboard,
-      allowed: ['Administrador'],
-    },
-    {
-      name: 'Transações',
-      path: '/transacoes',
-      icon: ReceiptText,
-      allowed: ['Administrador'],
-    },
-    {
-      name: 'Glossário',
-      path: '/glossario',
-      icon: BookOpen,
-      allowed: ['Administrador'],
-    },
-    {
-      name: 'Usuários',
-      path: '/usuarios',
-      icon: Users,
-      allowed: ['Administrador'],
-    },
-  ]
-
-  const navItems = allNavItems.filter((item) => profile && item.allowed.includes(profile.role))
-
-  const NavLinks = () => (
-    <>
-      {navItems.map((item) => {
-        const isPrimary = item.name === 'Dashboard' || item.name === 'Transações'
-        const isActive = location.pathname === item.path
-
-        return (
-          <Link
-            key={item.path}
-            to={item.path}
-            className={cn(
-              'flex items-center gap-2 px-4 py-2 text-sm transition-colors',
-              isActive
-                ? 'text-white border-b-2 border-green-500 font-bold'
-                : 'text-blue-100 hover:text-white',
-              isPrimary && !isActive ? 'font-bold' : 'font-medium',
-              isPrimary && 'text-blue-50',
-            )}
-          >
-            <item.icon className={cn('w-4 h-4', isPrimary && 'text-green-400')} />
-            {item.name}
-          </Link>
-        )
-      })}
-    </>
-  )
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-100">
-      <header className="bg-primary text-primary-foreground shadow-md sticky top-0 z-30">
-        <div className="w-full px-4 md:px-6 h-14 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2 font-bold text-lg tracking-tight">
-              <div className="w-6 h-6 bg-white rounded-sm flex items-center justify-center text-primary text-xs">
-                CF
-              </div>
-              Controle Financeiro 5.4
+    <div className="flex flex-col h-screen bg-slate-50 overflow-hidden">
+      {/* Topbar Navigation */}
+      <header className="h-16 bg-[#0f172a] text-white flex items-center px-4 md:px-6 shrink-0 shadow-md z-20 justify-between">
+        <div className="flex items-center gap-4 md:gap-8">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 bg-blue-600 rounded-md flex items-center justify-center font-bold text-white shadow-sm">
+              FE
             </div>
+            <span className="font-bold text-lg tracking-wide hidden sm:block">
+              Farmácia Eickhoff
+            </span>
           </div>
 
-          <nav className="hidden md:flex h-full items-center">
-            <NavLinks />
-          </nav>
+          <nav className="hidden md:flex items-center gap-1">
+            <Link
+              to="/"
+              className={cn(
+                'flex items-center gap-2 px-3 py-2 rounded-md transition-colors text-sm font-medium',
+                location.pathname === '/'
+                  ? 'bg-blue-600 text-white'
+                  : 'text-slate-300 hover:bg-white/10 hover:text-white',
+              )}
+            >
+              <LayoutDashboard className="w-4 h-4" />
+              Dashboard
+            </Link>
 
-          <div className="flex items-center gap-2 sm:gap-4">
-            <div className="hidden sm:flex flex-col items-end mr-2">
-              <span className="text-sm font-medium text-blue-100">{user?.email}</span>
-              <span className="text-[10px] uppercase text-blue-300 font-semibold">
-                {profile?.role}
-              </span>
-            </div>
-            <HelpModal />
-            <Button
-              variant="ghost"
-              size="icon"
+            <Link
+              to="/transacoes"
+              className={cn(
+                'flex items-center gap-2 px-3 py-2 rounded-md transition-colors text-sm font-medium',
+                location.pathname === '/transacoes'
+                  ? 'bg-blue-600 text-white'
+                  : 'text-slate-300 hover:bg-white/10 hover:text-white',
+              )}
+            >
+              <Receipt className="w-4 h-4" />
+              Transações
+            </Link>
+
+            {/* Destaque para Fechamento Mensal ao lado direito de Transações */}
+            {profile?.role === 'Administrador' && (
+              <div className="ml-2 flex items-center">
+                <MonthlyClosingDialog />
+              </div>
+            )}
+          </nav>
+        </div>
+
+        <div className="flex items-center gap-2 md:gap-4">
+          <nav className="flex items-center gap-1 md:gap-2">
+            <Link
+              to="/glossario"
+              className={cn(
+                'p-2 rounded-md transition-colors flex items-center gap-2',
+                location.pathname === '/glossario'
+                  ? 'bg-blue-600 text-white'
+                  : 'text-slate-300 hover:bg-white/10',
+              )}
+              title="Glossário"
+            >
+              <BookOpen className="w-5 h-5" />
+              <span className="text-sm font-medium hidden lg:block">Glossário</span>
+            </Link>
+
+            {profile?.role === 'Administrador' && (
+              <Link
+                to="/usuarios"
+                className={cn(
+                  'p-2 rounded-md transition-colors flex items-center gap-2',
+                  location.pathname === '/usuarios'
+                    ? 'bg-blue-600 text-white'
+                    : 'text-slate-300 hover:bg-white/10',
+                )}
+                title="Usuários"
+              >
+                <Users className="w-5 h-5" />
+                <span className="text-sm font-medium hidden lg:block">Usuários</span>
+              </Link>
+            )}
+
+            <button
               onClick={() => signOut()}
-              className="text-white hover:bg-primary/80"
+              className="p-2 text-slate-300 hover:text-red-400 hover:bg-white/10 rounded-md transition-colors flex items-center gap-2 ml-2"
               title="Sair"
             >
-              <LogOut className="h-4 w-4" />
-            </Button>
-            <Sheet>
-              <SheetTrigger asChild className="md:hidden">
-                <Button variant="ghost" size="icon" className="text-white hover:bg-primary/80">
-                  <Menu className="h-5 w-5" />
-                </Button>
-              </SheetTrigger>
-              <SheetContent
-                side="left"
-                className="w-[240px] bg-primary text-white border-none pt-10"
-              >
-                <div className="flex flex-col gap-4">
-                  <div className="mb-4 pb-4 border-b border-blue-800">
-                    <span className="block text-sm font-medium text-blue-100">{user?.email}</span>
-                    <span className="block text-[10px] uppercase text-blue-300 font-semibold mt-1">
-                      {profile?.role}
-                    </span>
-                  </div>
-                  <NavLinks />
-                </div>
-              </SheetContent>
-            </Sheet>
+              <LogOut className="w-5 h-5" />
+              <span className="text-sm font-medium hidden lg:block">Sair</span>
+            </button>
+          </nav>
+
+          {/* Mobile menu fallback for essential links */}
+          <div className="flex md:hidden items-center gap-2 ml-2 border-l border-white/10 pl-4">
+            <Link to="/" className="p-2 text-slate-300 hover:text-white">
+              <LayoutDashboard className="w-5 h-5" />
+            </Link>
+            <Link to="/transacoes" className="p-2 text-slate-300 hover:text-white">
+              <Receipt className="w-5 h-5" />
+            </Link>
+            {profile?.role === 'Administrador' && (
+              <div className="scale-75 origin-left">
+                <MonthlyClosingDialog />
+              </div>
+            )}
           </div>
         </div>
       </header>
 
-      <main className="flex-1 w-full px-4 md:px-6 py-4 flex flex-col gap-4 overflow-hidden">
+      {/* Main Content */}
+      <main className="flex-1 overflow-hidden flex flex-col relative bg-slate-50">
         <Outlet />
       </main>
     </div>

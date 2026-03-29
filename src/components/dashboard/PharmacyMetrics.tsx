@@ -17,6 +17,23 @@ export function PharmacyMetrics() {
       0,
     )
 
+    const numCapsulas = filteredMonthlyMetrics.reduce(
+      (sum, m) => sum + (m.num_formulas_capsulas || 0),
+      0,
+    )
+    const numDermato = filteredMonthlyMetrics.reduce(
+      (sum, m) => sum + (m.num_formulas_dermato || 0),
+      0,
+    )
+    const vendasCapsulas = filteredMonthlyMetrics.reduce(
+      (sum, m) => sum + (m.vendas_capsulas || 0),
+      0,
+    )
+    const vendasDermato = filteredMonthlyMetrics.reduce(
+      (sum, m) => sum + (m.vendas_dermato || 0),
+      0,
+    )
+
     let cfaTotal = 0
     let varExpOperacional = 0
     const targetStatuses = filters.statuses.length > 0 ? filters.statuses : ['REALIZADO']
@@ -37,26 +54,33 @@ export function PharmacyMetrics() {
     })
 
     const ticketMedio = totalOrders > 0 ? totalSales / totalOrders : 0
-    const margemContribuicao = totalSales - (varExpOperacional + totalRawMaterial)
+
+    // Alocação de Custos Fixos proporcionais à receita do setor
+    const pesoCapsulas = totalSales > 0 ? vendasCapsulas / totalSales : 0.5
+    const pesoDermato = totalSales > 0 ? vendasDermato / totalSales : 0.5
+
+    const cfaCapsulas = cfaTotal * pesoCapsulas
+    const cfaDermato = cfaTotal * pesoDermato
+
+    const custoFixoPorFormulaCaps = numCapsulas > 0 ? cfaCapsulas / numCapsulas : 0
+    const custoFixoPorFormulaDerm = numDermato > 0 ? cfaDermato / numDermato : 0
+
+    const pmIdealCaps = numCapsulas > 0 ? vendasCapsulas / numCapsulas : 0
+    const pmIdealDerm = numDermato > 0 ? vendasDermato / numDermato : 0
 
     const custoTotal = cfaTotal + varExpOperacional + totalRawMaterial
-    const mkpTarget = totalRawMaterial > 0 ? custoTotal / totalRawMaterial : 0
     const mkpRealizado = totalRawMaterial > 0 ? totalSales / totalRawMaterial : 0
 
     const lucroLiquidoPct = totalSales > 0 ? ((totalSales - custoTotal) / totalSales) * 100 : 0
 
-    const custoFixoPorFormula = totalOrders > 0 ? cfaTotal / totalOrders : 0
-    const precoMinimoPorFormula = totalOrders > 0 ? custoTotal / totalOrders : 0
-
     return {
       ticketMedio,
-      margemContribuicao,
-      cfaTotal,
-      mkpTarget,
       mkpRealizado,
-      custoFixoPorFormula,
-      precoMinimoPorFormula,
       lucroLiquidoPct,
+      custoFixoPorFormulaCaps,
+      custoFixoPorFormulaDerm,
+      pmIdealCaps,
+      pmIdealDerm,
     }
   }, [filteredTransactions, filteredMonthlyMetrics, filters])
 
@@ -70,23 +94,15 @@ export function PharmacyMetrics() {
   const items = [
     {
       id: 'ticket-medio',
-      title: 'Ticket Médio',
+      title: 'Ticket Médio Geral',
       tooltip: 'Valor médio por venda (Faturamento / Número de pedidos).',
       value: formatCurrency(metrics.ticketMedio),
       color: 'text-indigo-600',
     },
     {
-      id: 'margem-de-contribuicao',
-      title: 'Margem Contribuição',
-      tooltip:
-        'Receita bruta menos custos variáveis e insumos (o que sobra para pagar custos fixos).',
-      value: formatCurrency(metrics.margemContribuicao),
-      color: metrics.margemContribuicao >= 0 ? 'text-emerald-600' : 'text-red-500',
-    },
-    {
       id: 'lucro-liquido-pct',
       title: 'Lucro Líquido Real (%)',
-      tooltip: 'Percentual de lucro líquido realizado no período, com base no faturamento.',
+      tooltip: 'Percentual de lucro líquido realizado no período.',
       value: `${metrics.lucroLiquidoPct.toFixed(1)}%`,
       color:
         metrics.lucroLiquidoPct >= 15
@@ -96,54 +112,74 @@ export function PharmacyMetrics() {
             : 'text-red-500',
     },
     {
-      id: 'custo-fixo-formula',
-      title: 'Custo Fixo / Fórmula',
-      tooltip: 'Quanto cada fórmula carrega do custo fixo.',
-      value: formatCurrency(metrics.custoFixoPorFormula),
+      id: 'markup-realizado',
+      title: 'Mark-up Praticado',
+      tooltip: 'Multiplicador realizado no período (Faturamento / Custo MP).',
+      value: formatDecimal(metrics.mkpRealizado),
+      color: 'text-purple-600',
+    },
+    {
+      id: 'pm-ideal-capsulas',
+      title: 'PM Ideal (Cápsulas)',
+      tooltip: 'Preço Médio (Ticket Médio) exclusivo do setor de Cápsulas.',
+      value: formatCurrency(metrics.pmIdealCaps),
+      color: 'text-blue-600',
+    },
+    {
+      id: 'pm-ideal-dermato',
+      title: 'PM Ideal (Dermato)',
+      tooltip: 'Preço Médio (Ticket Médio) exclusivo do setor de Dermato.',
+      value: formatCurrency(metrics.pmIdealDerm),
+      color: 'text-blue-600',
+    },
+    {
+      id: 'custo-fixo-capsulas',
+      title: 'Custo Fixo / Fórm (Cáps)',
+      tooltip: 'Custo Fixo rateado por fórmula de Cápsulas.',
+      value: formatCurrency(metrics.custoFixoPorFormulaCaps),
       color: 'text-orange-600',
     },
     {
-      id: 'markup-realizado',
-      title: 'Mark-up Praticado',
-      tooltip: 'Multiplicador efetivamente realizado no período (Faturamento / Custo MP).',
-      value: formatDecimal(metrics.mkpRealizado),
-      color: 'text-purple-600',
+      id: 'custo-fixo-dermato',
+      title: 'Custo Fixo / Fórm (Derm)',
+      tooltip: 'Custo Fixo rateado por fórmula de Dermato.',
+      value: formatCurrency(metrics.custoFixoPorFormulaDerm),
+      color: 'text-orange-600',
     },
   ]
 
   return (
-    <div className="bg-slate-50 p-2 rounded-sm border border-slate-200 mt-2">
-      <div className="flex items-center justify-between mb-2 px-1">
-        <h3 className="text-xs font-bold text-slate-700 uppercase tracking-wide">
-          Pharmacy Analytics (Cenário Ideal vs Real)
+    <div className="bg-white p-4 rounded-lg shadow-sm border border-slate-200">
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wide flex items-center gap-2">
+          <div className="w-2 h-4 bg-indigo-500 rounded-sm" />
+          Inteligência por Segmento & Analytics
         </h3>
       </div>
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2">
+      <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
         {items.map((item, i) => (
           <Card
             key={i}
-            className="rounded-sm shadow-none border-slate-200 bg-white hover:border-blue-200 transition-colors"
+            className={cn(
+              'rounded-md shadow-sm border-slate-200 bg-slate-50/50 hover:bg-white hover:border-indigo-200 transition-all',
+              i === 0 ? 'col-span-2 lg:col-span-3 bg-indigo-50/50 border-indigo-100' : '',
+            )}
           >
-            <CardContent className="p-2 text-center flex flex-col justify-center h-full">
-              <h4 className="text-[9px] font-semibold text-slate-500 uppercase leading-tight mb-1 flex items-center justify-center gap-1">
+            <CardContent className="p-3 text-center flex flex-col justify-center h-full">
+              <h4 className="text-[10px] font-bold text-slate-500 uppercase leading-tight mb-2 flex items-center justify-center gap-1">
                 {item.title}
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Link to={`/glossario#${item.id}`}>
-                      <HelpCircle className="w-3 h-3 text-slate-400 hover:text-blue-600 cursor-pointer" />
+                      <HelpCircle className="w-3.5 h-3.5 text-slate-400 hover:text-indigo-500 cursor-pointer" />
                     </Link>
                   </TooltipTrigger>
-                  <TooltipContent className="max-w-[200px] text-center" side="bottom">
+                  <TooltipContent className="max-w-[220px] text-center" side="top">
                     <p className="text-xs">{item.tooltip}</p>
-                    <p className="text-[9px] text-blue-300 mt-1 border-t border-slate-700/50 pt-1">
-                      Clique para ver no Glossário
-                    </p>
                   </TooltipContent>
                 </Tooltip>
               </h4>
-              <p className={cn('text-sm md:text-base font-bold tracking-tight', item.color)}>
-                {item.value}
-              </p>
+              <p className={cn('text-lg font-bold tracking-tight', item.color)}>{item.value}</p>
             </CardContent>
           </Card>
         ))}
