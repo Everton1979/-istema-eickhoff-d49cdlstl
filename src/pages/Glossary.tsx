@@ -166,6 +166,30 @@ const GLOSSARY_TERMS = [
 
   // --- FERRAMENTAS ---
   {
+    id: 'piso-seguranca',
+    title: 'Piso de Segurança',
+    category: 'Ferramentas do Dashboard',
+    definition:
+      'É o valor mínimo absoluto pelo qual uma fórmula pode ser vendida para não gerar prejuízo de caixa imediato. Qualquer venda abaixo deste piso significa que a empresa está pagando para produzir aquela fórmula.',
+    calculation:
+      'Custo Informado (Matéria-Prima + Embalagem) + [Rateio de Custos Fixos do Setor] + [Rateio de Despesas Variáveis Operacionais (Impostos, Taxas de Cartão, Comissões)].',
+    reference:
+      'Nenhum orçamento deve ser aprovado abaixo deste valor. As Despesas Variáveis Operacionais garantem que o preço cubra também os custos atrelados diretamente ao ato da venda.',
+    trend: 'neutral',
+  },
+  {
+    id: 'preco-sugerido',
+    title: 'Preço Sugerido (Markup Dinâmico)',
+    category: 'Ferramentas do Dashboard',
+    definition:
+      'Preço de venda recomendado pelo algoritmo inteligente. Ele ajusta a margem de forma inversamente proporcional ao custo do insumo: matérias-primas caras recebem markups menores para garantir competitividade, enquanto as baratas recebem markups maiores para maximizar o lucro.',
+    calculation:
+      'Custo Informado * Curva de Markup Dinâmico (Sempre balizado e nunca inferior ao Piso de Segurança).',
+    reference:
+      'Valor ideal para precificação ágil. Mantém a média ponderada do markup geral da farmácia dentro da meta estratégica mensal (ex: 5.5x a 6.5x).',
+    trend: 'neutral',
+  },
+  {
     id: 'monitor-ponto-equilibrio',
     title: 'Monitor Ponto de Equilíbrio',
     category: 'Ferramentas do Dashboard',

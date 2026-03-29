@@ -19,7 +19,6 @@ import { Transaction } from '@/types/finance'
 export function PricingAssistant() {
   const { monthlyMetrics, transactions } = useFinanceStore()
   const [cost, setCost] = useState('')
-  const [sellPrice, setSellPrice] = useState('')
   const [tipoFormula, setTipoFormula] = useState<'capsulas' | 'dermato'>('capsulas')
 
   const stats = useMemo(() => {
@@ -114,9 +113,6 @@ export function PricingAssistant() {
   }, [monthlyMetrics, transactions, tipoFormula])
 
   const numericCost = parseFloat(cost) || 0
-  const numericSell = parseFloat(sellPrice) || 0
-
-  const isTestingPrice = numericSell > 0
   const hasCost = numericCost > 0
 
   const mkpAlvo = stats.mkpMultiplicador > 0 ? stats.mkpMultiplicador : 5.75
@@ -137,13 +133,6 @@ export function PricingAssistant() {
 
   const isHittingFloor = hasCost && pisoSeguranca > precoSugeridoBase
   const suggestedIsHealthy = !isHittingFloor
-
-  const praticadoStatus = useMemo(() => {
-    if (!isTestingPrice) return 'neutral'
-    if (numericSell >= precoSugerido) return 'ideal'
-    if (numericSell >= pisoSeguranca) return 'warning'
-    return 'danger'
-  }, [numericSell, precoSugerido, pisoSeguranca, isTestingPrice])
 
   return (
     <div className="w-full flex flex-col justify-center bg-gradient-to-br from-white to-blue-50/30 h-full min-h-[140px] relative rounded-b-xl">
@@ -184,64 +173,21 @@ export function PricingAssistant() {
           </Select>
         </div>
 
-        <div className="flex flex-col md:flex-row gap-6 items-start">
-          <div className="flex gap-4 flex-1 w-full">
-            <div className="flex-1">
-              <Label className="text-xs font-bold text-slate-600 uppercase tracking-wider mb-2 block">
-                Custo (MP + Emb)
-              </Label>
-              <div className="relative">
-                <span className="absolute left-3 top-2.5 text-sm text-slate-500 font-medium">
-                  R$
-                </span>
-                <Input
-                  type="number"
-                  step="0.01"
-                  className="h-10 text-sm font-bold pl-9 bg-white shadow-inner border-slate-300 focus-visible:ring-blue-500"
-                  value={cost}
-                  onChange={(e) => setCost(e.target.value)}
-                  placeholder="0.00"
-                />
-              </div>
-            </div>
-
-            <div className="flex-1">
-              <Label className="text-xs font-bold text-slate-600 uppercase tracking-wider mb-2 block">
-                Preço Praticado (Teste)
-              </Label>
-              <div className="relative">
-                <span
-                  className={cn(
-                    'absolute left-3 top-2.5 text-sm font-medium',
-                    isTestingPrice
-                      ? praticadoStatus === 'ideal'
-                        ? 'text-emerald-600'
-                        : praticadoStatus === 'warning'
-                          ? 'text-amber-600'
-                          : 'text-red-600'
-                      : 'text-slate-500',
-                  )}
-                >
-                  R$
-                </span>
-                <Input
-                  type="number"
-                  step="0.01"
-                  className={cn(
-                    'h-10 text-sm font-bold pl-9 shadow-inner transition-colors',
-                    isTestingPrice
-                      ? praticadoStatus === 'ideal'
-                        ? 'bg-emerald-50 border-emerald-300 text-emerald-700 focus-visible:ring-emerald-400'
-                        : praticadoStatus === 'warning'
-                          ? 'bg-amber-50 border-amber-300 text-amber-700 focus-visible:ring-amber-400'
-                          : 'bg-red-50 border-red-300 text-red-700 focus-visible:ring-red-400'
-                      : 'bg-white focus-visible:ring-blue-400',
-                  )}
-                  value={sellPrice}
-                  onChange={(e) => setSellPrice(e.target.value)}
-                  placeholder="0.00"
-                />
-              </div>
+        <div className="flex flex-col md:flex-row gap-6 items-center">
+          <div className="w-full md:w-1/3">
+            <Label className="text-xs font-bold text-slate-600 uppercase tracking-wider mb-2 block">
+              Custo (MP + Emb)
+            </Label>
+            <div className="relative">
+              <span className="absolute left-3 top-2.5 text-sm text-slate-500 font-medium">R$</span>
+              <Input
+                type="number"
+                step="0.01"
+                className="h-10 text-sm font-bold pl-9 bg-white shadow-inner border-slate-300 focus-visible:ring-blue-500 transition-shadow hover:shadow-md"
+                value={cost}
+                onChange={(e) => setCost(e.target.value)}
+                placeholder="0.00"
+              />
             </div>
           </div>
 
@@ -268,23 +214,30 @@ export function PricingAssistant() {
                 )}
               >
                 Preço Sugerido
-                {hasCost && (
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Info className="w-3 h-3 opacity-60 cursor-help" />
-                    </TooltipTrigger>
-                    <TooltipContent className="max-w-[200px] text-center" side="top">
-                      <p className="text-xs">
-                        {suggestedIsHealthy
-                          ? 'Precificação saudável com base na curva elástica de Markup.'
-                          : 'Atenção: A curva de Markup geraria um valor abaixo do Piso de Segurança. Preço ajustado para cobrir custos operacionais.'}
-                      </p>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Link to="/glossario#preco-sugerido">
+                      <HelpCircle className="w-3.5 h-3.5 opacity-60 hover:opacity-100 hover:text-blue-600 cursor-pointer transition-opacity" />
+                    </Link>
+                  </TooltipTrigger>
+                  <TooltipContent className="max-w-[250px] text-center" side="top">
+                    <p className="text-xs mb-1">
+                      {hasCost
+                        ? suggestedIsHealthy
+                          ? 'Precificação saudável calculada pelo motor de Markup Dinâmico.'
+                          : 'Preço ajustado automaticamente para o Piso de Segurança.'
+                        : 'Calculado automaticamente baseado na curva de Markup Dinâmico.'}
+                    </p>
+                    {hasCost && (
                       <p className="text-[10px] mt-1 text-slate-400">
-                        Markup elástico alvo: {mkpDinamico.toFixed(2)}x
+                        Markup elástico aplicado: {mkpDinamico.toFixed(2)}x
                       </p>
-                    </TooltipContent>
-                  </Tooltip>
-                )}
+                    )}
+                    <p className="text-[9px] text-blue-300 mt-2 border-t border-slate-700/50 pt-1">
+                      Clique para ver fórmula no Glossário
+                    </p>
+                  </TooltipContent>
+                </Tooltip>
               </Label>
               <div className="flex items-end justify-between mt-2">
                 <div>
@@ -326,36 +279,37 @@ export function PricingAssistant() {
             <div
               className={cn(
                 'flex flex-col p-4 rounded-lg border-2 shadow-sm transition-colors relative overflow-hidden',
-                isTestingPrice && praticadoStatus === 'danger'
-                  ? 'bg-red-50 border-red-200'
-                  : 'bg-white border-slate-200',
+                'bg-white border-slate-200',
               )}
             >
-              <div className="absolute top-0 left-0 w-1 h-full bg-current opacity-20"></div>
+              <div className="absolute top-0 left-0 w-1 h-full bg-slate-400 opacity-20"></div>
               <Label
                 className={cn(
-                  'text-xs font-bold uppercase tracking-wider block',
-                  isTestingPrice && praticadoStatus === 'danger'
-                    ? 'text-red-700'
-                    : 'text-slate-500',
+                  'text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 text-slate-600',
                 )}
               >
                 Piso de Segurança
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Link to="/glossario#piso-seguranca">
+                      <HelpCircle className="w-3.5 h-3.5 opacity-60 hover:opacity-100 hover:text-blue-600 cursor-pointer transition-opacity" />
+                    </Link>
+                  </TooltipTrigger>
+                  <TooltipContent className="max-w-[250px] text-center" side="top">
+                    <p className="text-xs mb-1">
+                      O valor mínimo vital. Cobre Custo MP + Embalagem + Custo Fixo e Variável
+                      Rateado.
+                    </p>
+                    <p className="text-[9px] text-blue-300 mt-2 border-t border-slate-700/50 pt-1">
+                      Clique para ver composição no Glossário
+                    </p>
+                  </TooltipContent>
+                </Tooltip>
               </Label>
               <div className="flex items-center justify-between mt-2">
-                <p
-                  className={cn(
-                    'text-2xl font-black font-mono tracking-tight',
-                    isTestingPrice && praticadoStatus === 'danger'
-                      ? 'text-red-800'
-                      : 'text-slate-700',
-                  )}
-                >
+                <p className={cn('text-2xl font-black font-mono tracking-tight', 'text-slate-700')}>
                   R$ {pisoSeguranca.toFixed(2)}
                 </p>
-                {isTestingPrice && praticadoStatus === 'danger' && (
-                  <AlertTriangle className="w-6 h-6 text-red-500" />
-                )}
               </div>
             </div>
           </div>
