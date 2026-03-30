@@ -363,17 +363,25 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
                               <SelectItem value="infraestrutura">
                                 Infraestrutura: Aluguel, IPTU e manutenção
                               </SelectItem>
+                              <SelectItem value="operacional_administrativo">
+                                Operacional e Admin.: Material de mercado, papelaria, informática,
+                                lanche, escritório
+                              </SelectItem>
                               <SelectItem value="utilidades">
                                 Utilidades: Energia, água e internet/telefone
                               </SelectItem>
                               <SelectItem value="servicos_profissionais">
-                                Serviços Profissionais: Contabilidade, softwares
+                                Serviços Prof. e Conformidade: Contabilidade, resíduos, qualidade,
+                                conselho, segurança laboral
+                              </SelectItem>
+                              <SelectItem value="seguros">
+                                Seguros: Seguro predial, pessoal, laboral e civil
                               </SelectItem>
                               <SelectItem value="financeiro">
                                 Financeiro: Taxas bancárias e tarifas
                               </SelectItem>
                               <SelectItem value="marketing">
-                                Marketing: Divulgação e redes sociais
+                                Marketing e Social: Divulgação, redes sociais, patrocínio e doação
                               </SelectItem>
                               <SelectItem value="outros">Outros</SelectItem>
                             </>
@@ -393,10 +401,13 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
                                 Impostos: Simples Nacional, ICMS e tributos
                               </SelectItem>
                               <SelectItem value="taxas_cartao">
-                                Taxas de Cartão: Comissões das operadoras
+                                Taxas de Cartão: Comissões e antecipações
                               </SelectItem>
                               <SelectItem value="logistica">
                                 Logística: Fretes e entregas
+                              </SelectItem>
+                              <SelectItem value="fidelidade_promocao">
+                                Fidelidade e Promoção: Programa de fidelidade
                               </SelectItem>
                               <SelectItem value="outros">Outros</SelectItem>
                             </>

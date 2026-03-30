@@ -111,16 +111,19 @@ export default function Transactions() {
   const SUBCATEGORY_LABELS: Record<string, string> = {
     pessoal: 'Pessoal',
     infraestrutura: 'Infraestrutura',
+    operacional_administrativo: 'Operacional e Admin.',
     utilidades: 'Utilidades',
-    servicos_profissionais: 'Serviços Profissionais',
+    servicos_profissionais: 'Serv. Profissionais e Conformidade',
+    seguros: 'Seguros',
     financeiro: 'Financeiro',
-    marketing: 'Marketing',
+    marketing: 'Marketing e Social',
     materia_prima: 'Matéria-prima',
     embalagens: 'Embalagens',
     medicamentos_drogaria: 'Medicamentos Drogaria',
     impostos: 'Impostos',
     taxas_cartao: 'Taxas de Cartão',
     logistica: 'Logística',
+    fidelidade_promocao: 'Fidelidade e Promoção',
     outros: 'Outros',
   }
 
