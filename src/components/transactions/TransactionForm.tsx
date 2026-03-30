@@ -60,10 +60,10 @@ const formSchema = z
           path: ['categoryId'],
         })
       }
-      if (data.categoryId === 'VARIAVEL' && !data.subcategoryId) {
+      if (!data.subcategoryId) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
-          message: 'Subcategoria é obrigatória para despesas variáveis',
+          message: 'Subcategoria é obrigatória para despesas',
           path: ['subcategoryId'],
         })
       }
@@ -129,6 +129,7 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
   const type = form.watch('type')
   const categoryId = form.watch('categoryId')
   const [prevType, setPrevType] = useState(initialData?.type || 'EXPENSE')
+  const [prevCategoryId, setPrevCategoryId] = useState(initialData?.categoryId || '')
 
   useEffect(() => {
     if (type !== prevType) {
@@ -143,11 +144,14 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
       }
       setPrevType(type)
     }
+  }, [type, form, prevType])
 
-    if (type === 'EXPENSE' && categoryId !== 'VARIAVEL') {
+  useEffect(() => {
+    if (categoryId !== prevCategoryId) {
       form.setValue('subcategoryId', '')
+      setPrevCategoryId(categoryId || '')
     }
-  }, [type, categoryId, form, prevType])
+  }, [categoryId, form, prevCategoryId])
 
   const addTag = (tagToAdd?: string) => {
     const val = (tagToAdd || tagInput).trim()
@@ -194,10 +198,7 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
         description: finalDescription,
         status: values.status,
         categoryId: values.type === 'EXPENSE' ? values.categoryId || 'FIXA' : '',
-        subcategoryId:
-          values.type === 'EXPENSE' && values.categoryId === 'VARIAVEL'
-            ? values.subcategoryId || ''
-            : '',
+        subcategoryId: values.type === 'EXPENSE' ? values.subcategoryId || '' : '',
         accountId: 'sicredi', // Auto-assigned unified account
         paymentMethodId: values.type === 'INCOME' ? values.paymentMethodId || '' : '',
         tags: tagsList.join(','),
@@ -340,7 +341,7 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
                 )}
               />
 
-              {categoryId === 'VARIAVEL' && (
+              {categoryId && (
                 <FormField
                   control={form.control}
                   name="subcategoryId"
@@ -350,16 +351,56 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
                       <Select onValueChange={field.onChange} value={field.value || undefined}>
                         <FormControl>
                           <SelectTrigger>
-                            <SelectValue placeholder="Selecione..." />
+                            <SelectValue placeholder="Selecione a classificação..." />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="materia_prima">Matéria-prima</SelectItem>
-                          <SelectItem value="embalagens">Embalagens</SelectItem>
-                          <SelectItem value="medicamentos_drogaria">
-                            Medicamentos (Drogaria)
-                          </SelectItem>
-                          <SelectItem value="outros">Outros</SelectItem>
+                          {categoryId === 'FIXA' && (
+                            <>
+                              <SelectItem value="pessoal">
+                                Pessoal: Salários, encargos (FGTS/INSS) e benefícios
+                              </SelectItem>
+                              <SelectItem value="infraestrutura">
+                                Infraestrutura: Aluguel, IPTU e manutenção
+                              </SelectItem>
+                              <SelectItem value="utilidades">
+                                Utilidades: Energia, água e internet/telefone
+                              </SelectItem>
+                              <SelectItem value="servicos_profissionais">
+                                Serviços Profissionais: Contabilidade, softwares
+                              </SelectItem>
+                              <SelectItem value="financeiro">
+                                Financeiro: Taxas bancárias e tarifas
+                              </SelectItem>
+                              <SelectItem value="marketing">
+                                Marketing: Divulgação e redes sociais
+                              </SelectItem>
+                              <SelectItem value="outros">Outros</SelectItem>
+                            </>
+                          )}
+                          {categoryId === 'VARIAVEL' && (
+                            <>
+                              <SelectItem value="materia_prima">
+                                Matéria-prima: Insumos e ativos
+                              </SelectItem>
+                              <SelectItem value="embalagens">
+                                Embalagens: Frascos, potes, rótulos e caixas
+                              </SelectItem>
+                              <SelectItem value="medicamentos_drogaria">
+                                Medicamentos Drogaria: Produtos para revenda
+                              </SelectItem>
+                              <SelectItem value="impostos">
+                                Impostos: Simples Nacional, ICMS e tributos
+                              </SelectItem>
+                              <SelectItem value="taxas_cartao">
+                                Taxas de Cartão: Comissões das operadoras
+                              </SelectItem>
+                              <SelectItem value="logistica">
+                                Logística: Fretes e entregas
+                              </SelectItem>
+                              <SelectItem value="outros">Outros</SelectItem>
+                            </>
+                          )}
                         </SelectContent>
                       </Select>
                       <FormMessage />

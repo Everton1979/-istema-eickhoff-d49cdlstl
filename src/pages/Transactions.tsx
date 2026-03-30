@@ -108,15 +108,30 @@ export default function Transactions() {
       return b.date.localeCompare(a.date)
     })
 
+  const SUBCATEGORY_LABELS: Record<string, string> = {
+    pessoal: 'Pessoal',
+    infraestrutura: 'Infraestrutura',
+    utilidades: 'Utilidades',
+    servicos_profissionais: 'Serviços Profissionais',
+    financeiro: 'Financeiro',
+    marketing: 'Marketing',
+    materia_prima: 'Matéria-prima',
+    embalagens: 'Embalagens',
+    medicamentos_drogaria: 'Medicamentos Drogaria',
+    impostos: 'Impostos',
+    taxas_cartao: 'Taxas de Cartão',
+    logistica: 'Logística',
+    outros: 'Outros',
+  }
+
   const getCategoryName = (tx: Transaction) => {
     if (tx.type === 'INCOME') return '-'
     if (!tx.categoryId) return '-'
     let name = tx.categoryId === 'FIXA' ? 'Fixa' : 'Variável'
-    if (tx.categoryId === 'VARIAVEL' && tx.subcategoryId) {
-      if (tx.subcategoryId === 'materia_prima') name += ' (Matéria-prima)'
-      else if (tx.subcategoryId === 'embalagens') name += ' (Embalagens)'
-      else if (tx.subcategoryId === 'medicamentos_drogaria') name += ' (Medicamentos)'
-      else if (tx.subcategoryId === 'outros') name += ' (Outros)'
+    if (tx.subcategoryId && SUBCATEGORY_LABELS[tx.subcategoryId]) {
+      name += ` (${SUBCATEGORY_LABELS[tx.subcategoryId]})`
+    } else if (tx.subcategoryId) {
+      name += ` (${tx.subcategoryId})`
     }
     return name
   }
