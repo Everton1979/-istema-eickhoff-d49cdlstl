@@ -11,7 +11,6 @@ import Glossary from './pages/Glossary'
 import NotFound from './pages/NotFound'
 import Login from './pages/Login'
 import Register from './pages/Register'
-import LandingPage from './pages/LandingPage'
 import Layout from './components/Layout'
 
 const ProtectedRoute = ({
@@ -49,7 +48,7 @@ const App = () => (
           <Toaster />
           <Sonner />
           <Routes>
-            <Route path="/" element={<LandingPage />} />
+            <Route path="/" element={<Navigate to="/dashboard" replace />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route
