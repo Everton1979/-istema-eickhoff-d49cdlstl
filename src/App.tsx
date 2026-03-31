@@ -10,6 +10,8 @@ import Users from './pages/Users'
 import Glossary from './pages/Glossary'
 import NotFound from './pages/NotFound'
 import Login from './pages/Login'
+import Register from './pages/Register'
+import LandingPage from './pages/LandingPage'
 import Layout from './components/Layout'
 
 const ProtectedRoute = ({
@@ -47,7 +49,9 @@ const App = () => (
           <Toaster />
           <Sonner />
           <Routes>
+            <Route path="/" element={<LandingPage />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
             <Route
               element={
                 <ProtectedRoute>
@@ -55,7 +59,7 @@ const App = () => (
                 </ProtectedRoute>
               }
             >
-              <Route path="/" element={<Index />} />
+              <Route path="/dashboard" element={<Index />} />
               <Route path="/transacoes" element={<Transactions />} />
               <Route path="/glossario" element={<Glossary />} />
               <Route path="/configuracoes" element={<Navigate to="/usuarios" replace />} />

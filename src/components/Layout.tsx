@@ -24,10 +24,10 @@ export default function Layout() {
 
           <nav className="hidden md:flex items-center gap-1">
             <Link
-              to="/"
+              to="/dashboard"
               className={cn(
                 'flex items-center gap-2 px-3 py-2 rounded-md transition-colors text-sm font-medium',
-                location.pathname === '/'
+                location.pathname === '/dashboard'
                   ? 'bg-blue-600 text-white'
                   : 'text-slate-300 hover:bg-white/10 hover:text-white',
               )}
@@ -102,7 +102,7 @@ export default function Layout() {
 
           {/* Mobile menu fallback for essential links */}
           <div className="flex md:hidden items-center gap-2 ml-2 border-l border-white/10 pl-4">
-            <Link to="/" className="p-2 text-slate-300 hover:text-white">
+            <Link to="/dashboard" className="p-2 text-slate-300 hover:text-white">
               <LayoutDashboard className="w-5 h-5" />
             </Link>
             <Link to="/transacoes" className="p-2 text-slate-300 hover:text-white">
