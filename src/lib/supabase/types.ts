@@ -383,14 +383,15 @@ export const Constants = {
 
 // --- ROW LEVEL SECURITY POLICIES ---
 // Table: monthly_metrics
-//   Policy "Admin and Colaborador can insert monthly metrics" (INSERT, PERMISSIVE) roles={authenticated}
-//     WITH CHECK: (get_user_role() = ANY (ARRAY['Administrador'::text, 'Colaborador'::text]))
-//   Policy "Admin and Colaborador can update monthly metrics" (UPDATE, PERMISSIVE) roles={authenticated}
-//     USING: (get_user_role() = ANY (ARRAY['Administrador'::text, 'Colaborador'::text]))
-//   Policy "Admin can delete monthly metrics" (DELETE, PERMISSIVE) roles={authenticated}
-//     USING: (get_user_role() = 'Administrador'::text)
-//   Policy "Authenticated users can read monthly metrics" (SELECT, PERMISSIVE) roles={authenticated}
-//     USING: true
+//   Policy "Users can delete own monthly metrics" (DELETE, PERMISSIVE) roles={authenticated}
+//     USING: (user_id = auth.uid())
+//   Policy "Users can insert own monthly metrics" (INSERT, PERMISSIVE) roles={authenticated}
+//     WITH CHECK: (user_id = auth.uid())
+//   Policy "Users can read own monthly metrics" (SELECT, PERMISSIVE) roles={authenticated}
+//     USING: (user_id = auth.uid())
+//   Policy "Users can update own monthly metrics" (UPDATE, PERMISSIVE) roles={authenticated}
+//     USING: (user_id = auth.uid())
+//     WITH CHECK: (user_id = auth.uid())
 // Table: profiles
 //   Policy "Admins can read all profiles" (SELECT, PERMISSIVE) roles={authenticated}
 //     USING: (get_user_role() = 'Administrador'::text)
@@ -399,23 +400,25 @@ export const Constants = {
 //   Policy "Users can read own profile" (SELECT, PERMISSIVE) roles={authenticated}
 //     USING: (auth.uid() = id)
 // Table: transactions
-//   Policy "Admin and Colaborador can insert transactions" (INSERT, PERMISSIVE) roles={authenticated}
-//     WITH CHECK: (get_user_role() = ANY (ARRAY['Administrador'::text, 'Colaborador'::text]))
-//   Policy "Admin and Colaborador can update transactions" (UPDATE, PERMISSIVE) roles={authenticated}
-//     USING: (get_user_role() = ANY (ARRAY['Administrador'::text, 'Colaborador'::text]))
-//   Policy "Admin can delete transactions" (DELETE, PERMISSIVE) roles={authenticated}
-//     USING: (get_user_role() = 'Administrador'::text)
-//   Policy "Authenticated users can read transactions" (SELECT, PERMISSIVE) roles={authenticated}
-//     USING: true
+//   Policy "Users can delete own transactions" (DELETE, PERMISSIVE) roles={authenticated}
+//     USING: (user_id = auth.uid())
+//   Policy "Users can insert own transactions" (INSERT, PERMISSIVE) roles={authenticated}
+//     WITH CHECK: (user_id = auth.uid())
+//   Policy "Users can read own transactions" (SELECT, PERMISSIVE) roles={authenticated}
+//     USING: (user_id = auth.uid())
+//   Policy "Users can update own transactions" (UPDATE, PERMISSIVE) roles={authenticated}
+//     USING: (user_id = auth.uid())
+//     WITH CHECK: (user_id = auth.uid())
 // Table: user_settings
-//   Policy "Admin can delete user settings" (DELETE, PERMISSIVE) roles={authenticated}
-//     USING: (get_user_role() = 'Administrador'::text)
-//   Policy "Admin can insert user settings" (INSERT, PERMISSIVE) roles={authenticated}
-//     WITH CHECK: (get_user_role() = 'Administrador'::text)
-//   Policy "Admin can update user settings" (UPDATE, PERMISSIVE) roles={authenticated}
-//     USING: (get_user_role() = 'Administrador'::text)
-//   Policy "Authenticated users can read user settings" (SELECT, PERMISSIVE) roles={authenticated}
-//     USING: true
+//   Policy "Users can delete own user settings" (DELETE, PERMISSIVE) roles={authenticated}
+//     USING: (user_id = auth.uid())
+//   Policy "Users can insert own user settings" (INSERT, PERMISSIVE) roles={authenticated}
+//     WITH CHECK: (user_id = auth.uid())
+//   Policy "Users can read own user settings" (SELECT, PERMISSIVE) roles={authenticated}
+//     USING: (user_id = auth.uid())
+//   Policy "Users can update own user settings" (UPDATE, PERMISSIVE) roles={authenticated}
+//     USING: (user_id = auth.uid())
+//     WITH CHECK: (user_id = auth.uid())
 
 // --- DATABASE FUNCTIONS ---
 // FUNCTION get_user_role()

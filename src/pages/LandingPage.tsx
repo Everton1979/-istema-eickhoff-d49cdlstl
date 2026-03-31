@@ -1,5 +1,8 @@
+import { useState } from 'react'
 import { Link, Navigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import { useAuth } from '@/hooks/use-auth'
 import {
   Activity,
@@ -13,6 +16,15 @@ import {
 
 export default function LandingPage() {
   const { user, loading } = useAuth()
+  const [cost, setCost] = useState<string>('50')
+  const [margin, setMargin] = useState<string>('30')
+
+  const numCost = parseFloat(cost) || 0
+  const numMargin = parseFloat(margin) || 0
+  const marginDecimal = numMargin / 100
+  const validMargin = marginDecimal >= 1 ? 0.99 : marginDecimal
+  const suggestedPrice = numCost / (1 - validMargin)
+  const profit = suggestedPrice - numCost
 
   if (loading) {
     return (
@@ -32,7 +44,7 @@ export default function LandingPage() {
             <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center font-bold text-white shadow-sm">
               <Activity className="w-5 h-5" />
             </div>
-            <span className="font-bold text-xl text-slate-800 tracking-tight">FarmaLucro</span>
+            <span className="font-bold text-xl text-slate-800 tracking-tight">SmartFarma</span>
           </div>
           <div className="flex items-center gap-4">
             <Link
@@ -108,6 +120,79 @@ export default function LandingPage() {
                 className="w-full h-[400px] object-cover object-top opacity-90"
               />
               <div className="absolute inset-0 bg-blue-900/10 mix-blend-multiply"></div>
+            </div>
+          </div>
+        </section>
+
+        <section className="py-20 bg-slate-50 border-y border-slate-200">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center max-w-3xl mx-auto mb-16">
+              <h2 className="text-3xl font-bold text-slate-900">
+                Simulador de Precificação Inteligente
+              </h2>
+              <p className="mt-4 text-slate-600 text-lg">
+                Faça um teste rápido e veja como o SmartFarma ajuda você a atingir a margem ideal em
+                seus produtos.
+              </p>
+            </div>
+
+            <div className="max-w-md mx-auto bg-white p-8 rounded-2xl shadow-xl border border-slate-200">
+              <div className="space-y-6">
+                <div>
+                  <Label htmlFor="cost" className="text-slate-700">
+                    Custo do Produto (R$)
+                  </Label>
+                  <Input
+                    id="cost"
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    value={cost}
+                    onChange={(e) => setCost(e.target.value)}
+                    placeholder="Ex: 50.00"
+                    className="text-lg mt-1"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="margin" className="text-slate-700">
+                    Margem de Lucro Desejada (%)
+                  </Label>
+                  <Input
+                    id="margin"
+                    type="number"
+                    min="0"
+                    max="99"
+                    value={margin}
+                    onChange={(e) => setMargin(e.target.value)}
+                    placeholder="Ex: 30"
+                    className="text-lg mt-1"
+                  />
+                </div>
+                <div className="pt-6 border-t border-slate-100">
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-slate-600 font-medium">Preço de Venda Sugerido:</span>
+                    <span className="text-3xl font-bold text-blue-600">
+                      {new Intl.NumberFormat('pt-BR', {
+                        style: 'currency',
+                        currency: 'BRL',
+                      }).format(suggestedPrice)}
+                    </span>
+                  </div>
+                  <p className="text-sm text-slate-500 text-right">
+                    Lucro líquido de{' '}
+                    {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(
+                      profit,
+                    )}{' '}
+                    por unidade
+                  </p>
+                </div>
+
+                <Link to="/register" className="block mt-6">
+                  <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white h-12 text-lg rounded-xl">
+                    Quero precificar meus produtos
+                  </Button>
+                </Link>
+              </div>
             </div>
           </div>
         </section>
@@ -205,10 +290,10 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="flex items-center gap-2">
             <Activity className="w-6 h-6 text-blue-600" />
-            <span className="font-bold text-xl text-slate-800">FarmaLucro</span>
+            <span className="font-bold text-xl text-slate-800">SmartFarma</span>
           </div>
           <p className="text-slate-500 text-sm text-center md:text-left">
-            © {new Date().getFullYear()} FarmaLucro. Sistema Financeiro para Farmácias.
+            © {new Date().getFullYear()} SmartFarma. Sistema Financeiro para Farmácias.
           </p>
         </div>
       </footer>
