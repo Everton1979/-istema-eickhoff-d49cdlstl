@@ -39,7 +39,7 @@ Deno.serve(async (req: Request) => {
     // Create admin client to bypass RLS and use auth.admin methods
     const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey)
 
-    const { action, email, password, userId } = await req.json()
+    const { action, email, password, userId, company_name } = await req.json()
 
     if (action === 'create') {
       const { data, error } = await supabaseAdmin.auth.admin.createUser({
@@ -49,8 +49,14 @@ Deno.serve(async (req: Request) => {
       })
       if (error) throw error
 
-      // Update the profile role to Administrador
-      await supabaseAdmin.from('profiles').update({ role: 'Administrador' }).eq('id', data.user.id)
+      // Update the profile role and company_name
+      await supabaseAdmin
+        .from('profiles')
+        .update({
+          role: 'Administrador',
+          company_name: company_name || null,
+        })
+        .eq('id', data.user.id)
 
       return new Response(JSON.stringify({ user: data.user }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },

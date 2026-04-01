@@ -43,9 +43,9 @@ export default function ForgotPassword() {
               as instruções para redefinir sua senha.
             </p>
             <div className="bg-blue-50 p-4 rounded-md text-sm text-blue-800 mt-4 text-left">
-              <strong>Nota importante:</strong> O e-mail pode chegar com o remetente ou título{' '}
-              <strong>"Supabase Auth"</strong>. Verifique sua caixa de entrada e também a pasta de
-              Spam/Lixo Eletrônico.
+              <strong>Nota importante:</strong> O e-mail chegará com o remetente ou título{' '}
+              <strong>"Controle Financeiro Planilha"</strong>. Verifique sua caixa de entrada e
+              também a pasta de Spam/Lixo Eletrônico.
             </div>
             <Link
               to="/login"

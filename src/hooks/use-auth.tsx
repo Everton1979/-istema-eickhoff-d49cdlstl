@@ -5,7 +5,8 @@ import { supabase } from '@/lib/supabase/client'
 export interface UserProfile {
   id: string
   email: string
-  role: 'Administrador'
+  role: 'Administrador' | string
+  company_name?: string
 }
 
 interface AuthContextType {
