@@ -19,6 +19,9 @@ export const CATEGORIES: Category[] = [
 ]
 
 interface FinanceFilters {
+  startDate: string
+  endDate: string
+  type: string
   years: string[]
   months: string[]
   statuses: string[]
@@ -30,7 +33,7 @@ interface FinanceContextType {
   categories: Category[]
   monthlyMetrics: MonthlyMetric[]
   filters: FinanceFilters
-  setFilter: (key: keyof FinanceFilters, values: string[]) => void
+  setFilter: (key: keyof FinanceFilters, values: any) => void
   addTransaction: (tx: Omit<Transaction, 'id'>) => Promise<void>
   updateTransaction: (id: string, tx: Partial<Omit<Transaction, 'id'>>) => Promise<void>
   deleteTransaction: (id: string) => Promise<void>
@@ -73,10 +76,18 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
   const [accounts, setAccounts] = useState<Account[]>(ACCOUNTS)
   const [monthlyMetrics, setMonthlyMetrics] = useState<MonthlyMetric[]>([])
   const [loadingData, setLoadingData] = useState(true)
-  const [filters, setFilters] = useState<FinanceFilters>({
-    years: [new Date().getFullYear().toString()],
-    months: [(new Date().getMonth() + 1).toString().padStart(2, '0')],
-    statuses: [],
+  const [filters, setFilters] = useState<FinanceFilters>(() => {
+    const now = new Date()
+    const firstDay = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0]
+    const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0).toISOString().split('T')[0]
+    return {
+      startDate: firstDay,
+      endDate: lastDay,
+      type: 'ALL',
+      years: [now.getFullYear().toString()],
+      months: [(now.getMonth() + 1).toString().padStart(2, '0')],
+      statuses: [],
+    }
   })
 
   useEffect(() => {
@@ -151,8 +162,18 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
     setLoadingData(false)
   }
 
-  const setFilter = (key: keyof FinanceFilters, values: string[]) => {
-    setFilters((prev) => ({ ...prev, [key]: values }))
+  const setFilter = (key: keyof FinanceFilters, values: any) => {
+    setFilters((prev) => {
+      const newFilters = { ...prev, [key]: values }
+      if (key === 'startDate' && typeof values === 'string') {
+        const d = new Date(values)
+        if (!isNaN(d.getTime())) {
+          newFilters.months = [(d.getUTCMonth() + 1).toString().padStart(2, '0')]
+          newFilters.years = [d.getUTCFullYear().toString()]
+        }
+      }
+      return newFilters
+    })
   }
 
   const addTransaction = async (tx: Omit<Transaction, 'id'>) => {
@@ -348,23 +369,20 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
 
   const filteredTransactions = useMemo(() => {
     return transactions.filter((tx) => {
-      let txYear = ''
-      let txMonth = ''
-
+      let txDateStr = ''
       if (tx.date.includes('T')) {
-        const datePart = tx.date.split('T')[0]
-        const parts = datePart.split('-')
-        txYear = parts[0]
-        txMonth = parts[1]
+        txDateStr = tx.date.split('T')[0]
       } else {
-        const txDate = new Date(tx.date)
-        txYear = txDate.getFullYear().toString()
-        txMonth = (txDate.getMonth() + 1).toString().padStart(2, '0')
+        txDateStr = new Date(tx.date).toISOString().split('T')[0]
       }
 
-      if (filters.years.length > 0 && !filters.years.includes(txYear)) return false
-      if (filters.months.length > 0 && !filters.months.includes(txMonth)) return false
-      if (filters.statuses.length > 0 && !filters.statuses.includes(tx.status)) return false
+      if (filters.startDate && txDateStr < filters.startDate) return false
+      if (filters.endDate && txDateStr > filters.endDate) return false
+
+      if (filters.type && filters.type !== 'ALL' && tx.type !== filters.type) return false
+
+      if (filters.statuses && filters.statuses.length > 0 && !filters.statuses.includes(tx.status))
+        return false
 
       return true
     })

@@ -2,7 +2,8 @@ import { useFinanceStore } from '@/stores/financeStore'
 import { MonthlyClosingDialog } from './MonthlyClosingDialog'
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/hooks/use-auth'
-import { Download, FileText, FileSpreadsheet } from 'lucide-react'
+import { Download, FileText, FileSpreadsheet, CalendarIcon, Filter } from 'lucide-react'
+import { Input } from '@/components/ui/input'
 import {
   Select,
   SelectContent,
@@ -21,78 +22,55 @@ export function DashboardHeader({ onExport }: { onExport: (filters: any) => void
   const financeStore = useFinanceStore()
   const { profile } = useAuth()
 
-  const filters = financeStore.filters || { years: [], months: [], statuses: [] }
+  const filters = financeStore.filters || { startDate: '', endDate: '', type: 'ALL' }
   const setFilter = financeStore.setFilter
 
-  const currentMonth = (filters.months?.[0] || (new Date().getMonth() + 1).toString()).padStart(
-    2,
-    '0',
-  )
-  const currentYear = filters.years?.[0] || new Date().getFullYear().toString()
-  const monthsList = [
-    { value: '01', label: 'Janeiro' },
-    { value: '02', label: 'Fevereiro' },
-    { value: '03', label: 'Março' },
-    { value: '04', label: 'Abril' },
-    { value: '05', label: 'Maio' },
-    { value: '06', label: 'Junho' },
-    { value: '07', label: 'Julho' },
-    { value: '08', label: 'Agosto' },
-    { value: '09', label: 'Setembro' },
-    { value: '10', label: 'Outubro' },
-    { value: '11', label: 'Novembro' },
-    { value: '12', label: 'Dezembro' },
-  ]
-
-  const yearsList = Array.from({ length: 5 }, (_, i) => (new Date().getFullYear() - i).toString())
-
-  const handleMonthChange = (value: string) => {
-    if (setFilter) {
-      setFilter('months', [value])
-    }
-  }
-
-  const handleYearChange = (value: string) => {
-    if (setFilter) {
-      setFilter('years', [value])
-    }
-  }
-
   return (
-    <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-2 bg-white p-4 rounded-lg shadow-sm border border-slate-200">
+    <div className="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-4 mb-2 bg-white p-4 rounded-lg shadow-sm border border-slate-200">
       <div>
         <h1 className="text-xl font-bold text-slate-800">Painel Geral</h1>
         <p className="text-sm text-slate-500">Visão geral e indicadores de performance</p>
       </div>
 
-      <div className="flex flex-wrap items-center gap-2">
-        <Select value={currentMonth} onValueChange={handleMonthChange}>
-          <SelectTrigger className="h-8 w-[120px] text-xs">
-            <SelectValue placeholder="Mês" />
+      <div className="flex flex-wrap items-center gap-3">
+        <div className="flex items-center gap-2 bg-slate-50 p-1 rounded-md border border-slate-200">
+          <CalendarIcon className="w-4 h-4 text-slate-500 ml-2" />
+          <Input
+            type="date"
+            value={filters.startDate || ''}
+            onChange={(e) => setFilter('startDate', e.target.value)}
+            className="h-9 text-sm w-[135px] bg-white border-slate-200 focus-visible:ring-1"
+          />
+          <span className="text-slate-400 text-xs font-medium px-1">até</span>
+          <Input
+            type="date"
+            value={filters.endDate || ''}
+            onChange={(e) => setFilter('endDate', e.target.value)}
+            className="h-9 text-sm w-[135px] bg-white border-slate-200 focus-visible:ring-1"
+          />
+        </div>
+
+        <Select value={filters.type || 'ALL'} onValueChange={(v) => setFilter('type', v)}>
+          <SelectTrigger className="h-11 w-[180px] text-sm bg-slate-50 border-slate-200">
+            <div className="flex items-center gap-2">
+              <Filter className="w-4 h-4 text-slate-500" />
+              <SelectValue placeholder="Tipo" />
+            </div>
           </SelectTrigger>
           <SelectContent>
-            {monthsList.map((m) => (
-              <SelectItem key={m.value} value={m.value} className="text-xs">
-                {m.label}
-              </SelectItem>
-            ))}
+            <SelectItem value="ALL" className="text-sm">
+              Todos Lançamentos
+            </SelectItem>
+            <SelectItem value="INCOME" className="text-sm">
+              Apenas Receitas
+            </SelectItem>
+            <SelectItem value="EXPENSE" className="text-sm">
+              Apenas Despesas
+            </SelectItem>
           </SelectContent>
         </Select>
 
-        <Select value={currentYear} onValueChange={handleYearChange}>
-          <SelectTrigger className="h-8 w-[90px] text-xs">
-            <SelectValue placeholder="Ano" />
-          </SelectTrigger>
-          <SelectContent>
-            {yearsList.map((y) => (
-              <SelectItem key={y} value={y} className="text-xs">
-                {y}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-
-        <div className="h-4 w-px bg-slate-200 mx-1 hidden sm:block"></div>
+        <div className="h-6 w-px bg-slate-200 mx-1 hidden sm:block"></div>
 
         <div className="flex items-center gap-2">
           {profile?.role === 'Administrador' && <MonthlyClosingDialog />}
@@ -102,39 +80,35 @@ export function DashboardHeader({ onExport }: { onExport: (filters: any) => void
               <Button
                 variant="default"
                 size="sm"
-                className="h-7 text-xs bg-blue-600 hover:bg-blue-700 text-white flex gap-1 shadow-sm"
+                className="h-11 px-4 text-sm bg-blue-600 hover:bg-blue-700 text-white flex gap-2 shadow-sm"
               >
-                <Download className="w-3 h-3" />
+                <Download className="w-4 h-4" />
                 Exportar Relatório
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
+            <DropdownMenuContent align="end" className="w-56">
               <DropdownMenuItem
                 onClick={() =>
                   onExport({
-                    month: currentMonth,
-                    year: currentYear,
                     format: 'pdf',
                     ts: Date.now(),
                   })
                 }
-                className="cursor-pointer"
+                className="cursor-pointer py-3"
               >
-                <FileText className="w-4 h-4 mr-2 text-red-500" />
+                <FileText className="w-4 h-4 mr-3 text-red-500" />
                 Exportar como PDF
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() =>
                   onExport({
-                    month: currentMonth,
-                    year: currentYear,
                     format: 'excel',
                     ts: Date.now(),
                   })
                 }
-                className="cursor-pointer"
+                className="cursor-pointer py-3"
               >
-                <FileSpreadsheet className="w-4 h-4 mr-2 text-green-500" />
+                <FileSpreadsheet className="w-4 h-4 mr-3 text-green-500" />
                 Exportar como Excel (CSV)
               </DropdownMenuItem>
             </DropdownMenuContent>
