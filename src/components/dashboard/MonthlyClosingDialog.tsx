@@ -22,11 +22,19 @@ import {
 import { ScrollArea } from '@/components/ui/scroll-area'
 
 export function MonthlyClosingDialog() {
-  const { monthlyMetrics, saveMonthlyMetric, filters } = useFinanceStore()
+  const store = useFinanceStore()
+  const { monthlyMetrics, saveMonthlyMetric, filters = {} } = store
   const { toast } = useToast()
 
-  const currentMonth = filters.months[0] || (new Date().getMonth() + 1).toString().padStart(2, '0')
-  const currentYear = filters.years[0] || new Date().getFullYear().toString()
+  const currentMonth = (
+    filters.months?.[0]?.toString() ||
+    filters.month?.toString() ||
+    (new Date().getMonth() + 1).toString()
+  ).padStart(2, '0')
+  const currentYear =
+    filters.years?.[0]?.toString() ||
+    filters.year?.toString() ||
+    new Date().getFullYear().toString()
 
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
