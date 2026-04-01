@@ -43,6 +43,11 @@ interface FinanceContextType {
   updateAccountInitialBalances: (balances: Record<string, number>) => Promise<{ error: any }>
   loadingData: boolean
   fetchData: () => Promise<void>
+  fetchTransactionsForExport: (
+    startDate: string,
+    endDate: string,
+    type: string,
+  ) => Promise<Transaction[]>
 }
 
 const FinanceContext = createContext<FinanceContextType | undefined>(undefined)
@@ -340,6 +345,50 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
     } else if (error) throw error
   }
 
+  const fetchTransactionsForExport = async (
+    startDate: string,
+    endDate: string,
+    type: string,
+  ): Promise<Transaction[]> => {
+    if (!user) return []
+
+    let query = supabase
+      .from('transactions')
+      .select('*')
+      .eq('user_id', user.id)
+      .gte('date', startDate)
+      .lte('date', `${endDate}T23:59:59.999Z`)
+      .order('date', { ascending: true })
+      .limit(100000)
+
+    if (type === 'INCOME') {
+      query = query.eq('type', 'receita')
+    } else if (type === 'EXPENSE') {
+      query = query.eq('type', 'despesa')
+    }
+
+    const { data, error } = await query
+
+    if (error) {
+      console.error('Error fetching transactions for export:', error)
+      return []
+    }
+
+    return (data || []).map((d: any) => ({
+      id: d.id,
+      date: d.date,
+      description: d.description,
+      amount: Number(d.amount),
+      type: mapTypeFromDB(d.type) as any,
+      categoryId: mapCategoryFromDB(d.category),
+      subcategoryId: d.subcategory || '',
+      accountId: mapAccountFromDB(d.account),
+      paymentMethodId: mapPaymentMethodFromDB(d.payment_method),
+      status: d.status as any,
+      tags: d.tags || '',
+    }))
+  }
+
   const updateAccountInitialBalances = async (balances: Record<string, number>) => {
     if (!user) return { error: 'Not authenticated' }
 
@@ -420,6 +469,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
         updateAccountInitialBalances,
         loadingData,
         fetchData,
+        fetchTransactionsForExport,
       }}
     >
       {children}
