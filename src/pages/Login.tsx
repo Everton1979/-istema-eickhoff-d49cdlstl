@@ -3,7 +3,7 @@ import { useAuth } from '@/hooks/use-auth'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { toast } from 'sonner'
-import { useNavigate, Navigate, Link } from 'react-router-dom'
+import { useNavigate, Navigate } from 'react-router-dom'
 import { LayoutDashboard } from 'lucide-react'
 
 export default function Login() {
@@ -68,12 +68,6 @@ export default function Login() {
             {loading ? 'Aguarde...' : 'Entrar'}
           </Button>
         </form>
-        <div className="mt-6 text-center text-sm text-gray-600">
-          Não tem uma conta?{' '}
-          <Link to="/register" className="text-[#1e3a8a] font-semibold hover:underline">
-            Cadastre-se grátis
-          </Link>
-        </div>
       </div>
     </div>
   )
