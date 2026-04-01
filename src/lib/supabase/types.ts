@@ -68,18 +68,21 @@ export type Database = {
       }
       profiles: {
         Row: {
+          company_name: string | null
           email: string
           id: string
           role: string
           updated_at: string | null
         }
         Insert: {
+          company_name?: string | null
           email: string
           id: string
           role?: string
           updated_at?: string | null
         }
         Update: {
+          company_name?: string | null
           email?: string
           id?: string
           role?: string
@@ -340,6 +343,7 @@ export const Constants = {
 //   email: text (not null)
 //   role: text (not null, default: 'Visitante'::text)
 //   updated_at: timestamp with time zone (nullable, default: now())
+//   company_name: text (nullable)
 // Table: transactions
 //   id: uuid (not null, default: gen_random_uuid())
 //   user_id: uuid (not null)

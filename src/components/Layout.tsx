@@ -1,11 +1,19 @@
 import { Link, Outlet, useLocation } from 'react-router-dom'
-import { LayoutDashboard, Receipt, Users, BookOpen, LogOut } from 'lucide-react'
+import { LayoutDashboard, Receipt, Users, BookOpen, LogOut, UserCircle } from 'lucide-react'
 import { useAuth } from '@/hooks/use-auth'
 import { MonthlyClosingDialog } from '@/components/dashboard/MonthlyClosingDialog'
 import { cn } from '@/lib/utils'
 
 export default function Layout() {
   const { profile, signOut } = useAuth()
+
+  const companyName = profile?.company_name || 'Controle Financeiro'
+  const companyInitials = companyName
+    .split(' ')
+    .map((n) => n[0])
+    .join('')
+    .substring(0, 2)
+    .toUpperCase()
   const location = useLocation()
 
   return (
@@ -14,12 +22,10 @@ export default function Layout() {
       <header className="h-16 bg-[#0f172a] text-white flex items-center px-4 md:px-6 shrink-0 shadow-md z-20 justify-between">
         <div className="flex items-center gap-4 md:gap-8">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-blue-600 rounded-md flex items-center justify-center font-bold text-white shadow-sm">
-              FE
+            <div className="w-8 h-8 bg-blue-600 rounded-md flex items-center justify-center font-bold text-white shadow-sm uppercase">
+              {companyInitials}
             </div>
-            <span className="font-bold text-lg tracking-wide hidden sm:block">
-              Farmácia Eickhoff
-            </span>
+            <span className="font-bold text-lg tracking-wide hidden sm:block">{companyName}</span>
           </div>
 
           <nav className="hidden md:flex items-center gap-1">
@@ -89,6 +95,20 @@ export default function Layout() {
                 <span className="text-sm font-medium hidden lg:block">Usuários</span>
               </Link>
             )}
+
+            <Link
+              to="/perfil"
+              className={cn(
+                'p-2 rounded-md transition-colors flex items-center gap-2',
+                location.pathname === '/perfil'
+                  ? 'bg-blue-600 text-white'
+                  : 'text-slate-300 hover:bg-white/10',
+              )}
+              title="Meu Perfil"
+            >
+              <UserCircle className="w-5 h-5" />
+              <span className="text-sm font-medium hidden lg:block">Perfil</span>
+            </Link>
 
             <button
               onClick={() => signOut()}

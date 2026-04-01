@@ -13,6 +13,7 @@ import Login from './pages/Login'
 import ForgotPassword from './pages/ForgotPassword'
 import ResetPassword from './pages/ResetPassword'
 import Layout from './components/Layout'
+import Profile from './pages/Profile'
 
 const ProtectedRoute = ({
   children,
@@ -63,6 +64,7 @@ const App = () => (
               <Route path="/dashboard" element={<Index />} />
               <Route path="/transacoes" element={<Transactions />} />
               <Route path="/glossario" element={<Glossary />} />
+              <Route path="/perfil" element={<Profile />} />
               <Route path="/configuracoes" element={<Navigate to="/usuarios" replace />} />
               <Route
                 path="/usuarios"
