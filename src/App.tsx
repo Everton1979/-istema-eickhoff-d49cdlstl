@@ -10,6 +10,8 @@ import Users from './pages/Users'
 import Glossary from './pages/Glossary'
 import NotFound from './pages/NotFound'
 import Login from './pages/Login'
+import ForgotPassword from './pages/ForgotPassword'
+import ResetPassword from './pages/ResetPassword'
 import Layout from './components/Layout'
 
 const ProtectedRoute = ({
@@ -49,6 +51,8 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/esqueci-a-senha" element={<ForgotPassword />} />
+            <Route path="/nova-senha" element={<ResetPassword />} />
             <Route
               element={
                 <ProtectedRoute>

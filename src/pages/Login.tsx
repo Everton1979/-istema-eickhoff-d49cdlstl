@@ -3,7 +3,7 @@ import { useAuth } from '@/hooks/use-auth'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { toast } from 'sonner'
-import { useNavigate, Navigate } from 'react-router-dom'
+import { useNavigate, Navigate, Link } from 'react-router-dom'
 import { LayoutDashboard } from 'lucide-react'
 
 export default function Login() {
@@ -67,6 +67,11 @@ export default function Login() {
           >
             {loading ? 'Aguarde...' : 'Entrar'}
           </Button>
+          <div className="text-center mt-4">
+            <Link to="/esqueci-a-senha" className="text-sm text-[#1e3a8a] hover:underline">
+              Esqueceu sua senha?
+            </Link>
+          </div>
         </form>
       </div>
     </div>
