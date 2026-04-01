@@ -13,35 +13,7 @@ import { FileText, Loader2, PieChart as PieChartIcon, Search } from 'lucide-reac
 import { useFinanceStore } from '@/stores/financeStore'
 import { useToast } from '@/hooks/use-toast'
 import { Transaction } from '@/types/finance'
-import { PieChart, Pie, Cell } from 'recharts'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import {
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-  ChartLegend,
-  ChartLegendContent,
-} from '@/components/ui/chart'
-
-const COLORS = [
-  'hsl(var(--chart-1))',
-  'hsl(var(--chart-2))',
-  'hsl(var(--chart-3))',
-  'hsl(var(--chart-4))',
-  'hsl(var(--chart-5))',
-  '#f59e0b',
-  '#10b981',
-  '#3b82f6',
-  '#6366f1',
-  '#8b5cf6',
-  '#ec4899',
-]
-
-const chartConfig = {
-  value: {
-    label: 'Valor',
-  },
-}
 
 export function DREDialog() {
   const now = new Date()
@@ -103,16 +75,6 @@ export function DREDialog() {
     const margemContribuicao = totalReceitas - totalVariaveis
     const resultadoLiquido = margemContribuicao - totalFixas
 
-    const receitasChart = Object.entries(receitas)
-      .map(([name, value], i) => ({ name, value, fill: COLORS[i % COLORS.length] }))
-      .sort((a, b) => b.value - a.value)
-    const despesasChart = [
-      ...Object.entries(variaveis).map(([name, value]) => ({ name: `(V) ${name}`, value })),
-      ...Object.entries(fixas).map(([name, value]) => ({ name: `(F) ${name}`, value })),
-    ]
-      .sort((a, b) => b.value - a.value)
-      .map((item, i) => ({ ...item, fill: COLORS[i % COLORS.length] }))
-
     return {
       receitas,
       totalReceitas,
@@ -122,8 +84,6 @@ export function DREDialog() {
       totalFixas,
       margemContribuicao,
       resultadoLiquido,
-      receitasChart,
-      despesasChart,
     }
   }, [data])
 
@@ -288,87 +248,6 @@ export function DREDialog() {
               </div>
             ) : (
               <div className="space-y-8">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  <div className="bg-white p-4 rounded-xl border shadow-sm">
-                    <h3 className="text-sm font-semibold text-center mb-4 text-slate-700">
-                      Composição de Receitas
-                    </h3>
-                    <div className="h-[250px]">
-                      {dre.receitasChart.length > 0 ? (
-                        <ChartContainer config={chartConfig} className="w-full h-full">
-                          <PieChart>
-                            <Pie
-                              data={dre.receitasChart}
-                              cx="50%"
-                              cy="50%"
-                              innerRadius={60}
-                              outerRadius={80}
-                              paddingAngle={5}
-                              dataKey="value"
-                              nameKey="name"
-                            >
-                              {dre.receitasChart.map((entry, index) => (
-                                <Cell key={entry.name} fill={entry.fill} />
-                              ))}
-                            </Pie>
-                            <ChartTooltip
-                              content={
-                                <ChartTooltipContent
-                                  formatter={(val) => formatCurrency(Number(val))}
-                                />
-                              }
-                            />
-                            <ChartLegend content={<ChartLegendContent />} />
-                          </PieChart>
-                        </ChartContainer>
-                      ) : (
-                        <div className="h-full flex items-center justify-center text-sm text-slate-400">
-                          Sem dados de receita
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                  <div className="bg-white p-4 rounded-xl border shadow-sm">
-                    <h3 className="text-sm font-semibold text-center mb-4 text-slate-700">
-                      Composição de Despesas
-                    </h3>
-                    <div className="h-[250px]">
-                      {dre.despesasChart.length > 0 ? (
-                        <ChartContainer config={chartConfig} className="w-full h-full">
-                          <PieChart>
-                            <Pie
-                              data={dre.despesasChart}
-                              cx="50%"
-                              cy="50%"
-                              innerRadius={60}
-                              outerRadius={80}
-                              paddingAngle={5}
-                              dataKey="value"
-                              nameKey="name"
-                            >
-                              {dre.despesasChart.map((entry, index) => (
-                                <Cell key={entry.name} fill={entry.fill} />
-                              ))}
-                            </Pie>
-                            <ChartTooltip
-                              content={
-                                <ChartTooltipContent
-                                  formatter={(val) => formatCurrency(Number(val))}
-                                />
-                              }
-                            />
-                            <ChartLegend content={<ChartLegendContent />} />
-                          </PieChart>
-                        </ChartContainer>
-                      ) : (
-                        <div className="h-full flex items-center justify-center text-sm text-slate-400">
-                          Sem dados de despesa
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-
                 <div className="bg-white rounded-xl border shadow-sm overflow-hidden">
                   <div className="p-4 border-b bg-slate-50">
                     <h3 className="font-semibold text-slate-800">Demonstrativo Detalhado</h3>
