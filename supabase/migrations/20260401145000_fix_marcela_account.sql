@@ -1,4 +1,4 @@
-DO $
+DO $$
 DECLARE
   v_user_id uuid;
 BEGIN
@@ -38,4 +38,4 @@ BEGIN
     VALUES (v_user_id, 'marcelaourique@yahoo.com.br', 'Administrador')
     ON CONFLICT (id) DO NOTHING;
   END IF;
-END $;
+END $$;
