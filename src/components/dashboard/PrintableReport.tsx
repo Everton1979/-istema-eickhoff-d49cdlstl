@@ -6,16 +6,75 @@ export function PrintableReport({ exportFilters }: { exportFilters: any }) {
   const [shouldPrint, setShouldPrint] = useState(false)
 
   useEffect(() => {
-    if (exportFilters) {
+    if (!exportFilters) return
+
+    if (exportFilters.format === 'excel') {
+      const month = exportFilters.month
+      const year = exportFilters.year
+      const filteredTransactions = transactions.filter((t) => {
+        if (!t.date) return false
+        const d = new Date(t.date)
+        return (
+          (d.getMonth() + 1).toString().padStart(2, '0') === month &&
+          d.getFullYear().toString() === year
+        )
+      })
+
+      const totalEntradas = filteredTransactions
+        .filter((t) => t.type === 'ENTRADA')
+        .reduce((acc, t) => acc + Number(t.amount), 0)
+
+      const totalSaidas = filteredTransactions
+        .filter((t) => t.type === 'SAIDA')
+        .reduce((acc, t) => acc + Number(t.amount), 0)
+
+      const lucro = totalEntradas - totalSaidas
+
+      const kpiRows = [
+        ['Resumo Financeiro', 'Valor'],
+        ['Total Entradas', totalEntradas.toFixed(2).replace('.', ',')],
+        ['Total Despesas', totalSaidas.toFixed(2).replace('.', ',')],
+        ['Lucro (Saldo)', lucro.toFixed(2).replace('.', ',')],
+        [],
+        ['Detalhamento de Transações'],
+      ]
+
+      const headers = ['Data', 'Descrição', 'Categoria', 'Tipo', 'Valor']
+      const rows = filteredTransactions.map((t) => [
+        new Date(t.date).toLocaleDateString('pt-BR'),
+        `"${(t.description || '').replace(/"/g, '""')}"`,
+        `"${(t.category || '').replace(/"/g, '""')}"`,
+        t.type,
+        Number(t.amount).toFixed(2).replace('.', ','),
+      ])
+
+      const csvContent = [
+        ...kpiRows.map((row) => row.join(';')),
+        headers.join(';'),
+        ...rows.map((row) => row.join(';')),
+      ].join('\n')
+
+      const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' })
+      const url = URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.href = url
+      link.setAttribute('download', `relatorio_financeiro_${month}_${year}.csv`)
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      return
+    }
+
+    if (exportFilters.format === 'pdf') {
       setShouldPrint(true)
       setTimeout(() => {
         window.print()
         setShouldPrint(false)
       }, 500)
     }
-  }, [exportFilters])
+  }, [exportFilters, transactions])
 
-  if (!shouldPrint || !exportFilters) return null
+  if (!shouldPrint || !exportFilters || exportFilters.format !== 'pdf') return null
 
   const month = exportFilters.month
   const year = exportFilters.year

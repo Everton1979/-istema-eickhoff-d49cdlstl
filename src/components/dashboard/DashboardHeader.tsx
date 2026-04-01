@@ -2,7 +2,7 @@ import { useFinanceStore } from '@/stores/financeStore'
 import { MonthlyClosingDialog } from './MonthlyClosingDialog'
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/hooks/use-auth'
-import { Download } from 'lucide-react'
+import { Download, FileText, FileSpreadsheet } from 'lucide-react'
 import {
   Select,
   SelectContent,
@@ -10,6 +10,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 
 export function DashboardHeader({ onExport }: { onExport: (filters: any) => void }) {
   const financeStore = useFinanceStore()
@@ -91,15 +97,48 @@ export function DashboardHeader({ onExport }: { onExport: (filters: any) => void
         <div className="flex items-center gap-2">
           {profile?.role === 'Administrador' && <MonthlyClosingDialog />}
 
-          <Button
-            onClick={() => onExport({ month: currentMonth, year: currentYear })}
-            variant="default"
-            size="sm"
-            className="h-7 text-xs bg-blue-600 hover:bg-blue-700 text-white flex gap-1 shadow-sm"
-          >
-            <Download className="w-3 h-3" />
-            Exportar Relatório
-          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="default"
+                size="sm"
+                className="h-7 text-xs bg-blue-600 hover:bg-blue-700 text-white flex gap-1 shadow-sm"
+              >
+                <Download className="w-3 h-3" />
+                Exportar Relatório
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem
+                onClick={() =>
+                  onExport({
+                    month: currentMonth,
+                    year: currentYear,
+                    format: 'pdf',
+                    ts: Date.now(),
+                  })
+                }
+                className="cursor-pointer"
+              >
+                <FileText className="w-4 h-4 mr-2 text-red-500" />
+                Exportar como PDF
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() =>
+                  onExport({
+                    month: currentMonth,
+                    year: currentYear,
+                    format: 'excel',
+                    ts: Date.now(),
+                  })
+                }
+                className="cursor-pointer"
+              >
+                <FileSpreadsheet className="w-4 h-4 mr-2 text-green-500" />
+                Exportar como Excel (CSV)
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
     </div>
