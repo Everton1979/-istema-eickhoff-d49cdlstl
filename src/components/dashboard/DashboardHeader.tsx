@@ -9,6 +9,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { ExportReportDialog } from './ExportReportDialog'
+import { DREDialog } from './DREDialog'
 
 const MONTHS = [
   { value: '01', label: 'Janeiro' },
@@ -75,6 +76,7 @@ export function DashboardHeader({ onExport }: { onExport: (filters: any) => void
           {profile?.role === 'Administrador' && <MonthlyClosingDialog />}
 
           <ExportReportDialog onExport={onExport} />
+          <DREDialog />
         </div>
       </div>
     </div>
