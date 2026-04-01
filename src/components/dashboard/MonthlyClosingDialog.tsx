@@ -141,7 +141,7 @@ export function MonthlyClosingDialog() {
         <Button
           size="sm"
           variant="outline"
-          className="h-7 text-xs bg-white text-blue-900 border-none hover:bg-gray-100 hidden sm:flex gap-1"
+          className="h-7 text-xs bg-white text-blue-900 border border-slate-200 hover:bg-slate-100 flex gap-1 shadow-sm"
         >
           <FileBarChart className="w-3 h-3" /> Fechamento Mensal
         </Button>

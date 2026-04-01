@@ -1,7 +1,7 @@
-import { RefreshCw } from 'lucide-react'
-import { Button } from '@/components/ui/button'
 import { useFinanceStore } from '@/stores/financeStore'
-import { useAuth } from '@/hooks/use-auth'
+import { MonthlyClosingDialog } from './MonthlyClosingDialog'
+import { Button } from '@/components/ui/button'
+import { Download } from 'lucide-react'
 import {
   Select,
   SelectContent,
@@ -9,101 +9,85 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { useMemo, useState } from 'react'
-import { ExpirationAlerts } from './ExpirationAlerts'
-import { MonthlyClosingDialog } from './MonthlyClosingDialog'
-import { ExportModal } from './ExportModal'
-import { cn } from '@/lib/utils'
 
-export function DashboardHeader({ onExport }: { onExport?: (filters: any) => void }) {
-  const { filters, setFilter, transactions, fetchData } = useFinanceStore()
-  const { profile } = useAuth()
-  const [isRefreshing, setIsRefreshing] = useState(false)
+export function DashboardHeader({ onExport }: { onExport: (filters: any) => void }) {
+  const { filters, setFilters } = useFinanceStore()
 
-  const years = useMemo(() => {
-    const y = new Set<string>()
-    transactions.forEach((tx) => y.add(new Date(tx.date).getFullYear().toString()))
-    const currentYear = new Date().getFullYear().toString()
-    y.add(currentYear)
-    return Array.from(y).sort((a, b) => b.localeCompare(a))
-  }, [transactions])
+  const currentMonth = filters.months[0] || (new Date().getMonth() + 1).toString().padStart(2, '0')
+  const currentYear = filters.years[0] || new Date().getFullYear().toString()
 
-  const selectedYear = filters.years[0] || new Date().getFullYear().toString()
-  const selectedMonth = filters.months[0] || 'all'
+  const monthsList = [
+    { value: '01', label: 'Janeiro' },
+    { value: '02', label: 'Fevereiro' },
+    { value: '03', label: 'Março' },
+    { value: '04', label: 'Abril' },
+    { value: '05', label: 'Maio' },
+    { value: '06', label: 'Junho' },
+    { value: '07', label: 'Julho' },
+    { value: '08', label: 'Agosto' },
+    { value: '09', label: 'Setembro' },
+    { value: '10', label: 'Outubro' },
+    { value: '11', label: 'Novembro' },
+    { value: '12', label: 'Dezembro' },
+  ]
 
-  const handleRefresh = async () => {
-    setIsRefreshing(true)
-    await fetchData()
-    setIsRefreshing(false)
+  const yearsList = Array.from({ length: 5 }, (_, i) => (new Date().getFullYear() - i).toString())
+
+  const handleMonthChange = (value: string) => {
+    setFilters({ ...filters, months: [value] })
+  }
+
+  const handleYearChange = (value: string) => {
+    setFilters({ ...filters, years: [value] })
   }
 
   return (
-    <div className="bg-[#1e3a5f] text-white rounded-t-md px-4 py-2 flex items-center justify-between shadow-sm">
-      <div className="flex items-center gap-2">
-        <div className="w-4 h-4 bg-blue-400 rounded-sm" />
-        <h2 className="font-bold text-sm tracking-wide hidden sm:block uppercase">
-          {profile?.company_name || 'DASHBOARD FINANCEIRO'}
-        </h2>
-        <h2 className="font-bold text-sm tracking-wide sm:hidden uppercase">
-          {profile?.company_name ? profile.company_name.substring(0, 15) : 'DASHBOARD'}
-        </h2>
+    <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-2 bg-white p-4 rounded-lg shadow-sm border border-slate-200">
+      <div>
+        <h1 className="text-xl font-bold text-slate-800">Dashboard Financeiro</h1>
+        <p className="text-sm text-slate-500">Visão geral e indicadores de performance</p>
       </div>
 
-      <div className="flex items-center gap-2 sm:gap-4">
-        <MonthlyClosingDialog />
-        {onExport && <ExportModal onExport={onExport} />}
+      <div className="flex flex-wrap items-center gap-2">
+        <Select value={currentMonth} onValueChange={handleMonthChange}>
+          <SelectTrigger className="h-8 w-[120px] text-xs">
+            <SelectValue placeholder="Mês" />
+          </SelectTrigger>
+          <SelectContent>
+            {monthsList.map((m) => (
+              <SelectItem key={m.value} value={m.value} className="text-xs">
+                {m.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
 
-        <div className="flex items-center gap-2 ml-2 sm:ml-4">
-          <span className="text-xs font-medium text-blue-200 hidden sm:inline">Período:</span>
-          <Select
-            value={selectedMonth}
-            onValueChange={(val) => setFilter('months', val === 'all' ? [] : [val])}
-          >
-            <SelectTrigger className="h-7 w-[90px] sm:w-[110px] bg-[#152943] border-none text-white focus:ring-1 focus:ring-blue-400 text-xs">
-              <SelectValue placeholder="Mês" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Ano Todo</SelectItem>
-              <SelectItem value="01">Janeiro</SelectItem>
-              <SelectItem value="02">Fevereiro</SelectItem>
-              <SelectItem value="03">Março</SelectItem>
-              <SelectItem value="04">Abril</SelectItem>
-              <SelectItem value="05">Maio</SelectItem>
-              <SelectItem value="06">Junho</SelectItem>
-              <SelectItem value="07">Julho</SelectItem>
-              <SelectItem value="08">Agosto</SelectItem>
-              <SelectItem value="09">Setembro</SelectItem>
-              <SelectItem value="10">Outubro</SelectItem>
-              <SelectItem value="11">Novembro</SelectItem>
-              <SelectItem value="12">Dezembro</SelectItem>
-            </SelectContent>
-          </Select>
+        <Select value={currentYear} onValueChange={handleYearChange}>
+          <SelectTrigger className="h-8 w-[90px] text-xs">
+            <SelectValue placeholder="Ano" />
+          </SelectTrigger>
+          <SelectContent>
+            {yearsList.map((y) => (
+              <SelectItem key={y} value={y} className="text-xs">
+                {y}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
 
-          <Select value={selectedYear} onValueChange={(val) => setFilter('years', [val])}>
-            <SelectTrigger className="h-7 w-[70px] sm:w-[90px] bg-[#152943] border-none text-white focus:ring-1 focus:ring-blue-400 text-xs">
-              <SelectValue placeholder="Ano" />
-            </SelectTrigger>
-            <SelectContent>
-              {years.map((y) => (
-                <SelectItem key={y} value={y}>
-                  {y}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
+        <div className="h-4 w-px bg-slate-200 mx-1 hidden sm:block"></div>
 
-        <div className="flex items-center gap-0.5">
-          <ExpirationAlerts />
+        <div className="flex items-center gap-2">
+          <MonthlyClosingDialog />
 
           <Button
-            variant="ghost"
-            size="icon"
-            className="h-8 w-8 text-white hover:bg-white/20"
-            onClick={handleRefresh}
-            disabled={isRefreshing}
+            onClick={() => onExport({ month: currentMonth, year: currentYear })}
+            variant="default"
+            size="sm"
+            className="h-7 text-xs bg-blue-600 hover:bg-blue-700 text-white flex gap-1 shadow-sm"
           >
-            <RefreshCw className={cn('h-3.5 w-3.5', isRefreshing && 'animate-spin')} />
+            <Download className="w-3 h-3" />
+            Exportar Relatório
           </Button>
         </div>
       </div>

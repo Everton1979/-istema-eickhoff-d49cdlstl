@@ -10,7 +10,6 @@ import { PricingAssistant } from '@/components/dashboard/PricingAssistant'
 import { PerformanceEvolutionChart } from '@/components/dashboard/PerformanceEvolutionChart'
 import { PrintableReport } from '@/components/dashboard/PrintableReport'
 import { StatusDetailPanel } from '@/components/dashboard/StatusDetailPanel'
-import { ExportModal } from '@/components/dashboard/ExportModal'
 import { useState } from 'react'
 
 export default function Index() {
