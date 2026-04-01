@@ -15,19 +15,14 @@ export function DashboardHeader({ onExport }: { onExport: (filters: any) => void
   const financeStore = useFinanceStore()
   const { profile } = useAuth()
 
-  const filters = financeStore.filters || {}
-  const setFilters = financeStore.setFilters
+  const filters = financeStore.filters || { years: [], months: [], statuses: [] }
+  const setFilter = financeStore.setFilter
 
-  const currentMonth = (
-    filters.months?.[0]?.toString() ||
-    filters.month?.toString() ||
-    (new Date().getMonth() + 1).toString()
-  ).padStart(2, '0')
-  const currentYear =
-    filters.years?.[0]?.toString() ||
-    filters.year?.toString() ||
-    new Date().getFullYear().toString()
-
+  const currentMonth = (filters.months?.[0] || (new Date().getMonth() + 1).toString()).padStart(
+    2,
+    '0',
+  )
+  const currentYear = filters.years?.[0] || new Date().getFullYear().toString()
   const monthsList = [
     { value: '01', label: 'Janeiro' },
     { value: '02', label: 'Fevereiro' },
@@ -46,47 +41,15 @@ export function DashboardHeader({ onExport }: { onExport: (filters: any) => void
   const yearsList = Array.from({ length: 5 }, (_, i) => (new Date().getFullYear() - i).toString())
 
   const handleMonthChange = (value: string) => {
-    const numericValue = parseInt(value, 10)
-    if (typeof (financeStore as any).setMonth === 'function')
-      (financeStore as any).setMonth(numericValue)
-    if (typeof setFilters === 'function') {
-      setFilters({
-        ...filters,
-        months: [value],
-        month: numericValue,
-        period: 'monthly',
-        dateRange: undefined,
-      })
+    if (setFilter) {
+      setFilter('months', [value])
     }
-
-    // Força atualização dos dados ao trocar o mês
-    if (typeof (financeStore as any).fetchTransactions === 'function')
-      (financeStore as any).fetchTransactions()
-    if (typeof (financeStore as any).fetchMonthlyMetrics === 'function')
-      (financeStore as any).fetchMonthlyMetrics()
-    if (typeof (financeStore as any).loadData === 'function') (financeStore as any).loadData()
   }
 
   const handleYearChange = (value: string) => {
-    const numericValue = parseInt(value, 10)
-    if (typeof (financeStore as any).setYear === 'function')
-      (financeStore as any).setYear(numericValue)
-    if (typeof setFilters === 'function') {
-      setFilters({
-        ...filters,
-        years: [value],
-        year: numericValue,
-        period: 'monthly',
-        dateRange: undefined,
-      })
+    if (setFilter) {
+      setFilter('years', [value])
     }
-
-    // Força atualização dos dados ao trocar o ano
-    if (typeof (financeStore as any).fetchTransactions === 'function')
-      (financeStore as any).fetchTransactions()
-    if (typeof (financeStore as any).fetchMonthlyMetrics === 'function')
-      (financeStore as any).fetchMonthlyMetrics()
-    if (typeof (financeStore as any).loadData === 'function') (financeStore as any).loadData()
   }
 
   return (
