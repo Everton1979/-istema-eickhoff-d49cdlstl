@@ -376,10 +376,12 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
         txDateStr = new Date(tx.date).toISOString().split('T')[0]
       }
 
-      if (filters.startDate && txDateStr < filters.startDate) return false
-      if (filters.endDate && txDateStr > filters.endDate) return false
+      const txYear = txDateStr.substring(0, 4)
+      const txMonth = txDateStr.substring(5, 7)
 
-      if (filters.type && filters.type !== 'ALL' && tx.type !== filters.type) return false
+      if (filters.years && filters.years.length > 0 && !filters.years.includes(txYear)) return false
+      if (filters.months && filters.months.length > 0 && !filters.months.includes(txMonth))
+        return false
 
       if (filters.statuses && filters.statuses.length > 0 && !filters.statuses.includes(tx.status))
         return false
