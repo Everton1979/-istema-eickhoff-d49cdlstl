@@ -95,6 +95,7 @@ export function SalesTargetProgress() {
 
   const target = metric.sales_target
   const remaining = Math.max(0, target - achieved)
+  const exceeded = Math.max(0, achieved - target)
   const remainingPct = target > 0 ? (remaining / target) * 100 : 0
   const achievedPct = target > 0 ? Math.min((achieved / target) * 100, 100) : 0
   const dailyTarget = workingDays > 0 ? target / workingDays : 0
@@ -184,7 +185,10 @@ export function SalesTargetProgress() {
         )}
 
         <div className="space-y-1 mt-1.5">
-          <Progress value={achievedPct} className="h-2 bg-gray-100" />
+          <Progress
+            value={achievedPct}
+            className={exceeded > 0 ? 'h-2 bg-gray-100 [&>div]:bg-emerald-500' : 'h-2 bg-gray-100'}
+          />
           <div className="flex justify-between items-start text-[10px] mt-1">
             <div className="flex flex-col">
               <p className="text-gray-500 font-medium">
@@ -193,13 +197,23 @@ export function SalesTargetProgress() {
               </p>
               <span className="text-gray-400 text-[8px] -mt-0.5">({workingDays} dias úteis)</span>
             </div>
-            {target > 0 && (
+            {target > 0 && remaining > 0 && (
               <div className="flex flex-col items-end">
                 <span className="font-bold text-orange-500">
                   Falta: {formatCurrency(remaining)}
                 </span>
                 <span className="text-orange-400 font-medium text-[9px] -mt-0.5">
                   ({remainingPct.toFixed(1)}% restando)
+                </span>
+              </div>
+            )}
+            {target > 0 && exceeded > 0 && (
+              <div className="flex flex-col items-end">
+                <span className="font-bold text-emerald-600">
+                  Superado: +{formatCurrency(exceeded)}
+                </span>
+                <span className="text-emerald-500 font-medium text-[9px] -mt-0.5">
+                  ({((exceeded / target) * 100).toFixed(1)}% acima da meta)
                 </span>
               </div>
             )}

@@ -10,14 +10,25 @@ import { PricingAssistant } from '@/components/dashboard/PricingAssistant'
 import { PerformanceEvolutionChart } from '@/components/dashboard/PerformanceEvolutionChart'
 import { PrintableReport } from '@/components/dashboard/PrintableReport'
 import { StatusDetailPanel } from '@/components/dashboard/StatusDetailPanel'
+import { ExportModal } from '@/components/dashboard/ExportModal'
+import { useState } from 'react'
 
 export default function Index() {
+  const [exportFilters, setExportFilters] = useState<any>(null)
+
   return (
     <>
       <div className="flex flex-col h-full bg-[#f8fafc] overflow-hidden animate-fade-in print:hidden">
-        <DashboardHeader />
+        <div className="flex justify-between items-center w-full">
+          <div className="flex-1">
+            <DashboardHeader />
+          </div>
+        </div>
 
         <div className="flex-1 overflow-y-auto p-4 md:p-6 flex flex-col gap-8">
+          <div className="flex justify-end -mt-4 mb-2">
+            <ExportModal onExport={setExportFilters} />
+          </div>
           {/* Top row: Reorganized KPIs (Receitas -> ... -> Ponto Equilibrio) */}
           <section className="w-full">
             <KpiCards />
@@ -108,7 +119,7 @@ export default function Index() {
           <StatusDetailPanel />
         </div>
       </div>
-      <PrintableReport />
+      <PrintableReport exportFilters={exportFilters} />
     </>
   )
 }

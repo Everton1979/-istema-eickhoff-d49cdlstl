@@ -315,6 +315,30 @@ export function PricingAssistant() {
           </div>
         </div>
 
+        {hasCost && (
+          <div className="mt-4 bg-emerald-50/80 border border-emerald-200/60 rounded-lg p-3 flex justify-between items-center shadow-sm">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600">
+                <Calculator className="w-4 h-4" />
+              </div>
+              <div>
+                <Label className="text-xs font-bold text-emerald-800 uppercase tracking-wider block">
+                  Margem de Contribuição
+                </Label>
+                <span className="text-[10px] text-emerald-600/80 font-medium">
+                  Preço Sugerido - Piso de Segurança
+                </span>
+              </div>
+            </div>
+            <div className="text-right">
+              <span className="text-xl font-black text-emerald-700 font-mono">
+                R$ {Math.max(0, precoSugerido - pisoSeguranca).toFixed(2)}
+              </span>
+              <p className="text-[10px] text-emerald-600/70 font-medium">Sobras por fórmula</p>
+            </div>
+          </div>
+        )}
+
         <div className="mt-6 pt-4 border-t border-blue-200/50 relative">
           {stats.isUsingFallback && (
             <div className="absolute -top-3 left-1/2 -translate-x-1/2 text-[8px] text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded-sm border border-amber-200 whitespace-nowrap z-10 opacity-90">
