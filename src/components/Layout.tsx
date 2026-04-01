@@ -1,7 +1,6 @@
 import { Link, Outlet, useLocation } from 'react-router-dom'
 import { LayoutDashboard, Receipt, Users, BookOpen, LogOut, UserCircle } from 'lucide-react'
 import { useAuth } from '@/hooks/use-auth'
-import { MonthlyClosingDialog } from '@/components/dashboard/MonthlyClosingDialog'
 import { cn } from '@/lib/utils'
 
 export default function Layout() {
@@ -39,7 +38,7 @@ export default function Layout() {
               )}
             >
               <LayoutDashboard className="w-4 h-4" />
-              Dashboard
+              Painel Geral
             </Link>
 
             <Link
@@ -54,13 +53,6 @@ export default function Layout() {
               <Receipt className="w-4 h-4" />
               Transações
             </Link>
-
-            {/* Destaque para Fechamento Mensal ao lado direito de Transações */}
-            {profile?.role === 'Administrador' && (
-              <div className="ml-2 flex items-center">
-                <MonthlyClosingDialog />
-              </div>
-            )}
           </nav>
         </div>
 
@@ -128,11 +120,6 @@ export default function Layout() {
             <Link to="/transacoes" className="p-2 text-slate-300 hover:text-white">
               <Receipt className="w-5 h-5" />
             </Link>
-            {profile?.role === 'Administrador' && (
-              <div className="scale-75 origin-left">
-                <MonthlyClosingDialog />
-              </div>
-            )}
           </div>
         </div>
       </header>

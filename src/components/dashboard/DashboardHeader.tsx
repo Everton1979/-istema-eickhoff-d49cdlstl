@@ -1,6 +1,7 @@
 import { useFinanceStore } from '@/stores/financeStore'
 import { MonthlyClosingDialog } from './MonthlyClosingDialog'
 import { Button } from '@/components/ui/button'
+import { useAuth } from '@/hooks/use-auth'
 import { Download } from 'lucide-react'
 import {
   Select,
@@ -12,6 +13,7 @@ import {
 
 export function DashboardHeader({ onExport }: { onExport: (filters: any) => void }) {
   const { filters, setFilters } = useFinanceStore()
+  const { profile } = useAuth()
 
   const currentMonth = filters.months[0] || (new Date().getMonth() + 1).toString().padStart(2, '0')
   const currentYear = filters.years[0] || new Date().getFullYear().toString()
@@ -44,7 +46,7 @@ export function DashboardHeader({ onExport }: { onExport: (filters: any) => void
   return (
     <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-2 bg-white p-4 rounded-lg shadow-sm border border-slate-200">
       <div>
-        <h1 className="text-xl font-bold text-slate-800">Dashboard Financeiro</h1>
+        <h1 className="text-xl font-bold text-slate-800">Painel Geral</h1>
         <p className="text-sm text-slate-500">Visão geral e indicadores de performance</p>
       </div>
 
@@ -78,7 +80,7 @@ export function DashboardHeader({ onExport }: { onExport: (filters: any) => void
         <div className="h-4 w-px bg-slate-200 mx-1 hidden sm:block"></div>
 
         <div className="flex items-center gap-2">
-          <MonthlyClosingDialog />
+          {profile?.role === 'Administrador' && <MonthlyClosingDialog />}
 
           <Button
             onClick={() => onExport({ month: currentMonth, year: currentYear })}

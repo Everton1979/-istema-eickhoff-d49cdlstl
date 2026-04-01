@@ -109,7 +109,7 @@ export function MonthlyClosingDialog() {
         sales_target: existing ? existing.sales_target : 0,
       } as any)
 
-      toast({ title: 'Sucesso', description: 'Fechamento mensal salvo com sucesso.' })
+      toast({ title: 'Sucesso', description: 'Dados de manipulação salvos com sucesso.' })
       setOpen(false)
     } catch (error) {
       toast({ title: 'Erro', description: 'Erro ao salvar os dados.', variant: 'destructive' })
@@ -143,12 +143,12 @@ export function MonthlyClosingDialog() {
           variant="outline"
           className="h-7 text-xs bg-white text-blue-900 border border-slate-200 hover:bg-slate-100 flex gap-1 shadow-sm"
         >
-          <FileBarChart className="w-3 h-3" /> Fechamento Mensal
+          <FileBarChart className="w-3 h-3" /> Dados Manipulação
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[450px] p-0">
         <DialogHeader className="p-6 pb-2">
-          <DialogTitle>Lançar Fechamento Mensal</DialogTitle>
+          <DialogTitle>Lançar Dados Manipulação</DialogTitle>
         </DialogHeader>
 
         <ScrollArea className="max-h-[60vh] px-6 pb-6">
