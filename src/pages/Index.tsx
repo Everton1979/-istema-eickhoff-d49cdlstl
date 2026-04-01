@@ -21,14 +21,11 @@ export default function Index() {
       <div className="flex flex-col h-full bg-[#f8fafc] overflow-hidden animate-fade-in print:hidden">
         <div className="flex justify-between items-center w-full">
           <div className="flex-1">
-            <DashboardHeader />
+            <DashboardHeader onExport={setExportFilters} />
           </div>
         </div>
 
         <div className="flex-1 overflow-y-auto p-4 md:p-6 flex flex-col gap-8">
-          <div className="flex justify-end -mt-4 mb-2">
-            <ExportModal onExport={setExportFilters} />
-          </div>
           {/* Top row: Reorganized KPIs (Receitas -> ... -> Ponto Equilibrio) */}
           <section className="w-full">
             <KpiCards />

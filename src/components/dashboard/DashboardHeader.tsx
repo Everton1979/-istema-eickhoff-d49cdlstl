@@ -1,4 +1,4 @@
-import { RefreshCw, Printer, FileSpreadsheet } from 'lucide-react'
+import { RefreshCw } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useFinanceStore } from '@/stores/financeStore'
 import { useAuth } from '@/hooks/use-auth'
@@ -11,11 +11,12 @@ import {
 } from '@/components/ui/select'
 import { useMemo, useState } from 'react'
 import { ExpirationAlerts } from './ExpirationAlerts'
+import { MonthlyClosingDialog } from './MonthlyClosingDialog'
+import { ExportModal } from './ExportModal'
 import { cn } from '@/lib/utils'
 
-export function DashboardHeader() {
-  const { filters, setFilter, transactions, filteredTransactions, accounts, fetchData } =
-    useFinanceStore()
+export function DashboardHeader({ onExport }: { onExport?: (filters: any) => void }) {
+  const { filters, setFilter, transactions, fetchData } = useFinanceStore()
   const { profile } = useAuth()
   const [isRefreshing, setIsRefreshing] = useState(false)
 
@@ -29,60 +30,6 @@ export function DashboardHeader() {
 
   const selectedYear = filters.years[0] || new Date().getFullYear().toString()
   const selectedMonth = filters.months[0] || 'all'
-
-  const handlePrint = () => {
-    window.print()
-  }
-
-  const handleExportExcel = () => {
-    const getCategoryName = (tx: any) => {
-      if (tx.type === 'INCOME') return '-'
-      if (!tx.categoryId) return '-'
-      let name = tx.categoryId === 'FIXA' ? 'Fixa' : 'Variável'
-      if (tx.categoryId === 'VARIAVEL' && tx.subcategoryId) {
-        if (tx.subcategoryId === 'materia_prima') name += ' (Matéria-prima)'
-        else if (tx.subcategoryId === 'embalagens') name += ' (Embalagens)'
-        else if (tx.subcategoryId === 'medicamentos_drogaria') name += ' (Medicamentos)'
-        else if (tx.subcategoryId === 'outros') name += ' (Outros)'
-      }
-      return name
-    }
-
-    const getAccountName = (id: string, type: string) => {
-      if (type === 'EXPENSE') return '-'
-      if (!id) return '-'
-      return accounts.find((a) => a.id === id)?.name || id
-    }
-
-    const headers = ['Data', 'Descrição', 'Categoria', 'Conta', 'Status', 'Valor', 'Tags']
-
-    const sortedData = [...filteredTransactions].sort((a, b) => {
-      const dateA = new Date(a.date).getTime()
-      const dateB = new Date(b.date).getTime()
-      if (dateA !== dateB) return dateB - dateA
-      return b.amount - a.amount
-    })
-
-    const rows = sortedData.map((tx) => [
-      tx.date.split('T')[0].split('-').reverse().join('/'),
-      `"${tx.description.replace(/"/g, '""')}"`,
-      `"${getCategoryName(tx)}"`,
-      `"${getAccountName(tx.accountId, tx.type)}"`,
-      tx.status,
-      tx.type === 'EXPENSE' ? -tx.amount : tx.amount,
-      `"${tx.tags || ''}"`,
-    ])
-
-    const csvContent = '\uFEFF' + [headers.join(';'), ...rows.map((r) => r.join(';'))].join('\n')
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
-    const url = URL.createObjectURL(blob)
-    const link = document.createElement('a')
-    link.href = url
-    link.setAttribute('download', `dashboard_transacoes_${new Date().getTime()}.csv`)
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-  }
 
   const handleRefresh = async () => {
     setIsRefreshing(true)
@@ -103,25 +50,10 @@ export function DashboardHeader() {
       </div>
 
       <div className="flex items-center gap-2 sm:gap-4">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={handleExportExcel}
-          className="h-7 text-xs bg-white text-emerald-700 border-none hover:bg-emerald-50 hidden md:flex gap-1"
-        >
-          <FileSpreadsheet className="w-3 h-3" /> Exportar Excel
-        </Button>
+        <MonthlyClosingDialog />
+        {onExport && <ExportModal onExport={onExport} />}
 
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={handlePrint}
-          className="h-7 text-xs bg-white text-blue-900 border-none hover:bg-gray-100 hidden md:flex gap-1"
-        >
-          <Printer className="w-3 h-3" /> Exportar PDF
-        </Button>
-
-        <div className="flex items-center gap-2 ml-4">
+        <div className="flex items-center gap-2 ml-2 sm:ml-4">
           <span className="text-xs font-medium text-blue-200 hidden sm:inline">Período:</span>
           <Select
             value={selectedMonth}

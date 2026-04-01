@@ -89,9 +89,26 @@ export function PrintableReport({ exportFilters }: { exportFilters?: any }) {
           )}{' '}
           | Gerado em: {format(new Date(), 'dd/MM/yyyy HH:mm')}
         </p>
+
+        {exportFilters && (
+          <div className="mt-4 flex items-center gap-6 text-sm bg-slate-50 p-3 rounded-md border border-slate-200">
+            <div className="flex-1">
+              <span className="text-slate-500 text-xs block uppercase">Total Entradas</span>
+              <span className="text-emerald-600 font-bold">{formatCurrency(metrics.receitas)}</span>
+            </div>
+            <div className="flex-1">
+              <span className="text-slate-500 text-xs block uppercase">Total Despesas</span>
+              <span className="text-red-600 font-bold">{formatCurrency(metrics.despesas)}</span>
+            </div>
+            <div className="flex-1">
+              <span className="text-slate-500 text-xs block uppercase">Lucro do Período</span>
+              <span className="text-blue-600 font-bold">{formatCurrency(metrics.lucro)}</span>
+            </div>
+          </div>
+        )}
       </div>
 
-      {(!exportFilters || exportFilters.type === 'ALL') && (
+      {!exportFilters && (
         <div className="mb-8 max-w-md">
           <h2 className="text-lg font-bold text-slate-800 border-b pb-1 mb-3">
             Resumo Operacional

@@ -92,11 +92,11 @@ export function ExportModal({ onExport }: { onExport: (filters: any) => void }) 
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button
+          size="sm"
           variant="outline"
-          className="gap-2 text-blue-600 border-blue-200 hover:bg-blue-50 shadow-sm"
+          className="h-7 text-xs bg-white text-blue-900 border-none hover:bg-gray-100 hidden sm:flex gap-1"
         >
-          <Download className="w-4 h-4" />
-          Exportar Relatório
+          <Download className="w-3 h-3" /> Exportar Relatório
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
