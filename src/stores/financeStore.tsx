@@ -11,6 +11,7 @@ export const PAYMENT_METHODS: PaymentMethod[] = [
   { id: 'pagbank', name: 'Pagbank' },
   { id: 'pix', name: 'PIX' },
   { id: 'banricompras', name: 'Banricompras' },
+  { id: 'banco_corretora', name: 'Banco/Corretora' },
 ]
 
 export const CATEGORIES: Category[] = [
