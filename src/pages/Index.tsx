@@ -10,7 +10,6 @@ import { PricingAssistant } from '@/components/dashboard/PricingAssistant'
 import { PerformanceEvolutionChart } from '@/components/dashboard/PerformanceEvolutionChart'
 import { PrintableReport } from '@/components/dashboard/PrintableReport'
 import { StatusDetailPanel } from '@/components/dashboard/StatusDetailPanel'
-import { MonthlyDataDialog } from '@/components/dashboard/MonthlyDataDialog'
 import { useState } from 'react'
 
 export default function Index() {
@@ -26,11 +25,6 @@ export default function Index() {
         </div>
 
         <div className="flex-1 overflow-y-auto p-4 md:p-6 flex flex-col gap-8">
-          {/* Ações Rápidas */}
-          <div className="flex justify-end w-full -mb-4">
-            <MonthlyDataDialog />
-          </div>
-
           {/* Top row: Reorganized KPIs (Receitas -> ... -> Ponto Equilibrio) */}
           <section className="w-full">
             <KpiCards />

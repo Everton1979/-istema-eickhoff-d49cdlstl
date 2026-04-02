@@ -1,5 +1,6 @@
 import { useFinanceStore } from '@/stores/financeStore'
 import { MonthlyClosingDialog } from './MonthlyClosingDialog'
+import { MonthlyDataDialog } from './MonthlyDataDialog'
 import { useAuth } from '@/hooks/use-auth'
 import {
   Select,
@@ -74,7 +75,7 @@ export function DashboardHeader({ onExport }: { onExport: (filters: any) => void
 
         <div className="flex items-center gap-2">
           {profile?.role === 'Administrador' && <MonthlyClosingDialog />}
-
+          <MonthlyDataDialog />
           <ExportReportDialog onExport={onExport} />
           <DREDialog />
         </div>
