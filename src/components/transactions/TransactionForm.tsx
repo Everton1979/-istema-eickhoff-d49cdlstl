@@ -38,12 +38,21 @@ const formSchema = z
     tags: z.string().optional(),
   })
   .superRefine((data, ctx) => {
-    if (data.type === 'INCOME' && !data.paymentMethodId) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: 'Meio de pagamento é obrigatório para receitas',
-        path: ['paymentMethodId'],
-      })
+    if (data.type === 'INCOME') {
+      if (!data.paymentMethodId) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'Meio de pagamento é obrigatório para receitas',
+          path: ['paymentMethodId'],
+        })
+      }
+      if (!data.categoryId) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'Categoria é obrigatória para receitas',
+          path: ['categoryId'],
+        })
+      }
     }
     if (data.type === 'EXPENSE') {
       if (!data.description || data.description.trim().length < 2) {
@@ -104,7 +113,8 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
         amount: initialData.amount,
         type: initialData.type,
         status: initialData.status,
-        categoryId: initialData.categoryId || '',
+        categoryId:
+          initialData.categoryId || (initialData.type === 'INCOME' ? 'RECEITA_OPERACIONAL' : ''),
         subcategoryId: initialData.subcategoryId || '',
         paymentMethodId: initialData.paymentMethodId || '',
         tags: initialData.tags || '',
@@ -134,12 +144,13 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
   useEffect(() => {
     if (type !== prevType) {
       if (type === 'INCOME') {
-        form.setValue('categoryId', '')
+        form.setValue('categoryId', 'RECEITA_OPERACIONAL')
         form.setValue('subcategoryId', '')
         if (form.getValues('status') === 'VENCIDO') {
           form.setValue('status', 'REALIZADO')
         }
       } else {
+        form.setValue('categoryId', '')
         form.setValue('paymentMethodId', '')
       }
       setPrevType(type)
@@ -197,8 +208,9 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
         ...values,
         description: finalDescription,
         status: values.status,
-        categoryId: values.type === 'EXPENSE' ? values.categoryId || 'FIXA' : '',
-        subcategoryId: values.type === 'EXPENSE' ? values.subcategoryId || '' : '',
+        categoryId:
+          values.categoryId || (values.type === 'EXPENSE' ? 'FIXA' : 'RECEITA_OPERACIONAL'),
+        subcategoryId: values.subcategoryId || '',
         accountId: 'sicredi', // Auto-assigned unified account
         paymentMethodId: values.type === 'INCOME' ? values.paymentMethodId || '' : '',
         tags: tagsList.join(','),
@@ -367,6 +379,9 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
                                 Operacional e Admin.: Material de mercado, papelaria, informática,
                                 lanche, escritório
                               </SelectItem>
+                              <SelectItem value="softwares_assinaturas">
+                                Softwares e Assinaturas: Mensalidades, relógio ponto, Sotech
+                              </SelectItem>
                               <SelectItem value="utilidades">
                                 Utilidades: Energia, água e internet/telefone
                               </SelectItem>
@@ -382,6 +397,9 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
                               </SelectItem>
                               <SelectItem value="marketing">
                                 Marketing e Social: Divulgação, redes sociais, patrocínio e doação
+                              </SelectItem>
+                              <SelectItem value="juros_multas">
+                                Financeiro: Juros, Multas e Encargos
                               </SelectItem>
                               <SelectItem value="outros">Outros</SelectItem>
                             </>
@@ -499,13 +517,39 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
           )}
 
           {type === 'INCOME' && (
-            <div className="animate-in fade-in slide-in-from-top-2 duration-300">
+            <div className="animate-in fade-in slide-in-from-top-2 duration-300 space-y-4">
+              <FormField
+                control={form.control}
+                name="categoryId"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Categoria da Receita</FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value || undefined}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Selecione a categoria..." />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="RECEITA_OPERACIONAL">
+                          Vendas/Serviços (Operacional)
+                        </SelectItem>
+                        <SelectItem value="RECEITA_NAO_OPERACIONAL">
+                          Dividendos e Lucros (Não Operacional)
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
               <FormField
                 control={form.control}
                 name="paymentMethodId"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Meio de Pagamento</FormLabel>
+                    <FormLabel>Meio de Pagamento / Origem</FormLabel>
                     <Select onValueChange={field.onChange} value={field.value || undefined}>
                       <FormControl>
                         <SelectTrigger>

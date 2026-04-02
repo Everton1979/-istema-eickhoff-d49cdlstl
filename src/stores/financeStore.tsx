@@ -16,6 +16,13 @@ export const PAYMENT_METHODS: PaymentMethod[] = [
 export const CATEGORIES: Category[] = [
   { id: 'FIXA', name: 'Fixa', type: 'EXPENSE', isVariable: false },
   { id: 'VARIAVEL', name: 'Variável', type: 'EXPENSE', isVariable: true },
+  { id: 'RECEITA_OPERACIONAL', name: 'Receita Operacional', type: 'INCOME', isVariable: false },
+  {
+    id: 'RECEITA_NAO_OPERACIONAL',
+    name: 'Receita Não Operacional',
+    type: 'INCOME',
+    isVariable: false,
+  },
 ]
 
 interface FinanceFilters {
@@ -55,13 +62,21 @@ const FinanceContext = createContext<FinanceContextType | undefined>(undefined)
 const mapTypeToDB = (type: string) => (type === 'INCOME' ? 'receita' : 'despesa')
 const mapTypeFromDB = (type: string) => (type === 'receita' ? 'INCOME' : 'EXPENSE')
 
-const mapCategoryToDB = (cat: string) => {
+const mapCategoryToDB = (cat: string | undefined) => {
   if (!cat) return null
-  return cat === 'FIXA' ? 'fixa' : 'variável'
+  if (cat === 'FIXA') return 'fixa'
+  if (cat === 'VARIAVEL') return 'variável'
+  if (cat === 'RECEITA_OPERACIONAL') return 'receita_operacional'
+  if (cat === 'RECEITA_NAO_OPERACIONAL') return 'receita_nao_operacional'
+  return cat.toLowerCase()
 }
 const mapCategoryFromDB = (cat: string | null) => {
   if (!cat) return ''
-  return cat === 'fixa' ? 'FIXA' : 'VARIAVEL'
+  if (cat === 'fixa') return 'FIXA'
+  if (cat === 'variável') return 'VARIAVEL'
+  if (cat === 'receita_operacional') return 'RECEITA_OPERACIONAL'
+  if (cat === 'receita_nao_operacional') return 'RECEITA_NAO_OPERACIONAL'
+  return cat.toUpperCase()
 }
 
 const mapAccountToDB = (acc: string) => 'sicredi'
@@ -191,15 +206,14 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
       description: tx.description,
       amount: tx.amount,
       type: dbType,
-      category: dbType === 'despesa' ? mapCategoryToDB(tx.categoryId) : null,
-      subcategory: dbType === 'despesa' ? tx.subcategoryId || null : null,
+      category: mapCategoryToDB(tx.categoryId),
+      subcategory: tx.subcategoryId || null,
       account: mapAccountToDB(tx.accountId),
       payment_method: dbType === 'receita' ? mapPaymentMethodToDB(tx.paymentMethodId) : null,
       status: tx.status,
       date: formattedDate,
       tags: tx.tags || '',
     }
-
     const { data, error } = await supabase.from('transactions').insert(payload).select().single()
 
     if (!error && data) {

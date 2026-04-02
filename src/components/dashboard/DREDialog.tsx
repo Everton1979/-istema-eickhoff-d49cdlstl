@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { FileText, Loader2, PieChart as PieChartIcon, Search } from 'lucide-react'
-import { useFinanceStore } from '@/stores/financeStore'
+import { useFinanceStore, PAYMENT_METHODS } from '@/stores/financeStore'
 import { useToast } from '@/hooks/use-toast'
 import { Transaction } from '@/types/finance'
 import { ScrollArea } from '@/components/ui/scroll-area'
@@ -47,42 +47,92 @@ export function DREDialog() {
     }
   }
 
+  const SUBCATEGORY_LABELS: Record<string, string> = {
+    pessoal: 'Pessoal, Encargos e Benefícios',
+    infraestrutura: 'Infraestrutura e Aluguel',
+    operacional_administrativo: 'Operacional e Administrativo',
+    utilidades: 'Utilidades (Energia, Água, Internet)',
+    servicos_profissionais: 'Serviços Profissionais e Conformidade',
+    seguros: 'Seguros',
+    financeiro: 'Taxas Bancárias e Tarifas',
+    marketing: 'Marketing e Social',
+    softwares_assinaturas: 'Softwares e Assinaturas',
+    juros_multas: 'Juros, Multas e Encargos',
+    materia_prima: 'Matéria-prima e Ativos',
+    embalagens: 'Embalagens',
+    medicamentos_drogaria: 'Medicamentos Drogaria',
+    impostos: 'Impostos e Tributos',
+    taxas_cartao: 'Taxas de Cartão',
+    logistica: 'Logística e Fretes',
+    fidelidade_promocao: 'Fidelidade e Promoção',
+    outros: 'Outros',
+  }
+
   const dre = useMemo(() => {
-    const receitas: Record<string, number> = {}
+    const receitasOperacionais: Record<string, number> = {}
+    const receitasNaoOperacionais: Record<string, number> = {}
     const variaveis: Record<string, number> = {}
     const fixas: Record<string, number> = {}
+    const financeiras: Record<string, number> = {}
 
-    let totalReceitas = 0
+    let totalReceitasOperacionais = 0
+    let totalReceitasNaoOperacionais = 0
     let totalVariaveis = 0
     let totalFixas = 0
+    let totalFinanceiras = 0
 
     data.forEach((tx) => {
-      const sub = tx.subcategoryId || 'Outros'
+      const rawSub = tx.subcategoryId || 'outros'
+      const sub = SUBCATEGORY_LABELS[rawSub] || rawSub
+
       if (tx.type === 'INCOME') {
-        receitas[sub] = (receitas[sub] || 0) + tx.amount
-        totalReceitas += tx.amount
+        if (tx.categoryId === 'RECEITA_NAO_OPERACIONAL') {
+          receitasNaoOperacionais['Dividendos e Lucros'] =
+            (receitasNaoOperacionais['Dividendos e Lucros'] || 0) + tx.amount
+          totalReceitasNaoOperacionais += tx.amount
+        } else {
+          let name = 'Vendas/Serviços'
+          if (tx.paymentMethodId) {
+            const pm = PAYMENT_METHODS.find((p) => p.id === tx.paymentMethodId)
+            if (pm) name = `Vendas - ${pm.name}`
+          }
+          receitasOperacionais[name] = (receitasOperacionais[name] || 0) + tx.amount
+          totalReceitasOperacionais += tx.amount
+        }
       } else if (tx.type === 'EXPENSE') {
         if (tx.categoryId === 'VARIAVEL') {
           variaveis[sub] = (variaveis[sub] || 0) + tx.amount
           totalVariaveis += tx.amount
         } else {
-          fixas[sub] = (fixas[sub] || 0) + tx.amount
-          totalFixas += tx.amount
+          if (tx.subcategoryId === 'juros_multas') {
+            financeiras['Juros, Multas e Encargos'] =
+              (financeiras['Juros, Multas e Encargos'] || 0) + tx.amount
+            totalFinanceiras += tx.amount
+          } else {
+            fixas[sub] = (fixas[sub] || 0) + tx.amount
+            totalFixas += tx.amount
+          }
         }
       }
     })
 
-    const margemContribuicao = totalReceitas - totalVariaveis
-    const resultadoLiquido = margemContribuicao - totalFixas
+    const margemContribuicao = totalReceitasOperacionais - totalVariaveis
+    const resultadoOperacional = margemContribuicao - totalFixas
+    const resultadoLiquido = resultadoOperacional + totalReceitasNaoOperacionais - totalFinanceiras
 
     return {
-      receitas,
-      totalReceitas,
+      receitasOperacionais,
+      totalReceitasOperacionais,
+      receitasNaoOperacionais,
+      totalReceitasNaoOperacionais,
       variaveis,
       totalVariaveis,
       fixas,
       totalFixas,
+      financeiras,
+      totalFinanceiras,
       margemContribuicao,
+      resultadoOperacional,
       resultadoLiquido,
     }
   }, [data])
@@ -150,9 +200,9 @@ export function DREDialog() {
             <tbody>
               <tr class="group-header">
                 <td>Receita Operacional Bruta</td>
-                <td class="amount positive">${formatCurrency(dre.totalReceitas)}</td>
+                <td class="amount positive">${formatCurrency(dre.totalReceitasOperacionais)}</td>
               </tr>
-              ${renderRows(dre.receitas)}
+              ${renderRows(dre.receitasOperacionais)}
               
               <tr class="group-header">
                 <td>(-) Custos e Despesas Variáveis</td>
@@ -170,6 +220,23 @@ export function DREDialog() {
                 <td class="amount negative">${formatCurrency(dre.totalFixas)}</td>
               </tr>
               ${renderRows(dre.fixas)}
+
+              <tr class="total-row">
+                <td>(=) Resultado Operacional</td>
+                <td class="amount ${dre.resultadoOperacional >= 0 ? 'positive' : 'negative'}">${formatCurrency(dre.resultadoOperacional)}</td>
+              </tr>
+              
+              <tr class="group-header">
+                <td>(+) Receitas Não Operacionais</td>
+                <td class="amount positive">${formatCurrency(dre.totalReceitasNaoOperacionais)}</td>
+              </tr>
+              ${renderRows(dre.receitasNaoOperacionais)}
+              
+              <tr class="group-header">
+                <td>(-) Despesas Financeiras</td>
+                <td class="amount negative">${formatCurrency(dre.totalFinanceiras)}</td>
+              </tr>
+              ${renderRows(dre.financeiras)}
               
               <tr class="total-row" style="font-size: 16px; background-color: #e2e8f0;">
                 <td>(=) Resultado Líquido</td>
@@ -258,10 +325,10 @@ export function DREDialog() {
                         <tr className="bg-slate-50 font-semibold border-b">
                           <td className="p-3">Receita Operacional Bruta</td>
                           <td className="p-3 text-right text-green-600">
-                            {formatCurrency(dre.totalReceitas)}
+                            {formatCurrency(dre.totalReceitasOperacionais)}
                           </td>
                         </tr>
-                        {Object.entries(dre.receitas)
+                        {Object.entries(dre.receitasOperacionais)
                           .sort((a, b) => b[1] - a[1])
                           .map(([name, val]) => (
                             <tr key={name} className="border-b border-slate-100 last:border-0">
@@ -305,6 +372,49 @@ export function DREDialog() {
                           </td>
                         </tr>
                         {Object.entries(dre.fixas)
+                          .sort((a, b) => b[1] - a[1])
+                          .map(([name, val]) => (
+                            <tr key={name} className="border-b border-slate-100 last:border-0">
+                              <td className="p-3 pl-8 text-slate-600">{name}</td>
+                              <td className="p-3 text-right text-slate-700">
+                                {formatCurrency(val)}
+                              </td>
+                            </tr>
+                          ))}
+
+                        <tr className="bg-slate-100 font-bold border-y">
+                          <td className="p-3">(=) Resultado Operacional</td>
+                          <td
+                            className={`p-3 text-right ${dre.resultadoOperacional >= 0 ? 'text-green-600' : 'text-red-600'}`}
+                          >
+                            {formatCurrency(dre.resultadoOperacional)}
+                          </td>
+                        </tr>
+
+                        <tr className="bg-slate-50 font-semibold border-y">
+                          <td className="p-3">(+) Receitas Não Operacionais</td>
+                          <td className="p-3 text-right text-green-600">
+                            {formatCurrency(dre.totalReceitasNaoOperacionais)}
+                          </td>
+                        </tr>
+                        {Object.entries(dre.receitasNaoOperacionais)
+                          .sort((a, b) => b[1] - a[1])
+                          .map(([name, val]) => (
+                            <tr key={name} className="border-b border-slate-100 last:border-0">
+                              <td className="p-3 pl-8 text-slate-600">{name}</td>
+                              <td className="p-3 text-right text-slate-700">
+                                {formatCurrency(val)}
+                              </td>
+                            </tr>
+                          ))}
+
+                        <tr className="bg-slate-50 font-semibold border-y">
+                          <td className="p-3">(-) Despesas Financeiras</td>
+                          <td className="p-3 text-right text-red-600">
+                            {formatCurrency(dre.totalFinanceiras)}
+                          </td>
+                        </tr>
+                        {Object.entries(dre.financeiras)
                           .sort((a, b) => b[1] - a[1])
                           .map(([name, val]) => (
                             <tr key={name} className="border-b border-slate-100 last:border-0">
