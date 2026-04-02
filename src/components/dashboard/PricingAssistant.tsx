@@ -5,6 +5,7 @@ import { Label } from '@/components/ui/label'
 import { Calculator, HelpCircle, AlertTriangle, CheckCircle2, Info } from 'lucide-react'
 import { useState, useMemo } from 'react'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
+import { useDraft } from '@/hooks/use-draft'
 import { Link } from 'react-router-dom'
 import { cn } from '@/lib/utils'
 import {
@@ -18,8 +19,11 @@ import { Transaction } from '@/types/finance'
 
 export function PricingAssistant() {
   const { monthlyMetrics, transactions } = useFinanceStore()
-  const [cost, setCost] = useState('')
-  const [tipoFormula, setTipoFormula] = useState<'capsulas' | 'dermato'>('capsulas')
+  const [cost, setCost] = useDraft('@draft-pricing-cost', '')
+  const [tipoFormula, setTipoFormula] = useDraft<'capsulas' | 'dermato'>(
+    '@draft-pricing-tipo',
+    'capsulas',
+  )
 
   const stats = useMemo(() => {
     // 1. Calcula a janela de 3 meses fechados (ignorando o mês atual)
