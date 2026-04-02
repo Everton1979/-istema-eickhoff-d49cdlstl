@@ -220,18 +220,18 @@ export default function Transactions() {
   }
 
   return (
-    <>
+    <div className="flex-1 overflow-y-auto p-3 sm:p-6 flex flex-col custom-scrollbar">
       <PrintableReport />
-      <div className="flex flex-col bg-white rounded-md shadow-md border p-4 sm:p-6 animate-fade-in-up mb-8 w-full print:hidden">
-        <div className="flex justify-between items-center mb-6">
+      <div className="flex flex-col bg-white rounded-md shadow-md border p-4 sm:p-6 animate-fade-in-up mb-8 w-full print:hidden shrink-0">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
           <div>
             <h1 className="text-2xl font-bold text-primary">Transações</h1>
             <p className="text-sm text-muted-foreground">Gerencie seus lançamentos financeiros</p>
           </div>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap sm:flex-nowrap gap-2 w-full sm:w-auto">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline" className="gap-2 text-slate-600">
+                <Button variant="outline" className="gap-2 text-slate-600 flex-1 sm:flex-none">
                   <Download className="h-4 w-4" /> Exportar
                 </Button>
               </DropdownMenuTrigger>
@@ -245,13 +245,13 @@ export default function Transactions() {
               <Sheet open={isSheetOpen} onOpenChange={handleSheetChange}>
                 <SheetTrigger asChild>
                   <Button
-                    className="gap-2 bg-green-600 hover:bg-green-700"
+                    className="gap-2 bg-green-600 hover:bg-green-700 flex-1 sm:flex-none"
                     onClick={() => setEditingTx(null)}
                   >
                     <Plus className="h-4 w-4" /> Novo Lançamento
                   </Button>
                 </SheetTrigger>
-                <SheetContent className="overflow-y-auto w-full sm:max-w-md">
+                <SheetContent className="overflow-y-auto w-full sm:max-w-md p-4 sm:p-6">
                   <SheetHeader>
                     <SheetTitle>
                       {editingTx ? 'Editar Transação' : 'Adicionar Transação'}
@@ -285,7 +285,7 @@ export default function Transactions() {
               <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
                 placeholder="Buscar descrição ou tag..."
-                className="pl-8"
+                className="pl-8 w-full"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
               />
@@ -305,11 +305,14 @@ export default function Transactions() {
             </Select>
           </div>
 
-          <div className="flex items-center bg-slate-100 p-1 rounded-md border shadow-sm w-full sm:w-auto overflow-x-auto">
+          <div className="flex items-center bg-slate-100 p-1 rounded-md border shadow-sm w-full sm:w-auto overflow-x-auto custom-scrollbar">
             <Button
               variant={quickFilter === 'ALL' ? 'default' : 'ghost'}
               size="sm"
-              className={cn('text-xs h-8 px-4', quickFilter === 'ALL' && 'shadow-sm')}
+              className={cn(
+                'text-xs h-8 px-4 whitespace-nowrap flex-1 sm:flex-none',
+                quickFilter === 'ALL' && 'shadow-sm',
+              )}
               onClick={() => setQuickFilter('ALL')}
             >
               Todos
@@ -318,7 +321,7 @@ export default function Transactions() {
               variant={quickFilter === 'PREVISTO' ? 'default' : 'ghost'}
               size="sm"
               className={cn(
-                'text-xs h-8 px-4',
+                'text-xs h-8 px-4 whitespace-nowrap flex-1 sm:flex-none',
                 quickFilter === 'PREVISTO' && 'bg-blue-600 text-white hover:bg-blue-700 shadow-sm',
               )}
               onClick={() => setQuickFilter('PREVISTO')}
@@ -329,7 +332,7 @@ export default function Transactions() {
               variant={quickFilter === 'VENCIDO' ? 'default' : 'ghost'}
               size="sm"
               className={cn(
-                'text-xs h-8 px-4',
+                'text-xs h-8 px-4 whitespace-nowrap flex-1 sm:flex-none',
                 quickFilter === 'VENCIDO' && 'bg-red-600 text-white hover:bg-red-700 shadow-sm',
               )}
               onClick={() => setQuickFilter('VENCIDO')}
@@ -339,8 +342,8 @@ export default function Transactions() {
           </div>
         </div>
 
-        <div className="rounded-md border bg-white relative">
-          <div className="overflow-x-auto overflow-y-auto max-h-[60vh] w-full custom-scrollbar">
+        <div className="rounded-md border bg-white relative w-full overflow-hidden">
+          <div className="overflow-x-auto overflow-y-auto max-h-[65vh] w-full custom-scrollbar">
             <Table className="min-w-[800px] w-full">
               <TableHeader className="bg-slate-50 sticky top-0 z-10 shadow-sm border-b">
                 <TableRow>
@@ -474,6 +477,6 @@ export default function Transactions() {
           onOpenChange={(open) => !open && setDeletingId(null)}
         />
       </div>
-    </>
+    </div>
   )
 }
