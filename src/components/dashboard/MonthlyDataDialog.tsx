@@ -12,8 +12,15 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useDraft } from '@/hooks/use-draft'
 import { toast } from 'sonner'
-import { PlusCircle, Save, Trash2, AlertCircle } from 'lucide-react'
+import { Database, Save, Trash2, AlertCircle } from 'lucide-react'
 import { supabase } from '@/lib/supabase/client'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { useAuth } from '@/hooks/use-auth'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 
@@ -38,6 +45,25 @@ export function MonthlyDataDialog() {
   const [draft, setDraft, clearDraft] = useDraft('monthly-metrics-draft', INITIAL_DRAFT)
   const [loading, setLoading] = useState(false)
   const [hasDraft, setHasDraft] = useState(false)
+
+  useEffect(() => {
+    const checkHash = () => {
+      if (window.location.hash === '#dados-manipulacao') {
+        setOpen(true)
+        window.history.replaceState(null, '', window.location.pathname + window.location.search)
+      }
+    }
+    checkHash()
+    window.addEventListener('hashchange', checkHash)
+
+    const handleEvent = () => setOpen(true)
+    window.addEventListener('open-dados-manipulacao', handleEvent)
+
+    return () => {
+      window.removeEventListener('hashchange', checkHash)
+      window.removeEventListener('open-dados-manipulacao', handleEvent)
+    }
+  }, [])
 
   useEffect(() => {
     const isDirty = Object.keys(INITIAL_DRAFT).some((key) => {
@@ -107,9 +133,13 @@ export function MonthlyDataDialog() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="gap-2 bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm relative">
-          <PlusCircle className="w-4 h-4" />
-          Lançar Dados Mensais
+        <Button
+          variant="outline"
+          id="btn-dados-manipulacao"
+          className="gap-2 bg-white text-slate-700 hover:bg-slate-50 border-slate-200 shadow-sm relative font-medium"
+        >
+          <Database className="w-4 h-4 text-indigo-500" />
+          Dados Manipulação
           {hasDraft && (
             <span className="absolute -top-1 -right-1 flex h-3 w-3">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
@@ -144,15 +174,28 @@ export function MonthlyDataDialog() {
           <div className="grid grid-cols-2 gap-4 bg-slate-50 p-4 rounded-lg border border-slate-100">
             <div className="space-y-2">
               <Label className="font-semibold text-slate-700">Mês Referência</Label>
-              <Input
-                type="number"
-                min={1}
-                max={12}
-                value={draft.month}
-                onChange={(e) => handleChange('month', e.target.value)}
-                required
-                className="bg-white"
-              />
+              <Select
+                value={String(draft.month)}
+                onValueChange={(val) => handleChange('month', val)}
+              >
+                <SelectTrigger className="bg-white">
+                  <SelectValue placeholder="Selecione o mês" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="1">Janeiro</SelectItem>
+                  <SelectItem value="2">Fevereiro</SelectItem>
+                  <SelectItem value="3">Março</SelectItem>
+                  <SelectItem value="4">Abril</SelectItem>
+                  <SelectItem value="5">Maio</SelectItem>
+                  <SelectItem value="6">Junho</SelectItem>
+                  <SelectItem value="7">Julho</SelectItem>
+                  <SelectItem value="8">Agosto</SelectItem>
+                  <SelectItem value="9">Setembro</SelectItem>
+                  <SelectItem value="10">Outubro</SelectItem>
+                  <SelectItem value="11">Novembro</SelectItem>
+                  <SelectItem value="12">Dezembro</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
             <div className="space-y-2">
               <Label className="font-semibold text-slate-700">Ano Referência</Label>
