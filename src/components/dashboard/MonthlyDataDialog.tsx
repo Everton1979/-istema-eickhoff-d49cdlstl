@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import {
   Dialog,
   DialogContent,
@@ -23,6 +23,7 @@ import {
 } from '@/components/ui/select'
 import { useAuth } from '@/hooks/use-auth'
 import { Alert, AlertDescription } from '@/components/ui/alert'
+import { useFinanceStore } from '@/stores/financeStore'
 
 const INITIAL_DRAFT = {
   month: new Date().getMonth() + 1,
@@ -41,10 +42,12 @@ const INITIAL_DRAFT = {
 
 export function MonthlyDataDialog() {
   const { user } = useAuth()
+  const { monthlyMetrics, saveMonthlyMetric } = useFinanceStore()
   const [open, setOpen] = useState(false)
   const [draft, setDraft, clearDraft] = useDraft('monthly-metrics-draft', INITIAL_DRAFT)
   const [loading, setLoading] = useState(false)
   const [hasDraft, setHasDraft] = useState(false)
+  const [loadedMonthYear, setLoadedMonthYear] = useState<string>('')
 
   useEffect(() => {
     const checkHash = () => {
@@ -65,13 +68,85 @@ export function MonthlyDataDialog() {
     }
   }, [])
 
+  const currentExisting = useMemo(() => {
+    return monthlyMetrics.find(
+      (m) => m.month === Number(draft.month) && m.year === Number(draft.year),
+    )
+  }, [monthlyMetrics, draft.month, draft.year])
+
   useEffect(() => {
-    const isDirty = Object.keys(INITIAL_DRAFT).some((key) => {
+    if (!open) {
+      setLoadedMonthYear('')
+    }
+  }, [open])
+
+  useEffect(() => {
+    if (open) {
+      const currentMonthYear = `${draft.month}-${draft.year}`
+      if (loadedMonthYear !== currentMonthYear) {
+        if (currentExisting) {
+          const isDraftEmpty = Object.keys(INITIAL_DRAFT).every((key) => {
+            if (key === 'month' || key === 'year') return true
+            return (
+              draft[key as keyof typeof draft] === INITIAL_DRAFT[key as keyof typeof INITIAL_DRAFT]
+            )
+          })
+
+          if (isDraftEmpty || loadedMonthYear !== '') {
+            setDraft({
+              month: currentExisting.month,
+              year: currentExisting.year,
+              orders_count: currentExisting.orders_count || '',
+              total_system_sales: currentExisting.total_system_sales || '',
+              raw_material_costs: currentExisting.raw_material_costs || '',
+              sales_target: currentExisting.sales_target || '',
+              num_formulas_capsulas: currentExisting.num_formulas_capsulas || '',
+              vendas_capsulas: currentExisting.vendas_capsulas || '',
+              custo_mp_emb_capsulas: currentExisting.custo_mp_emb_capsulas || '',
+              num_formulas_dermato: currentExisting.num_formulas_dermato || '',
+              vendas_dermato: currentExisting.vendas_dermato || '',
+              custo_mp_emb_dermato: currentExisting.custo_mp_emb_dermato || '',
+            })
+          }
+        } else if (loadedMonthYear !== '') {
+          setDraft({
+            ...INITIAL_DRAFT,
+            month: draft.month,
+            year: draft.year,
+          })
+        }
+        setLoadedMonthYear(currentMonthYear)
+      }
+    }
+  }, [draft.month, draft.year, open, currentExisting, loadedMonthYear, setDraft, draft])
+
+  useEffect(() => {
+    const normalize = (val: any) =>
+      val === 0 || val === '0' || val === null || val === undefined || val === '' ? '' : String(val)
+    const baseData = currentExisting
+      ? {
+          orders_count: currentExisting.orders_count,
+          total_system_sales: currentExisting.total_system_sales,
+          raw_material_costs: currentExisting.raw_material_costs,
+          sales_target: currentExisting.sales_target,
+          num_formulas_capsulas: currentExisting.num_formulas_capsulas,
+          vendas_capsulas: currentExisting.vendas_capsulas,
+          custo_mp_emb_capsulas: currentExisting.custo_mp_emb_capsulas,
+          num_formulas_dermato: currentExisting.num_formulas_dermato,
+          vendas_dermato: currentExisting.vendas_dermato,
+          custo_mp_emb_dermato: currentExisting.custo_mp_emb_dermato,
+        }
+      : INITIAL_DRAFT
+
+    const isDirty = Object.keys(baseData).some((key) => {
       if (key === 'month' || key === 'year') return false
-      return draft[key as keyof typeof draft] !== INITIAL_DRAFT[key as keyof typeof INITIAL_DRAFT]
+      const draftVal = draft[key as keyof typeof draft]
+      const baseVal = baseData[key as keyof typeof baseData]
+      return normalize(draftVal) !== normalize(baseVal)
     })
+
     setHasDraft(isDirty)
-  }, [draft])
+  }, [draft, currentExisting])
 
   const handleChange = (field: string, value: string) => {
     setDraft((prev: any) => ({ ...prev, [field]: value }))
@@ -84,7 +159,6 @@ export function MonthlyDataDialog() {
     setLoading(true)
     try {
       const payload = {
-        user_id: user.id,
         month: Number(draft.month),
         year: Number(draft.year),
         orders_count: Number(draft.orders_count) || 0,
@@ -99,29 +173,11 @@ export function MonthlyDataDialog() {
         custo_mp_emb_dermato: Number(draft.custo_mp_emb_dermato) || 0,
       }
 
-      const { data: existing } = await supabase
-        .from('monthly_metrics')
-        .select('id')
-        .eq('user_id', user.id)
-        .eq('month', payload.month)
-        .eq('year', payload.year)
-        .maybeSingle()
-
-      if (existing) {
-        const { error } = await supabase
-          .from('monthly_metrics')
-          .update(payload)
-          .eq('id', existing.id)
-        if (error) throw error
-      } else {
-        const { error } = await supabase.from('monthly_metrics').insert(payload)
-        if (error) throw error
-      }
+      await saveMonthlyMetric(payload)
 
       toast.success('Dados mensais salvos com sucesso!')
       clearDraft()
       setOpen(false)
-      setTimeout(() => window.location.reload(), 1000)
     } catch (err: any) {
       console.error(err)
       toast.error('Erro ao salvar os dados: ' + err.message)
@@ -246,7 +302,7 @@ export function MonthlyDataDialog() {
                 />
               </div>
               <div className="space-y-2">
-                <Label>Meta de Vendas (R$)</Label>
+                <Label>Meta de Vendas (meta de vendas de manipulados) (R$)</Label>
                 <Input
                   type="number"
                   step="0.01"
