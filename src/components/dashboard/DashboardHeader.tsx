@@ -71,12 +71,11 @@ export function DashboardHeader({ onExport }: { onExport: (filters: any) => void
           </SelectContent>
         </Select>
 
-        <MonthlyDataDialog />
-
         <div className="h-6 w-px bg-slate-200 mx-1 hidden sm:block"></div>
 
         <div className="flex items-center gap-2">
           {profile?.role === 'Administrador' && <MonthlyClosingDialog />}
+          <MonthlyDataDialog />
           <ExportReportDialog onExport={onExport} />
           <DREDialog />
         </div>
