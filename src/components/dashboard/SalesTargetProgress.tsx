@@ -23,11 +23,12 @@ export function SalesTargetProgress() {
     let wDays = 0
     let mName = ''
     let defaultMonth = 1
+    let foundMetric = null
 
     if (filters.months.length === 0) {
       target = monthlyMetrics
         .filter((m) => m.year === currentYear)
-        .reduce((sum, m) => sum + m.sales_target, 0)
+        .reduce((sum, m) => sum + (m.global_sales_target || 0), 0)
 
       transactions.forEach((tx) => {
         const d = new Date(tx.date)
@@ -59,8 +60,8 @@ export function SalesTargetProgress() {
         'Dez',
       ]
 
-      const found = monthlyMetrics.find((m) => m.year === currentYear && m.month === currentMonth)
-      target = found?.sales_target || 0
+      foundMetric = monthlyMetrics.find((m) => m.year === currentYear && m.month === currentMonth)
+      target = foundMetric?.global_sales_target || 0
       wDays = getWorkingDays(currentYear, currentMonth)
       mName = `${monthLabels[currentMonth - 1]}/${currentYear}`
 
@@ -78,14 +79,21 @@ export function SalesTargetProgress() {
     }
 
     return {
-      metric: {
+      metric: foundMetric || {
         id: '',
         month: defaultMonth,
         year: currentYear,
-        sales_target: target,
+        sales_target: 0,
+        global_sales_target: target,
         orders_count: 0,
         total_system_sales: 0,
         raw_material_costs: 0,
+        num_formulas_capsulas: 0,
+        vendas_capsulas: 0,
+        custo_mp_emb_capsulas: 0,
+        num_formulas_dermato: 0,
+        vendas_dermato: 0,
+        custo_mp_emb_dermato: 0,
       },
       monthName: mName,
       workingDays: wDays,
@@ -93,7 +101,8 @@ export function SalesTargetProgress() {
     }
   }, [monthlyMetrics, filters, transactions])
 
-  const target = metric.sales_target
+  const target =
+    filters.months.length === 0 ? metric.global_sales_target || 0 : metric.global_sales_target || 0
   const remaining = Math.max(0, target - achieved)
   const exceeded = Math.max(0, achieved - target)
   const remainingPct = target > 0 ? (remaining / target) * 100 : 0
@@ -108,7 +117,7 @@ export function SalesTargetProgress() {
   const handleSave = async () => {
     const val = parseFloat(tempValue)
     if (!isNaN(val) && val >= 0) {
-      await saveMonthlyMetric({ ...metric, sales_target: val })
+      await saveMonthlyMetric({ ...metric, global_sales_target: val })
     }
     setIsEditing(false)
   }
@@ -127,7 +136,7 @@ export function SalesTargetProgress() {
           <div className="flex items-center gap-1.5 text-emerald-600">
             <Target className="w-4 h-4" />
             <h3 className="text-xs font-bold uppercase tracking-wide">
-              Meta de Vendas ({monthName})
+              Meta de Vendas Totais ({monthName})
             </h3>
           </div>
           {!isEditing && profile?.role !== 'Visitante' && filters.months.length > 0 && (

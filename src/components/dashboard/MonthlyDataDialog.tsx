@@ -33,6 +33,7 @@ export function MonthlyDataDialog() {
 
   const [formData, setFormData] = useState({
     sales_target: '',
+    global_sales_target: '',
     num_formulas_capsulas: '',
     vendas_capsulas: '',
     custo_mp_emb_capsulas: '',
@@ -69,6 +70,9 @@ export function MonthlyDataDialog() {
       if (currentExisting) {
         setFormData({
           sales_target: currentExisting.sales_target ? String(currentExisting.sales_target) : '',
+          global_sales_target: currentExisting.global_sales_target
+            ? String(currentExisting.global_sales_target)
+            : '',
           num_formulas_capsulas: currentExisting.num_formulas_capsulas
             ? String(currentExisting.num_formulas_capsulas)
             : '',
@@ -91,6 +95,7 @@ export function MonthlyDataDialog() {
       } else {
         setFormData({
           sales_target: '',
+          global_sales_target: '',
           num_formulas_capsulas: '',
           vendas_capsulas: '',
           custo_mp_emb_capsulas: '',
@@ -126,6 +131,7 @@ export function MonthlyDataDialog() {
         total_system_sales: total_system_sales,
         raw_material_costs: raw_material_costs,
         sales_target: Number(formData.sales_target) || 0,
+        global_sales_target: Number(formData.global_sales_target) || 0,
         num_formulas_capsulas: Number(formData.num_formulas_capsulas) || 0,
         vendas_capsulas: Number(formData.vendas_capsulas) || 0,
         custo_mp_emb_capsulas: Number(formData.custo_mp_emb_capsulas) || 0,
@@ -204,57 +210,6 @@ export function MonthlyDataDialog() {
 
           <div className="space-y-4">
             <h3 className="font-bold text-slate-800 border-b border-slate-200 pb-2 flex items-center gap-2">
-              <div className="w-1.5 h-4 bg-blue-500 rounded-sm" />
-              Dados Gerais do Sistema
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              <div className="space-y-2">
-                <Label>Pedidos Totais (Cápsulas + Dermato)</Label>
-                <Input
-                  type="number"
-                  value={orders_count || ''}
-                  disabled
-                  className="bg-slate-50 text-slate-500 font-medium"
-                  placeholder="0"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label>Vendas Totais (R$)</Label>
-                <Input
-                  type="number"
-                  step="0.01"
-                  value={total_system_sales || ''}
-                  disabled
-                  className="bg-slate-50 text-slate-500 font-medium"
-                  placeholder="0.00"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label>Custo Matéria Prima (R$)</Label>
-                <Input
-                  type="number"
-                  step="0.01"
-                  value={raw_material_costs || ''}
-                  disabled
-                  className="bg-slate-50 text-slate-500 font-medium"
-                  placeholder="0.00"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label>Meta de Vendas (meta de vendas de manipulados) (R$)</Label>
-                <Input
-                  type="number"
-                  step="0.01"
-                  value={formData.sales_target}
-                  onChange={(e) => handleChange('sales_target', e.target.value)}
-                  placeholder="0.00"
-                />
-              </div>
-            </div>
-          </div>
-
-          <div className="space-y-4">
-            <h3 className="font-bold text-slate-800 border-b border-slate-200 pb-2 flex items-center gap-2">
               <div className="w-1.5 h-4 bg-emerald-500 rounded-sm" />
               Setor Cápsulas
             </h3>
@@ -323,6 +278,67 @@ export function MonthlyDataDialog() {
                   step="0.01"
                   value={formData.custo_mp_emb_dermato}
                   onChange={(e) => handleChange('custo_mp_emb_dermato', e.target.value)}
+                  placeholder="0.00"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            <h3 className="font-bold text-slate-800 border-b border-slate-200 pb-2 flex items-center gap-2">
+              <div className="w-1.5 h-4 bg-blue-500 rounded-sm" />
+              Dados Gerais do Sistema
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="space-y-2">
+                <Label>Pedidos Totais (Cápsulas + Dermato)</Label>
+                <Input
+                  type="number"
+                  value={orders_count || ''}
+                  disabled
+                  className="bg-slate-50 text-slate-500 font-medium"
+                  placeholder="0"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Vendas Totais (R$)</Label>
+                <Input
+                  type="number"
+                  step="0.01"
+                  value={total_system_sales || ''}
+                  disabled
+                  className="bg-slate-50 text-slate-500 font-medium"
+                  placeholder="0.00"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Custo Matéria Prima (R$)</Label>
+                <Input
+                  type="number"
+                  step="0.01"
+                  value={raw_material_costs || ''}
+                  disabled
+                  className="bg-slate-50 text-slate-500 font-medium"
+                  placeholder="0.00"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Meta de Vendas Manipulados (R$)</Label>
+                <Input
+                  type="number"
+                  step="0.01"
+                  value={formData.sales_target}
+                  onChange={(e) => handleChange('sales_target', e.target.value)}
+                  placeholder="0.00"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Meta de Vendas Totais (R$)</Label>
+                <Input
+                  type="number"
+                  step="0.01"
+                  value={formData.global_sales_target}
+                  onChange={(e) => handleChange('global_sales_target', e.target.value)}
                   placeholder="0.00"
                 />
               </div>
