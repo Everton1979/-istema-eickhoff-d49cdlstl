@@ -14,6 +14,7 @@ export type Database = {
           created_at: string
           custo_mp_emb_capsulas: number
           custo_mp_emb_dermato: number
+          global_sales_target: number
           id: string
           month: number
           num_formulas_capsulas: number
@@ -32,6 +33,7 @@ export type Database = {
           created_at?: string
           custo_mp_emb_capsulas?: number
           custo_mp_emb_dermato?: number
+          global_sales_target?: number
           id?: string
           month: number
           num_formulas_capsulas?: number
@@ -50,6 +52,7 @@ export type Database = {
           created_at?: string
           custo_mp_emb_capsulas?: number
           custo_mp_emb_dermato?: number
+          global_sales_target?: number
           id?: string
           month?: number
           num_formulas_capsulas?: number
@@ -338,6 +341,7 @@ export const Constants = {
 //   num_formulas_dermato: integer (not null, default: 0)
 //   vendas_dermato: numeric (not null, default: 0)
 //   custo_mp_emb_dermato: numeric (not null, default: 0)
+//   global_sales_target: numeric (not null, default: 0)
 // Table: profiles
 //   id: uuid (not null)
 //   email: text (not null)

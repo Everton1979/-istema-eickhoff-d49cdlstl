@@ -160,6 +160,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
           total_system_sales: Number(m.total_system_sales),
           raw_material_costs: Number(m.raw_material_costs),
           sales_target: Number(m.sales_target || 0),
+          global_sales_target: Number(m.global_sales_target || 0),
           num_formulas_capsulas: Number(m.num_formulas_capsulas || 0),
           vendas_capsulas: Number(m.vendas_capsulas || 0),
           custo_mp_emb_capsulas: Number(m.custo_mp_emb_capsulas || 0),
@@ -308,6 +309,10 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
         metric.raw_material_costs !== undefined ? metric.raw_material_costs : raw_material_costs,
       sales_target:
         metric.sales_target !== undefined ? metric.sales_target : existing?.sales_target || 0,
+      global_sales_target:
+        metric.global_sales_target !== undefined
+          ? metric.global_sales_target
+          : existing?.global_sales_target || 0,
       num_formulas_capsulas: metric.num_formulas_capsulas || 0,
       vendas_capsulas: metric.vendas_capsulas || 0,
       custo_mp_emb_capsulas: metric.custo_mp_emb_capsulas || 0,
@@ -348,6 +353,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
             total_system_sales: Number(data.total_system_sales),
             raw_material_costs: Number(data.raw_material_costs),
             sales_target: Number(data.sales_target || 0),
+            global_sales_target: Number(data.global_sales_target || 0),
             num_formulas_capsulas: Number(data.num_formulas_capsulas || 0),
             vendas_capsulas: Number(data.vendas_capsulas || 0),
             custo_mp_emb_capsulas: Number(data.custo_mp_emb_capsulas || 0),
