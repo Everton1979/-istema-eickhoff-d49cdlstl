@@ -61,22 +61,28 @@ interface FinanceContextType {
 const FinanceContext = createContext<FinanceContextType | undefined>(undefined)
 
 const mapTypeToDB = (type: string) => (type === 'INCOME' ? 'receita' : 'despesa')
-const mapTypeFromDB = (type: string) => (type === 'receita' ? 'INCOME' : 'EXPENSE')
+const mapTypeFromDB = (type: string | null) => {
+  if (!type) return 'EXPENSE'
+  const t = type.toLowerCase().trim()
+  return t === 'receita' || t === 'income' ? 'INCOME' : 'EXPENSE'
+}
 
 const mapCategoryToDB = (cat: string | undefined) => {
   if (!cat) return null
-  if (cat === 'FIXA') return 'fixa'
-  if (cat === 'VARIAVEL') return 'variável'
-  if (cat === 'RECEITA_OPERACIONAL') return 'receita_operacional'
-  if (cat === 'RECEITA_NAO_OPERACIONAL') return 'receita_nao_operacional'
+  const c = cat.toUpperCase()
+  if (c === 'FIXA') return 'fixa'
+  if (c === 'VARIAVEL') return 'variável'
+  if (c === 'RECEITA_OPERACIONAL') return 'receita_operacional'
+  if (c === 'RECEITA_NAO_OPERACIONAL') return 'receita_nao_operacional'
   return cat.toLowerCase()
 }
 const mapCategoryFromDB = (cat: string | null) => {
   if (!cat) return ''
-  if (cat === 'fixa') return 'FIXA'
-  if (cat === 'variável') return 'VARIAVEL'
-  if (cat === 'receita_operacional') return 'RECEITA_OPERACIONAL'
-  if (cat === 'receita_nao_operacional') return 'RECEITA_NAO_OPERACIONAL'
+  const c = cat.toLowerCase().trim()
+  if (c === 'fixa') return 'FIXA'
+  if (c === 'variável' || c === 'variavel') return 'VARIAVEL'
+  if (c === 'receita_operacional') return 'RECEITA_OPERACIONAL'
+  if (c === 'receita_nao_operacional') return 'RECEITA_NAO_OPERACIONAL'
   return cat.toUpperCase()
 }
 
@@ -376,7 +382,6 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
     let query = supabase
       .from('transactions')
       .select('*')
-      .eq('user_id', user.id)
       .gte('date', startDate)
       .lte('date', `${endDate}T23:59:59.999Z`)
       .order('date', { ascending: true })
