@@ -6,10 +6,10 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 import { HelpCircle } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
-export function KpiCards() {
+export function useKpiMetrics() {
   const { filteredTransactions, filteredMonthlyMetrics, categories, filters } = useFinanceStore()
 
-  const metrics = useMemo(() => {
+  return useMemo(() => {
     const totalRawMaterial = filteredMonthlyMetrics.reduce(
       (sum, m) => sum + m.raw_material_costs,
       0,
@@ -52,12 +52,39 @@ export function KpiCards() {
 
     return { receitas, despesas: despesasFluxo, margem, lucro, ebitda, pontoEquilibrio }
   }, [filteredTransactions, filteredMonthlyMetrics, categories, filters])
+}
 
-  const formatCurrency = (val: number) =>
-    new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(
-      val,
-    )
+const formatCurrency = (val: number) =>
+  new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(val)
 
+function KpiCard({ kpi }: { kpi: any }) {
+  return (
+    <Card className={cn('rounded-sm border-t-4 shadow-sm bg-white', kpi.border)}>
+      <CardContent className="p-2 text-center flex flex-col justify-center h-full">
+        <h3 className="text-[10px] font-bold text-gray-600 uppercase mb-1 flex items-center justify-center gap-1">
+          {kpi.title}
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Link to={`/glossario#${kpi.id}`}>
+                <HelpCircle className="w-3 h-3 text-gray-400 hover:text-blue-600 cursor-pointer" />
+              </Link>
+            </TooltipTrigger>
+            <TooltipContent className="max-w-[200px] text-center" side="bottom">
+              <p className="text-xs">{kpi.tooltip}</p>
+              <p className="text-[9px] text-blue-300 mt-1 border-t border-slate-700/50 pt-1">
+                Clique para ver no Glossário
+              </p>
+            </TooltipContent>
+          </Tooltip>
+        </h3>
+        <p className={cn('text-xl font-bold tracking-tight', kpi.color)}>{kpi.value}</p>
+      </CardContent>
+    </Card>
+  )
+}
+
+export function OperationalKpis() {
+  const metrics = useKpiMetrics()
   const kpis = [
     {
       id: 'receitas-operacionais',
@@ -83,6 +110,20 @@ export function KpiCards() {
       color: metrics.lucro >= 0 ? 'text-emerald-600' : 'text-red-600',
       border: metrics.lucro >= 0 ? 'border-t-emerald-500' : 'border-t-red-500',
     },
+  ]
+
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-2">
+      {kpis.map((kpi, i) => (
+        <KpiCard key={i} kpi={kpi} />
+      ))}
+    </div>
+  )
+}
+
+export function StrategicKpis() {
+  const metrics = useKpiMetrics()
+  const kpis = [
     {
       id: 'ebitda',
       title: 'EBITDA',
@@ -110,29 +151,9 @@ export function KpiCards() {
   ]
 
   return (
-    <div className="grid grid-cols-2 lg:grid-cols-6 gap-2 mb-2">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
       {kpis.map((kpi, i) => (
-        <Card key={i} className={cn('rounded-sm border-t-4 shadow-sm', kpi.border)}>
-          <CardContent className="p-2 text-center flex flex-col justify-center h-full">
-            <h3 className="text-[10px] font-bold text-gray-600 uppercase mb-1 flex items-center justify-center gap-1">
-              {kpi.title}
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Link to={`/glossario#${kpi.id}`}>
-                    <HelpCircle className="w-3 h-3 text-gray-400 hover:text-blue-600 cursor-pointer" />
-                  </Link>
-                </TooltipTrigger>
-                <TooltipContent className="max-w-[200px] text-center" side="bottom">
-                  <p className="text-xs">{kpi.tooltip}</p>
-                  <p className="text-[9px] text-blue-300 mt-1 border-t border-slate-700/50 pt-1">
-                    Clique para ver no Glossário
-                  </p>
-                </TooltipContent>
-              </Tooltip>
-            </h3>
-            <p className={cn('text-xl font-bold tracking-tight', kpi.color)}>{kpi.value}</p>
-          </CardContent>
-        </Card>
+        <KpiCard key={i} kpi={kpi} />
       ))}
     </div>
   )

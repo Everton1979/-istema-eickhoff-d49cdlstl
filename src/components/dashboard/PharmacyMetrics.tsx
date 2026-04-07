@@ -153,7 +153,7 @@ export function PharmacyMetrics() {
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wide flex items-center gap-2">
           <div className="w-2 h-4 bg-indigo-500 rounded-sm" />
-          Inteligência por Segmento & Analytics
+          Inteligência Analítica por Segmento
         </h3>
       </div>
       <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">

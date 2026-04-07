@@ -1,6 +1,5 @@
 import { DashboardHeader } from '@/components/dashboard/DashboardHeader'
-import { KpiCards } from '@/components/dashboard/KpiCards'
-import { BreakEvenMonitor } from '@/components/dashboard/BreakEvenMonitor'
+import { OperationalKpis, StrategicKpis } from '@/components/dashboard/KpiCards'
 import { UpcomingCommitments } from '@/components/dashboard/UpcomingCommitments'
 import { AccountBalances } from '@/components/dashboard/AccountBalances'
 import { PharmacyMetrics } from '@/components/dashboard/PharmacyMetrics'
@@ -25,9 +24,9 @@ export default function Index() {
         </div>
 
         <div className="flex-1 overflow-y-auto p-4 md:p-6 flex flex-col gap-8">
-          {/* Top row: Reorganized KPIs (Receitas -> ... -> Ponto Equilibrio) */}
+          {/* Top row: Operational KPIs */}
           <section className="w-full">
-            <KpiCards />
+            <OperationalKpis />
           </section>
 
           {/* Destaque Central: Assistente de Precificação Estratégica */}
@@ -47,29 +46,10 @@ export default function Index() {
             </div>
           </section>
 
-          {/* Main Analytics Grid - Índices à esquerda, Gráficos à direita */}
-          <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 mt-2">
-            {/* Coluna Esquerda: Índices e Métricas (Metodologia) */}
-            <div className="xl:col-span-5 flex flex-col gap-6">
-              <PharmacyMetrics />
-              <div className="bg-white p-4 rounded-lg shadow-sm border border-slate-200 flex-1 min-h-[260px]">
-                <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wide mb-4 flex items-center gap-2">
-                  <div className="w-2 h-4 bg-sky-500 rounded-sm" />
-                  Monitor de Ponto de Equilíbrio
-                </h3>
-                <BreakEvenMonitor />
-              </div>
-              <div className="bg-white p-4 rounded-lg shadow-sm border border-slate-200">
-                <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wide mb-4 flex items-center gap-2">
-                  <div className="w-2 h-4 bg-amber-500 rounded-sm" />
-                  Meta de Vendas
-                </h3>
-                <SalesTargetProgress />
-              </div>
-            </div>
-
-            {/* Coluna Direita: Gráficos e Distribuição (Destaque visual) */}
-            <div className="xl:col-span-7 flex flex-col gap-6">
+          {/* Main Analytics Grid - Visão Operacional */}
+          <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 mt-2">
+            {/* Gráficos Principais */}
+            <div className="xl:col-span-8 flex flex-col gap-6">
               <div className="bg-white p-4 rounded-lg shadow-sm border border-slate-200 flex-1 flex flex-col">
                 <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wide mb-4 flex items-center gap-2">
                   <div className="w-2 h-4 bg-emerald-500 rounded-sm" />
@@ -80,37 +60,60 @@ export default function Index() {
                 </div>
               </div>
 
-              <div className="bg-white p-4 rounded-lg shadow-sm border border-slate-200">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="bg-white p-4 rounded-lg shadow-sm border border-slate-200">
+                  <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wide mb-4 flex items-center gap-2">
+                    <div className="w-2 h-4 bg-amber-500 rounded-sm" />
+                    Meta de Vendas
+                  </h3>
+                  <SalesTargetProgress />
+                </div>
+                <div className="bg-white p-4 rounded-lg shadow-sm border border-slate-200">
+                  <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wide mb-4 flex items-center gap-2">
+                    <div className="w-2 h-4 bg-purple-500 rounded-sm" />
+                    Distribuição de Despesas Operacionais
+                  </h3>
+                  <ExpenseDistribution />
+                </div>
+              </div>
+            </div>
+
+            {/* Painel Lateral Operacional */}
+            <div className="xl:col-span-4 flex flex-col gap-6">
+              <div className="bg-white p-4 rounded-lg shadow-sm border border-slate-200 min-h-[250px] flex flex-col">
                 <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wide mb-4 flex items-center gap-2">
-                  <div className="w-2 h-4 bg-purple-500 rounded-sm" />
-                  Distribuição de Despesas Operacionais
+                  <div className="w-2 h-4 bg-blue-600 rounded-sm" />
+                  Saldos em Contas
                 </h3>
-                <ExpenseDistribution />
+                <div className="flex-1 overflow-hidden">
+                  <AccountBalances />
+                </div>
+              </div>
+              <div className="bg-white p-4 rounded-lg shadow-sm border border-slate-200 min-h-[250px] flex flex-col flex-1">
+                <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wide mb-4 flex items-center gap-2">
+                  <div className="w-2 h-4 bg-rose-500 rounded-sm" />
+                  Próximos Compromissos
+                </h3>
+                <div className="flex-1 overflow-hidden">
+                  <UpcomingCommitments />
+                </div>
               </div>
             </div>
           </div>
 
-          {/* Bottom Tools */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 pb-8">
-            <div className="bg-white p-4 rounded-lg shadow-sm border border-slate-200 min-h-[250px] flex flex-col">
-              <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wide mb-4 flex items-center gap-2">
-                <div className="w-2 h-4 bg-rose-500 rounded-sm" />
-                Próximos Compromissos
-              </h3>
-              <div className="flex-1 overflow-hidden">
-                <UpcomingCommitments />
-              </div>
+          {/* Seção Estratégica (Fechamento) */}
+          <section className="w-full bg-slate-200/50 p-6 rounded-xl border border-slate-300 shadow-sm mt-4">
+            <h2 className="text-lg font-bold text-slate-800 uppercase tracking-wide mb-6 flex items-center gap-3">
+              <div className="w-3 h-6 bg-slate-700 rounded-sm" />
+              Análise Estratégica (Fechamento Mensal)
+            </h2>
+
+            <StrategicKpis />
+
+            <div className="mt-6">
+              <PharmacyMetrics />
             </div>
-            <div className="bg-white p-4 rounded-lg shadow-sm border border-slate-200 min-h-[250px] flex flex-col">
-              <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wide mb-4 flex items-center gap-2">
-                <div className="w-2 h-4 bg-blue-600 rounded-sm" />
-                Saldos em Contas
-              </h3>
-              <div className="flex-1 overflow-hidden">
-                <AccountBalances />
-              </div>
-            </div>
-          </div>
+          </section>
 
           <StatusDetailPanel />
         </div>
