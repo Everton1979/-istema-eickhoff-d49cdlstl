@@ -100,11 +100,16 @@ export default function Transactions() {
         return dateB.localeCompare(dateA) // Ordem decrescente de data
       }
 
-      // Dentro do mesmo dia, as receitas (INCOME) aparecem primeiro
+      // Dentro do mesmo dia:
+      // 1. PREVISTO aparece primeiro
+      if (a.status === 'PREVISTO' && b.status !== 'PREVISTO') return -1
+      if (a.status !== 'PREVISTO' && b.status === 'PREVISTO') return 1
+
+      // 2. Receitas (INCOME) antes de Despesas (EXPENSE)
       if (a.type === 'INCOME' && b.type === 'EXPENSE') return -1
       if (a.type === 'EXPENSE' && b.type === 'INCOME') return 1
 
-      // Se forem do mesmo tipo, mantém a ordem cronológica original baseada na string completa
+      // Se forem do mesmo tipo e status, mantém a ordem cronológica original baseada na string completa
       return b.date.localeCompare(a.date)
     })
 
@@ -183,7 +188,7 @@ export default function Transactions() {
       ['EXTRATO DE DESPESAS'],
     ]
 
-    const headers = ['Data', 'Descrição', 'Categoria', 'Conta', 'Status', 'Valor', 'Tags']
+    const headers = ['Data', 'Descrição', 'Categoria', 'Conta', 'Status', 'Valor', 'Observações']
 
     const exportData = filteredData
       .filter((tx) => tx.type === 'EXPENSE')
@@ -275,7 +280,7 @@ export default function Transactions() {
             </span>
           </div>
           <span className="text-blue-600/80 text-xs sm:ml-auto">
-            (Altere o filtro de mês no menu lateral do dashboard)
+            (Altere o filtro de mês no menu lateral do Painel Geral)
           </span>
         </div>
 
@@ -284,7 +289,7 @@ export default function Transactions() {
             <div className="relative w-full sm:w-[260px]">
               <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder="Buscar descrição ou tag..."
+                placeholder="Buscar descrição ou observação..."
                 className="pl-8 w-full"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
@@ -348,7 +353,7 @@ export default function Transactions() {
               <TableHeader className="bg-slate-50 sticky top-0 z-10 shadow-sm border-b">
                 <TableRow>
                   <TableHead className="w-28">Data</TableHead>
-                  <TableHead>Descrição</TableHead>
+                  <TableHead>Descrição / Observações</TableHead>
                   <TableHead>Categoria</TableHead>
                   <TableHead>Conta</TableHead>
                   <TableHead>Status</TableHead>

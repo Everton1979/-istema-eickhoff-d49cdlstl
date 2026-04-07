@@ -445,13 +445,13 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
 
               <div className="space-y-2">
                 <FormLabel className="flex items-center gap-1.5">
-                  <TagIcon className="w-3.5 h-3.5" /> Tags (Opcional)
+                  <TagIcon className="w-3.5 h-3.5" /> Observações (Opcional)
                 </FormLabel>
                 <div className="flex items-center gap-2">
                   <Input
                     value={tagInput}
                     onChange={(e) => setTagInput(e.target.value)}
-                    placeholder="Adicionar tag..."
+                    placeholder="Adicionar observação..."
                     className="h-9"
                     onKeyDown={(e) => {
                       if (e.key === 'Enter') {
@@ -496,7 +496,7 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
 
                 {allUniqueTags.length > 0 && (
                   <div className="mt-2 pt-2 border-t">
-                    <p className="text-[10px] text-slate-500 mb-1.5">Tags Sugeridas:</p>
+                    <p className="text-[10px] text-slate-500 mb-1.5">Observações Sugeridas:</p>
                     <div className="flex flex-wrap gap-1.5">
                       {allUniqueTags
                         .filter((t) => !tagsList.includes(t))

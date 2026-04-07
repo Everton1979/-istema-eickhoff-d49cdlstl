@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input'
 import { Target, Pencil, Check, X } from 'lucide-react'
 import { useState, useMemo } from 'react'
 import { getWorkingDays } from '@/lib/holidays'
+import { cn } from '@/lib/utils'
 
 export function SalesTargetProgress() {
   const { monthlyMetrics, saveMonthlyMetric, filters, transactions } = useFinanceStore()
@@ -14,8 +15,9 @@ export function SalesTargetProgress() {
   const [isEditing, setIsEditing] = useState(false)
   const [tempValue, setTempValue] = useState('')
 
-  const { metric, monthName, workingDays, achieved } = useMemo(() => {
-    const currentYear = parseInt(filters.years[0] || new Date().getFullYear().toString())
+  const { metric, monthName, workingDays, achieved, isPastMonth } = useMemo(() => {
+    const today = new Date()
+    const currentYear = parseInt(filters.years[0] || today.getFullYear().toString())
     const targetStatuses = filters.statuses.length > 0 ? filters.statuses : ['REALIZADO']
 
     let target = 0
@@ -24,8 +26,10 @@ export function SalesTargetProgress() {
     let mName = ''
     let defaultMonth = 1
     let foundMetric = null
+    let pastMonth = false
 
     if (filters.months.length === 0) {
+      pastMonth = currentYear < today.getFullYear()
       target = monthlyMetrics
         .filter((m) => m.year === currentYear)
         .reduce((sum, m) => sum + (m.global_sales_target || 0), 0)
@@ -44,6 +48,9 @@ export function SalesTargetProgress() {
       mName = `Ano ${currentYear}`
     } else {
       const currentMonth = parseInt(filters.months[0])
+      pastMonth =
+        currentYear < today.getFullYear() ||
+        (currentYear === today.getFullYear() && currentMonth < today.getMonth() + 1)
       defaultMonth = currentMonth
       const monthLabels = [
         'Jan',
@@ -79,6 +86,7 @@ export function SalesTargetProgress() {
     }
 
     return {
+      isPastMonth: pastMonth,
       metric: foundMetric || {
         id: '',
         month: defaultMonth,
@@ -199,17 +207,33 @@ export function SalesTargetProgress() {
             className={exceeded > 0 ? 'h-2 bg-gray-100 [&>div]:bg-emerald-500' : 'h-2 bg-gray-100'}
           />
           <div className="flex justify-between items-start text-[10px] mt-1">
-            <div className="flex flex-col">
-              <p className="text-gray-500 font-medium">
-                Diária:{' '}
-                <span className="text-gray-800 font-bold">{formatCurrency(dailyTarget)}</span>
-              </p>
-              <span className="text-gray-400 text-[8px] -mt-0.5">({workingDays} dias úteis)</span>
-            </div>
+            {!isPastMonth ? (
+              <div className="flex flex-col">
+                <p className="text-gray-500 font-medium">
+                  Diária:{' '}
+                  <span className="text-gray-800 font-bold">{formatCurrency(dailyTarget)}</span>
+                </p>
+                <span className="text-gray-400 text-[8px] -mt-0.5">({workingDays} dias úteis)</span>
+              </div>
+            ) : (
+              <div className="flex flex-col">
+                <p className="text-gray-500 font-medium">
+                  Status:{' '}
+                  <span
+                    className={cn(
+                      'font-bold',
+                      exceeded > 0 ? 'text-emerald-600' : 'text-orange-500',
+                    )}
+                  >
+                    {exceeded >= 0 ? 'Meta Batida' : 'Não Atingida'}
+                  </span>
+                </p>
+              </div>
+            )}
             {target > 0 && remaining > 0 && (
               <div className="flex flex-col items-end">
                 <span className="font-bold text-orange-500">
-                  Falta: {formatCurrency(remaining)}
+                  {isPastMonth ? 'Faltou:' : 'Falta:'} {formatCurrency(remaining)}
                 </span>
                 <span className="text-orange-400 font-medium text-[9px] -mt-0.5">
                   ({remainingPct.toFixed(1)}% restando)
@@ -219,7 +243,7 @@ export function SalesTargetProgress() {
             {target > 0 && exceeded > 0 && (
               <div className="flex flex-col items-end">
                 <span className="font-bold text-emerald-600">
-                  Superado: +{formatCurrency(exceeded)}
+                  {isPastMonth ? 'Superou:' : 'Superado:'} +{formatCurrency(exceeded)}
                 </span>
                 <span className="text-emerald-500 font-medium text-[9px] -mt-0.5">
                   ({((exceeded / target) * 100).toFixed(1)}% acima da meta)
