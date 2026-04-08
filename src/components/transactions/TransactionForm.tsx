@@ -187,11 +187,7 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
       let finalDescription = values.description?.trim() || ''
 
       if (values.type === 'INCOME') {
-        const allMethods = [
-          ...PAYMENT_METHODS,
-          { id: 'banco', name: 'Banco' },
-          { id: 'corretora', name: 'Corretora' },
-        ]
+        const allMethods = PAYMENT_METHODS
         const pmName = allMethods.find((p) => p.id === values.paymentMethodId)?.name || ''
         const newAutoDesc = pmName ? `Receita - ${pmName}` : 'Receita'
 
@@ -567,8 +563,6 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
                             {pm.name}
                           </SelectItem>
                         ))}
-                        <SelectItem value="banco">Banco</SelectItem>
-                        <SelectItem value="corretora">Corretora</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />

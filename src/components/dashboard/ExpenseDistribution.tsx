@@ -1,31 +1,98 @@
 import { useFinanceStore } from '@/stores/financeStore'
 import { useMemo } from 'react'
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts'
+
+const FIXA_LABELS: Record<string, string> = {
+  pessoal: 'Pessoal',
+  infraestrutura: 'Infraestrutura',
+  operacional_administrativo: 'Operacional/Admin',
+  softwares_assinaturas: 'Softwares/Ass.',
+  utilidades: 'Utilidades',
+  servicos_profissionais: 'Serviços Prof.',
+  seguros: 'Seguros',
+  financeiro: 'Financeiro',
+  marketing: 'Marketing',
+  juros_multas: 'Juros/Multas',
+  outros: 'Outros',
+}
+
+const VARIAVEL_LABELS: Record<string, string> = {
+  materia_prima: 'Matéria-prima',
+  embalagens: 'Embalagens',
+  medicamentos_drogaria: 'Medicamentos',
+  impostos: 'Impostos',
+  taxas_cartao: 'Taxas Cartão',
+  logistica: 'Logística',
+  fidelidade_promocao: 'Fidelidade/Promo',
+  outros: 'Outros',
+}
+
+const COLORS = [
+  '#f97316',
+  '#3b82f6',
+  '#10b981',
+  '#8b5cf6',
+  '#a855f7',
+  '#ec4899',
+  '#f43f5e',
+  '#eab308',
+  '#06b6d4',
+  '#14b8a6',
+]
 
 export function ExpenseDistribution() {
   const { filteredTransactions, filters } = useFinanceStore()
 
-  const { pctFixa, pctVariavel, totalExpenses, cfaTotal, varExpenses } = useMemo(() => {
-    let cfaTotal = 0
-    let varExpenses = 0
+  const { pctFixa, pctVariavel, totalExpenses, cfaTotal, varExpenses, fixasData, variaveisData } =
+    useMemo(() => {
+      let cfaTotal = 0
+      let varExpenses = 0
+      const fixasMap: Record<string, number> = {}
+      const variaveisMap: Record<string, number> = {}
 
-    const targetStatuses = filters.statuses.length > 0 ? filters.statuses : ['REALIZADO']
+      const targetStatuses = filters.statuses.length > 0 ? filters.statuses : ['REALIZADO']
 
-    filteredTransactions.forEach((t) => {
-      if (t.type === 'EXPENSE' && targetStatuses.includes(t.status)) {
-        if (t.categoryId === 'FIXA') cfaTotal += t.amount
-        if (t.categoryId === 'VARIAVEL') varExpenses += t.amount
+      filteredTransactions.forEach((t) => {
+        if (t.type === 'EXPENSE' && targetStatuses.includes(t.status)) {
+          if (t.categoryId === 'FIXA') {
+            cfaTotal += t.amount
+            const sub = t.subcategoryId || 'outros'
+            fixasMap[sub] = (fixasMap[sub] || 0) + t.amount
+          }
+          if (t.categoryId === 'VARIAVEL') {
+            varExpenses += t.amount
+            const sub = t.subcategoryId || 'outros'
+            variaveisMap[sub] = (variaveisMap[sub] || 0) + t.amount
+          }
+        }
+      })
+
+      const total = cfaTotal + varExpenses
+
+      const fixasData = Object.entries(fixasMap)
+        .map(([key, value]) => ({
+          name: FIXA_LABELS[key] || key,
+          value,
+        }))
+        .sort((a, b) => b.value - a.value)
+
+      const variaveisData = Object.entries(variaveisMap)
+        .map(([key, value]) => ({
+          name: VARIAVEL_LABELS[key] || key,
+          value,
+        }))
+        .sort((a, b) => b.value - a.value)
+
+      return {
+        totalExpenses: total,
+        cfaTotal,
+        varExpenses,
+        pctFixa: total > 0 ? (cfaTotal / total) * 100 : 0,
+        pctVariavel: total > 0 ? (varExpenses / total) * 100 : 0,
+        fixasData,
+        variaveisData,
       }
-    })
-
-    const total = cfaTotal + varExpenses
-    return {
-      totalExpenses: total,
-      cfaTotal,
-      varExpenses,
-      pctFixa: total > 0 ? (cfaTotal / total) * 100 : 0,
-      pctVariavel: total > 0 ? (varExpenses / total) * 100 : 0,
-    }
-  }, [filteredTransactions, filters])
+    }, [filteredTransactions, filters])
 
   if (totalExpenses === 0) return null
 
@@ -33,45 +100,142 @@ export function ExpenseDistribution() {
     new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val)
 
   return (
-    <div className="bg-white p-3 rounded-sm border shadow-sm flex flex-col justify-center">
-      <div className="flex items-center justify-between mb-2">
+    <div className="bg-white p-4 rounded-sm border shadow-sm flex flex-col gap-4">
+      <div className="flex items-center justify-between">
         <h3 className="text-xs font-bold text-gray-600 uppercase tracking-wide">
-          Distribuição de Despesas
+          Composição de Despesas
         </h3>
       </div>
-      <div className="flex h-3 w-full rounded-full overflow-hidden bg-gray-100 mb-3 shadow-inner">
-        <div
-          style={{ width: `${pctFixa}%` }}
-          className="bg-orange-400 transition-all duration-500"
-          title={`Fixas: ${pctFixa.toFixed(1)}%`}
-        />
-        <div
-          style={{ width: `${pctVariavel}%` }}
-          className="bg-emerald-400 transition-all duration-500"
-          title={`Variáveis: ${pctVariavel.toFixed(1)}%`}
-        />
+
+      <div>
+        <div className="flex h-3 w-full rounded-full overflow-hidden bg-gray-100 mb-3 shadow-inner">
+          <div
+            style={{ width: `${pctFixa}%` }}
+            className="bg-orange-400 transition-all duration-500"
+            title={`Fixas: ${pctFixa.toFixed(1)}%`}
+          />
+          <div
+            style={{ width: `${pctVariavel}%` }}
+            className="bg-emerald-400 transition-all duration-500"
+            title={`Variáveis: ${pctVariavel.toFixed(1)}%`}
+          />
+        </div>
+        <div className="flex justify-between items-center px-1">
+          <div className="flex flex-col">
+            <div className="flex items-center gap-1.5 text-[10px] text-gray-500 font-medium uppercase mb-0.5">
+              <div className="w-2 h-2 rounded-sm bg-orange-400" />
+              Fixas
+            </div>
+            <span className="font-bold text-orange-600 text-sm leading-none">
+              {formatCurrency(cfaTotal)}
+            </span>
+            <span className="text-[10px] text-gray-400 mt-0.5">{pctFixa.toFixed(1)}%</span>
+          </div>
+          <div className="flex flex-col text-right items-end">
+            <div className="flex items-center gap-1.5 text-[10px] text-gray-500 font-medium uppercase mb-0.5">
+              Variáveis
+              <div className="w-2 h-2 rounded-sm bg-emerald-400" />
+            </div>
+            <span className="font-bold text-emerald-600 text-sm leading-none">
+              {formatCurrency(varExpenses)}
+            </span>
+            <span className="text-[10px] text-gray-400 mt-0.5">{pctVariavel.toFixed(1)}%</span>
+          </div>
+        </div>
       </div>
-      <div className="flex justify-between items-center mt-1 px-1">
-        <div className="flex flex-col">
-          <div className="flex items-center gap-1.5 text-[10px] text-gray-500 font-medium uppercase mb-0.5">
-            <div className="w-2 h-2 rounded-sm bg-orange-400" />
-            Fixas
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4 pt-4 border-t border-slate-100">
+        {fixasData.length > 0 && (
+          <div className="flex flex-col items-center">
+            <h4 className="text-[11px] font-bold text-slate-500 uppercase tracking-wide mb-2">
+              Detalhamento Fixas
+            </h4>
+            <div className="h-[250px] w-full">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Tooltip
+                    formatter={(value: number) => formatCurrency(value)}
+                    contentStyle={{
+                      fontSize: '12px',
+                      borderRadius: '8px',
+                      border: 'none',
+                      boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
+                    }}
+                    itemStyle={{ color: '#0f172a', fontWeight: 600 }}
+                  />
+                  <Pie
+                    data={fixasData}
+                    cx="50%"
+                    cy="45%"
+                    innerRadius={55}
+                    outerRadius={80}
+                    paddingAngle={3}
+                    dataKey="value"
+                    stroke="none"
+                  >
+                    {fixasData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                  </Pie>
+                  <Legend
+                    layout="horizontal"
+                    verticalAlign="bottom"
+                    align="center"
+                    wrapperStyle={{ fontSize: '10px', paddingTop: '10px' }}
+                    iconType="circle"
+                    iconSize={8}
+                  />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
           </div>
-          <span className="font-bold text-orange-600 text-sm leading-none">
-            {formatCurrency(cfaTotal)}
-          </span>
-          <span className="text-[10px] text-gray-400 mt-0.5">{pctFixa.toFixed(1)}%</span>
-        </div>
-        <div className="flex flex-col text-right items-end">
-          <div className="flex items-center gap-1.5 text-[10px] text-gray-500 font-medium uppercase mb-0.5">
-            Variáveis
-            <div className="w-2 h-2 rounded-sm bg-emerald-400" />
+        )}
+
+        {variaveisData.length > 0 && (
+          <div className="flex flex-col items-center">
+            <h4 className="text-[11px] font-bold text-slate-500 uppercase tracking-wide mb-2">
+              Detalhamento Variáveis
+            </h4>
+            <div className="h-[250px] w-full">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Tooltip
+                    formatter={(value: number) => formatCurrency(value)}
+                    contentStyle={{
+                      fontSize: '12px',
+                      borderRadius: '8px',
+                      border: 'none',
+                      boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
+                    }}
+                    itemStyle={{ color: '#0f172a', fontWeight: 600 }}
+                  />
+                  <Pie
+                    data={variaveisData}
+                    cx="50%"
+                    cy="45%"
+                    innerRadius={55}
+                    outerRadius={80}
+                    paddingAngle={3}
+                    dataKey="value"
+                    stroke="none"
+                  >
+                    {variaveisData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[(index + 3) % COLORS.length]} />
+                    ))}
+                  </Pie>
+                  <Legend
+                    layout="horizontal"
+                    verticalAlign="bottom"
+                    align="center"
+                    wrapperStyle={{ fontSize: '10px', paddingTop: '10px' }}
+                    iconType="circle"
+                    iconSize={8}
+                  />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
           </div>
-          <span className="font-bold text-emerald-600 text-sm leading-none">
-            {formatCurrency(varExpenses)}
-          </span>
-          <span className="text-[10px] text-gray-400 mt-0.5">{pctVariavel.toFixed(1)}%</span>
-        </div>
+        )}
       </div>
     </div>
   )

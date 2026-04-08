@@ -90,7 +90,11 @@ const mapAccountToDB = (acc: string) => 'sicredi'
 const mapAccountFromDB = (acc: string | null) => 'sicredi'
 
 const mapPaymentMethodToDB = (pm: string | undefined) => pm || null
-const mapPaymentMethodFromDB = (pm: string | null) => pm || ''
+const mapPaymentMethodFromDB = (pm: string | null) => {
+  if (!pm) return ''
+  if (pm === 'banco' || pm === 'corretora') return 'banco_corretora'
+  return pm
+}
 
 const ensureUtcNoon = (dateStr: string) => {
   if (dateStr.includes('T')) return dateStr
