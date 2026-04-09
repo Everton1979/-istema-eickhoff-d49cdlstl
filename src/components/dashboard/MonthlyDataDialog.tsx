@@ -70,54 +70,51 @@ export function MonthlyDataDialog() {
   }, [monthlyMetrics, month, year])
 
   useEffect(() => {
-    if (open) {
-      if (isDirty) {
-        return
-      }
+    if (!open) return
+    if (isDirty) return
 
-      if (currentExisting) {
-        saveDraft((prev) => ({
-          ...prev,
-          isDirty: false,
-          formData: {
-            sales_target: currentExisting.sales_target ? String(currentExisting.sales_target) : '',
-            num_formulas_capsulas: currentExisting.num_formulas_capsulas
-              ? String(currentExisting.num_formulas_capsulas)
-              : '',
-            vendas_capsulas: currentExisting.vendas_capsulas
-              ? String(currentExisting.vendas_capsulas)
-              : '',
-            custo_mp_emb_capsulas: currentExisting.custo_mp_emb_capsulas
-              ? String(currentExisting.custo_mp_emb_capsulas)
-              : '',
-            num_formulas_dermato: currentExisting.num_formulas_dermato
-              ? String(currentExisting.num_formulas_dermato)
-              : '',
-            vendas_dermato: currentExisting.vendas_dermato
-              ? String(currentExisting.vendas_dermato)
-              : '',
-            custo_mp_emb_dermato: currentExisting.custo_mp_emb_dermato
-              ? String(currentExisting.custo_mp_emb_dermato)
-              : '',
-          },
-        }))
-      } else {
-        saveDraft((prev) => ({
-          ...prev,
-          isDirty: false,
-          formData: {
-            sales_target: '',
-            num_formulas_capsulas: '',
-            vendas_capsulas: '',
-            custo_mp_emb_capsulas: '',
-            num_formulas_dermato: '',
-            vendas_dermato: '',
-            custo_mp_emb_dermato: '',
-          },
-        }))
-      }
+    const expectedData = currentExisting
+      ? {
+          sales_target: currentExisting.sales_target ? String(currentExisting.sales_target) : '',
+          num_formulas_capsulas: currentExisting.num_formulas_capsulas
+            ? String(currentExisting.num_formulas_capsulas)
+            : '',
+          vendas_capsulas: currentExisting.vendas_capsulas
+            ? String(currentExisting.vendas_capsulas)
+            : '',
+          custo_mp_emb_capsulas: currentExisting.custo_mp_emb_capsulas
+            ? String(currentExisting.custo_mp_emb_capsulas)
+            : '',
+          num_formulas_dermato: currentExisting.num_formulas_dermato
+            ? String(currentExisting.num_formulas_dermato)
+            : '',
+          vendas_dermato: currentExisting.vendas_dermato
+            ? String(currentExisting.vendas_dermato)
+            : '',
+          custo_mp_emb_dermato: currentExisting.custo_mp_emb_dermato
+            ? String(currentExisting.custo_mp_emb_dermato)
+            : '',
+        }
+      : {
+          sales_target: '',
+          num_formulas_capsulas: '',
+          vendas_capsulas: '',
+          custo_mp_emb_capsulas: '',
+          num_formulas_dermato: '',
+          vendas_dermato: '',
+          custo_mp_emb_dermato: '',
+        }
+
+    const isDifferent = JSON.stringify(formData) !== JSON.stringify(expectedData)
+
+    if (isDifferent) {
+      saveDraft((prev) => ({
+        ...prev,
+        isDirty: false,
+        formData: expectedData,
+      }))
     }
-  }, [month, year, open, currentExisting, isDirty, saveDraft])
+  }, [open, currentExisting, isDirty, formData, saveDraft])
 
   const orders_count =
     (Number(formData.num_formulas_capsulas) || 0) + (Number(formData.num_formulas_dermato) || 0)

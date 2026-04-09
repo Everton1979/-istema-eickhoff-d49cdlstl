@@ -1,4 +1,5 @@
 import { DashboardHeader } from '@/components/dashboard/DashboardHeader'
+import { MonthlyDataDialog } from '@/components/dashboard/MonthlyDataDialog'
 import { OperationalKpis, StrategicKpis } from '@/components/dashboard/KpiCards'
 import { UpcomingCommitments } from '@/components/dashboard/UpcomingCommitments'
 import { AccountBalances } from '@/components/dashboard/AccountBalances'
@@ -24,6 +25,10 @@ export default function Index() {
         </div>
 
         <div className="flex-1 overflow-y-auto p-4 md:p-6 flex flex-col gap-8">
+          <div className="flex justify-end w-full -mb-2">
+            <MonthlyDataDialog />
+          </div>
+
           {/* Top row: Operational KPIs */}
           <section className="w-full">
             <OperationalKpis />
