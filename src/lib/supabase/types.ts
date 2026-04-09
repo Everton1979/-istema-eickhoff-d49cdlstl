@@ -392,41 +392,40 @@ export const Constants = {
 // --- ROW LEVEL SECURITY POLICIES ---
 // Table: monthly_metrics
 //   Policy "Users can delete own monthly metrics" (DELETE, PERMISSIVE) roles={authenticated}
-//     USING: ((user_id = auth.uid()) OR (get_user_role() = 'Administrador'::text))
+//     USING: (user_id = auth.uid())
 //   Policy "Users can insert own monthly metrics" (INSERT, PERMISSIVE) roles={authenticated}
 //     WITH CHECK: (user_id = auth.uid())
 //   Policy "Users can read own monthly metrics" (SELECT, PERMISSIVE) roles={authenticated}
-//     USING: ((user_id = auth.uid()) OR (get_user_role() = 'Administrador'::text))
+//     USING: (user_id = auth.uid())
 //   Policy "Users can update own monthly metrics" (UPDATE, PERMISSIVE) roles={authenticated}
-//     USING: ((user_id = auth.uid()) OR (get_user_role() = 'Administrador'::text))
-//     WITH CHECK: ((user_id = auth.uid()) OR (get_user_role() = 'Administrador'::text))
+//     USING: (user_id = auth.uid())
+//     WITH CHECK: (user_id = auth.uid())
 // Table: profiles
-//   Policy "Admins can read all profiles" (SELECT, PERMISSIVE) roles={authenticated}
-//     USING: (get_user_role() = 'Administrador'::text)
-//   Policy "Admins can update profiles" (UPDATE, PERMISSIVE) roles={authenticated}
-//     USING: (get_user_role() = 'Administrador'::text)
 //   Policy "Users can read own profile" (SELECT, PERMISSIVE) roles={authenticated}
-//     USING: (auth.uid() = id)
+//     USING: (id = auth.uid())
+//   Policy "Users can update own profile" (UPDATE, PERMISSIVE) roles={authenticated}
+//     USING: (id = auth.uid())
+//     WITH CHECK: (id = auth.uid())
 // Table: transactions
 //   Policy "Users can delete own transactions" (DELETE, PERMISSIVE) roles={authenticated}
-//     USING: ((user_id = auth.uid()) OR (get_user_role() = 'Administrador'::text))
+//     USING: (user_id = auth.uid())
 //   Policy "Users can insert own transactions" (INSERT, PERMISSIVE) roles={authenticated}
 //     WITH CHECK: (user_id = auth.uid())
 //   Policy "Users can read own transactions" (SELECT, PERMISSIVE) roles={authenticated}
-//     USING: ((user_id = auth.uid()) OR (get_user_role() = 'Administrador'::text))
+//     USING: (user_id = auth.uid())
 //   Policy "Users can update own transactions" (UPDATE, PERMISSIVE) roles={authenticated}
-//     USING: ((user_id = auth.uid()) OR (get_user_role() = 'Administrador'::text))
-//     WITH CHECK: ((user_id = auth.uid()) OR (get_user_role() = 'Administrador'::text))
+//     USING: (user_id = auth.uid())
+//     WITH CHECK: (user_id = auth.uid())
 // Table: user_settings
 //   Policy "Users can delete own user settings" (DELETE, PERMISSIVE) roles={authenticated}
 //     USING: (user_id = auth.uid())
 //   Policy "Users can insert own user settings" (INSERT, PERMISSIVE) roles={authenticated}
 //     WITH CHECK: (user_id = auth.uid())
 //   Policy "Users can read own user settings" (SELECT, PERMISSIVE) roles={authenticated}
-//     USING: ((user_id = auth.uid()) OR (get_user_role() = 'Administrador'::text))
+//     USING: (user_id = auth.uid())
 //   Policy "Users can update own user settings" (UPDATE, PERMISSIVE) roles={authenticated}
-//     USING: ((user_id = auth.uid()) OR (get_user_role() = 'Administrador'::text))
-//     WITH CHECK: ((user_id = auth.uid()) OR (get_user_role() = 'Administrador'::text))
+//     USING: (user_id = auth.uid())
+//     WITH CHECK: (user_id = auth.uid())
 
 // --- DATABASE FUNCTIONS ---
 // FUNCTION get_user_role()

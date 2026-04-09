@@ -7,7 +7,7 @@ import { HelpCircle } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
 export function useKpiMetrics() {
-  const { filteredTransactions, filteredMonthlyMetrics, categories, filters } = useFinanceStore()
+  const { filteredTransactions, filteredMonthlyMetrics, categories } = useFinanceStore()
 
   return useMemo(() => {
     const totalRawMaterial = filteredMonthlyMetrics.reduce(
@@ -20,10 +20,8 @@ export function useKpiMetrics() {
     let custosVariaveisOperacionais = 0
     let custosFixos = 0
 
-    const targetStatuses = filters.statuses.length > 0 ? filters.statuses : ['REALIZADO']
-
     filteredTransactions.forEach((tx) => {
-      if (targetStatuses.includes(tx.status)) {
+      if (tx.status === 'REALIZADO') {
         if (tx.type === 'INCOME') {
           receitas += tx.amount
         } else {
@@ -51,7 +49,7 @@ export function useKpiMetrics() {
     const pontoEquilibrio = indiceMargem > 0 ? custosFixos / indiceMargem : 0
 
     return { receitas, despesas: despesasFluxo, margem, lucro, ebitda, pontoEquilibrio }
-  }, [filteredTransactions, filteredMonthlyMetrics, categories, filters])
+  }, [filteredTransactions, filteredMonthlyMetrics, categories])
 }
 
 const formatCurrency = (val: number) =>
