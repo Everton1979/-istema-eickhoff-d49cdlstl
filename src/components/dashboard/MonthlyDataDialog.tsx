@@ -21,6 +21,7 @@ import {
 } from '@/components/ui/select'
 import { useAuth } from '@/hooks/use-auth'
 import { useFinanceStore } from '@/stores/financeStore'
+import { useDraft } from '@/hooks/use-draft'
 
 export function MonthlyDataDialog() {
   const { user } = useAuth()
@@ -28,18 +29,22 @@ export function MonthlyDataDialog() {
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
 
-  const [month, setMonth] = useState(new Date().getMonth() + 1)
-  const [year, setYear] = useState(new Date().getFullYear())
-
-  const [formData, setFormData] = useState({
-    sales_target: '',
-    num_formulas_capsulas: '',
-    vendas_capsulas: '',
-    custo_mp_emb_capsulas: '',
-    num_formulas_dermato: '',
-    vendas_dermato: '',
-    custo_mp_emb_dermato: '',
+  const { draft, saveDraft, clearDraft } = useDraft('monthly-data-draft', {
+    month: new Date().getMonth() + 1,
+    year: new Date().getFullYear(),
+    isDirty: false,
+    formData: {
+      sales_target: '',
+      num_formulas_capsulas: '',
+      vendas_capsulas: '',
+      custo_mp_emb_capsulas: '',
+      num_formulas_dermato: '',
+      vendas_dermato: '',
+      custo_mp_emb_dermato: '',
+    },
   })
+
+  const { month, year, formData, isDirty } = draft
 
   useEffect(() => {
     const checkHash = () => {
@@ -66,41 +71,53 @@ export function MonthlyDataDialog() {
 
   useEffect(() => {
     if (open) {
+      if (isDirty) {
+        return
+      }
+
       if (currentExisting) {
-        setFormData({
-          sales_target: currentExisting.sales_target ? String(currentExisting.sales_target) : '',
-          num_formulas_capsulas: currentExisting.num_formulas_capsulas
-            ? String(currentExisting.num_formulas_capsulas)
-            : '',
-          vendas_capsulas: currentExisting.vendas_capsulas
-            ? String(currentExisting.vendas_capsulas)
-            : '',
-          custo_mp_emb_capsulas: currentExisting.custo_mp_emb_capsulas
-            ? String(currentExisting.custo_mp_emb_capsulas)
-            : '',
-          num_formulas_dermato: currentExisting.num_formulas_dermato
-            ? String(currentExisting.num_formulas_dermato)
-            : '',
-          vendas_dermato: currentExisting.vendas_dermato
-            ? String(currentExisting.vendas_dermato)
-            : '',
-          custo_mp_emb_dermato: currentExisting.custo_mp_emb_dermato
-            ? String(currentExisting.custo_mp_emb_dermato)
-            : '',
-        })
+        saveDraft((prev) => ({
+          ...prev,
+          isDirty: false,
+          formData: {
+            sales_target: currentExisting.sales_target ? String(currentExisting.sales_target) : '',
+            num_formulas_capsulas: currentExisting.num_formulas_capsulas
+              ? String(currentExisting.num_formulas_capsulas)
+              : '',
+            vendas_capsulas: currentExisting.vendas_capsulas
+              ? String(currentExisting.vendas_capsulas)
+              : '',
+            custo_mp_emb_capsulas: currentExisting.custo_mp_emb_capsulas
+              ? String(currentExisting.custo_mp_emb_capsulas)
+              : '',
+            num_formulas_dermato: currentExisting.num_formulas_dermato
+              ? String(currentExisting.num_formulas_dermato)
+              : '',
+            vendas_dermato: currentExisting.vendas_dermato
+              ? String(currentExisting.vendas_dermato)
+              : '',
+            custo_mp_emb_dermato: currentExisting.custo_mp_emb_dermato
+              ? String(currentExisting.custo_mp_emb_dermato)
+              : '',
+          },
+        }))
       } else {
-        setFormData({
-          sales_target: '',
-          num_formulas_capsulas: '',
-          vendas_capsulas: '',
-          custo_mp_emb_capsulas: '',
-          num_formulas_dermato: '',
-          vendas_dermato: '',
-          custo_mp_emb_dermato: '',
-        })
+        saveDraft((prev) => ({
+          ...prev,
+          isDirty: false,
+          formData: {
+            sales_target: '',
+            num_formulas_capsulas: '',
+            vendas_capsulas: '',
+            custo_mp_emb_capsulas: '',
+            num_formulas_dermato: '',
+            vendas_dermato: '',
+            custo_mp_emb_dermato: '',
+          },
+        }))
       }
     }
-  }, [month, year, open, currentExisting])
+  }, [month, year, open, currentExisting, isDirty, saveDraft])
 
   const orders_count =
     (Number(formData.num_formulas_capsulas) || 0) + (Number(formData.num_formulas_dermato) || 0)
@@ -110,7 +127,19 @@ export function MonthlyDataDialog() {
     (Number(formData.custo_mp_emb_capsulas) || 0) + (Number(formData.custo_mp_emb_dermato) || 0)
 
   const handleChange = (field: string, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }))
+    saveDraft((prev) => ({
+      ...prev,
+      isDirty: true,
+      formData: { ...prev.formData, [field]: value },
+    }))
+  }
+
+  const handleMonthChange = (val: number) => {
+    saveDraft((prev) => ({ ...prev, month: val, isDirty: false }))
+  }
+
+  const handleYearChange = (val: number) => {
+    saveDraft((prev) => ({ ...prev, year: val, isDirty: false }))
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -137,6 +166,7 @@ export function MonthlyDataDialog() {
       await saveMonthlyMetric(payload)
 
       toast.success('Dados mensais salvos com sucesso!')
+      clearDraft()
       setOpen(false)
     } catch (err: any) {
       console.error(err)
@@ -169,7 +199,7 @@ export function MonthlyDataDialog() {
           <div className="grid grid-cols-2 gap-4 bg-slate-50 p-4 rounded-lg border border-slate-100">
             <div className="space-y-2">
               <Label className="font-semibold text-slate-700">Mês Referência</Label>
-              <Select value={String(month)} onValueChange={(val) => setMonth(Number(val))}>
+              <Select value={String(month)} onValueChange={(val) => handleMonthChange(Number(val))}>
                 <SelectTrigger className="bg-white">
                   <SelectValue placeholder="Selecione o mês" />
                 </SelectTrigger>
@@ -195,7 +225,7 @@ export function MonthlyDataDialog() {
                 type="number"
                 min={2000}
                 value={year}
-                onChange={(e) => setYear(Number(e.target.value))}
+                onChange={(e) => handleYearChange(Number(e.target.value))}
                 required
                 className="bg-white"
               />
