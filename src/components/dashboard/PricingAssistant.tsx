@@ -117,23 +117,29 @@ export function PricingAssistant() {
 
   const mkpAlvo = stats.mkpMultiplicador > 0 ? stats.mkpMultiplicador : 6.0
   let mkpDinamico = mkpAlvo
-  if (numericCost > 0 && stats.custoMedioInsumo > 0) {
-    // Curva elástica: (Custo Médio / Custo Atual) ^ 0.5
-    // Garante que custo alto = menor markup, custo baixo = maior markup
-    mkpDinamico = mkpAlvo * Math.pow(stats.custoMedioInsumo / numericCost, 0.5)
 
-    // Regras específicas por categoria e travas de segurança
+  if (numericCost > 0) {
+    const maxMarkup = 15.0
+
     if (tipoFormula === 'dermato') {
-      if (numericCost >= 150) {
-        mkpDinamico = 3.0
+      const threshold = 150.0
+      const minMarkup = 3.0
+      if (numericCost >= threshold) {
+        mkpDinamico = minMarkup
       } else {
-        mkpDinamico = Math.max(3.0, Math.min(mkpDinamico, 15.0))
+        // Transição suave: começa no maxMarkup e cai gradualmente até o minMarkup no threshold
+        const ratio = 1 - numericCost / threshold
+        mkpDinamico = minMarkup + (maxMarkup - minMarkup) * Math.pow(ratio, 2)
       }
     } else {
-      if (numericCost >= 500) {
-        mkpDinamico = 2.5
+      const threshold = 500.0
+      const minMarkup = 2.5
+      if (numericCost >= threshold) {
+        mkpDinamico = minMarkup
       } else {
-        mkpDinamico = Math.max(2.5, Math.min(mkpDinamico, 15.0))
+        // Transição suave: começa no maxMarkup e cai gradualmente até o minMarkup no threshold
+        const ratio = 1 - numericCost / threshold
+        mkpDinamico = minMarkup + (maxMarkup - minMarkup) * Math.pow(ratio, 2)
       }
     }
   }
