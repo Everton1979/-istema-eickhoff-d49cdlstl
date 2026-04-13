@@ -119,29 +119,13 @@ export function PricingAssistant() {
   let mkpDinamico = mkpAlvo
 
   if (numericCost > 0) {
-    const maxMarkup = 15.0
+    const custoMedioHistorico = stats.custoMedioInsumo > 0 ? stats.custoMedioInsumo : numericCost
+    mkpDinamico = mkpAlvo * Math.pow(custoMedioHistorico / numericCost, 0.5)
 
-    if (tipoFormula === 'dermato') {
-      const threshold = 150.0
-      const minMarkup = 3.0
-      if (numericCost >= threshold) {
-        mkpDinamico = minMarkup
-      } else {
-        // Transição suave: começa no maxMarkup e cai gradualmente até o minMarkup no threshold
-        const ratio = 1 - numericCost / threshold
-        mkpDinamico = minMarkup + (maxMarkup - minMarkup) * Math.pow(ratio, 2)
-      }
-    } else {
-      const threshold = 500.0
-      const minMarkup = 2.5
-      if (numericCost >= threshold) {
-        mkpDinamico = minMarkup
-      } else {
-        // Transição suave: começa no maxMarkup e cai gradualmente até o minMarkup no threshold
-        const ratio = 1 - numericCost / threshold
-        mkpDinamico = minMarkup + (maxMarkup - minMarkup) * Math.pow(ratio, 2)
-      }
-    }
+    const maxMarkup = 15.0
+    const minMarkup = tipoFormula === 'dermato' ? 3.0 : 2.5
+
+    mkpDinamico = Math.max(minMarkup, Math.min(maxMarkup, mkpDinamico))
   }
 
   const pisoSeguranca = hasCost
