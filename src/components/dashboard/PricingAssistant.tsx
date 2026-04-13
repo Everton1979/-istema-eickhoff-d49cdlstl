@@ -115,14 +115,27 @@ export function PricingAssistant() {
   const numericCost = parseFloat(cost) || 0
   const hasCost = numericCost > 0
 
-  const mkpAlvo = stats.mkpMultiplicador > 0 ? stats.mkpMultiplicador : 5.75
+  const mkpAlvo = stats.mkpMultiplicador > 0 ? stats.mkpMultiplicador : 6.0
   let mkpDinamico = mkpAlvo
   if (numericCost > 0 && stats.custoMedioInsumo > 0) {
     // Curva elástica: (Custo Médio / Custo Atual) ^ 0.5
     // Garante que custo alto = menor markup, custo baixo = maior markup
     mkpDinamico = mkpAlvo * Math.pow(stats.custoMedioInsumo / numericCost, 0.5)
-    // Limites de segurança razoáveis (piso de markup marginal)
-    mkpDinamico = Math.max(2.5, Math.min(mkpDinamico, 15.0))
+
+    // Regras específicas por categoria e travas de segurança
+    if (tipoFormula === 'dermato') {
+      if (numericCost >= 150) {
+        mkpDinamico = 3.0
+      } else {
+        mkpDinamico = Math.max(3.0, Math.min(mkpDinamico, 15.0))
+      }
+    } else {
+      if (numericCost >= 500) {
+        mkpDinamico = 2.5
+      } else {
+        mkpDinamico = Math.max(2.5, Math.min(mkpDinamico, 15.0))
+      }
+    }
   }
 
   const pisoSeguranca = hasCost
