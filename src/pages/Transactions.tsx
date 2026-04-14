@@ -109,6 +109,11 @@ export default function Transactions() {
       if (a.type === 'INCOME' && b.type === 'EXPENSE') return -1
       if (a.type === 'EXPENSE' && b.type === 'INCOME') return 1
 
+      // 3. Ordem crescente de valor
+      if (a.amount !== b.amount) {
+        return a.amount - b.amount
+      }
+
       // Se forem do mesmo tipo e status, mantém a ordem cronológica original baseada na string completa
       return b.date.localeCompare(a.date)
     })
