@@ -1,5 +1,6 @@
 {
   "_versions": {
-    "manage-users": 3
+    "manage-users": 3,
+    "notify-new-user": 1
   }
 }
