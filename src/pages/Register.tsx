@@ -1,0 +1,161 @@
+import { useState } from 'react'
+import { useAuth } from '@/hooks/use-auth'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { toast } from 'sonner'
+import { useNavigate, Navigate, Link } from 'react-router-dom'
+import { Building2 } from 'lucide-react'
+import { Label } from '@/components/ui/label'
+
+export default function Register() {
+  const [formData, setFormData] = useState({
+    cnpj: '',
+    razaoSocial: '',
+    nomeFantasia: '',
+    endereco: '',
+    telefone: '',
+    responsavel: '',
+    email: '',
+    password: '',
+  })
+  const [loading, setLoading] = useState(false)
+  const { signUp, user, loading: authLoading } = useAuth()
+  const navigate = useNavigate()
+
+  if (authLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-100">Carregando...</div>
+    )
+  }
+
+  if (user) {
+    return <Navigate to="/dashboard" replace />
+  }
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }))
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setLoading(true)
+
+    const metadata = {
+      cnpj: formData.cnpj,
+      razao_social: formData.razaoSocial,
+      nome_fantasia: formData.nomeFantasia,
+      endereco: formData.endereco,
+      telefone: formData.telefone,
+      responsavel: formData.responsavel,
+    }
+
+    const { error } = await signUp(formData.email, formData.password, metadata)
+
+    setLoading(false)
+    if (error) {
+      toast.error(error.message || 'Erro ao criar conta.')
+    } else {
+      toast.success('Cadastro realizado com sucesso! Aguarde aprovação.')
+      navigate('/pendente')
+    }
+  }
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4 py-8">
+      <div className="w-full max-w-2xl bg-white rounded-lg shadow-md p-8">
+        <div className="flex justify-center mb-6">
+          <div className="w-12 h-12 bg-[#1e3a8a] rounded-md flex items-center justify-center text-white">
+            <Building2 className="w-6 h-6" />
+          </div>
+        </div>
+        <h2 className="text-2xl font-bold text-center text-gray-800 mb-2">Cadastro de Empresa</h2>
+        <p className="text-center text-gray-600 mb-6 text-sm">
+          Preencha os dados abaixo para solicitar acesso ao sistema.
+        </p>
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-1">
+              <Label>Razão Social</Label>
+              <Input
+                required
+                name="razaoSocial"
+                value={formData.razaoSocial}
+                onChange={handleChange}
+              />
+            </div>
+            <div className="space-y-1">
+              <Label>Nome Fantasia</Label>
+              <Input
+                required
+                name="nomeFantasia"
+                value={formData.nomeFantasia}
+                onChange={handleChange}
+              />
+            </div>
+            <div className="space-y-1">
+              <Label>CNPJ</Label>
+              <Input required name="cnpj" value={formData.cnpj} onChange={handleChange} />
+            </div>
+            <div className="space-y-1">
+              <Label>Telefone / WhatsApp</Label>
+              <Input required name="telefone" value={formData.telefone} onChange={handleChange} />
+            </div>
+            <div className="space-y-1 md:col-span-2">
+              <Label>Endereço Completo</Label>
+              <Input required name="endereco" value={formData.endereco} onChange={handleChange} />
+            </div>
+            <div className="space-y-1 md:col-span-2">
+              <Label>Nome do Responsável</Label>
+              <Input
+                required
+                name="responsavel"
+                value={formData.responsavel}
+                onChange={handleChange}
+              />
+            </div>
+          </div>
+
+          <div className="border-t pt-4 mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-1">
+              <Label>Email de Acesso</Label>
+              <Input
+                type="email"
+                required
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+              />
+            </div>
+            <div className="space-y-1">
+              <Label>Senha</Label>
+              <Input
+                type="password"
+                required
+                minLength={6}
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+              />
+            </div>
+          </div>
+
+          <Button
+            type="submit"
+            className="w-full bg-[#1e3a8a] hover:bg-[#1e3a8a]/90 mt-6"
+            disabled={loading}
+          >
+            {loading ? 'Aguarde...' : 'Solicitar Acesso'}
+          </Button>
+
+          <div className="text-center mt-4">
+            <span className="text-sm text-gray-600">Já possui uma conta? </span>
+            <Link to="/login" className="text-sm font-semibold text-[#1e3a8a] hover:underline">
+              Fazer Login
+            </Link>
+          </div>
+        </form>
+      </div>
+    </div>
+  )
+}

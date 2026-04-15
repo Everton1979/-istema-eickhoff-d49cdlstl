@@ -10,6 +10,8 @@ import Users from './pages/Users'
 import Glossary from './pages/Glossary'
 import NotFound from './pages/NotFound'
 import Login from './pages/Login'
+import Register from './pages/Register'
+import PendingApproval from './pages/PendingApproval'
 import ForgotPassword from './pages/ForgotPassword'
 import ResetPassword from './pages/ResetPassword'
 import Layout from './components/Layout'
@@ -18,9 +20,11 @@ import Profile from './pages/Profile'
 const ProtectedRoute = ({
   children,
   allowedRoles,
+  requireActive = true,
 }: {
   children: React.ReactNode
   allowedRoles?: string[]
+  requireActive?: boolean
 }) => {
   const { user, profile, loading } = useAuth()
 
@@ -39,6 +43,10 @@ const ProtectedRoute = ({
     if (!allowedRoles.includes(profile.role)) return <Navigate to="/" replace />
   }
 
+  if (requireActive && profile?.status === 'Pendente' && profile?.role !== 'Administrador') {
+    return <Navigate to="/pendente" replace />
+  }
+
   return <>{children}</>
 }
 
@@ -52,8 +60,17 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/cadastro" element={<Register />} />
             <Route path="/esqueci-a-senha" element={<ForgotPassword />} />
             <Route path="/nova-senha" element={<ResetPassword />} />
+            <Route
+              path="/pendente"
+              element={
+                <ProtectedRoute requireActive={false}>
+                  <PendingApproval />
+                </ProtectedRoute>
+              }
+            />
             <Route
               element={
                 <ProtectedRoute>

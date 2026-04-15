@@ -53,8 +53,9 @@ Deno.serve(async (req: Request) => {
       await supabaseAdmin
         .from('profiles')
         .update({
-          role: 'Administrador',
+          role: 'Visitante',
           company_name: company_name || null,
+          status: 'Ativo',
         })
         .eq('id', data.user.id)
 

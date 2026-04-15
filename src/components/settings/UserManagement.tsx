@@ -32,6 +32,21 @@ export function UserManagement() {
   const [newPassword, setNewPassword] = useState('')
   const [creating, setCreating] = useState(false)
 
+  const handleToggleStatus = async (userId: string, currentStatus: string) => {
+    const newStatus = currentStatus === 'Ativo' ? 'Pendente' : 'Ativo'
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .update({ status: newStatus })
+        .eq('id', userId)
+      if (error) throw error
+      toast.success(`Status atualizado para ${newStatus}`)
+      fetchUsers()
+    } catch (err: any) {
+      toast.error(err.message || 'Erro ao atualizar status')
+    }
+  }
+
   const fetchUsers = async () => {
     setLoading(true)
     const { data, error } = await supabase.from('profiles').select('*').order('email')
@@ -145,7 +160,10 @@ export function UserManagement() {
           <TableHeader className="bg-slate-50">
             <TableRow>
               <TableHead>Usuário</TableHead>
-              <TableHead className="w-[150px]">Papel</TableHead>
+              <TableHead>Empresa</TableHead>
+              <TableHead>Contato</TableHead>
+              <TableHead className="w-[120px]">Papel</TableHead>
+              <TableHead className="w-[120px]">Status</TableHead>
               <TableHead className="w-[100px] text-center">Ações</TableHead>
             </TableRow>
           </TableHeader>
@@ -163,8 +181,43 @@ export function UserManagement() {
                   </div>
                 </TableCell>
                 <TableCell>
+                  {u.razao_social ? (
+                    <div>
+                      <div className="font-medium text-sm">{u.razao_social}</div>
+                      <div className="text-xs text-muted-foreground">CNPJ: {u.cnpj}</div>
+                    </div>
+                  ) : (
+                    <span className="text-xs text-muted-foreground">-</span>
+                  )}
+                </TableCell>
+                <TableCell>
+                  {u.responsavel ? (
+                    <div>
+                      <div className="text-sm">{u.responsavel}</div>
+                      <div className="text-xs text-muted-foreground">{u.telefone}</div>
+                    </div>
+                  ) : (
+                    <span className="text-xs text-muted-foreground">-</span>
+                  )}
+                </TableCell>
+                <TableCell>
                   <Badge variant="outline" className="text-xs bg-slate-100">
                     {u.role}
+                  </Badge>
+                </TableCell>
+                <TableCell>
+                  <Badge
+                    variant={
+                      u.status === 'Ativo' || u.role === 'Administrador' ? 'default' : 'secondary'
+                    }
+                    className={`text-xs ${u.role !== 'Administrador' ? 'cursor-pointer hover:opacity-80' : ''} ${u.status === 'Pendente' ? 'bg-yellow-500 hover:bg-yellow-600' : ''}`}
+                    onClick={() => {
+                      if (u.role !== 'Administrador') {
+                        handleToggleStatus(u.id, u.status || 'Pendente')
+                      }
+                    }}
+                  >
+                    {u.role === 'Administrador' ? 'Ativo' : u.status || 'Pendente'}
                   </Badge>
                 </TableCell>
                 <TableCell className="text-center">

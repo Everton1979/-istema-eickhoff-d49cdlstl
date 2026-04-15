@@ -9,6 +9,33 @@ export type Database = {
   }
   public: {
     Tables: {
+      appointments: {
+        Row: {
+          count: number
+          created_at: string
+          date: string
+          id: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          count?: number
+          created_at?: string
+          date: string
+          id?: string
+          type: string
+          user_id: string
+        }
+        Update: {
+          count?: number
+          created_at?: string
+          date?: string
+          id?: string
+          type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       monthly_metrics: {
         Row: {
           created_at: string
@@ -324,6 +351,13 @@ export const Constants = {
 // --- COLUMN TYPES (actual PostgreSQL types) ---
 // Use this to know the real database type when writing migrations.
 // "string" in TypeScript types above may be uuid, text, varchar, timestamptz, etc.
+// Table: appointments
+//   id: uuid (not null, default: gen_random_uuid())
+//   user_id: uuid (not null)
+//   date: date (not null)
+//   type: text (not null)
+//   count: integer (not null, default: 1)
+//   created_at: timestamp with time zone (not null, default: now())
 // Table: monthly_metrics
 //   id: uuid (not null, default: gen_random_uuid())
 //   user_id: uuid (not null)
@@ -374,6 +408,9 @@ export const Constants = {
 //   initial_balance_sicredi: numeric (nullable, default: 0)
 
 // --- CONSTRAINTS ---
+// Table: appointments
+//   PRIMARY KEY appointments_pkey: PRIMARY KEY (id)
+//   FOREIGN KEY appointments_user_id_fkey: FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE
 // Table: monthly_metrics
 //   PRIMARY KEY monthly_metrics_pkey: PRIMARY KEY (id)
 //   FOREIGN KEY monthly_metrics_user_id_fkey: FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE
@@ -390,6 +427,10 @@ export const Constants = {
 //   FOREIGN KEY user_settings_user_id_fkey: FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE
 
 // --- ROW LEVEL SECURITY POLICIES ---
+// Table: appointments
+//   Policy "Users can manage own appointments" (ALL, PERMISSIVE) roles={authenticated}
+//     USING: (user_id = auth.uid())
+//     WITH CHECK: (user_id = auth.uid())
 // Table: monthly_metrics
 //   Policy "Users can delete own monthly metrics" (DELETE, PERMISSIVE) roles={authenticated}
 //     USING: (user_id = auth.uid())

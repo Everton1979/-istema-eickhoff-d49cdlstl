@@ -67,10 +67,18 @@ export default function Login() {
           >
             {loading ? 'Aguarde...' : 'Entrar'}
           </Button>
-          <div className="text-center mt-4">
-            <Link to="/esqueci-a-senha" className="text-sm text-[#1e3a8a] hover:underline">
-              Esqueceu sua senha?
-            </Link>
+          <div className="text-center mt-4 space-y-2">
+            <div>
+              <Link to="/esqueci-a-senha" className="text-sm text-[#1e3a8a] hover:underline">
+                Esqueceu sua senha?
+              </Link>
+            </div>
+            <div>
+              <span className="text-sm text-gray-600">Não tem uma conta? </span>
+              <Link to="/cadastro" className="text-sm font-semibold text-[#1e3a8a] hover:underline">
+                Cadastre-se
+              </Link>
+            </div>
           </div>
         </form>
       </div>
