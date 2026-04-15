@@ -87,7 +87,7 @@ export function OperationalKpis() {
     {
       id: 'receitas-operacionais',
       title: 'RECEITAS',
-      tooltip: 'Total de entradas financeiras no período.',
+      tooltip: 'Total de entradas financeiras realizadas no período.',
       value: formatCurrency(metrics.receitas),
       color: 'text-blue-600',
       border: 'border-t-blue-500',
@@ -95,7 +95,7 @@ export function OperationalKpis() {
     {
       id: 'despesas-e-custos',
       title: 'DESPESAS E CUSTOS',
-      tooltip: 'Soma de todas as saídas de caixa (fixas e variáveis).',
+      tooltip: 'Soma de todas as saídas de caixa realizadas (fixas e variáveis).',
       value: formatCurrency(-metrics.despesas),
       color: 'text-red-500',
       border: 'border-t-red-500',
@@ -103,7 +103,7 @@ export function OperationalKpis() {
     {
       id: 'lucro-liquido',
       title: 'LUCRO LÍQUIDO',
-      tooltip: 'Resultado final de caixa (Receitas - Despesas Totais).',
+      tooltip: 'Resultado final de caixa (Receitas Realizadas - Despesas Realizadas).',
       value: formatCurrency(metrics.lucro),
       color: metrics.lucro >= 0 ? 'text-emerald-600' : 'text-red-600',
       border: metrics.lucro >= 0 ? 'border-t-emerald-500' : 'border-t-red-500',

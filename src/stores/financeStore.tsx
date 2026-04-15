@@ -154,7 +154,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
           subcategoryId: d.subcategory || '',
           accountId: mapAccountFromDB(d.account),
           paymentMethodId: mapPaymentMethodFromDB(d.payment_method),
-          status: d.status as any,
+          status: (d.status || 'REALIZADO').toUpperCase() as any,
           tags: d.tags || '',
         })),
       )
@@ -254,7 +254,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
         subcategoryId: (data as any).subcategory || '',
         accountId: mapAccountFromDB(data.account),
         paymentMethodId: mapPaymentMethodFromDB((data as any).payment_method),
-        status: data.status as any,
+        status: (data.status || 'REALIZADO').toUpperCase() as any,
         tags: (data as any).tags || '',
       }
       setTransactions((prev) => [newTx, ...prev])
@@ -302,7 +302,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
                 subcategoryId: (data as any).subcategory || '',
                 accountId: mapAccountFromDB(data.account),
                 paymentMethodId: mapPaymentMethodFromDB((data as any).payment_method),
-                status: data.status as any,
+                status: (data.status || 'REALIZADO').toUpperCase() as any,
                 tags: (data as any).tags || '',
               }
             : t,
@@ -443,7 +443,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
       subcategoryId: d.subcategory || '',
       accountId: mapAccountFromDB(d.account),
       paymentMethodId: mapPaymentMethodFromDB(d.payment_method),
-      status: d.status as any,
+      status: (d.status || 'REALIZADO').toUpperCase() as any,
       tags: d.tags || '',
     }))
   }
@@ -481,7 +481,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
       if (tx.date.includes('T')) {
         txDateStr = tx.date.split('T')[0]
       } else {
-        txDateStr = new Date(tx.date).toISOString().split('T')[0]
+        txDateStr = tx.date.substring(0, 10)
       }
 
       const txYear = txDateStr.substring(0, 4)
@@ -491,7 +491,11 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
       if (filters.months && filters.months.length > 0 && !filters.months.includes(txMonth))
         return false
 
-      if (filters.statuses && filters.statuses.length > 0 && !filters.statuses.includes(tx.status))
+      if (
+        filters.statuses &&
+        filters.statuses.length > 0 &&
+        !filters.statuses.includes(tx.status.toUpperCase())
+      )
         return false
 
       return true

@@ -26,8 +26,10 @@ export function SidebarFilters() {
     let saidas = 0
 
     filteredTransactions.forEach((tx) => {
-      if (tx.type === 'INCOME') entradas += tx.amount
-      else saidas += tx.amount
+      if (tx.status === 'REALIZADO') {
+        if (tx.type === 'INCOME') entradas += tx.amount
+        else saidas += tx.amount
+      }
     })
 
     return { entradas, saidas, saldo: entradas - saidas }
@@ -116,7 +118,7 @@ export function SidebarFilters() {
             <span className="text-[9px] text-slate-500 uppercase font-bold mb-0.5 leading-tight">
               Saídas{' '}
               <span className="text-[8px] normal-case font-medium block mt-[1px]">
-                (Realizadas + Previstas)
+                (Realizadas)
               </span>
             </span>
             <span className="text-xs font-bold text-red-500 leading-none mt-1">

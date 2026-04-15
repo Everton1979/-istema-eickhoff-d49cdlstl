@@ -36,6 +36,36 @@ export type Database = {
         }
         Relationships: []
       }
+      audit_logs: {
+        Row: {
+          action: string
+          created_at: string
+          details: Json | null
+          entity: string
+          entity_id: string | null
+          id: string
+          user_id: string
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          details?: Json | null
+          entity: string
+          entity_id?: string | null
+          id?: string
+          user_id: string
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          details?: Json | null
+          entity?: string
+          entity_id?: string | null
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       monthly_metrics: {
         Row: {
           created_at: string
@@ -400,6 +430,14 @@ export const Constants = {
 //   type: text (not null)
 //   count: integer (not null, default: 1)
 //   created_at: timestamp with time zone (not null, default: now())
+// Table: audit_logs
+//   id: uuid (not null, default: gen_random_uuid())
+//   user_id: uuid (not null)
+//   action: text (not null)
+//   entity: text (not null)
+//   entity_id: text (nullable)
+//   details: jsonb (nullable)
+//   created_at: timestamp with time zone (not null, default: now())
 // Table: monthly_metrics
 //   id: uuid (not null, default: gen_random_uuid())
 //   user_id: uuid (not null)
@@ -467,6 +505,9 @@ export const Constants = {
 // Table: appointments
 //   PRIMARY KEY appointments_pkey: PRIMARY KEY (id)
 //   FOREIGN KEY appointments_user_id_fkey: FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE
+// Table: audit_logs
+//   PRIMARY KEY audit_logs_pkey: PRIMARY KEY (id)
+//   FOREIGN KEY audit_logs_user_id_fkey: FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE
 // Table: monthly_metrics
 //   PRIMARY KEY monthly_metrics_pkey: PRIMARY KEY (id)
 //   FOREIGN KEY monthly_metrics_user_id_fkey: FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE
@@ -486,6 +527,13 @@ export const Constants = {
 //   Policy "Users can manage own appointments" (ALL, PERMISSIVE) roles={authenticated}
 //     USING: (user_id = auth.uid())
 //     WITH CHECK: (user_id = auth.uid())
+// Table: audit_logs
+//   Policy "Admins can read all audit logs" (SELECT, PERMISSIVE) roles={authenticated}
+//     USING: (((auth.jwt() ->> 'email'::text) = 'farmaciaeickhoff@terra.com.br'::text) OR (get_user_role() = 'Administrador'::text))
+//   Policy "Users can insert own audit logs" (INSERT, PERMISSIVE) roles={authenticated}
+//     WITH CHECK: (user_id = auth.uid())
+//   Policy "Users can read own audit logs" (SELECT, PERMISSIVE) roles={authenticated}
+//     USING: (user_id = auth.uid())
 // Table: monthly_metrics
 //   Policy "Admins can read all monthly metrics" (SELECT, PERMISSIVE) roles={authenticated}
 //     USING: (((auth.jwt() ->> 'email'::text) = 'farmaciaeickhoff@terra.com.br'::text) OR (get_user_role() = 'Administrador'::text))
@@ -558,7 +606,7 @@ export const Constants = {
 //     VALUES (
 //       NEW.id,
 //       NEW.email,
-//       CASE WHEN NEW.email = 'farmaciaeickhoff@terra.com.br' THEN 'Administrador' ELSE 'Visitante' END,
+//       CASE WHEN NEW.email = 'farmaciaeickhoff@terra.com.br' THEN 'Administrador' ELSE 'Usuário' END,
 //       CASE WHEN NEW.email = 'farmaciaeickhoff@terra.com.br' THEN 'Ativo' ELSE 'Pendente' END,
 //       NEW.raw_user_meta_data->>'cnpj',
 //       NEW.raw_user_meta_data->>'razao_social',
