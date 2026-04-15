@@ -4,10 +4,11 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { toast } from 'sonner'
 import { useNavigate, Navigate, Link } from 'react-router-dom'
-import { Building2 } from 'lucide-react'
+import { Building2, Eye, EyeOff } from 'lucide-react'
 import { Label } from '@/components/ui/label'
 
 export default function Register() {
+  const [showPassword, setShowPassword] = useState(false)
   const [formData, setFormData] = useState({
     cnpj: '',
     razaoSocial: '',
@@ -65,7 +66,10 @@ export default function Register() {
     if (error) {
       toast.error(error.message || 'Erro ao criar conta.')
     } else {
-      toast.success('Cadastro realizado com sucesso! Aguarde aprovação.')
+      toast.success(
+        'Cadastro realizado com sucesso! Verifique seu e-mail para confirmar a conta e aguarde a aprovação do administrador.',
+        { duration: 8000 },
+      )
       navigate('/pendente')
     }
   }
@@ -201,14 +205,23 @@ export default function Register() {
             </div>
             <div className="space-y-1">
               <Label>Senha</Label>
-              <Input
-                type="password"
-                required
-                minLength={6}
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-              />
+              <div className="relative">
+                <Input
+                  type={showPassword ? 'text' : 'password'}
+                  required
+                  minLength={6}
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                >
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              </div>
             </div>
           </div>
 

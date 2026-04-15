@@ -11,6 +11,7 @@ import {
 import { ExportReportDialog } from './ExportReportDialog'
 import { DREDialog } from './DREDialog'
 import { MonthlyEvolutionDialog } from './MonthlyEvolutionDialog'
+import { BackupDataButton } from './BackupDataButton'
 
 const MONTHS = [
   { value: '01', label: 'Janeiro' },
@@ -76,6 +77,7 @@ export function DashboardHeader({ onExport }: { onExport: (filters: any) => void
         <div className="flex items-center gap-2">
           {profile?.role === 'Administrador' && <MonthlyDataDialog />}
           <ExportReportDialog onExport={onExport} />
+          <BackupDataButton />
           <DREDialog />
           <MonthlyEvolutionDialog />
         </div>

@@ -10,6 +10,7 @@ import { PricingAssistant } from '@/components/dashboard/PricingAssistant'
 import { PerformanceEvolutionChart } from '@/components/dashboard/PerformanceEvolutionChart'
 import { PrintableReport } from '@/components/dashboard/PrintableReport'
 import { StatusDetailPanel } from '@/components/dashboard/StatusDetailPanel'
+import { PendingUsersAlert } from '@/components/dashboard/PendingUsersAlert'
 import { useState } from 'react'
 
 export default function Index() {
@@ -25,9 +26,7 @@ export default function Index() {
         </div>
 
         <div className="flex-1 overflow-y-auto p-4 md:p-6 flex flex-col gap-8">
-          <div className="flex justify-end w-full -mb-2">
-            <MonthlyDataDialog />
-          </div>
+          <PendingUsersAlert />
 
           {/* Top row: Operational KPIs */}
           <section className="w-full">

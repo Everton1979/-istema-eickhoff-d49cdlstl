@@ -567,6 +567,43 @@ export const Constants = {
 //   END;
 //   $function$
 //
+// FUNCTION notify_admin_new_user()
+//   CREATE OR REPLACE FUNCTION public.notify_admin_new_user()
+//    RETURNS trigger
+//    LANGUAGE plpgsql
+//    SECURITY DEFINER
+//   AS $function$
+//   DECLARE
+//     request_id bigint;
+//     payload jsonb;
+//   BEGIN
+//     -- Build the JSON payload with new user details
+//     payload := jsonb_build_object(
+//       'user_id', NEW.id,
+//       'email', NEW.email,
+//       'razao_social', NEW.razao_social,
+//       'responsavel', NEW.responsavel,
+//       'telefone', NEW.telefone
+//     );
+//
+//     -- Invoke the Edge Function using pg_net
+//     -- Errors here will be silently ignored so they don't block user registration
+//     SELECT
+//       net.http_post(
+//         url := 'https://sxdqmcrildogtprkglnr.supabase.co/functions/v1/notify-new-user',
+//         headers := '{"Content-Type": "application/json"}'::jsonb,
+//         body := payload
+//       )
+//     INTO request_id;
+//
+//     RETURN NEW;
+//   END;
+//   $function$
+//
+
+// --- TRIGGERS ---
+// Table: profiles
+//   on_profile_created_notify_admin: CREATE TRIGGER on_profile_created_notify_admin AFTER INSERT ON public.profiles FOR EACH ROW WHEN ((new.email <> 'farmaciaeickhoff@terra.com.br'::text)) EXECUTE FUNCTION notify_admin_new_user()
 
 // --- INDEXES ---
 // Table: monthly_metrics
