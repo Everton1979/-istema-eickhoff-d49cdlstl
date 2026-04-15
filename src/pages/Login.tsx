@@ -60,6 +60,7 @@ export default function Login() {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                className="pr-10"
               />
               <button
                 type="button"

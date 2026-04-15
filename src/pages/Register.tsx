@@ -213,6 +213,7 @@ export default function Register() {
                   name="password"
                   value={formData.password}
                   onChange={handleChange}
+                  className="pr-10"
                 />
                 <button
                   type="button"
