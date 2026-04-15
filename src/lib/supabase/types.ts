@@ -104,6 +104,7 @@ export type Database = {
           cnpj: string | null
           company_name: string | null
           complemento: string | null
+          created_at: string
           email: string
           endereco: string | null
           id: string
@@ -124,6 +125,7 @@ export type Database = {
           cnpj?: string | null
           company_name?: string | null
           complemento?: string | null
+          created_at?: string
           email: string
           endereco?: string | null
           id: string
@@ -144,6 +146,7 @@ export type Database = {
           cnpj?: string | null
           company_name?: string | null
           complemento?: string | null
+          created_at?: string
           email?: string
           endereco?: string | null
           id?: string
@@ -434,6 +437,7 @@ export const Constants = {
 //   complemento: text (nullable)
 //   bairro: text (nullable)
 //   cidade_estado: text (nullable)
+//   created_at: timestamp with time zone (not null, default: now())
 // Table: transactions
 //   id: uuid (not null, default: gen_random_uuid())
 //   user_id: uuid (not null)
@@ -483,6 +487,8 @@ export const Constants = {
 //     USING: (user_id = auth.uid())
 //     WITH CHECK: (user_id = auth.uid())
 // Table: monthly_metrics
+//   Policy "Admins can read all monthly metrics" (SELECT, PERMISSIVE) roles={authenticated}
+//     USING: (((auth.jwt() ->> 'email'::text) = 'farmaciaeickhoff@terra.com.br'::text) OR (get_user_role() = 'Administrador'::text))
 //   Policy "Users can delete own monthly metrics" (DELETE, PERMISSIVE) roles={authenticated}
 //     USING: (user_id = auth.uid())
 //   Policy "Users can insert own monthly metrics" (INSERT, PERMISSIVE) roles={authenticated}
@@ -493,16 +499,20 @@ export const Constants = {
 //     USING: (user_id = auth.uid())
 //     WITH CHECK: (user_id = auth.uid())
 // Table: profiles
+//   Policy "Admins can delete profiles" (DELETE, PERMISSIVE) roles={authenticated}
+//     USING: (((auth.jwt() ->> 'email'::text) = 'farmaciaeickhoff@terra.com.br'::text) OR (get_user_role() = 'Administrador'::text))
 //   Policy "Admins can read all profiles" (SELECT, PERMISSIVE) roles={authenticated}
-//     USING: ((auth.jwt() ->> 'email'::text) = 'farmaciaeickhoff@terra.com.br'::text)
+//     USING: (((auth.jwt() ->> 'email'::text) = 'farmaciaeickhoff@terra.com.br'::text) OR (get_user_role() = 'Administrador'::text))
 //   Policy "Admins can update profiles" (UPDATE, PERMISSIVE) roles={authenticated}
-//     USING: ((auth.jwt() ->> 'email'::text) = 'farmaciaeickhoff@terra.com.br'::text)
+//     USING: (((auth.jwt() ->> 'email'::text) = 'farmaciaeickhoff@terra.com.br'::text) OR (get_user_role() = 'Administrador'::text))
 //   Policy "Users can read own profile" (SELECT, PERMISSIVE) roles={authenticated}
 //     USING: (id = auth.uid())
 //   Policy "Users can update own profile" (UPDATE, PERMISSIVE) roles={authenticated}
 //     USING: (id = auth.uid())
 //     WITH CHECK: (id = auth.uid())
 // Table: transactions
+//   Policy "Admins can read all transactions" (SELECT, PERMISSIVE) roles={authenticated}
+//     USING: (((auth.jwt() ->> 'email'::text) = 'farmaciaeickhoff@terra.com.br'::text) OR (get_user_role() = 'Administrador'::text))
 //   Policy "Users can delete own transactions" (DELETE, PERMISSIVE) roles={authenticated}
 //     USING: (user_id = auth.uid())
 //   Policy "Users can insert own transactions" (INSERT, PERMISSIVE) roles={authenticated}

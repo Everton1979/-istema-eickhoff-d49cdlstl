@@ -208,6 +208,21 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
     })
   }
 
+  const logAction = async (action: string, entity: string, entity_id?: string, details?: any) => {
+    if (!user) return
+    try {
+      await supabase.from('audit_logs').insert({
+        user_id: user.id,
+        action,
+        entity,
+        entity_id,
+        details,
+      })
+    } catch (e) {
+      console.error('Falha ao registrar log de auditoria', e)
+    }
+  }
+
   const addTransaction = async (tx: Omit<Transaction, 'id'>) => {
     if (!user) return
     const dbType = mapTypeToDB(tx.type)
@@ -243,6 +258,11 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
         tags: (data as any).tags || '',
       }
       setTransactions((prev) => [newTx, ...prev])
+      await logAction('CRIAR', 'Transação', data.id, {
+        description: data.description,
+        amount: data.amount,
+        type: data.type,
+      })
     } else if (error) throw error
   }
 
@@ -288,6 +308,10 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
             : t,
         ),
       )
+      await logAction('ATUALIZAR', 'Transação', id, {
+        description: data.description,
+        amount: data.amount,
+      })
     } else if (error) throw error
   }
 
@@ -296,6 +320,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
     const { error } = await supabase.from('transactions').delete().eq('id', id)
     if (!error) {
       setTransactions((prev) => prev.filter((t) => t.id !== id))
+      await logAction('EXCLUIR', 'Transação', id)
     } else throw error
   }
 
@@ -372,6 +397,10 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
             custo_mp_emb_dermato: Number(data.custo_mp_emb_dermato || 0),
           },
         ]
+      })
+      await logAction(existing ? 'ATUALIZAR' : 'CRIAR', 'Métrica Mensal', data.id, {
+        month: data.month,
+        year: data.year,
       })
     } else if (error) throw error
   }

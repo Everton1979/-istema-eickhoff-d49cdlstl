@@ -16,6 +16,7 @@ import ForgotPassword from './pages/ForgotPassword'
 import ResetPassword from './pages/ResetPassword'
 import Layout from './components/Layout'
 import Profile from './pages/Profile'
+import AuditLogs from './pages/AuditLogs'
 
 const ProtectedRoute = ({
   children,
@@ -88,6 +89,14 @@ const App = () => (
                 element={
                   <ProtectedRoute allowedRoles={['Administrador']}>
                     <Users />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/auditoria"
+                element={
+                  <ProtectedRoute allowedRoles={['Administrador']}>
+                    <AuditLogs />
                   </ProtectedRoute>
                 }
               />

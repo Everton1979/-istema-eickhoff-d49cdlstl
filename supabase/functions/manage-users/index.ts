@@ -53,7 +53,7 @@ Deno.serve(async (req: Request) => {
       await supabaseAdmin
         .from('profiles')
         .update({
-          role: 'Visitante',
+          role: 'Usuário',
           company_name: company_name || null,
           status: 'Ativo',
         })
@@ -65,12 +65,13 @@ Deno.serve(async (req: Request) => {
     }
 
     if (action === 'delete') {
+      if (!userId) throw new Error('ID do usuário não fornecido para exclusão.')
       // Don't allow deleting self
       if (userId === user.id) {
         throw new Error('Não é permitido excluir o próprio usuário')
       }
       const { error } = await supabaseAdmin.auth.admin.deleteUser(userId)
-      if (error) throw error
+      if (error) throw new Error(`Erro ao excluir usuário: ${error.message}`)
 
       return new Response(JSON.stringify({ success: true }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },

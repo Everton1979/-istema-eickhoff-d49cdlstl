@@ -28,6 +28,7 @@ export default function Profile() {
   })
 
   const [passwordData, setPasswordData] = useState({
+    currentPassword: '',
     newPassword: '',
     confirmPassword: '',
   })
@@ -81,6 +82,10 @@ export default function Profile() {
 
   const handleSavePassword = async (e: React.FormEvent) => {
     e.preventDefault()
+    if (!passwordData.currentPassword) {
+      toast.error('Por favor, informe sua senha atual.')
+      return
+    }
     if (passwordData.newPassword !== passwordData.confirmPassword) {
       toast.error('As senhas não coincidem.')
       return
@@ -92,18 +97,97 @@ export default function Profile() {
 
     setLoading(true)
     try {
+      // Verifica a senha atual fazendo login novamente
+      if (profile?.email) {
+        const { error: signInError } = await supabase.auth.signInWithPassword({
+          email: profile.email,
+          password: passwordData.currentPassword,
+        })
+
+        if (signInError) {
+          throw new Error('Senha atual incorreta.')
+        }
+      }
+
       const { error } = await supabase.auth.updateUser({
         password: passwordData.newPassword,
       })
 
       if (error) throw error
       toast.success('Senha atualizada com sucesso!')
-      setPasswordData({ newPassword: '', confirmPassword: '' })
+      setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' })
     } catch (error: any) {
       toast.error(error.message || 'Erro ao atualizar senha')
     } finally {
       setLoading(false)
     }
+  }
+
+  const UserActivities = () => {
+    const [logs, setLogs] = useState<any[]>([])
+    const [loadingLogs, setLoadingLogs] = useState(true)
+
+    useEffect(() => {
+      const fetchLogs = async () => {
+        if (!profile?.id) return
+        const { data } = await supabase
+          .from('audit_logs')
+          .select('*')
+          .eq('user_id', profile.id)
+          .order('created_at', { ascending: false })
+          .limit(20)
+        if (data) setLogs(data)
+        setLoadingLogs(false)
+      }
+      fetchLogs()
+    }, [])
+
+    if (loadingLogs)
+      return <div className="p-4 text-center text-slate-500">Carregando atividades...</div>
+    if (logs.length === 0)
+      return (
+        <div className="p-4 text-center text-slate-500">Nenhuma atividade registrada ainda.</div>
+      )
+
+    return (
+      <div className="divide-y">
+        {logs.map((log) => (
+          <div
+            key={log.id}
+            className="p-4 flex items-center justify-between bg-white hover:bg-slate-50 transition-colors"
+          >
+            <div>
+              <p className="text-sm font-medium text-slate-800">
+                {log.action === 'CRIAR'
+                  ? 'Criou'
+                  : log.action === 'ATUALIZAR'
+                    ? 'Atualizou'
+                    : log.action === 'EXCLUIR'
+                      ? 'Excluiu'
+                      : log.action}{' '}
+                {log.entity.toLowerCase()}
+              </p>
+              <p className="text-xs text-slate-500">
+                {new Date(log.created_at).toLocaleString('pt-BR')}
+              </p>
+            </div>
+            <span
+              className={`px-2 py-1 rounded text-xs font-medium ${
+                log.action === 'CRIAR'
+                  ? 'bg-emerald-100 text-emerald-700'
+                  : log.action === 'ATUALIZAR'
+                    ? 'bg-blue-100 text-blue-700'
+                    : log.action === 'EXCLUIR'
+                      ? 'bg-rose-100 text-rose-700'
+                      : 'bg-slate-100 text-slate-700'
+              }`}
+            >
+              {log.action}
+            </span>
+          </div>
+        ))}
+      </div>
+    )
   }
 
   return (
@@ -139,6 +223,12 @@ export default function Profile() {
                   >
                     Segurança
                   </TabsTrigger>
+                  <TabsTrigger
+                    value="atividades"
+                    className="data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-blue-600 rounded-none px-0 pb-3"
+                  >
+                    Atividades
+                  </TabsTrigger>
                 </TabsList>
               </div>
 
@@ -155,11 +245,7 @@ export default function Profile() {
                     </div>
                     <div className="space-y-1">
                       <Label>Nível de Acesso</Label>
-                      <Input
-                        value={profile?.role || 'Visitante'}
-                        disabled
-                        className="bg-slate-50"
-                      />
+                      <Input value={profile?.role || 'Usuário'} disabled className="bg-slate-50" />
                     </div>
                   </div>
 
@@ -285,6 +371,16 @@ export default function Profile() {
 
                   <div className="space-y-4">
                     <div className="space-y-1">
+                      <Label>Senha Atual</Label>
+                      <Input
+                        type="password"
+                        name="currentPassword"
+                        value={passwordData.currentPassword}
+                        onChange={handlePasswordChange}
+                        required
+                      />
+                    </div>
+                    <div className="space-y-1">
                       <Label>Nova Senha</Label>
                       <Input
                         type="password"
@@ -315,6 +411,23 @@ export default function Profile() {
                     </Button>
                   </div>
                 </form>
+              </TabsContent>
+
+              <TabsContent value="atividades" className="p-6 m-0">
+                <div className="space-y-4 max-w-3xl">
+                  <div>
+                    <h3 className="text-sm font-semibold mb-1 text-slate-800">
+                      Histórico de Atividades
+                    </h3>
+                    <p className="text-sm text-slate-500 mb-4">
+                      Acompanhe as últimas ações realizadas por você no sistema.
+                    </p>
+                  </div>
+
+                  <div className="border rounded-md overflow-hidden shadow-sm">
+                    <UserActivities />
+                  </div>
+                </div>
               </TabsContent>
             </Tabs>
           </div>
