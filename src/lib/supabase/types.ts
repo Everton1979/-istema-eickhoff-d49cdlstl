@@ -98,12 +98,18 @@ export type Database = {
       }
       profiles: {
         Row: {
+          bairro: string | null
+          cep: string | null
+          cidade_estado: string | null
           cnpj: string | null
           company_name: string | null
+          complemento: string | null
           email: string
           endereco: string | null
           id: string
+          logradouro: string | null
           nome_fantasia: string | null
+          numero: string | null
           razao_social: string | null
           responsavel: string | null
           role: string
@@ -112,12 +118,18 @@ export type Database = {
           updated_at: string | null
         }
         Insert: {
+          bairro?: string | null
+          cep?: string | null
+          cidade_estado?: string | null
           cnpj?: string | null
           company_name?: string | null
+          complemento?: string | null
           email: string
           endereco?: string | null
           id: string
+          logradouro?: string | null
           nome_fantasia?: string | null
+          numero?: string | null
           razao_social?: string | null
           responsavel?: string | null
           role?: string
@@ -126,12 +138,18 @@ export type Database = {
           updated_at?: string | null
         }
         Update: {
+          bairro?: string | null
+          cep?: string | null
+          cidade_estado?: string | null
           cnpj?: string | null
           company_name?: string | null
+          complemento?: string | null
           email?: string
           endereco?: string | null
           id?: string
+          logradouro?: string | null
           nome_fantasia?: string | null
+          numero?: string | null
           razao_social?: string | null
           responsavel?: string | null
           role?: string
@@ -410,6 +428,12 @@ export const Constants = {
 //   telefone: text (nullable)
 //   responsavel: text (nullable)
 //   status: text (nullable, default: 'Pendente'::text)
+//   cep: text (nullable)
+//   logradouro: text (nullable)
+//   numero: text (nullable)
+//   complemento: text (nullable)
+//   bairro: text (nullable)
+//   cidade_estado: text (nullable)
 // Table: transactions
 //   id: uuid (not null, default: gen_random_uuid())
 //   user_id: uuid (not null)
@@ -446,7 +470,6 @@ export const Constants = {
 // Table: profiles
 //   FOREIGN KEY profiles_id_fkey: FOREIGN KEY (id) REFERENCES auth.users(id) ON DELETE CASCADE
 //   PRIMARY KEY profiles_pkey: PRIMARY KEY (id)
-//   CHECK profiles_role_check: CHECK ((role = 'Administrador'::text))
 // Table: transactions
 //   PRIMARY KEY transactions_pkey: PRIMARY KEY (id)
 //   FOREIGN KEY transactions_user_id_fkey: FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE
@@ -471,9 +494,9 @@ export const Constants = {
 //     WITH CHECK: (user_id = auth.uid())
 // Table: profiles
 //   Policy "Admins can read all profiles" (SELECT, PERMISSIVE) roles={authenticated}
-//     USING: (( SELECT profiles_1.role    FROM profiles profiles_1   WHERE (profiles_1.id = auth.uid())) = 'Administrador'::text)
+//     USING: ((auth.jwt() ->> 'email'::text) = 'farmaciaeickhoff@terra.com.br'::text)
 //   Policy "Admins can update profiles" (UPDATE, PERMISSIVE) roles={authenticated}
-//     USING: (( SELECT profiles_1.role    FROM profiles profiles_1   WHERE (profiles_1.id = auth.uid())) = 'Administrador'::text)
+//     USING: ((auth.jwt() ->> 'email'::text) = 'farmaciaeickhoff@terra.com.br'::text)
 //   Policy "Users can read own profile" (SELECT, PERMISSIVE) roles={authenticated}
 //     USING: (id = auth.uid())
 //   Policy "Users can update own profile" (UPDATE, PERMISSIVE) roles={authenticated}
@@ -519,19 +542,26 @@ export const Constants = {
 //   AS $function$
 //   BEGIN
 //     INSERT INTO public.profiles (
-//       id, email, role, status, cnpj, razao_social, nome_fantasia, endereco, telefone, responsavel
+//       id, email, role, status, cnpj, razao_social, nome_fantasia,
+//       endereco, telefone, responsavel, cep, logradouro, numero, complemento, bairro, cidade_estado
 //     )
 //     VALUES (
 //       NEW.id,
 //       NEW.email,
-//       'Visitante',
-//       'Pendente',
+//       CASE WHEN NEW.email = 'farmaciaeickhoff@terra.com.br' THEN 'Administrador' ELSE 'Visitante' END,
+//       CASE WHEN NEW.email = 'farmaciaeickhoff@terra.com.br' THEN 'Ativo' ELSE 'Pendente' END,
 //       NEW.raw_user_meta_data->>'cnpj',
 //       NEW.raw_user_meta_data->>'razao_social',
 //       NEW.raw_user_meta_data->>'nome_fantasia',
 //       NEW.raw_user_meta_data->>'endereco',
 //       NEW.raw_user_meta_data->>'telefone',
-//       NEW.raw_user_meta_data->>'responsavel'
+//       NEW.raw_user_meta_data->>'responsavel',
+//       NEW.raw_user_meta_data->>'cep',
+//       NEW.raw_user_meta_data->>'logradouro',
+//       NEW.raw_user_meta_data->>'numero',
+//       NEW.raw_user_meta_data->>'complemento',
+//       NEW.raw_user_meta_data->>'bairro',
+//       NEW.raw_user_meta_data->>'cidade_estado'
 //     );
 //     RETURN NEW;
 //   END;

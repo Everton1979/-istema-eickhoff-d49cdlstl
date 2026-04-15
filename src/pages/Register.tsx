@@ -113,7 +113,15 @@ export default function Register() {
             </div>
             <div className="space-y-1">
               <Label>CEP</Label>
-              <Input required name="cep" value={formData.cep} onChange={handleChange} />
+              <Input
+                required
+                name="cep"
+                value={formData.cep}
+                onChange={handleChange}
+                autoComplete="postal-code"
+                maxLength={9}
+                placeholder="00000-000"
+              />
             </div>
             <div className="space-y-1">
               <Label>Logradouro (Rua/Av)</Label>
@@ -122,19 +130,41 @@ export default function Register() {
                 name="logradouro"
                 value={formData.logradouro}
                 onChange={handleChange}
+                autoComplete="street-address"
+                placeholder="Rua Exemplo"
               />
             </div>
             <div className="space-y-1">
               <Label>Número</Label>
-              <Input required name="numero" value={formData.numero} onChange={handleChange} />
+              <Input
+                required
+                name="numero"
+                value={formData.numero}
+                onChange={handleChange}
+                autoComplete="address-line1"
+                placeholder="123"
+              />
             </div>
             <div className="space-y-1">
               <Label>Complemento</Label>
-              <Input name="complemento" value={formData.complemento} onChange={handleChange} />
+              <Input
+                name="complemento"
+                value={formData.complemento}
+                onChange={handleChange}
+                autoComplete="address-line2"
+                placeholder="Apto 101 (opcional)"
+              />
             </div>
             <div className="space-y-1">
               <Label>Bairro</Label>
-              <Input required name="bairro" value={formData.bairro} onChange={handleChange} />
+              <Input
+                required
+                name="bairro"
+                value={formData.bairro}
+                onChange={handleChange}
+                autoComplete="address-level3"
+                placeholder="Centro"
+              />
             </div>
             <div className="space-y-1">
               <Label>Cidade/Estado</Label>
@@ -143,6 +173,7 @@ export default function Register() {
                 name="cidadeEstado"
                 value={formData.cidadeEstado}
                 onChange={handleChange}
+                autoComplete="address-level2"
                 placeholder="Ex: São Paulo / SP"
               />
             </div>
