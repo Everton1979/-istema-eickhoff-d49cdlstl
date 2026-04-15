@@ -12,7 +12,12 @@ export default function Register() {
     cnpj: '',
     razaoSocial: '',
     nomeFantasia: '',
-    endereco: '',
+    cep: '',
+    logradouro: '',
+    numero: '',
+    complemento: '',
+    bairro: '',
+    cidadeEstado: '',
     telefone: '',
     responsavel: '',
     email: '',
@@ -44,7 +49,12 @@ export default function Register() {
       cnpj: formData.cnpj,
       razao_social: formData.razaoSocial,
       nome_fantasia: formData.nomeFantasia,
-      endereco: formData.endereco,
+      cep: formData.cep,
+      logradouro: formData.logradouro,
+      numero: formData.numero,
+      complemento: formData.complemento,
+      bairro: formData.bairro,
+      cidade_estado: formData.cidadeEstado,
       telefone: formData.telefone,
       responsavel: formData.responsavel,
     }
@@ -101,11 +111,42 @@ export default function Register() {
               <Label>Telefone / WhatsApp</Label>
               <Input required name="telefone" value={formData.telefone} onChange={handleChange} />
             </div>
-            <div className="space-y-1 md:col-span-2">
-              <Label>Endereço Completo</Label>
-              <Input required name="endereco" value={formData.endereco} onChange={handleChange} />
+            <div className="space-y-1">
+              <Label>CEP</Label>
+              <Input required name="cep" value={formData.cep} onChange={handleChange} />
             </div>
-            <div className="space-y-1 md:col-span-2">
+            <div className="space-y-1">
+              <Label>Logradouro (Rua/Av)</Label>
+              <Input
+                required
+                name="logradouro"
+                value={formData.logradouro}
+                onChange={handleChange}
+              />
+            </div>
+            <div className="space-y-1">
+              <Label>Número</Label>
+              <Input required name="numero" value={formData.numero} onChange={handleChange} />
+            </div>
+            <div className="space-y-1">
+              <Label>Complemento</Label>
+              <Input name="complemento" value={formData.complemento} onChange={handleChange} />
+            </div>
+            <div className="space-y-1">
+              <Label>Bairro</Label>
+              <Input required name="bairro" value={formData.bairro} onChange={handleChange} />
+            </div>
+            <div className="space-y-1">
+              <Label>Cidade/Estado</Label>
+              <Input
+                required
+                name="cidadeEstado"
+                value={formData.cidadeEstado}
+                onChange={handleChange}
+                placeholder="Ex: São Paulo / SP"
+              />
+            </div>
+            <div className="space-y-1 md:col-span-2 border-t pt-4 mt-2">
               <Label>Nome do Responsável</Label>
               <Input
                 required

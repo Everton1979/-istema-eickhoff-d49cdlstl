@@ -109,8 +109,22 @@ export function UserManagement() {
     return <div className="p-8 text-center text-muted-foreground">Carregando usuários...</div>
   }
 
+  const pendingCount = users.filter((u) => u.status === 'Pendente').length
+
   return (
     <div className="space-y-4">
+      {pendingCount > 0 && (
+        <div className="bg-yellow-50 border border-yellow-200 text-yellow-800 p-4 rounded-md flex items-center justify-between mb-6">
+          <div>
+            <h3 className="font-semibold text-yellow-900">Aprovação Pendente</h3>
+            <p className="text-sm">
+              Você tem {pendingCount}{' '}
+              {pendingCount === 1 ? 'usuário aguardando' : 'usuários aguardando'} aprovação para
+              acessar o sistema.
+            </p>
+          </div>
+        </div>
+      )}
       <div className="flex justify-end">
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
@@ -185,6 +199,11 @@ export function UserManagement() {
                     <div>
                       <div className="font-medium text-sm">{u.razao_social}</div>
                       <div className="text-xs text-muted-foreground">CNPJ: {u.cnpj}</div>
+                      {(u.cidade_estado || u.bairro) && (
+                        <div className="text-[10px] text-muted-foreground mt-0.5">
+                          {u.cidade_estado} {u.bairro ? `- ${u.bairro}` : ''}
+                        </div>
+                      )}
                     </div>
                   ) : (
                     <span className="text-xs text-muted-foreground">-</span>

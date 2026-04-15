@@ -11,6 +11,12 @@ export interface UserProfile {
   razao_social?: string
   nome_fantasia?: string
   endereco?: string
+  cep?: string
+  logradouro?: string
+  numero?: string
+  complemento?: string
+  bairro?: string
+  cidade_estado?: string
   telefone?: string
   responsavel?: string
   status?: string

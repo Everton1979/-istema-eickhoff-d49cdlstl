@@ -98,24 +98,45 @@ export type Database = {
       }
       profiles: {
         Row: {
+          cnpj: string | null
           company_name: string | null
           email: string
+          endereco: string | null
           id: string
+          nome_fantasia: string | null
+          razao_social: string | null
+          responsavel: string | null
           role: string
+          status: string | null
+          telefone: string | null
           updated_at: string | null
         }
         Insert: {
+          cnpj?: string | null
           company_name?: string | null
           email: string
+          endereco?: string | null
           id: string
+          nome_fantasia?: string | null
+          razao_social?: string | null
+          responsavel?: string | null
           role?: string
+          status?: string | null
+          telefone?: string | null
           updated_at?: string | null
         }
         Update: {
+          cnpj?: string | null
           company_name?: string | null
           email?: string
+          endereco?: string | null
           id?: string
+          nome_fantasia?: string | null
+          razao_social?: string | null
+          responsavel?: string | null
           role?: string
+          status?: string | null
+          telefone?: string | null
           updated_at?: string | null
         }
         Relationships: []
@@ -382,6 +403,13 @@ export const Constants = {
 //   role: text (not null, default: 'Visitante'::text)
 //   updated_at: timestamp with time zone (nullable, default: now())
 //   company_name: text (nullable)
+//   cnpj: text (nullable)
+//   razao_social: text (nullable)
+//   nome_fantasia: text (nullable)
+//   endereco: text (nullable)
+//   telefone: text (nullable)
+//   responsavel: text (nullable)
+//   status: text (nullable, default: 'Pendente'::text)
 // Table: transactions
 //   id: uuid (not null, default: gen_random_uuid())
 //   user_id: uuid (not null)
@@ -442,6 +470,10 @@ export const Constants = {
 //     USING: (user_id = auth.uid())
 //     WITH CHECK: (user_id = auth.uid())
 // Table: profiles
+//   Policy "Admins can read all profiles" (SELECT, PERMISSIVE) roles={authenticated}
+//     USING: (( SELECT profiles_1.role    FROM profiles profiles_1   WHERE (profiles_1.id = auth.uid())) = 'Administrador'::text)
+//   Policy "Admins can update profiles" (UPDATE, PERMISSIVE) roles={authenticated}
+//     USING: (( SELECT profiles_1.role    FROM profiles profiles_1   WHERE (profiles_1.id = auth.uid())) = 'Administrador'::text)
 //   Policy "Users can read own profile" (SELECT, PERMISSIVE) roles={authenticated}
 //     USING: (id = auth.uid())
 //   Policy "Users can update own profile" (UPDATE, PERMISSIVE) roles={authenticated}
@@ -485,12 +517,25 @@ export const Constants = {
 //    LANGUAGE plpgsql
 //    SECURITY DEFINER
 //   AS $function$
-//     BEGIN
-//       INSERT INTO public.profiles (id, email, role)
-//       VALUES (NEW.id, NEW.email, 'Administrador');
-//       RETURN NEW;
-//     END;
-//     $function$
+//   BEGIN
+//     INSERT INTO public.profiles (
+//       id, email, role, status, cnpj, razao_social, nome_fantasia, endereco, telefone, responsavel
+//     )
+//     VALUES (
+//       NEW.id,
+//       NEW.email,
+//       'Visitante',
+//       'Pendente',
+//       NEW.raw_user_meta_data->>'cnpj',
+//       NEW.raw_user_meta_data->>'razao_social',
+//       NEW.raw_user_meta_data->>'nome_fantasia',
+//       NEW.raw_user_meta_data->>'endereco',
+//       NEW.raw_user_meta_data->>'telefone',
+//       NEW.raw_user_meta_data->>'responsavel'
+//     );
+//     RETURN NEW;
+//   END;
+//   $function$
 //
 
 // --- INDEXES ---
