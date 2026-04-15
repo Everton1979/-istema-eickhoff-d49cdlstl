@@ -7,7 +7,7 @@ import { HelpCircle } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
 export function useKpiMetrics() {
-  const { filteredTransactions, filteredMonthlyMetrics, categories } = useFinanceStore()
+  const { transactions, filteredMonthlyMetrics, categories, filters } = useFinanceStore()
 
   return useMemo(() => {
     const totalRawMaterial = filteredMonthlyMetrics.reduce(
@@ -20,7 +20,20 @@ export function useKpiMetrics() {
     let custosVariaveisOperacionais = 0
     let custosFixos = 0
 
-    filteredTransactions.forEach((tx) => {
+    transactions.forEach((tx) => {
+      let txDateStr = ''
+      if (tx.date.includes('T')) {
+        txDateStr = tx.date.split('T')[0]
+      } else {
+        txDateStr = tx.date.substring(0, 10)
+      }
+
+      const txYear = txDateStr.substring(0, 4)
+      const txMonth = txDateStr.substring(5, 7)
+
+      if (filters.years && filters.years.length > 0 && !filters.years.includes(txYear)) return
+      if (filters.months && filters.months.length > 0 && !filters.months.includes(txMonth)) return
+
       if (tx.status === 'REALIZADO') {
         if (tx.type === 'INCOME') {
           receitas += tx.amount
@@ -49,7 +62,7 @@ export function useKpiMetrics() {
     const pontoEquilibrio = indiceMargem > 0 ? custosFixos / indiceMargem : 0
 
     return { receitas, despesas: despesasFluxo, margem, lucro, ebitda, pontoEquilibrio }
-  }, [filteredTransactions, filteredMonthlyMetrics, categories])
+  }, [transactions, filteredMonthlyMetrics, categories, filters])
 }
 
 const formatCurrency = (val: number) =>

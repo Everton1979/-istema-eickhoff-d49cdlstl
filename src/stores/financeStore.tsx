@@ -137,9 +137,14 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
     if (!user) return
 
     const [txRes, settingsRes, metricsRes] = await Promise.all([
-      supabase.from('transactions').select('*').order('date', { ascending: false }).limit(10000),
-      supabase.from('user_settings').select('*').limit(1).maybeSingle(),
-      supabase.from('monthly_metrics').select('*').limit(5000),
+      supabase
+        .from('transactions')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('date', { ascending: false })
+        .limit(10000),
+      supabase.from('user_settings').select('*').eq('user_id', user.id).limit(1).maybeSingle(),
+      supabase.from('monthly_metrics').select('*').eq('user_id', user.id).limit(5000),
     ])
 
     if (txRes.data) {
@@ -415,6 +420,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
     let query = supabase
       .from('transactions')
       .select('*')
+      .eq('user_id', user.id)
       .gte('date', startDate)
       .lte('date', `${endDate}T23:59:59.999Z`)
       .order('date', { ascending: true })
@@ -454,6 +460,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
     const { data: existing } = await supabase
       .from('user_settings')
       .select('user_id')
+      .eq('user_id', user.id)
       .limit(1)
       .maybeSingle()
 
