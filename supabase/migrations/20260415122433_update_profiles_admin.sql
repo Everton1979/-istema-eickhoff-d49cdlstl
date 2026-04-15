@@ -7,6 +7,9 @@ ADD COLUMN IF NOT EXISTS complemento TEXT,
 ADD COLUMN IF NOT EXISTS bairro TEXT,
 ADD COLUMN IF NOT EXISTS cidade_estado TEXT;
 
+ALTER TABLE public.profiles DROP CONSTRAINT IF EXISTS profiles_role_check;
+ALTER TABLE public.profiles DROP CONSTRAINT IF EXISTS profiles_status_check;
+
 -- 2. Update roles to enforce only farmaciaeickhoff@terra.com.br is Administrador
 UPDATE public.profiles
 SET role = 'Administrador', status = 'Ativo'
