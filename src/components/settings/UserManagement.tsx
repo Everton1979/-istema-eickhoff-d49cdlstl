@@ -13,6 +13,7 @@ import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { Trash2, UserPlus } from 'lucide-react'
 import { toast } from 'sonner'
+import { cn } from '@/lib/utils'
 import { UserProfile, useAuth } from '@/hooks/use-auth'
 import {
   Dialog,
@@ -229,7 +230,11 @@ export function UserManagement() {
                     variant={
                       u.status === 'Ativo' || u.role === 'Administrador' ? 'default' : 'secondary'
                     }
-                    className={`text-xs ${u.role !== 'Administrador' ? 'cursor-pointer hover:opacity-80' : ''} ${u.status === 'Pendente' ? 'bg-yellow-500 hover:bg-yellow-600' : ''}`}
+                    className={cn(
+                      'text-xs',
+                      u.role !== 'Administrador' && 'cursor-pointer hover:opacity-80',
+                      u.status === 'Pendente' && 'bg-yellow-500 hover:bg-yellow-600',
+                    )}
                     onClick={() => {
                       if (u.role !== 'Administrador') {
                         handleToggleStatus(u.id, u.status || 'Pendente')

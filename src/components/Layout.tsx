@@ -72,21 +72,19 @@ export default function Layout() {
               <span className="text-sm font-medium hidden lg:block">Glossário</span>
             </Link>
 
-            {profile?.role === 'Administrador' && (
-              <Link
-                to="/usuarios"
-                className={cn(
-                  'p-2 rounded-md transition-colors flex items-center gap-2',
-                  location.pathname === '/usuarios'
-                    ? 'bg-blue-600 text-white'
-                    : 'text-slate-300 hover:bg-white/10',
-                )}
-                title="Usuários"
-              >
-                <Users className="w-5 h-5" />
-                <span className="text-sm font-medium hidden lg:block">Usuários</span>
-              </Link>
-            )}
+            <Link
+              to="/usuarios"
+              className={cn(
+                'p-2 rounded-md transition-colors flex items-center gap-2',
+                location.pathname === '/usuarios'
+                  ? 'bg-blue-600 text-white'
+                  : 'text-slate-300 hover:bg-white/10',
+              )}
+              title="Usuários"
+            >
+              <Users className="w-5 h-5" />
+              <span className="text-sm font-medium hidden lg:block">Usuários</span>
+            </Link>
 
             <Link
               to="/perfil"

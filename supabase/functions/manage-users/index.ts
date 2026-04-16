@@ -28,14 +28,6 @@ Deno.serve(async (req: Request) => {
     } = await supabaseClient.auth.getUser()
     if (userError || !user) throw new Error('Unauthorized')
 
-    const { data: profile } = await supabaseClient
-      .from('profiles')
-      .select('role')
-      .eq('id', user.id)
-      .single()
-    if (profile?.role !== 'Administrador')
-      throw new Error('Forbidden: Apenas administradores podem gerenciar usuários')
-
     // Create admin client to bypass RLS and use auth.admin methods
     const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey)
 
