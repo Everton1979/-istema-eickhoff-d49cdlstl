@@ -228,11 +228,11 @@ export function ExportReportDialog({ onExport }: { onExport?: (filters: any) => 
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button
-          variant="default"
+          variant="outline"
           size="sm"
-          className="h-11 px-4 text-sm bg-blue-600 hover:bg-blue-700 text-white flex gap-2 shadow-sm"
+          className="h-11 px-4 text-sm bg-sky-50 hover:bg-sky-100 text-sky-700 border-sky-200 flex gap-2 shadow-sm font-bold"
         >
-          <Download className="w-4 h-4" />
+          <Download className="w-4 h-4 text-sky-600" />
           Exportar Relatório
         </Button>
       </DialogTrigger>

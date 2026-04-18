@@ -179,10 +179,15 @@ export function MonthlyDataDialog() {
         <Button
           variant="outline"
           id="btn-dados-manipulacao"
-          className="gap-2 bg-white text-slate-700 hover:bg-slate-50 border-slate-200 shadow-sm font-medium"
+          className="h-11 py-1 px-3 gap-1 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border-indigo-200 shadow-sm flex flex-col items-center justify-center"
         >
-          <Database className="w-4 h-4 text-indigo-500" />
-          Dados Manipulação
+          <span className="flex items-center gap-1.5 font-bold text-sm leading-none">
+            <Database className="w-4 h-4 text-indigo-600" />
+            Dados Manipulação
+          </span>
+          <span className="text-[10px] font-medium opacity-80 leading-none">
+            Preencher no fechamento do mês
+          </span>
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">

@@ -51,10 +51,10 @@ export function BackupDataButton() {
       onClick={handleExportData}
       disabled={exporting}
       variant="outline"
-      className="gap-2 bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100"
+      className="h-11 px-4 gap-2 bg-slate-100 border-slate-300 text-slate-700 hover:bg-slate-200 shadow-sm font-bold"
       title="Fazer Backup dos Dados"
     >
-      <Download className="w-4 h-4" />
+      <Download className="w-4 h-4 text-slate-600" />
       <span className="hidden lg:inline">{exporting ? 'Aguarde...' : 'Backup'}</span>
     </Button>
   )

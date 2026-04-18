@@ -44,7 +44,7 @@ export default function Index() {
                 Assistente de Precificação Estratégica
               </h2>
               <span className="text-xs text-blue-200 hidden sm:block bg-blue-900/50 px-3 py-1 rounded-full border border-blue-400/30">
-                Motor de Markup Dinâmico Ativo
+                Markup Dinâmico Ativo
               </span>
             </div>
             <div className="bg-white p-2 rounded-b-xl shadow-lg border border-slate-200">
@@ -109,10 +109,17 @@ export default function Index() {
 
           {/* Seção Estratégica (Fechamento) */}
           <section className="w-full bg-slate-200/50 p-6 rounded-xl border border-slate-300 shadow-sm mt-4">
-            <h2 className="text-lg font-bold text-slate-800 uppercase tracking-wide mb-6 flex items-center gap-3">
-              <div className="w-3 h-6 bg-slate-700 rounded-sm" />
-              Análise Estratégica (Fechamento Mensal)
-            </h2>
+            <div className="mb-6">
+              <h2 className="text-lg font-bold text-slate-800 uppercase tracking-wide flex items-center gap-3">
+                <div className="w-3 h-6 bg-slate-700 rounded-sm" />
+                Análise Estratégica
+              </h2>
+              <p className="text-sm text-slate-600 mt-2 ml-9 border-l-2 border-amber-400 pl-3 bg-amber-50/70 py-1.5 rounded-r-md">
+                <strong className="text-amber-700">Observação:</strong> Esta análise somente terá
+                validade e poderá ser analisada depois que <strong>todos os dados do mês</strong>{' '}
+                (transações e dados manipulação) forem lançados.
+              </p>
+            </div>
 
             <StrategicKpis />
 

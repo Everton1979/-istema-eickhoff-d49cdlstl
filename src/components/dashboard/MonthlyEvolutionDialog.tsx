@@ -161,9 +161,9 @@ export function MonthlyEvolutionDialog() {
         <Button
           size="sm"
           variant="outline"
-          className="h-11 bg-white text-emerald-700 border-emerald-200 hover:bg-emerald-50 flex gap-2 shadow-sm"
+          className="h-11 px-4 bg-violet-50 hover:bg-violet-100 text-violet-700 border-violet-200 flex gap-2 shadow-sm font-bold"
         >
-          <TrendingUp className="w-4 h-4" /> Evolução Mensal
+          <TrendingUp className="w-4 h-4 text-violet-600" /> Evolução Mensal
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-[100vw] w-screen h-screen max-h-screen m-0 p-0 flex flex-col rounded-none border-none duration-200">

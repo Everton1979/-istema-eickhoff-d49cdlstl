@@ -266,9 +266,9 @@ export function DREDialog() {
         <Button
           variant="outline"
           size="sm"
-          className="h-11 px-4 text-sm bg-white hover:bg-slate-50 text-slate-700 border-slate-200 flex gap-2 shadow-sm"
+          className="h-11 px-4 text-sm bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border-emerald-200 flex gap-2 shadow-sm font-bold"
         >
-          <PieChartIcon className="w-4 h-4 text-indigo-600" />
+          <PieChartIcon className="w-4 h-4 text-emerald-600" />
           DRE
         </Button>
       </DialogTrigger>

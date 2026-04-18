@@ -205,7 +205,7 @@ const GLOSSARY_TERMS = [
     title: 'Assistente de Precificação',
     category: 'Ferramentas do Dashboard',
     definition:
-      'Calculadora que utiliza o Mark-up Multiplicador real da sua operação para sugerir o preço de Ponto de Equilíbrio.',
+      'Calculadora que utiliza o Mark-up Multiplicador real da sua operação para sugerir o preço de Ponto de Equilíbrio. Nota: O cálculo é baseado na média dos últimos 3 meses, não levando em conta o mês atual.',
     calculation: 'Custo Informado (MP + Embalagem) * Mark-up Multiplicador.',
     reference:
       'Ferramenta para garantir que orçamentos não sejam vendidos abaixo do custo operacional mínimo da farmácia.',

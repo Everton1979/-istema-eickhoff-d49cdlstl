@@ -12,6 +12,8 @@ import { ExportReportDialog } from './ExportReportDialog'
 import { DREDialog } from './DREDialog'
 import { MonthlyEvolutionDialog } from './MonthlyEvolutionDialog'
 import { BackupDataButton } from './BackupDataButton'
+import { Link } from 'react-router-dom'
+import { ArrowRightLeft } from 'lucide-react'
 
 const MONTHS = [
   { value: '01', label: 'Janeiro' },
@@ -74,7 +76,14 @@ export function DashboardHeader({ onExport }: { onExport: (filters: any) => void
 
         <div className="h-6 w-px bg-slate-200 mx-1 hidden sm:block"></div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
+          <Link
+            to="/transacoes"
+            className="h-11 px-4 flex items-center justify-center gap-2 text-sm bg-blue-600 hover:bg-blue-700 text-white rounded-md shadow-sm font-bold transition-colors mr-1"
+          >
+            <ArrowRightLeft className="w-4 h-4" />
+            Transações
+          </Link>
           <MonthlyDataDialog />
           <ExportReportDialog onExport={onExport} />
           <BackupDataButton />
