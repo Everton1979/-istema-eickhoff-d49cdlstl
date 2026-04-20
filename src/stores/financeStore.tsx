@@ -60,6 +60,8 @@ interface FinanceContextType {
 
 const FinanceContext = createContext<FinanceContextType | undefined>(undefined)
 
+const PROJECT_ID = 'planilha'
+
 const mapTypeToDB = (type: string) => (type === 'INCOME' ? 'receita' : 'despesa')
 const mapTypeFromDB = (type: string | null) => {
   if (!type) return 'EXPENSE'
@@ -141,10 +143,22 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
         .from('transactions')
         .select('*')
         .eq('user_id', user.id)
+        .eq('project_id', PROJECT_ID)
         .order('date', { ascending: false })
         .limit(10000),
-      supabase.from('user_settings').select('*').eq('user_id', user.id).limit(1).maybeSingle(),
-      supabase.from('monthly_metrics').select('*').eq('user_id', user.id).limit(5000),
+      supabase
+        .from('user_settings')
+        .select('*')
+        .eq('user_id', user.id)
+        .eq('project_id', PROJECT_ID)
+        .limit(1)
+        .maybeSingle(),
+      supabase
+        .from('monthly_metrics')
+        .select('*')
+        .eq('user_id', user.id)
+        .eq('project_id', PROJECT_ID)
+        .limit(5000),
     ])
 
     if (txRes.data) {
@@ -218,6 +232,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
     try {
       await supabase.from('audit_logs').insert({
         user_id: user.id,
+        project_id: PROJECT_ID,
         action,
         entity,
         entity_id,
@@ -235,6 +250,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
 
     const payload: any = {
       user_id: user.id,
+      project_id: PROJECT_ID,
       description: tx.description,
       amount: tx.amount,
       type: dbType,
@@ -340,6 +356,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
       (metric.custo_mp_emb_capsulas || 0) + (metric.custo_mp_emb_dermato || 0)
 
     const payload = {
+      project_id: PROJECT_ID,
       month: metric.month,
       year: metric.year,
       orders_count: metric.orders_count !== undefined ? metric.orders_count : orders_count,
@@ -421,6 +438,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
       .from('transactions')
       .select('*')
       .eq('user_id', user.id)
+      .eq('project_id', PROJECT_ID)
       .gte('date', startDate)
       .lte('date', `${endDate}T23:59:59.999Z`)
       .order('date', { ascending: true })
@@ -461,18 +479,20 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
       .from('user_settings')
       .select('user_id')
       .eq('user_id', user.id)
+      .eq('project_id', PROJECT_ID)
       .limit(1)
       .maybeSingle()
 
     const payload: any = {
       user_id: existing?.user_id || user.id,
+      project_id: PROJECT_ID,
       initial_balance_sicredi: balances.sicredi ?? 0,
       updated_at: new Date().toISOString(),
     }
 
     const { error } = await supabase
       .from('user_settings')
-      .upsert(payload, { onConflict: 'user_id' })
+      .upsert(payload, { onConflict: 'user_id,project_id' })
 
     if (!error) {
       setAccounts((prev) =>
