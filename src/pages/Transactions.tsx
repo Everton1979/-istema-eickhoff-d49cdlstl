@@ -178,6 +178,12 @@ export default function Transactions() {
     if (!open) setEditingTx(null)
   }
 
+  const visibleBalance = filteredData.reduce((acc, tx) => {
+    if (tx.type === 'INCOME') return acc + tx.amount
+    if (tx.type === 'EXPENSE') return acc - tx.amount
+    return acc
+  }, 0)
+
   const handleExportExcel = () => {
     let receitas = 0
     let despesas = 0
@@ -490,7 +496,7 @@ export default function Transactions() {
           <div className="text-muted-foreground text-xs hidden sm:block">
             Role a tabela para ver mais lançamentos se houver.
           </div>
-          <div className="flex gap-4 items-center ml-auto">
+          <div className="flex flex-wrap gap-2 sm:gap-4 items-center ml-auto">
             {quickFilter === 'CORTESIA' && (
               <div className="font-semibold text-orange-600 bg-orange-50 px-3 py-1.5 rounded-md">
                 Total Cortesias:{' '}
@@ -499,6 +505,23 @@ export default function Transactions() {
                 )}
               </div>
             )}
+
+            {quickFilter !== 'CORTESIA' && filteredData.length > 0 && (
+              <div
+                className={cn(
+                  'font-semibold px-3 py-1.5 rounded-md border shadow-sm',
+                  visibleBalance >= 0
+                    ? 'text-emerald-700 bg-emerald-50 border-emerald-100'
+                    : 'text-red-700 bg-red-50 border-red-100',
+                )}
+              >
+                Saldo visível:{' '}
+                {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(
+                  visibleBalance,
+                )}
+              </div>
+            )}
+
             <div className="font-semibold text-slate-700 bg-slate-100 px-3 py-1.5 rounded-md">
               Total visível: <span className="text-primary">{filteredData.length}</span> transações
             </div>
