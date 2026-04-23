@@ -3,6 +3,7 @@ import { useMemo } from 'react'
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts'
 
 const FIXA_LABELS: Record<string, string> = {
+  prolabore: 'Pró-labore',
   pessoal: 'Pessoal',
   infraestrutura: 'Infraestrutura',
   operacional_administrativo: 'Operacional/Admin',

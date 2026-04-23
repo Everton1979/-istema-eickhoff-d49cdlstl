@@ -30,7 +30,7 @@ const formSchema = z
     date: z.string().min(1, 'Data é obrigatória'),
     description: z.string().optional(),
     amount: z.coerce.number().min(0.01, 'Valor deve ser maior que zero'),
-    type: z.enum(['INCOME', 'EXPENSE']),
+    type: z.enum(['INCOME', 'EXPENSE', 'CORTESIA']),
     categoryId: z.string().optional(),
     subcategoryId: z.string().optional(),
     paymentMethodId: z.string().optional(),
@@ -74,6 +74,15 @@ const formSchema = z
           code: z.ZodIssueCode.custom,
           message: 'Subcategoria é obrigatória para despesas',
           path: ['subcategoryId'],
+        })
+      }
+    }
+    if (data.type === 'CORTESIA') {
+      if (!data.description || data.description.trim().length < 2) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'Destinatário/Motivo é obrigatório para cortesias',
+          path: ['description'],
         })
       }
     }
@@ -149,6 +158,10 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
         if (form.getValues('status') === 'VENCIDO') {
           form.setValue('status', 'REALIZADO')
         }
+      } else if (type === 'CORTESIA') {
+        form.setValue('categoryId', '')
+        form.setValue('subcategoryId', '')
+        form.setValue('paymentMethodId', '')
       } else {
         form.setValue('categoryId', '')
         form.setValue('paymentMethodId', '')
@@ -210,7 +223,12 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
         description: finalDescription,
         status: values.status,
         categoryId:
-          values.categoryId || (values.type === 'EXPENSE' ? 'FIXA' : 'RECEITA_OPERACIONAL'),
+          values.categoryId ||
+          (values.type === 'EXPENSE'
+            ? 'FIXA'
+            : values.type === 'INCOME'
+              ? 'RECEITA_OPERACIONAL'
+              : ''),
         subcategoryId: values.subcategoryId || '',
         accountId: 'sicredi', // Auto-assigned unified account
         paymentMethodId: values.type === 'INCOME' ? values.paymentMethodId || '' : '',
@@ -253,6 +271,7 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
                   <SelectContent>
                     <SelectItem value="INCOME">Receita</SelectItem>
                     <SelectItem value="EXPENSE">Despesa</SelectItem>
+                    <SelectItem value="CORTESIA">Cortesia</SelectItem>
                   </SelectContent>
                 </Select>
               </FormItem>
@@ -273,7 +292,9 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
                   <SelectContent>
                     <SelectItem value="PREVISTO">Previsto</SelectItem>
                     <SelectItem value="REALIZADO">Realizado</SelectItem>
-                    {type === 'EXPENSE' && <SelectItem value="VENCIDO">Vencido</SelectItem>}
+                    {(type === 'EXPENSE' || type === 'CORTESIA') && (
+                      <SelectItem value="VENCIDO">Vencido</SelectItem>
+                    )}
                   </SelectContent>
                 </Select>
               </FormItem>
@@ -295,16 +316,20 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
           )}
         />
 
-        {type === 'EXPENSE' && (
+        {(type === 'EXPENSE' || type === 'CORTESIA') && (
           <FormField
             control={form.control}
             name="description"
             render={({ field }) => (
               <FormItem className="animate-in fade-in slide-in-from-top-2 duration-300">
-                <FormLabel>Descrição</FormLabel>
+                <FormLabel>{type === 'CORTESIA' ? 'Destinatário/Motivo' : 'Descrição'}</FormLabel>
                 <FormControl>
                   <Input
-                    placeholder="Ex: Conta de Luz / Compra de Insumo"
+                    placeholder={
+                      type === 'CORTESIA'
+                        ? 'Ex: Dr. João Silva / Amostra'
+                        : 'Ex: Conta de Luz / Compra de Insumo'
+                    }
                     {...field}
                     value={field.value || ''}
                   />
@@ -370,6 +395,9 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
                         <SelectContent>
                           {categoryId === 'FIXA' && (
                             <>
+                              <SelectItem value="prolabore">
+                                Pró-labore: Retirada dos sócios
+                              </SelectItem>
                               <SelectItem value="pessoal">
                                 Pessoal: Salários, encargos (FGTS/INSS) e benefícios
                               </SelectItem>

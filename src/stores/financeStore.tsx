@@ -62,11 +62,17 @@ const FinanceContext = createContext<FinanceContextType | undefined>(undefined)
 
 const PROJECT_ID = 'planilha'
 
-const mapTypeToDB = (type: string) => (type === 'INCOME' ? 'receita' : 'despesa')
+const mapTypeToDB = (type: string) => {
+  if (type === 'INCOME') return 'receita'
+  if (type === 'CORTESIA') return 'cortesia'
+  return 'despesa'
+}
 const mapTypeFromDB = (type: string | null) => {
   if (!type) return 'EXPENSE'
   const t = type.toLowerCase().trim()
-  return t === 'receita' || t === 'income' ? 'INCOME' : 'EXPENSE'
+  if (t === 'receita' || t === 'income') return 'INCOME'
+  if (t === 'cortesia') return 'CORTESIA'
+  return 'EXPENSE'
 }
 
 const mapCategoryToDB = (cat: string | undefined) => {
@@ -448,6 +454,8 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
       query = query.eq('type', 'receita')
     } else if (type === 'EXPENSE') {
       query = query.eq('type', 'despesa')
+    } else if (type === 'CORTESIA') {
+      query = query.eq('type', 'cortesia')
     }
 
     const { data, error } = await query

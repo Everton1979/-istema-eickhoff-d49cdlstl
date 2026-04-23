@@ -53,7 +53,7 @@ export default function Transactions() {
   const { profile } = useAuth()
   const [search, setSearch] = useState('')
   const [dayFilter, setDayFilter] = useState<string>('ALL')
-  const [quickFilter, setQuickFilter] = useState<'ALL' | 'PREVISTO' | 'VENCIDO'>('ALL')
+  const [quickFilter, setQuickFilter] = useState<'ALL' | 'PREVISTO' | 'VENCIDO' | 'CORTESIA'>('ALL')
   const [isSheetOpen, setIsSheetOpen] = useState(false)
   const [editingTx, setEditingTx] = useState<Transaction | null>(null)
   const [deletingId, setDeletingId] = useState<string | null>(null)
@@ -89,6 +89,9 @@ export default function Transactions() {
       if (quickFilter === 'VENCIDO') {
         return tDate < today && t.status !== 'REALIZADO'
       }
+      if (quickFilter === 'CORTESIA') {
+        return t.type === 'CORTESIA'
+      }
 
       return true
     })
@@ -105,9 +108,11 @@ export default function Transactions() {
       if (a.status === 'PREVISTO' && b.status !== 'PREVISTO') return -1
       if (a.status !== 'PREVISTO' && b.status === 'PREVISTO') return 1
 
-      // 2. Receitas (INCOME) antes de Despesas (EXPENSE)
-      if (a.type === 'INCOME' && b.type === 'EXPENSE') return -1
-      if (a.type === 'EXPENSE' && b.type === 'INCOME') return 1
+      // 2. Ordem de tipos: Receitas > Despesas > Cortesias
+      const typeWeight = (type: string) => (type === 'INCOME' ? 0 : type === 'EXPENSE' ? 1 : 2)
+      if (typeWeight(a.type) !== typeWeight(b.type)) {
+        return typeWeight(a.type) - typeWeight(b.type)
+      }
 
       // 3. Ordem crescente de valor
       if (a.amount !== b.amount) {
@@ -119,6 +124,7 @@ export default function Transactions() {
     })
 
   const SUBCATEGORY_LABELS: Record<string, string> = {
+    prolabore: 'Pró-labore',
     pessoal: 'Pessoal',
     infraestrutura: 'Infraestrutura',
     operacional_administrativo: 'Operacional e Admin.',
@@ -138,7 +144,7 @@ export default function Transactions() {
   }
 
   const getCategoryName = (tx: Transaction) => {
-    if (tx.type === 'INCOME') return '-'
+    if (tx.type === 'INCOME' || tx.type === 'CORTESIA') return '-'
     if (!tx.categoryId) return '-'
     let name = tx.categoryId === 'FIXA' ? 'Fixa' : 'Variável'
     if (tx.subcategoryId && SUBCATEGORY_LABELS[tx.subcategoryId]) {
@@ -150,7 +156,7 @@ export default function Transactions() {
   }
 
   const getAccountName = (id: string, type: string) => {
-    if (type === 'EXPENSE') return '-'
+    if (type === 'EXPENSE' || type === 'CORTESIA') return '-'
     if (!id) return '-'
     return accounts.find((a) => a.id === id)?.name || id
   }
@@ -159,7 +165,7 @@ export default function Transactions() {
     const formatted = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(
       val,
     )
-    return type === 'EXPENSE' ? `- ${formatted}` : formatted
+    return type === 'EXPENSE' ? `- ${formatted}` : type === 'CORTESIA' ? formatted : formatted
   }
 
   const handleEdit = (tx: Transaction) => {
@@ -345,6 +351,18 @@ export default function Transactions() {
             >
               Vencidos
             </Button>
+            <Button
+              variant={quickFilter === 'CORTESIA' ? 'default' : 'ghost'}
+              size="sm"
+              className={cn(
+                'text-xs h-8 px-4 whitespace-nowrap flex-1 sm:flex-none',
+                quickFilter === 'CORTESIA' &&
+                  'bg-orange-500 text-white hover:bg-orange-600 shadow-sm',
+              )}
+              onClick={() => setQuickFilter('CORTESIA')}
+            >
+              Cortesias
+            </Button>
           </div>
         </div>
 
@@ -431,7 +449,11 @@ export default function Transactions() {
                       <TableCell
                         className={cn(
                           'text-right font-bold',
-                          tx.type === 'INCOME' ? 'text-emerald-600' : 'text-red-500',
+                          tx.type === 'INCOME'
+                            ? 'text-emerald-600'
+                            : tx.type === 'EXPENSE'
+                              ? 'text-red-500'
+                              : 'text-orange-500',
                         )}
                       >
                         {formatCurrency(tx.amount, tx.type)}
@@ -468,8 +490,18 @@ export default function Transactions() {
           <div className="text-muted-foreground text-xs hidden sm:block">
             Role a tabela para ver mais lançamentos se houver.
           </div>
-          <div className="font-semibold text-slate-700 bg-slate-100 px-3 py-1.5 rounded-md ml-auto">
-            Total visível: <span className="text-primary">{filteredData.length}</span> transações
+          <div className="flex gap-4 items-center ml-auto">
+            {quickFilter === 'CORTESIA' && (
+              <div className="font-semibold text-orange-600 bg-orange-50 px-3 py-1.5 rounded-md">
+                Total Cortesias:{' '}
+                {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(
+                  filteredData.reduce((acc, tx) => acc + tx.amount, 0),
+                )}
+              </div>
+            )}
+            <div className="font-semibold text-slate-700 bg-slate-100 px-3 py-1.5 rounded-md">
+              Total visível: <span className="text-primary">{filteredData.length}</span> transações
+            </div>
           </div>
         </div>
 

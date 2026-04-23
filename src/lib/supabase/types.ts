@@ -15,6 +15,7 @@ export type Database = {
           created_at: string
           date: string
           id: string
+          project_id: string
           type: string
           user_id: string
         }
@@ -23,6 +24,7 @@ export type Database = {
           created_at?: string
           date: string
           id?: string
+          project_id?: string
           type: string
           user_id: string
         }
@@ -31,6 +33,7 @@ export type Database = {
           created_at?: string
           date?: string
           id?: string
+          project_id?: string
           type?: string
           user_id?: string
         }
@@ -44,6 +47,7 @@ export type Database = {
           entity: string
           entity_id: string | null
           id: string
+          project_id: string
           user_id: string
         }
         Insert: {
@@ -53,6 +57,7 @@ export type Database = {
           entity: string
           entity_id?: string | null
           id?: string
+          project_id?: string
           user_id: string
         }
         Update: {
@@ -62,6 +67,7 @@ export type Database = {
           entity?: string
           entity_id?: string | null
           id?: string
+          project_id?: string
           user_id?: string
         }
         Relationships: []
@@ -77,6 +83,7 @@ export type Database = {
           num_formulas_capsulas: number
           num_formulas_dermato: number
           orders_count: number
+          project_id: string
           raw_material_costs: number
           sales_target: number
           total_system_sales: number
@@ -96,6 +103,7 @@ export type Database = {
           num_formulas_capsulas?: number
           num_formulas_dermato?: number
           orders_count?: number
+          project_id?: string
           raw_material_costs?: number
           sales_target?: number
           total_system_sales?: number
@@ -115,6 +123,7 @@ export type Database = {
           num_formulas_capsulas?: number
           num_formulas_dermato?: number
           orders_count?: number
+          project_id?: string
           raw_material_costs?: number
           sales_target?: number
           total_system_sales?: number
@@ -202,6 +211,7 @@ export type Database = {
           description: string
           id: string
           payment_method: string | null
+          project_id: string
           status: string
           subcategory: string | null
           tags: string | null
@@ -217,6 +227,7 @@ export type Database = {
           description: string
           id?: string
           payment_method?: string | null
+          project_id?: string
           status?: string
           subcategory?: string | null
           tags?: string | null
@@ -232,6 +243,7 @@ export type Database = {
           description?: string
           id?: string
           payment_method?: string | null
+          project_id?: string
           status?: string
           subcategory?: string | null
           tags?: string | null
@@ -249,6 +261,7 @@ export type Database = {
           initial_balance_pix: number | null
           initial_balance_sicredi: number | null
           initial_balance_stone: number | null
+          project_id: string
           updated_at: string
           user_id: string
         }
@@ -260,6 +273,7 @@ export type Database = {
           initial_balance_pix?: number | null
           initial_balance_sicredi?: number | null
           initial_balance_stone?: number | null
+          project_id?: string
           updated_at?: string
           user_id: string
         }
@@ -271,6 +285,7 @@ export type Database = {
           initial_balance_pix?: number | null
           initial_balance_sicredi?: number | null
           initial_balance_stone?: number | null
+          project_id?: string
           updated_at?: string
           user_id?: string
         }
@@ -430,6 +445,7 @@ export const Constants = {
 //   type: text (not null)
 //   count: integer (not null, default: 1)
 //   created_at: timestamp with time zone (not null, default: now())
+//   project_id: text (not null, default: 'planilha'::text)
 // Table: audit_logs
 //   id: uuid (not null, default: gen_random_uuid())
 //   user_id: uuid (not null)
@@ -438,6 +454,7 @@ export const Constants = {
 //   entity_id: text (nullable)
 //   details: jsonb (nullable)
 //   created_at: timestamp with time zone (not null, default: now())
+//   project_id: text (not null, default: 'planilha'::text)
 // Table: monthly_metrics
 //   id: uuid (not null, default: gen_random_uuid())
 //   user_id: uuid (not null)
@@ -456,6 +473,7 @@ export const Constants = {
 //   vendas_dermato: numeric (not null, default: 0)
 //   custo_mp_emb_dermato: numeric (not null, default: 0)
 //   global_sales_target: numeric (not null, default: 0)
+//   project_id: text (not null, default: 'planilha'::text)
 // Table: profiles
 //   id: uuid (not null)
 //   email: text (not null)
@@ -490,6 +508,7 @@ export const Constants = {
 //   tags: text (nullable, default: ''::text)
 //   payment_method: text (nullable)
 //   subcategory: text (nullable)
+//   project_id: text (not null, default: 'planilha'::text)
 // Table: user_settings
 //   user_id: uuid (not null)
 //   initial_balance_dinheiro: numeric (nullable, default: 0)
@@ -500,6 +519,7 @@ export const Constants = {
 //   updated_at: timestamp with time zone (not null, default: now())
 //   initial_balance_banricompras: numeric (nullable, default: 0)
 //   initial_balance_sicredi: numeric (nullable, default: 0)
+//   project_id: text (not null, default: 'planilha'::text)
 
 // --- CONSTRAINTS ---
 // Table: appointments
@@ -511,7 +531,7 @@ export const Constants = {
 // Table: monthly_metrics
 //   PRIMARY KEY monthly_metrics_pkey: PRIMARY KEY (id)
 //   FOREIGN KEY monthly_metrics_user_id_fkey: FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE
-//   UNIQUE monthly_metrics_user_id_month_year_key: UNIQUE (user_id, month, year)
+//   UNIQUE monthly_metrics_user_id_month_year_project_key: UNIQUE (user_id, month, year, project_id)
 // Table: profiles
 //   FOREIGN KEY profiles_id_fkey: FOREIGN KEY (id) REFERENCES auth.users(id) ON DELETE CASCADE
 //   PRIMARY KEY profiles_pkey: PRIMARY KEY (id)
@@ -519,7 +539,7 @@ export const Constants = {
 //   PRIMARY KEY transactions_pkey: PRIMARY KEY (id)
 //   FOREIGN KEY transactions_user_id_fkey: FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE
 // Table: user_settings
-//   PRIMARY KEY user_settings_pkey: PRIMARY KEY (user_id)
+//   PRIMARY KEY user_settings_pkey: PRIMARY KEY (user_id, project_id)
 //   FOREIGN KEY user_settings_user_id_fkey: FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE
 
 // --- ROW LEVEL SECURITY POLICIES ---
@@ -632,4 +652,4 @@ export const Constants = {
 
 // --- INDEXES ---
 // Table: monthly_metrics
-//   CREATE UNIQUE INDEX monthly_metrics_user_id_month_year_key ON public.monthly_metrics USING btree (user_id, month, year)
+//   CREATE UNIQUE INDEX monthly_metrics_user_id_month_year_project_key ON public.monthly_metrics USING btree (user_id, month, year, project_id)

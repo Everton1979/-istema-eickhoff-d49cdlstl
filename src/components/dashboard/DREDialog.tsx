@@ -48,6 +48,7 @@ export function DREDialog() {
   }
 
   const SUBCATEGORY_LABELS: Record<string, string> = {
+    prolabore: 'Pró-labore',
     pessoal: 'Pessoal, Encargos e Benefícios',
     infraestrutura: 'Infraestrutura e Aluguel',
     operacional_administrativo: 'Operacional e Administrativo',
