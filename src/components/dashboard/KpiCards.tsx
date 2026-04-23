@@ -17,6 +17,7 @@ export function useKpiMetrics() {
 
     let receitas = 0
     let despesasFluxo = 0
+    let despesasPrevistas = 0
     let custosVariaveisOperacionais = 0
     let custosFixos = 0
 
@@ -52,6 +53,10 @@ export function useKpiMetrics() {
             custosFixos += tx.amount
           }
         }
+      } else if (tx.status === 'PREVISTO' || tx.status === 'VENCIDO') {
+        if (tx.type === 'EXPENSE') {
+          despesasPrevistas += tx.amount
+        }
       }
     })
 
@@ -61,7 +66,15 @@ export function useKpiMetrics() {
     const indiceMargem = receitas > 0 ? margem / receitas : 0
     const pontoEquilibrio = indiceMargem > 0 ? custosFixos / indiceMargem : 0
 
-    return { receitas, despesas: despesasFluxo, margem, lucro, ebitda, pontoEquilibrio }
+    return {
+      receitas,
+      despesas: despesasFluxo,
+      despesasPrevistas,
+      margem,
+      lucro,
+      ebitda,
+      pontoEquilibrio,
+    }
   }, [transactions, filteredMonthlyMetrics, categories, filters])
 }
 
@@ -99,7 +112,7 @@ export function OperationalKpis() {
   const kpis = [
     {
       id: 'receitas-operacionais',
-      title: 'RECEITAS',
+      title: 'RECEITAS REALIZADAS',
       tooltip: 'Total de entradas financeiras realizadas no período.',
       value: formatCurrency(metrics.receitas),
       color: 'text-blue-600',
@@ -107,7 +120,7 @@ export function OperationalKpis() {
     },
     {
       id: 'despesas-e-custos',
-      title: 'DESPESAS E CUSTOS',
+      title: 'DESPESAS REALIZADAS',
       tooltip: 'Soma de todas as saídas de caixa realizadas (fixas e variáveis).',
       value: formatCurrency(-metrics.despesas),
       color: 'text-red-500',
@@ -115,16 +128,24 @@ export function OperationalKpis() {
     },
     {
       id: 'lucro-liquido',
-      title: 'LUCRO LÍQUIDO',
+      title: 'LUCRO LÍQUIDO REALIZADO',
       tooltip: 'Resultado final de caixa (Receitas Realizadas - Despesas Realizadas).',
       value: formatCurrency(metrics.lucro),
       color: metrics.lucro >= 0 ? 'text-emerald-600' : 'text-red-600',
       border: metrics.lucro >= 0 ? 'border-t-emerald-500' : 'border-t-red-500',
     },
+    {
+      id: 'despesas-previstas',
+      title: 'DESPESAS PREVISTAS',
+      tooltip: 'Soma das despesas e custos previstos ou vencidos (não realizados) para o período.',
+      value: formatCurrency(-metrics.despesasPrevistas),
+      color: 'text-amber-500',
+      border: 'border-t-amber-500',
+    },
   ]
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-2">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-2">
       {kpis.map((kpi, i) => (
         <KpiCard key={i} kpi={kpi} />
       ))}
