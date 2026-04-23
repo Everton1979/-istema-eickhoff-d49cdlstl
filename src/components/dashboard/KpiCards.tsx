@@ -37,7 +37,7 @@ export function useKpiMetrics() {
       if (tx.status === 'REALIZADO') {
         if (tx.type === 'INCOME') {
           receitas += tx.amount
-        } else {
+        } else if (tx.type === 'EXPENSE') {
           despesasFluxo += tx.amount
           const cat = categories.find((c) => c.id === tx.categoryId)
           if (cat?.isVariable) {

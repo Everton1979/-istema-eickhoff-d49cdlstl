@@ -185,7 +185,7 @@ export default function Transactions() {
     filteredTransactions.forEach((tx) => {
       if (tx.status === 'REALIZADO') {
         if (tx.type === 'INCOME') receitas += tx.amount
-        else despesas += tx.amount
+        else if (tx.type === 'EXPENSE') despesas += tx.amount
       }
     })
     const lucro = receitas - despesas
