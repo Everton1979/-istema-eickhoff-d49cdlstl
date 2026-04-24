@@ -30,7 +30,7 @@ const formSchema = z
     date: z.string().min(1, 'Data é obrigatória'),
     description: z.string().optional(),
     amount: z.coerce.number().min(0.01, 'Valor deve ser maior que zero'),
-    type: z.enum(['INCOME', 'EXPENSE', 'CORTESIA']),
+    type: z.enum(['INCOME', 'EXPENSE', 'CORTESIA', 'PARTNER_WITHDRAWAL']),
     categoryId: z.string().optional(),
     subcategoryId: z.string().optional(),
     paymentMethodId: z.string().optional(),
@@ -77,11 +77,11 @@ const formSchema = z
         })
       }
     }
-    if (data.type === 'CORTESIA') {
+    if (data.type === 'CORTESIA' || data.type === 'PARTNER_WITHDRAWAL') {
       if (!data.description || data.description.trim().length < 2) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
-          message: 'Destinatário/Motivo é obrigatório para cortesias',
+          message: 'Destinatário/Motivo é obrigatório',
           path: ['description'],
         })
       }
@@ -158,7 +158,7 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
         if (form.getValues('status') === 'VENCIDO') {
           form.setValue('status', 'REALIZADO')
         }
-      } else if (type === 'CORTESIA') {
+      } else if (type === 'CORTESIA' || type === 'PARTNER_WITHDRAWAL') {
         form.setValue('categoryId', '')
         form.setValue('subcategoryId', '')
         form.setValue('paymentMethodId', '')
@@ -269,8 +269,9 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value="INCOME">Receita</SelectItem>
                     <SelectItem value="EXPENSE">Despesa</SelectItem>
+                    <SelectItem value="INCOME">Receita</SelectItem>
+                    <SelectItem value="PARTNER_WITHDRAWAL">Retirada Sócios</SelectItem>
                     <SelectItem value="CORTESIA">Cortesia</SelectItem>
                   </SelectContent>
                 </Select>
@@ -292,7 +293,9 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
                   <SelectContent>
                     <SelectItem value="PREVISTO">Previsto</SelectItem>
                     <SelectItem value="REALIZADO">Realizado</SelectItem>
-                    {(type === 'EXPENSE' || type === 'CORTESIA') && (
+                    {(type === 'EXPENSE' ||
+                      type === 'CORTESIA' ||
+                      type === 'PARTNER_WITHDRAWAL') && (
                       <SelectItem value="VENCIDO">Vencido</SelectItem>
                     )}
                   </SelectContent>
@@ -316,18 +319,22 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
           )}
         />
 
-        {(type === 'EXPENSE' || type === 'CORTESIA') && (
+        {(type === 'EXPENSE' || type === 'CORTESIA' || type === 'PARTNER_WITHDRAWAL') && (
           <FormField
             control={form.control}
             name="description"
             render={({ field }) => (
               <FormItem className="animate-in fade-in slide-in-from-top-2 duration-300">
-                <FormLabel>{type === 'CORTESIA' ? 'Destinatário/Motivo' : 'Descrição'}</FormLabel>
+                <FormLabel>
+                  {type === 'CORTESIA' || type === 'PARTNER_WITHDRAWAL'
+                    ? 'Destinatário/Motivo'
+                    : 'Descrição'}
+                </FormLabel>
                 <FormControl>
                   <Input
                     placeholder={
-                      type === 'CORTESIA'
-                        ? 'Ex: Dr. João Silva / Amostra'
+                      type === 'CORTESIA' || type === 'PARTNER_WITHDRAWAL'
+                        ? 'Ex: Dr. João Silva / Amostra ou João (Sócio)'
                         : 'Ex: Conta de Luz / Compra de Insumo'
                     }
                     {...field}

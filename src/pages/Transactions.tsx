@@ -53,7 +53,9 @@ export default function Transactions() {
   const { profile } = useAuth()
   const [search, setSearch] = useState('')
   const [dayFilter, setDayFilter] = useState<string>('ALL')
-  const [quickFilter, setQuickFilter] = useState<'ALL' | 'PREVISTO' | 'VENCIDO' | 'CORTESIA'>('ALL')
+  const [quickFilter, setQuickFilter] = useState<
+    'ALL' | 'PREVISTO' | 'VENCIDO' | 'CORTESIA' | 'PARTNER_WITHDRAWAL'
+  >('ALL')
   const [isSheetOpen, setIsSheetOpen] = useState(false)
   const [editingTx, setEditingTx] = useState<Transaction | null>(null)
   const [deletingId, setDeletingId] = useState<string | null>(null)
@@ -92,6 +94,9 @@ export default function Transactions() {
       if (quickFilter === 'CORTESIA') {
         return t.type === 'CORTESIA'
       }
+      if (quickFilter === 'PARTNER_WITHDRAWAL') {
+        return t.type === 'PARTNER_WITHDRAWAL'
+      }
 
       return true
     })
@@ -108,8 +113,9 @@ export default function Transactions() {
       if (a.status === 'PREVISTO' && b.status !== 'PREVISTO') return -1
       if (a.status !== 'PREVISTO' && b.status === 'PREVISTO') return 1
 
-      // 2. Ordem de tipos: Receitas > Despesas > Cortesias
-      const typeWeight = (type: string) => (type === 'INCOME' ? 0 : type === 'EXPENSE' ? 1 : 2)
+      // 2. Ordem de tipos: Receitas > Despesas > Retiradas > Cortesias
+      const typeWeight = (type: string) =>
+        type === 'INCOME' ? 0 : type === 'EXPENSE' ? 1 : type === 'PARTNER_WITHDRAWAL' ? 2 : 3
       if (typeWeight(a.type) !== typeWeight(b.type)) {
         return typeWeight(a.type) - typeWeight(b.type)
       }
@@ -144,7 +150,8 @@ export default function Transactions() {
   }
 
   const getCategoryName = (tx: Transaction) => {
-    if (tx.type === 'INCOME' || tx.type === 'CORTESIA') return '-'
+    if (tx.type === 'INCOME' || tx.type === 'CORTESIA' || tx.type === 'PARTNER_WITHDRAWAL')
+      return '-'
     if (!tx.categoryId) return '-'
     let name = tx.categoryId === 'FIXA' ? 'Fixa' : 'Variável'
     if (tx.subcategoryId && SUBCATEGORY_LABELS[tx.subcategoryId]) {
@@ -156,7 +163,7 @@ export default function Transactions() {
   }
 
   const getAccountName = (id: string, type: string) => {
-    if (type === 'EXPENSE' || type === 'CORTESIA') return '-'
+    if (type === 'EXPENSE' || type === 'CORTESIA' || type === 'PARTNER_WITHDRAWAL') return '-'
     if (!id) return '-'
     return accounts.find((a) => a.id === id)?.name || id
   }
@@ -165,7 +172,7 @@ export default function Transactions() {
     const formatted = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(
       val,
     )
-    return type === 'EXPENSE' ? `- ${formatted}` : type === 'CORTESIA' ? formatted : formatted
+    return type === 'EXPENSE' || type === 'PARTNER_WITHDRAWAL' ? `- ${formatted}` : formatted
   }
 
   const handleEdit = (tx: Transaction) => {
@@ -369,6 +376,18 @@ export default function Transactions() {
             >
               Cortesias
             </Button>
+            <Button
+              variant={quickFilter === 'PARTNER_WITHDRAWAL' ? 'default' : 'ghost'}
+              size="sm"
+              className={cn(
+                'text-xs h-8 px-4 whitespace-nowrap flex-1 sm:flex-none',
+                quickFilter === 'PARTNER_WITHDRAWAL' &&
+                  'bg-purple-600 text-white hover:bg-purple-700 shadow-sm',
+              )}
+              onClick={() => setQuickFilter('PARTNER_WITHDRAWAL')}
+            >
+              Retiradas Sócios
+            </Button>
           </div>
         </div>
 
@@ -459,7 +478,9 @@ export default function Transactions() {
                             ? 'text-emerald-600'
                             : tx.type === 'EXPENSE'
                               ? 'text-red-500'
-                              : 'text-orange-500',
+                              : tx.type === 'PARTNER_WITHDRAWAL'
+                                ? 'text-purple-600'
+                                : 'text-orange-500',
                         )}
                       >
                         {formatCurrency(tx.amount, tx.type)}
@@ -506,21 +527,32 @@ export default function Transactions() {
               </div>
             )}
 
-            {quickFilter !== 'CORTESIA' && filteredData.length > 0 && (
-              <div
-                className={cn(
-                  'font-semibold px-3 py-1.5 rounded-md border shadow-sm',
-                  visibleBalance >= 0
-                    ? 'text-emerald-700 bg-emerald-50 border-emerald-100'
-                    : 'text-red-700 bg-red-50 border-red-100',
-                )}
-              >
-                Saldo visível:{' '}
+            {quickFilter === 'PARTNER_WITHDRAWAL' && (
+              <div className="font-semibold text-purple-600 bg-purple-50 px-3 py-1.5 rounded-md">
+                Total Retiradas:{' '}
                 {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(
-                  visibleBalance,
+                  filteredData.reduce((acc, tx) => acc + tx.amount, 0),
                 )}
               </div>
             )}
+
+            {quickFilter !== 'CORTESIA' &&
+              quickFilter !== 'PARTNER_WITHDRAWAL' &&
+              filteredData.length > 0 && (
+                <div
+                  className={cn(
+                    'font-semibold px-3 py-1.5 rounded-md border shadow-sm',
+                    visibleBalance >= 0
+                      ? 'text-emerald-700 bg-emerald-50 border-emerald-100'
+                      : 'text-red-700 bg-red-50 border-red-100',
+                  )}
+                >
+                  Saldo visível:{' '}
+                  {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(
+                    visibleBalance,
+                  )}
+                </div>
+              )}
 
             <div className="font-semibold text-slate-700 bg-slate-100 px-3 py-1.5 rounded-md">
               Total visível: <span className="text-primary">{filteredData.length}</span> transações

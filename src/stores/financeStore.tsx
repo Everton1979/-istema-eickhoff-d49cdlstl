@@ -65,6 +65,7 @@ const PROJECT_ID = 'planilha'
 const mapTypeToDB = (type: string) => {
   if (type === 'INCOME') return 'receita'
   if (type === 'CORTESIA') return 'cortesia'
+  if (type === 'PARTNER_WITHDRAWAL') return 'retirada_socios'
   return 'despesa'
 }
 const mapTypeFromDB = (type: string | null) => {
@@ -72,6 +73,7 @@ const mapTypeFromDB = (type: string | null) => {
   const t = type.toLowerCase().trim()
   if (t === 'receita' || t === 'income') return 'INCOME'
   if (t === 'cortesia') return 'CORTESIA'
+  if (t === 'retirada_socios') return 'PARTNER_WITHDRAWAL'
   return 'EXPENSE'
 }
 
@@ -456,6 +458,8 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
       query = query.eq('type', 'despesa')
     } else if (type === 'CORTESIA') {
       query = query.eq('type', 'cortesia')
+    } else if (type === 'PARTNER_WITHDRAWAL') {
+      query = query.eq('type', 'retirada_socios')
     }
 
     const { data, error } = await query

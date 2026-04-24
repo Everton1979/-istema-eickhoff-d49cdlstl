@@ -1,4 +1,4 @@
-export type TransactionType = 'INCOME' | 'EXPENSE' | 'CORTESIA'
+export type TransactionType = 'INCOME' | 'EXPENSE' | 'CORTESIA' | 'PARTNER_WITHDRAWAL'
 export type TransactionStatus = 'PREVISTO' | 'REALIZADO' | 'VENCIDO'
 
 export interface Category {
