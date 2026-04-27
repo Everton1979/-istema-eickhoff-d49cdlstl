@@ -11,10 +11,11 @@ import {
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
-import { Trash2, UserPlus } from 'lucide-react'
+import { Trash2, UserPlus, Edit } from 'lucide-react'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
 import { UserProfile, useAuth } from '@/hooks/use-auth'
+import { UserEditDialog } from './UserEditDialog'
 import {
   Dialog,
   DialogContent,
@@ -32,21 +33,7 @@ export function UserManagement() {
   const [newEmail, setNewEmail] = useState('')
   const [newPassword, setNewPassword] = useState('')
   const [creating, setCreating] = useState(false)
-
-  const handleToggleStatus = async (userId: string, currentStatus: string) => {
-    const newStatus = currentStatus === 'Ativo' ? 'Pendente' : 'Ativo'
-    try {
-      const { error } = await supabase
-        .from('profiles')
-        .update({ status: newStatus })
-        .eq('id', userId)
-      if (error) throw error
-      toast.success(`Status atualizado para ${newStatus}`)
-      fetchUsers()
-    } catch (err: any) {
-      toast.error(err.message || 'Erro ao atualizar status')
-    }
-  }
+  const [editingUser, setEditingUser] = useState<UserProfile | null>(null)
 
   const fetchUsers = async () => {
     setLoading(true)
@@ -170,21 +157,29 @@ export function UserManagement() {
         </Dialog>
       </div>
 
-      <div className="rounded-md border">
+      <UserEditDialog
+        user={editingUser}
+        open={!!editingUser}
+        onOpenChange={(open) => !open && setEditingUser(null)}
+        onUpdate={fetchUsers}
+      />
+
+      <div className="rounded-md border bg-white overflow-hidden">
         <Table>
           <TableHeader className="bg-slate-50">
             <TableRow>
               <TableHead>Usuário</TableHead>
               <TableHead>Empresa</TableHead>
               <TableHead>Contato</TableHead>
-              <TableHead className="w-[120px]">Papel</TableHead>
-              <TableHead className="w-[120px]">Status</TableHead>
+              <TableHead>Plano</TableHead>
+              <TableHead className="w-[100px]">Papel</TableHead>
+              <TableHead className="w-[100px]">Status</TableHead>
               <TableHead className="w-[100px] text-center">Ações</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {users.map((u) => (
-              <TableRow key={u.id}>
+              <TableRow key={u.id} className="group">
                 <TableCell>
                   <div className="font-medium text-sm flex items-center gap-2">
                     {u.email}
@@ -221,6 +216,23 @@ export function UserManagement() {
                   )}
                 </TableCell>
                 <TableCell>
+                  <div className="text-xs font-bold text-slate-700 uppercase">
+                    {u.plan_type || 'free'}
+                  </div>
+                  {u.plan_end_date && (
+                    <div
+                      className={cn(
+                        'text-[10px] mt-0.5',
+                        new Date() > new Date(u.plan_end_date)
+                          ? 'text-red-600 font-bold'
+                          : 'text-slate-500',
+                      )}
+                    >
+                      Vence: {new Date(u.plan_end_date).toLocaleDateString('pt-BR')}
+                    </div>
+                  )}
+                </TableCell>
+                <TableCell>
                   <Badge variant="outline" className="text-xs bg-slate-100">
                     {u.role}
                   </Badge>
@@ -228,16 +240,22 @@ export function UserManagement() {
                 <TableCell>
                   <Badge
                     variant={
-                      u.status === 'Ativo' || u.role === 'Administrador' ? 'default' : 'secondary'
+                      u.role === 'Administrador'
+                        ? 'default'
+                        : u.status === 'Ativo'
+                          ? 'default'
+                          : u.status === 'Bloqueado'
+                            ? 'destructive'
+                            : 'secondary'
                     }
                     className={cn(
-                      'text-xs',
-                      u.role !== 'Administrador' && 'cursor-pointer hover:opacity-80',
-                      u.status === 'Pendente' && 'bg-yellow-500 hover:bg-yellow-600',
+                      'text-xs cursor-pointer hover:opacity-80 transition-opacity',
+                      u.status === 'Pendente' &&
+                        'bg-amber-500 hover:bg-amber-600 text-white border-transparent',
                     )}
                     onClick={() => {
                       if (u.role !== 'Administrador') {
-                        handleToggleStatus(u.id, u.status || 'Pendente')
+                        setEditingUser(u)
                       }
                     }}
                   >
@@ -245,15 +263,26 @@ export function UserManagement() {
                   </Badge>
                 </TableCell>
                 <TableCell className="text-center">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-8 w-8 text-slate-400 hover:text-red-600 hover:bg-red-50"
-                    onClick={() => handleDeleteUser(u.id)}
-                    disabled={u.id === currentProfile?.id}
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
+                  <div className="flex items-center justify-center gap-1">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 text-blue-600 hover:bg-blue-50"
+                      onClick={() => setEditingUser(u)}
+                      disabled={u.id === currentProfile?.id && u.role === 'Administrador'}
+                    >
+                      <Edit className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 text-slate-400 hover:text-red-600 hover:bg-red-50"
+                      onClick={() => handleDeleteUser(u.id)}
+                      disabled={u.id === currentProfile?.id}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
                 </TableCell>
               </TableRow>
             ))}

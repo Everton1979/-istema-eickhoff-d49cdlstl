@@ -20,6 +20,10 @@ export interface UserProfile {
   telefone?: string
   responsavel?: string
   status?: string
+  plan_type?: 'free' | 'mensal' | 'trimestral' | 'semestral' | 'anual' | string | null
+  plan_start_date?: string | null
+  plan_end_date?: string | null
+  admin_notes?: string | null
 }
 
 interface AuthContextType {

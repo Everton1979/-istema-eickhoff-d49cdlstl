@@ -137,6 +137,8 @@ export type Database = {
       }
       profiles: {
         Row: {
+          app_name: string | null
+          approved_at: string | null
           bairro: string | null
           cep: string | null
           cidade_estado: string | null
@@ -158,6 +160,8 @@ export type Database = {
           updated_at: string | null
         }
         Insert: {
+          app_name?: string | null
+          approved_at?: string | null
           bairro?: string | null
           cep?: string | null
           cidade_estado?: string | null
@@ -179,6 +183,8 @@ export type Database = {
           updated_at?: string | null
         }
         Update: {
+          app_name?: string | null
+          approved_at?: string | null
           bairro?: string | null
           cep?: string | null
           cidade_estado?: string | null
@@ -494,6 +500,8 @@ export const Constants = {
 //   bairro: text (nullable)
 //   cidade_estado: text (nullable)
 //   created_at: timestamp with time zone (not null, default: now())
+//   app_name: text (nullable, default: 'farmacia'::text)
+//   approved_at: timestamp with time zone (nullable)
 // Table: transactions
 //   id: uuid (not null, default: gen_random_uuid())
 //   user_id: uuid (not null)
@@ -544,29 +552,33 @@ export const Constants = {
 
 // --- ROW LEVEL SECURITY POLICIES ---
 // Table: appointments
-//   Policy "All authenticated users can manage appointments" (ALL, PERMISSIVE) roles={authenticated}
-//     USING: true
-//     WITH CHECK: true
+//   Policy "Users can manage own appointments" (ALL, PERMISSIVE) roles={authenticated}
+//     USING: (user_id = auth.uid())
+//     WITH CHECK: (user_id = auth.uid())
 // Table: audit_logs
-//   Policy "All authenticated users can manage audit logs" (ALL, PERMISSIVE) roles={authenticated}
-//     USING: true
-//     WITH CHECK: true
+//   Policy "Users can manage own audit logs" (ALL, PERMISSIVE) roles={authenticated}
+//     USING: (user_id = auth.uid())
+//     WITH CHECK: (user_id = auth.uid())
 // Table: monthly_metrics
-//   Policy "All authenticated users can manage monthly metrics" (ALL, PERMISSIVE) roles={authenticated}
-//     USING: true
-//     WITH CHECK: true
+//   Policy "Users can manage own monthly metrics" (ALL, PERMISSIVE) roles={authenticated}
+//     USING: (user_id = auth.uid())
+//     WITH CHECK: (user_id = auth.uid())
 // Table: profiles
-//   Policy "All authenticated users can manage profiles" (ALL, PERMISSIVE) roles={authenticated}
-//     USING: true
-//     WITH CHECK: true
+//   Policy "Users can insert profiles" (INSERT, PERMISSIVE) roles={authenticated}
+//     WITH CHECK: ((id = auth.uid()) OR (get_user_role() = 'Administrador'::text))
+//   Policy "Users can read profiles" (SELECT, PERMISSIVE) roles={authenticated}
+//     USING: ((id = auth.uid()) OR (get_user_role() = 'Administrador'::text))
+//   Policy "Users can update profiles" (UPDATE, PERMISSIVE) roles={authenticated}
+//     USING: ((id = auth.uid()) OR (get_user_role() = 'Administrador'::text))
+//     WITH CHECK: ((id = auth.uid()) OR (get_user_role() = 'Administrador'::text))
 // Table: transactions
-//   Policy "All authenticated users can manage transactions" (ALL, PERMISSIVE) roles={authenticated}
-//     USING: true
-//     WITH CHECK: true
+//   Policy "Users can manage own transactions" (ALL, PERMISSIVE) roles={authenticated}
+//     USING: (user_id = auth.uid())
+//     WITH CHECK: (user_id = auth.uid())
 // Table: user_settings
-//   Policy "All authenticated users can manage user settings" (ALL, PERMISSIVE) roles={authenticated}
-//     USING: true
-//     WITH CHECK: true
+//   Policy "Users can manage own user settings" (ALL, PERMISSIVE) roles={authenticated}
+//     USING: (user_id = auth.uid())
+//     WITH CHECK: (user_id = auth.uid())
 
 // --- DATABASE FUNCTIONS ---
 // FUNCTION get_user_role()
@@ -588,7 +600,7 @@ export const Constants = {
 //   BEGIN
 //     INSERT INTO public.profiles (
 //       id, email, role, status, cnpj, razao_social, nome_fantasia,
-//       endereco, telefone, responsavel, cep, logradouro, numero, complemento, bairro, cidade_estado
+//       endereco, telefone, responsavel, cep, logradouro, numero, complemento, bairro, cidade_estado, app_name
 //     )
 //     VALUES (
 //       NEW.id,
@@ -606,7 +618,8 @@ export const Constants = {
 //       NEW.raw_user_meta_data->>'numero',
 //       NEW.raw_user_meta_data->>'complemento',
 //       NEW.raw_user_meta_data->>'bairro',
-//       NEW.raw_user_meta_data->>'cidade_estado'
+//       NEW.raw_user_meta_data->>'cidade_estado',
+//       COALESCE(NEW.raw_user_meta_data->>'app_name', 'salao')
 //     );
 //     RETURN NEW;
 //   END;

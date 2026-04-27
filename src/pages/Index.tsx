@@ -12,6 +12,7 @@ import { PrintableReport } from '@/components/dashboard/PrintableReport'
 import { StatusDetailPanel } from '@/components/dashboard/StatusDetailPanel'
 import { PendingUsersAlert } from '@/components/dashboard/PendingUsersAlert'
 import { AdminActivityReport } from '@/components/dashboard/AdminActivityReport'
+import { PlanExpirationBanner } from '@/components/dashboard/PlanExpirationBanner'
 import { useState } from 'react'
 
 export default function Index() {
@@ -27,6 +28,7 @@ export default function Index() {
         </div>
 
         <div className="flex-1 overflow-y-auto p-4 md:p-6 flex flex-col gap-8">
+          <PlanExpirationBanner />
           <PendingUsersAlert />
           <AdminActivityReport />
 

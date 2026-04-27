@@ -17,6 +17,7 @@ import ResetPassword from './pages/ResetPassword'
 import Layout from './components/Layout'
 import Profile from './pages/Profile'
 import AuditLogs from './pages/AuditLogs'
+import BlockedAccess from './pages/BlockedAccess'
 
 const ProtectedRoute = ({
   children,
@@ -44,8 +45,26 @@ const ProtectedRoute = ({
     if (!allowedRoles.includes(profile.role)) return <Navigate to="/" replace />
   }
 
-  if (requireActive && profile?.status === 'Pendente' && profile?.role !== 'Administrador') {
-    return <Navigate to="/pendente" replace />
+  // Administrador tem acesso total
+  if (profile?.role === 'Administrador') {
+    return <>{children}</>
+  }
+
+  if (requireActive) {
+    if (profile?.status === 'Pendente') {
+      return <Navigate to="/pendente" replace />
+    }
+
+    if (profile?.status === 'Bloqueado') {
+      return <Navigate to="/bloqueado" replace />
+    }
+
+    if (profile?.plan_end_date) {
+      const endDate = new Date(profile.plan_end_date)
+      if (new Date() > endDate) {
+        return <Navigate to="/bloqueado" replace />
+      }
+    }
   }
 
   return <>{children}</>
@@ -69,6 +88,14 @@ const App = () => (
               element={
                 <ProtectedRoute requireActive={false}>
                   <PendingApproval />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/bloqueado"
+              element={
+                <ProtectedRoute requireActive={false}>
+                  <BlockedAccess />
                 </ProtectedRoute>
               }
             />
