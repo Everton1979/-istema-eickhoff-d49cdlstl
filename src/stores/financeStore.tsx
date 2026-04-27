@@ -60,7 +60,7 @@ interface FinanceContextType {
 
 const FinanceContext = createContext<FinanceContextType | undefined>(undefined)
 
-const PROJECT_ID = 'planilha'
+const PROJECT_ID = 'farmacia'
 
 const mapTypeToDB = (type: string) => {
   if (type === 'INCOME') return 'receita'

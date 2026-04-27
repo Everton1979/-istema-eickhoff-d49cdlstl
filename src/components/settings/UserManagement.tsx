@@ -172,6 +172,7 @@ export function UserManagement() {
               <TableHead>Empresa</TableHead>
               <TableHead>Contato</TableHead>
               <TableHead>Plano</TableHead>
+              <TableHead className="w-[120px]">Dias Restantes</TableHead>
               <TableHead className="w-[100px]">Papel</TableHead>
               <TableHead className="w-[100px]">Status</TableHead>
               <TableHead className="w-[100px] text-center">Ações</TableHead>
@@ -231,6 +232,38 @@ export function UserManagement() {
                       Vence: {new Date(u.plan_end_date).toLocaleDateString('pt-BR')}
                     </div>
                   )}
+                </TableCell>
+                <TableCell>
+                  {(() => {
+                    if (!u.plan_end_date) return <span className="text-xs text-slate-500">-</span>
+                    const end = new Date(u.plan_end_date)
+                    end.setHours(0, 0, 0, 0)
+                    const today = new Date()
+                    today.setHours(0, 0, 0, 0)
+                    const diffDays = Math.ceil(
+                      (end.getTime() - today.getTime()) / (1000 * 60 * 60 * 24),
+                    )
+
+                    if (diffDays < 0) {
+                      return (
+                        <Badge variant="destructive" className="text-[10px]">
+                          Vencido
+                        </Badge>
+                      )
+                    }
+                    return (
+                      <div className="flex items-center gap-1.5">
+                        <span
+                          className={cn(
+                            'text-xs font-bold',
+                            diffDays <= 3 ? 'text-amber-600' : 'text-emerald-600',
+                          )}
+                        >
+                          {diffDays} {diffDays === 1 ? 'dia' : 'dias'}
+                        </span>
+                      </div>
+                    )
+                  })()}
                 </TableCell>
                 <TableCell>
                   <Badge variant="outline" className="text-xs bg-slate-100">

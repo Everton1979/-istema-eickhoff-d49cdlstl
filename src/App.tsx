@@ -45,16 +45,7 @@ const ProtectedRoute = ({
     if (!allowedRoles.includes(profile.role)) return <Navigate to="/" replace />
   }
 
-  // Administrador tem acesso total
-  if (profile?.role === 'Administrador') {
-    return <>{children}</>
-  }
-
   if (requireActive) {
-    if (profile?.status === 'Pendente') {
-      return <Navigate to="/pendente" replace />
-    }
-
     if (profile?.status === 'Bloqueado') {
       return <Navigate to="/bloqueado" replace />
     }
@@ -64,6 +55,17 @@ const ProtectedRoute = ({
       if (new Date() > endDate) {
         return <Navigate to="/bloqueado" replace />
       }
+    }
+  }
+
+  // Administrador tem acesso total
+  if (profile?.role === 'Administrador') {
+    return <>{children}</>
+  }
+
+  if (requireActive) {
+    if (profile?.status === 'Pendente') {
+      return <Navigate to="/pendente" replace />
     }
   }
 

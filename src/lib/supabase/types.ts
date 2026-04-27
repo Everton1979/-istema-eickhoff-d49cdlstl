@@ -137,6 +137,7 @@ export type Database = {
       }
       profiles: {
         Row: {
+          admin_notes: string | null
           app_name: string | null
           approved_at: string | null
           bairro: string | null
@@ -152,6 +153,9 @@ export type Database = {
           logradouro: string | null
           nome_fantasia: string | null
           numero: string | null
+          plan_end_date: string | null
+          plan_start_date: string | null
+          plan_type: string | null
           razao_social: string | null
           responsavel: string | null
           role: string
@@ -160,6 +164,7 @@ export type Database = {
           updated_at: string | null
         }
         Insert: {
+          admin_notes?: string | null
           app_name?: string | null
           approved_at?: string | null
           bairro?: string | null
@@ -175,6 +180,9 @@ export type Database = {
           logradouro?: string | null
           nome_fantasia?: string | null
           numero?: string | null
+          plan_end_date?: string | null
+          plan_start_date?: string | null
+          plan_type?: string | null
           razao_social?: string | null
           responsavel?: string | null
           role?: string
@@ -183,6 +191,7 @@ export type Database = {
           updated_at?: string | null
         }
         Update: {
+          admin_notes?: string | null
           app_name?: string | null
           approved_at?: string | null
           bairro?: string | null
@@ -198,6 +207,9 @@ export type Database = {
           logradouro?: string | null
           nome_fantasia?: string | null
           numero?: string | null
+          plan_end_date?: string | null
+          plan_start_date?: string | null
+          plan_type?: string | null
           razao_social?: string | null
           responsavel?: string | null
           role?: string
@@ -502,6 +514,10 @@ export const Constants = {
 //   created_at: timestamp with time zone (not null, default: now())
 //   app_name: text (nullable, default: 'farmacia'::text)
 //   approved_at: timestamp with time zone (nullable)
+//   plan_type: text (nullable, default: 'free'::text)
+//   plan_start_date: timestamp with time zone (nullable)
+//   plan_end_date: timestamp with time zone (nullable)
+//   admin_notes: text (nullable)
 // Table: transactions
 //   id: uuid (not null, default: gen_random_uuid())
 //   user_id: uuid (not null)
