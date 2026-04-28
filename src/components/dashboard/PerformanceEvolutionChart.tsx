@@ -27,21 +27,23 @@ export function PerformanceEvolutionChart() {
     const result = []
 
     let refYear = new Date().getFullYear()
-    let refMonth = new Date().getMonth()
+    let refMonth = new Date().getMonth() + 1
 
     if (filters.years && filters.years.length > 0 && !isNaN(parseInt(filters.years[0], 10))) {
       refYear = parseInt(filters.years[0], 10)
     }
     if (filters.months && filters.months.length > 0 && !isNaN(parseInt(filters.months[0], 10))) {
-      refMonth = parseInt(filters.months[0], 10) - 1
+      refMonth = parseInt(filters.months[0], 10)
     }
 
-    const endDate = new Date(refYear, refMonth, 1)
-
     for (let i = monthsCount - 1; i >= 0; i--) {
-      const d = new Date(endDate.getFullYear(), endDate.getMonth() - i, 1)
-      const m = d.getMonth() + 1
-      const y = d.getFullYear()
+      let m = refMonth - i
+      let y = refYear
+
+      while (m <= 0) {
+        m += 12
+        y -= 1
+      }
 
       let receitas = 0
       let despesas = 0
@@ -52,9 +54,15 @@ export function PerformanceEvolutionChart() {
         if (t.type !== 'INCOME' && t.type !== 'EXPENSE') return
 
         try {
-          const txDate = t.date.includes('T') ? new Date(t.date) : new Date(`${t.date}T12:00:00Z`)
-          const txMonth = txDate.getMonth() + 1
-          const txYear = txDate.getFullYear()
+          let txDateStr = ''
+          if (t.date.includes('T')) {
+            txDateStr = t.date.split('T')[0]
+          } else {
+            txDateStr = t.date.substring(0, 10)
+          }
+
+          const txYear = parseInt(txDateStr.substring(0, 4), 10)
+          const txMonth = parseInt(txDateStr.substring(5, 7), 10)
 
           if (txMonth === m && txYear === y) {
             if (t.type === 'INCOME') {
