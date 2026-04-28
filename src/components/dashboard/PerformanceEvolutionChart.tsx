@@ -26,28 +26,18 @@ export function PerformanceEvolutionChart() {
   const data = useMemo(() => {
     const result = []
 
-    // Tratamento seguro para os filtros de data para evitar NaN e gráfico em branco
-    let refYearStr = filters.years?.[0]
-    if (refYearStr && isNaN(parseInt(refYearStr, 10))) {
-      refYearStr = undefined
-    }
-    const refYear = refYearStr ? parseInt(refYearStr, 10) : new Date().getFullYear()
-
+    let refYear = new Date().getFullYear()
     let refMonth = new Date().getMonth()
-    if (filters.months && filters.months.length > 0) {
-      const parsedMonth = parseInt(filters.months[0], 10)
-      if (!isNaN(parsedMonth)) {
-        refMonth = parsedMonth - 1
-      } else {
-        refMonth = refYear < new Date().getFullYear() ? 11 : new Date().getMonth()
-      }
-    } else {
-      refMonth = refYear < new Date().getFullYear() ? 11 : new Date().getMonth()
+
+    if (filters.years && filters.years.length > 0 && !isNaN(parseInt(filters.years[0], 10))) {
+      refYear = parseInt(filters.years[0], 10)
+    }
+    if (filters.months && filters.months.length > 0 && !isNaN(parseInt(filters.months[0], 10))) {
+      refMonth = parseInt(filters.months[0], 10) - 1
     }
 
     const endDate = new Date(refYear, refMonth, 1)
 
-    // Pegamos os últimos N meses, terminando no mês de referência
     for (let i = monthsCount - 1; i >= 0; i--) {
       const d = new Date(endDate.getFullYear(), endDate.getMonth() - i, 1)
       const m = d.getMonth() + 1
@@ -57,29 +47,24 @@ export function PerformanceEvolutionChart() {
       let despesas = 0
 
       transactions.forEach((t) => {
-        // Ignora transações que não sejam "REALIZADO"
-        if (!t.status || t.status.toUpperCase() !== 'REALIZADO') return
-
-        // Ignora Cortesias, Retiradas de Sócios e outros tipos que não sejam Receita/Despesa padrão
+        if (!t || !t.date) return
+        if (t.status?.toUpperCase() !== 'REALIZADO') return
         if (t.type !== 'INCOME' && t.type !== 'EXPENSE') return
 
-        let txDateStr = t.date
-        if (txDateStr.includes('T')) {
-          txDateStr = txDateStr.split('T')[0]
-        } else {
-          txDateStr = txDateStr.substring(0, 10)
-        }
+        try {
+          const txDate = t.date.includes('T') ? new Date(t.date) : new Date(`${t.date}T12:00:00Z`)
+          const txMonth = txDate.getMonth() + 1
+          const txYear = txDate.getFullYear()
 
-        const txYear = parseInt(txDateStr.substring(0, 4), 10)
-        const txMonth = parseInt(txDateStr.substring(5, 7), 10)
-
-        // Soma valores operacionais
-        if (txMonth === m && txYear === y) {
-          if (t.type === 'INCOME') {
-            receitas += Number(t.amount) || 0
-          } else if (t.type === 'EXPENSE') {
-            despesas += Number(t.amount) || 0
+          if (txMonth === m && txYear === y) {
+            if (t.type === 'INCOME') {
+              receitas += Number(t.amount) || 0
+            } else if (t.type === 'EXPENSE') {
+              despesas += Number(t.amount) || 0
+            }
           }
+        } catch (e) {
+          // Ignore invalid dates gracefully
         }
       })
 

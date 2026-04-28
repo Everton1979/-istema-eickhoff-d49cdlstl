@@ -30,10 +30,15 @@ export function PricingAssistant() {
     })
 
     const isTxInTarget = (tx: Transaction, targets: { month: number; year: number }[]) => {
-      const txDate = tx.date.includes('T') ? new Date(tx.date) : new Date(`${tx.date}T12:00:00Z`)
-      const m = txDate.getMonth() + 1
-      const y = txDate.getFullYear()
-      return targets.some((t) => t.month === m && t.year === y)
+      if (!tx || !tx.date) return false
+      try {
+        const txDate = tx.date.includes('T') ? new Date(tx.date) : new Date(`${tx.date}T12:00:00Z`)
+        const m = txDate.getMonth() + 1
+        const y = txDate.getFullYear()
+        return targets.some((t) => t.month === m && t.year === y)
+      } catch (e) {
+        return false
+      }
     }
 
     // 2. Filtra os dados históricos consolidados

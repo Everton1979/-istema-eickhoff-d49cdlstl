@@ -173,9 +173,9 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
       setTransactions(
         txRes.data.map((d: any) => ({
           id: d.id,
-          date: d.date,
-          description: d.description,
-          amount: Number(d.amount),
+          date: d.date || '',
+          description: d.description || '',
+          amount: Number(d.amount) || 0,
           type: mapTypeFromDB(d.type) as any,
           categoryId: mapCategoryFromDB(d.category),
           subcategoryId: d.subcategory || '',
@@ -480,9 +480,9 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
 
     return (data || []).map((d: any) => ({
       id: d.id,
-      date: d.date,
-      description: d.description,
-      amount: Number(d.amount),
+      date: d.date || '',
+      description: d.description || '',
+      amount: Number(d.amount) || 0,
       type: mapTypeFromDB(d.type) as any,
       categoryId: mapCategoryFromDB(d.category),
       subcategoryId: d.subcategory || '',
@@ -525,28 +525,29 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
 
   const filteredTransactions = useMemo(() => {
     return transactions.filter((tx) => {
-      let txDateStr = ''
-      if (tx.date.includes('T')) {
-        txDateStr = tx.date.split('T')[0]
-      } else {
-        txDateStr = tx.date.substring(0, 10)
+      if (!tx || !tx.date) return false
+
+      try {
+        const txDate = tx.date.includes('T') ? new Date(tx.date) : new Date(`${tx.date}T12:00:00Z`)
+        const txYear = txDate.getFullYear().toString()
+        const txMonth = (txDate.getMonth() + 1).toString().padStart(2, '0')
+
+        if (filters.years && filters.years.length > 0 && !filters.years.includes(txYear))
+          return false
+        if (filters.months && filters.months.length > 0 && !filters.months.includes(txMonth))
+          return false
+
+        if (
+          filters.statuses &&
+          filters.statuses.length > 0 &&
+          !filters.statuses.includes(tx.status?.toUpperCase() || '')
+        )
+          return false
+
+        return true
+      } catch (e) {
+        return false
       }
-
-      const txYear = txDateStr.substring(0, 4)
-      const txMonth = txDateStr.substring(5, 7)
-
-      if (filters.years && filters.years.length > 0 && !filters.years.includes(txYear)) return false
-      if (filters.months && filters.months.length > 0 && !filters.months.includes(txMonth))
-        return false
-
-      if (
-        filters.statuses &&
-        filters.statuses.length > 0 &&
-        !filters.statuses.includes(tx.status.toUpperCase())
-      )
-        return false
-
-      return true
     })
   }, [transactions, filters])
 
