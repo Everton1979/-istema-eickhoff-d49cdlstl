@@ -25,23 +25,29 @@ export function PerformanceEvolutionChart() {
 
   const data = useMemo(() => {
     const result = []
-    const refYearStr = filters.years?.[0]
-    const refYear = refYearStr ? parseInt(refYearStr) : new Date().getFullYear()
+
+    // Tratamento seguro para os filtros de data para evitar NaN e gráfico em branco
+    let refYearStr = filters.years?.[0]
+    if (refYearStr && isNaN(parseInt(refYearStr, 10))) {
+      refYearStr = undefined
+    }
+    const refYear = refYearStr ? parseInt(refYearStr, 10) : new Date().getFullYear()
 
     let refMonth = new Date().getMonth()
     if (filters.months && filters.months.length > 0) {
-      refMonth = parseInt(filters.months[0]) - 1
-    } else {
-      if (refYear < new Date().getFullYear()) {
-        refMonth = 11 // December for past years
+      const parsedMonth = parseInt(filters.months[0], 10)
+      if (!isNaN(parsedMonth)) {
+        refMonth = parsedMonth - 1
       } else {
-        refMonth = new Date().getMonth()
+        refMonth = refYear < new Date().getFullYear() ? 11 : new Date().getMonth()
       }
+    } else {
+      refMonth = refYear < new Date().getFullYear() ? 11 : new Date().getMonth()
     }
 
     const endDate = new Date(refYear, refMonth, 1)
 
-    // We want the last N months, ending in the selected month
+    // Pegamos os últimos N meses, terminando no mês de referência
     for (let i = monthsCount - 1; i >= 0; i--) {
       const d = new Date(endDate.getFullYear(), endDate.getMonth() - i, 1)
       const m = d.getMonth() + 1
@@ -51,6 +57,12 @@ export function PerformanceEvolutionChart() {
       let despesas = 0
 
       transactions.forEach((t) => {
+        // Ignora transações que não sejam "REALIZADO"
+        if (!t.status || t.status.toUpperCase() !== 'REALIZADO') return
+
+        // Ignora Cortesias, Retiradas de Sócios e outros tipos que não sejam Receita/Despesa padrão
+        if (t.type !== 'INCOME' && t.type !== 'EXPENSE') return
+
         let txDateStr = t.date
         if (txDateStr.includes('T')) {
           txDateStr = txDateStr.split('T')[0]
@@ -61,12 +73,12 @@ export function PerformanceEvolutionChart() {
         const txYear = parseInt(txDateStr.substring(0, 4), 10)
         const txMonth = parseInt(txDateStr.substring(5, 7), 10)
 
-        // Considerar apenas REALIZADO e excluir Cortesias/Retiradas explicitamente
-        if (txMonth === m && txYear === y && t.status === 'REALIZADO') {
+        // Soma valores operacionais
+        if (txMonth === m && txYear === y) {
           if (t.type === 'INCOME') {
-            receitas += t.amount
+            receitas += Number(t.amount) || 0
           } else if (t.type === 'EXPENSE') {
-            despesas += t.amount
+            despesas += Number(t.amount) || 0
           }
         }
       })
