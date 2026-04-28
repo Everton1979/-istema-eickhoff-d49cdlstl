@@ -1,0 +1,7 @@
+DO $$
+BEGIN
+  ALTER TABLE public.monthly_metrics 
+  ADD COLUMN IF NOT EXISTS colaboradores_capsulas INTEGER NOT NULL DEFAULT 0,
+  ADD COLUMN IF NOT EXISTS colaboradores_dermato INTEGER NOT NULL DEFAULT 0,
+  ADD COLUMN IF NOT EXISTS colaboradores_vendas INTEGER NOT NULL DEFAULT 0;
+END $$;

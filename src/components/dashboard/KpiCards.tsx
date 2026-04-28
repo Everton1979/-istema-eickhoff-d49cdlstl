@@ -74,6 +74,8 @@ export function useKpiMetrics() {
       lucro,
       ebitda,
       pontoEquilibrio,
+      cmv: totalRawMaterial,
+      cma: totalRawMaterial,
     }
   }, [transactions, filteredMonthlyMetrics, categories, filters])
 }
@@ -180,10 +182,26 @@ export function StrategicKpis() {
       color: 'text-slate-600',
       border: 'border-t-slate-500',
     },
+    {
+      id: 'cmv',
+      title: 'CMV',
+      tooltip: 'Custo da Mercadoria Vendida (Insumos e Matéria-Prima).',
+      value: formatCurrency(metrics.cmv),
+      color: 'text-orange-600',
+      border: 'border-t-orange-500',
+    },
+    {
+      id: 'cma',
+      title: 'CMA',
+      tooltip: 'Custo da Mercadoria Aplicada na produção.',
+      value: formatCurrency(metrics.cma),
+      color: 'text-orange-600',
+      border: 'border-t-orange-500',
+    },
   ]
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
       {kpis.map((kpi, i) => (
         <KpiCard key={i} kpi={kpi} />
       ))}

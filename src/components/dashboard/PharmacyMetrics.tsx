@@ -16,6 +16,18 @@ export function PharmacyMetrics() {
       (sum, m) => sum + m.raw_material_costs,
       0,
     )
+    const totalColaboradoresCapsulas = filteredMonthlyMetrics.reduce(
+      (sum, m) => sum + (m.colaboradores_capsulas || 0),
+      0,
+    )
+    const totalColaboradoresDermato = filteredMonthlyMetrics.reduce(
+      (sum, m) => sum + (m.colaboradores_dermato || 0),
+      0,
+    )
+    const totalColaboradoresVendas = filteredMonthlyMetrics.reduce(
+      (sum, m) => sum + (m.colaboradores_vendas || 0),
+      0,
+    )
 
     const numCapsulas = filteredMonthlyMetrics.reduce(
       (sum, m) => sum + (m.num_formulas_capsulas || 0),
@@ -73,6 +85,15 @@ export function PharmacyMetrics() {
 
     const lucroLiquidoPct = totalSales > 0 ? ((totalSales - custoTotal) / totalSales) * 100 : 0
 
+    const countMonths = filteredMonthlyMetrics.length || 1
+    const avgColabCaps = totalColaboradoresCapsulas / countMonths
+    const avgColabDerm = totalColaboradoresDermato / countMonths
+    const avgColabVendas = totalColaboradoresVendas / countMonths
+    const avgTotalColab = avgColabCaps + avgColabDerm + avgColabVendas
+
+    const fatPorColabGeral = avgTotalColab > 0 ? totalSales / avgTotalColab : 0
+    const fatPorColabVendas = avgColabVendas > 0 ? totalSales / avgColabVendas : 0
+
     return {
       ticketMedio,
       mkpRealizado,
@@ -81,6 +102,8 @@ export function PharmacyMetrics() {
       custoFixoPorFormulaDerm,
       pmIdealCaps,
       pmIdealDerm,
+      fatPorColabGeral,
+      fatPorColabVendas,
     }
   }, [filteredTransactions, filteredMonthlyMetrics, filters])
 
@@ -146,6 +169,20 @@ export function PharmacyMetrics() {
       value: formatCurrency(metrics.custoFixoPorFormulaDerm),
       color: 'text-orange-600',
     },
+    {
+      id: 'fat-colab-geral',
+      title: 'Faturamento / Colab (Geral)',
+      tooltip: 'Faturamento total dividido pelo número médio de colaboradores totais.',
+      value: formatCurrency(metrics.fatPorColabGeral),
+      color: 'text-emerald-600',
+    },
+    {
+      id: 'fat-colab-vendas',
+      title: 'Faturamento / Colab (Vendas)',
+      tooltip: 'Faturamento total dividido pelo número médio de colaboradores de vendas.',
+      value: formatCurrency(metrics.fatPorColabVendas),
+      color: 'text-emerald-600',
+    },
   ]
 
   return (
@@ -159,7 +196,7 @@ export function PharmacyMetrics() {
       <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
         {items.map((item, i) => (
           <Card
-            key={i}
+            key={item.id}
             className={cn(
               'rounded-md shadow-sm border-slate-200 bg-slate-50/50 hover:bg-white hover:border-indigo-200 transition-all',
               i === 0 ? 'col-span-2 lg:col-span-3 bg-indigo-50/50 border-indigo-100' : '',

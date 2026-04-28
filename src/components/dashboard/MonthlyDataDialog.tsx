@@ -41,6 +41,9 @@ export function MonthlyDataDialog() {
       num_formulas_dermato: '',
       vendas_dermato: '',
       custo_mp_emb_dermato: '',
+      colaboradores_capsulas: '',
+      colaboradores_dermato: '',
+      colaboradores_vendas: '',
     },
   })
 
@@ -94,6 +97,15 @@ export function MonthlyDataDialog() {
           custo_mp_emb_dermato: currentExisting.custo_mp_emb_dermato
             ? String(currentExisting.custo_mp_emb_dermato)
             : '',
+          colaboradores_capsulas: currentExisting.colaboradores_capsulas
+            ? String(currentExisting.colaboradores_capsulas)
+            : '',
+          colaboradores_dermato: currentExisting.colaboradores_dermato
+            ? String(currentExisting.colaboradores_dermato)
+            : '',
+          colaboradores_vendas: currentExisting.colaboradores_vendas
+            ? String(currentExisting.colaboradores_vendas)
+            : '',
         }
       : {
           sales_target: '',
@@ -103,6 +115,9 @@ export function MonthlyDataDialog() {
           num_formulas_dermato: '',
           vendas_dermato: '',
           custo_mp_emb_dermato: '',
+          colaboradores_capsulas: '',
+          colaboradores_dermato: '',
+          colaboradores_vendas: '',
         }
 
     const isDifferent = JSON.stringify(formData) !== JSON.stringify(expectedData)
@@ -158,6 +173,9 @@ export function MonthlyDataDialog() {
         num_formulas_dermato: Number(formData.num_formulas_dermato) || 0,
         vendas_dermato: Number(formData.vendas_dermato) || 0,
         custo_mp_emb_dermato: Number(formData.custo_mp_emb_dermato) || 0,
+        colaboradores_capsulas: Number(formData.colaboradores_capsulas) || 0,
+        colaboradores_dermato: Number(formData.colaboradores_dermato) || 0,
+        colaboradores_vendas: Number(formData.colaboradores_vendas) || 0,
       }
 
       await saveMonthlyMetric(payload)
@@ -239,7 +257,7 @@ export function MonthlyDataDialog() {
               <div className="w-1.5 h-4 bg-emerald-500 rounded-sm" />
               Setor Cápsulas
             </h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div className="space-y-2">
                 <Label>Nº Fórmulas</Label>
                 <Input
@@ -269,6 +287,15 @@ export function MonthlyDataDialog() {
                   placeholder="0.00"
                 />
               </div>
+              <div className="space-y-2">
+                <Label>Colaboradores</Label>
+                <Input
+                  type="number"
+                  value={formData.colaboradores_capsulas}
+                  onChange={(e) => handleChange('colaboradores_capsulas', e.target.value)}
+                  placeholder="0"
+                />
+              </div>
             </div>
           </div>
 
@@ -277,7 +304,7 @@ export function MonthlyDataDialog() {
               <div className="w-1.5 h-4 bg-purple-500 rounded-sm" />
               Setor Dermato
             </h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div className="space-y-2">
                 <Label>Nº Fórmulas</Label>
                 <Input
@@ -305,6 +332,15 @@ export function MonthlyDataDialog() {
                   value={formData.custo_mp_emb_dermato}
                   onChange={(e) => handleChange('custo_mp_emb_dermato', e.target.value)}
                   placeholder="0.00"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Colaboradores</Label>
+                <Input
+                  type="number"
+                  value={formData.colaboradores_dermato}
+                  onChange={(e) => handleChange('colaboradores_dermato', e.target.value)}
+                  placeholder="0"
                 />
               </div>
             </div>
@@ -356,6 +392,29 @@ export function MonthlyDataDialog() {
                   value={formData.sales_target}
                   onChange={(e) => handleChange('sales_target', e.target.value)}
                   placeholder="0.00"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Colaboradores Vendas</Label>
+                <Input
+                  type="number"
+                  value={formData.colaboradores_vendas}
+                  onChange={(e) => handleChange('colaboradores_vendas', e.target.value)}
+                  placeholder="0"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Total Colaboradores</Label>
+                <Input
+                  type="number"
+                  value={
+                    (Number(formData.colaboradores_capsulas) || 0) +
+                    (Number(formData.colaboradores_dermato) || 0) +
+                    (Number(formData.colaboradores_vendas) || 0)
+                  }
+                  disabled
+                  className="bg-slate-50 text-slate-500 font-medium"
+                  placeholder="0"
                 />
               </div>
             </div>

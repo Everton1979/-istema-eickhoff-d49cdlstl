@@ -204,6 +204,9 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
           num_formulas_dermato: Number(m.num_formulas_dermato || 0),
           vendas_dermato: Number(m.vendas_dermato || 0),
           custo_mp_emb_dermato: Number(m.custo_mp_emb_dermato || 0),
+          colaboradores_capsulas: Number(m.colaboradores_capsulas || 0),
+          colaboradores_dermato: Number(m.colaboradores_dermato || 0),
+          colaboradores_vendas: Number(m.colaboradores_vendas || 0),
         })),
       )
     }
@@ -384,6 +387,9 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
       num_formulas_dermato: metric.num_formulas_dermato || 0,
       vendas_dermato: metric.vendas_dermato || 0,
       custo_mp_emb_dermato: metric.custo_mp_emb_dermato || 0,
+      colaboradores_capsulas: metric.colaboradores_capsulas || 0,
+      colaboradores_dermato: metric.colaboradores_dermato || 0,
+      colaboradores_vendas: metric.colaboradores_vendas || 0,
       updated_at: new Date().toISOString(),
     }
 
@@ -425,6 +431,9 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
             num_formulas_dermato: Number(data.num_formulas_dermato || 0),
             vendas_dermato: Number(data.vendas_dermato || 0),
             custo_mp_emb_dermato: Number(data.custo_mp_emb_dermato || 0),
+            colaboradores_capsulas: Number(data.colaboradores_capsulas || 0),
+            colaboradores_dermato: Number(data.colaboradores_dermato || 0),
+            colaboradores_vendas: Number(data.colaboradores_vendas || 0),
           },
         ]
       })
