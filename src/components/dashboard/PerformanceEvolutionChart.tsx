@@ -25,10 +25,11 @@ export function PerformanceEvolutionChart() {
 
   const data = useMemo(() => {
     const result = []
-    const refYear = parseInt(filters.years[0] || new Date().getFullYear().toString())
+    const refYearStr = filters.years?.[0]
+    const refYear = refYearStr ? parseInt(refYearStr) : new Date().getFullYear()
 
     let refMonth = new Date().getMonth()
-    if (filters.months.length > 0) {
+    if (filters.months && filters.months.length > 0) {
       refMonth = parseInt(filters.months[0]) - 1
     } else {
       if (refYear < new Date().getFullYear()) {
@@ -50,8 +51,18 @@ export function PerformanceEvolutionChart() {
       let despesas = 0
 
       transactions.forEach((t) => {
-        const td = new Date(t.date)
-        if (td.getMonth() + 1 === m && td.getFullYear() === y && t.status === 'REALIZADO') {
+        let txDateStr = t.date
+        if (txDateStr.includes('T')) {
+          txDateStr = txDateStr.split('T')[0]
+        } else {
+          txDateStr = txDateStr.substring(0, 10)
+        }
+
+        const txYear = parseInt(txDateStr.substring(0, 4), 10)
+        const txMonth = parseInt(txDateStr.substring(5, 7), 10)
+
+        // Considerar apenas REALIZADO e excluir Cortesias/Retiradas explicitamente
+        if (txMonth === m && txYear === y && t.status === 'REALIZADO') {
           if (t.type === 'INCOME') {
             receitas += t.amount
           } else if (t.type === 'EXPENSE') {
@@ -122,7 +133,7 @@ export function PerformanceEvolutionChart() {
 
             <Bar dataKey="Receitas" fill="var(--color-Receitas)" radius={[2, 2, 0, 0]} />
             <Bar dataKey="Despesas" fill="var(--color-Despesas)" radius={[2, 2, 0, 0]} />
-            <Bar dataKey="Lucro" fill="var(--color-Lucro)" radius={[2, 2, 0, 0]} />
+            <Bar dataKey="Lucro" fill="var(--color-Lucro)" />
           </BarChart>
         </ResponsiveContainer>
       </ChartContainer>
