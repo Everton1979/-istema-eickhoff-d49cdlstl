@@ -54,21 +54,18 @@ export function PerformanceEvolutionChart() {
         if (t.type !== 'INCOME' && t.type !== 'EXPENSE') return
 
         try {
-          let txDateStr = ''
-          if (t.date.includes('T')) {
-            txDateStr = t.date.split('T')[0]
-          } else {
-            txDateStr = t.date.substring(0, 10)
-          }
+          const d = new Date(t.date.includes('T') ? t.date : `${t.date}T12:00:00Z`)
+          if (isNaN(d.getTime())) return
 
-          const txYear = parseInt(txDateStr.substring(0, 4), 10)
-          const txMonth = parseInt(txDateStr.substring(5, 7), 10)
+          const txYear = d.getUTCFullYear()
+          const txMonth = d.getUTCMonth() + 1
 
           if (txMonth === m && txYear === y) {
+            const amount = Number(t.amount) || 0
             if (t.type === 'INCOME') {
-              receitas += Number(t.amount) || 0
+              receitas += amount
             } else if (t.type === 'EXPENSE') {
-              despesas += Number(t.amount) || 0
+              despesas += amount
             }
           }
         } catch (e) {
@@ -130,7 +127,9 @@ export function PerformanceEvolutionChart() {
               axisLine={false}
               tickLine={false}
               tick={{ fontSize: 10, fill: '#6b7280' }}
-              tickFormatter={(val) => `R$ ${(val / 1000).toFixed(0)}k`}
+              tickFormatter={(val) =>
+                val >= 1000 ? `R$ ${(val / 1000).toFixed(0)}k` : `R$ ${val}`
+              }
               width={55}
             />
             <Tooltip content={<ChartTooltipContent />} cursor={{ fill: '#f3f4f6', opacity: 0.4 }} />
@@ -138,7 +137,7 @@ export function PerformanceEvolutionChart() {
 
             <Bar dataKey="Receitas" fill="var(--color-Receitas)" radius={[2, 2, 0, 0]} />
             <Bar dataKey="Despesas" fill="var(--color-Despesas)" radius={[2, 2, 0, 0]} />
-            <Bar dataKey="Lucro" fill="var(--color-Lucro)" />
+            <Bar dataKey="Lucro" fill="var(--color-Lucro)" radius={[2, 2, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
       </ChartContainer>

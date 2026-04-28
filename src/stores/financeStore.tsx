@@ -107,6 +107,7 @@ const mapPaymentMethodFromDB = (pm: string | null) => {
 }
 
 const ensureUtcNoon = (dateStr: string) => {
+  if (!dateStr) return new Date().toISOString()
   if (dateStr.includes('T')) return dateStr
   return new Date(`${dateStr}T12:00:00Z`).toISOString()
 }
@@ -529,8 +530,10 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
 
       try {
         const txDate = tx.date.includes('T') ? new Date(tx.date) : new Date(`${tx.date}T12:00:00Z`)
-        const txYear = txDate.getFullYear().toString()
-        const txMonth = (txDate.getMonth() + 1).toString().padStart(2, '0')
+        if (isNaN(txDate.getTime())) return false
+
+        const txYear = txDate.getUTCFullYear().toString()
+        const txMonth = (txDate.getUTCMonth() + 1).toString().padStart(2, '0')
 
         if (filters.years && filters.years.length > 0 && !filters.years.includes(txYear))
           return false

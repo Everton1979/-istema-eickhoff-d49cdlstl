@@ -27,7 +27,10 @@ import { cn, getTagColor } from '@/lib/utils'
 
 const formSchema = z
   .object({
-    date: z.string().min(1, 'Data é obrigatória'),
+    date: z
+      .string()
+      .min(1, 'A data é obrigatória')
+      .regex(/^\d{4}-\d{2}-\d{2}$/, 'Formato inválido (YYYY-MM-DD)'),
     description: z.string().optional(),
     amount: z.coerce.number().min(0.01, 'Valor deve ser maior que zero'),
     type: z.enum(['INCOME', 'EXPENSE', 'CORTESIA', 'PARTNER_WITHDRAWAL']),
@@ -117,7 +120,9 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
 
   const defaultValues = initialData
     ? {
-        date: new Date(initialData.date).toISOString().split('T')[0],
+        date: initialData.date.includes('T')
+          ? initialData.date.split('T')[0]
+          : initialData.date.substring(0, 10),
         description: initialData.description,
         amount: initialData.amount,
         type: initialData.type,
@@ -261,7 +266,9 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
             name="type"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Tipo</FormLabel>
+                <FormLabel>
+                  Tipo <span className="text-red-500">*</span>
+                </FormLabel>
                 <Select onValueChange={field.onChange} value={field.value || undefined}>
                   <FormControl>
                     <SelectTrigger>
@@ -283,7 +290,9 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
             name="status"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Status</FormLabel>
+                <FormLabel>
+                  Status <span className="text-red-500">*</span>
+                </FormLabel>
                 <Select onValueChange={field.onChange} value={field.value || undefined}>
                   <FormControl>
                     <SelectTrigger>
@@ -310,9 +319,11 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
           name="date"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Data</FormLabel>
+              <FormLabel>
+                Data <span className="text-red-500">*</span>
+              </FormLabel>
               <FormControl>
-                <Input type="date" {...field} />
+                <Input type="date" required {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -328,7 +339,8 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
                 <FormLabel>
                   {type === 'CORTESIA' || type === 'PARTNER_WITHDRAWAL'
                     ? 'Destinatário/Motivo'
-                    : 'Descrição'}
+                    : 'Descrição'}{' '}
+                  <span className="text-red-500">*</span>
                 </FormLabel>
                 <FormControl>
                   <Input
@@ -352,9 +364,11 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
           name="amount"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Valor (R$)</FormLabel>
+              <FormLabel>
+                Valor (R$) <span className="text-red-500">*</span>
+              </FormLabel>
               <FormControl>
-                <Input type="number" step="0.01" {...field} />
+                <Input type="number" step="0.01" required {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -369,7 +383,9 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
                 name="categoryId"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Categoria</FormLabel>
+                    <FormLabel>
+                      Categoria <span className="text-red-500">*</span>
+                    </FormLabel>
                     <Select onValueChange={field.onChange} value={field.value || undefined}>
                       <FormControl>
                         <SelectTrigger>
@@ -392,7 +408,9 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
                   name="subcategoryId"
                   render={({ field }) => (
                     <FormItem className="animate-in fade-in slide-in-from-top-2 duration-300">
-                      <FormLabel>Subcategoria</FormLabel>
+                      <FormLabel>
+                        Subcategoria <span className="text-red-500">*</span>
+                      </FormLabel>
                       <Select onValueChange={field.onChange} value={field.value || undefined}>
                         <FormControl>
                           <SelectTrigger>
@@ -559,7 +577,9 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
                 name="categoryId"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Categoria da Receita</FormLabel>
+                    <FormLabel>
+                      Categoria da Receita <span className="text-red-500">*</span>
+                    </FormLabel>
                     <Select onValueChange={field.onChange} value={field.value || undefined}>
                       <FormControl>
                         <SelectTrigger>
@@ -585,7 +605,9 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
                 name="paymentMethodId"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Meio de Pagamento / Origem</FormLabel>
+                    <FormLabel>
+                      Meio de Pagamento / Origem <span className="text-red-500">*</span>
+                    </FormLabel>
                     <Select onValueChange={field.onChange} value={field.value || undefined}>
                       <FormControl>
                         <SelectTrigger>
