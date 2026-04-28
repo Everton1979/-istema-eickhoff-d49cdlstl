@@ -54,58 +54,51 @@ export default function Index() {
             </div>
           </section>
 
-          {/* Main Analytics Grid - Visão Operacional */}
-          <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 mt-2">
-            {/* Gráficos Principais */}
-            <div className="xl:col-span-8 flex flex-col gap-6">
-              <div className="bg-white p-4 rounded-lg shadow-sm border border-slate-200 flex-1 flex flex-col">
-                <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wide mb-4 flex items-center gap-2">
-                  <div className="w-2 h-4 bg-emerald-500 rounded-sm" />
-                  Evolução de Performance
-                </h3>
-                <div className="flex-1 w-full min-h-[300px]">
-                  <PerformanceEvolutionChart />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="bg-white p-4 rounded-lg shadow-sm border border-slate-200">
-                  <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wide mb-4 flex items-center gap-2">
-                    <div className="w-2 h-4 bg-amber-500 rounded-sm" />
-                    Meta de Vendas
-                  </h3>
-                  <SalesTargetProgress />
-                </div>
-                <div className="bg-white p-4 rounded-lg shadow-sm border border-slate-200">
-                  <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wide mb-4 flex items-center gap-2">
-                    <div className="w-2 h-4 bg-purple-500 rounded-sm" />
-                    Distribuição de Despesas Operacionais
-                  </h3>
-                  <ExpenseDistribution />
-                </div>
+          {/* Main Analytics - Visão Operacional Empilhada */}
+          <div className="flex flex-col gap-6 mt-2">
+            <div className="bg-white p-4 rounded-lg shadow-sm border border-slate-200">
+              <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wide mb-4 flex items-center gap-2">
+                <div className="w-2 h-4 bg-emerald-500 rounded-sm" />
+                Evolução de Performance
+              </h3>
+              <div className="w-full min-h-[300px]">
+                <PerformanceEvolutionChart />
               </div>
             </div>
 
-            {/* Painel Lateral Operacional */}
-            <div className="xl:col-span-4 flex flex-col gap-6">
-              <div className="bg-white p-4 rounded-lg shadow-sm border border-slate-200 min-h-[250px] flex flex-col">
-                <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wide mb-4 flex items-center gap-2">
-                  <div className="w-2 h-4 bg-blue-600 rounded-sm" />
-                  Saldos em Contas
-                </h3>
-                <div className="flex-1 overflow-hidden">
-                  <AccountBalances />
-                </div>
+            <div className="bg-white p-4 rounded-lg shadow-sm border border-slate-200">
+              <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wide mb-4 flex items-center gap-2">
+                <div className="w-2 h-4 bg-blue-600 rounded-sm" />
+                Saldos em Contas
+              </h3>
+              <AccountBalances />
+            </div>
+
+            <div className="bg-white p-4 rounded-lg shadow-sm border border-slate-200">
+              <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wide mb-4 flex items-center gap-2">
+                <div className="w-2 h-4 bg-amber-500 rounded-sm" />
+                Metas de Vendas
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <SalesTargetProgress variant="GLOBAL" />
+                <SalesTargetProgress variant="MANIPULACAO" />
               </div>
-              <div className="bg-white p-4 rounded-lg shadow-sm border border-slate-200 min-h-[250px] flex flex-col flex-1">
-                <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wide mb-4 flex items-center gap-2">
-                  <div className="w-2 h-4 bg-rose-500 rounded-sm" />
-                  Próximos Compromissos
-                </h3>
-                <div className="flex-1 overflow-hidden">
-                  <UpcomingCommitments />
-                </div>
-              </div>
+            </div>
+
+            <div className="bg-white p-4 rounded-lg shadow-sm border border-slate-200">
+              <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wide mb-4 flex items-center gap-2">
+                <div className="w-2 h-4 bg-purple-500 rounded-sm" />
+                Distribuição de Despesas Operacionais
+              </h3>
+              <ExpenseDistribution />
+            </div>
+
+            <div className="bg-white p-4 rounded-lg shadow-sm border border-slate-200">
+              <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wide mb-4 flex items-center gap-2">
+                <div className="w-2 h-4 bg-rose-500 rounded-sm" />
+                Próximos Compromissos
+              </h3>
+              <UpcomingCommitments />
             </div>
           </div>
 

@@ -183,14 +183,6 @@ export function StrategicKpis() {
       border: 'border-t-slate-500',
     },
     {
-      id: 'cmv',
-      title: 'CMV',
-      tooltip: 'Custo da Mercadoria Vendida (Insumos e Matéria-Prima).',
-      value: formatCurrency(metrics.cmv),
-      color: 'text-orange-600',
-      border: 'border-t-orange-500',
-    },
-    {
       id: 'cma',
       title: 'CMA',
       tooltip: 'Custo da Mercadoria Aplicada na produção.',
@@ -201,7 +193,7 @@ export function StrategicKpis() {
   ]
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
       {kpis.map((kpi, i) => (
         <KpiCard key={i} kpi={kpi} />
       ))}

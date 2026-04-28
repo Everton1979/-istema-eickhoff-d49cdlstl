@@ -9,7 +9,11 @@ import { useState, useMemo } from 'react'
 import { getWorkingDays } from '@/lib/holidays'
 import { cn } from '@/lib/utils'
 
-export function SalesTargetProgress() {
+export function SalesTargetProgress({
+  variant = 'GLOBAL',
+}: {
+  variant?: 'GLOBAL' | 'MANIPULACAO'
+}) {
   const { monthlyMetrics, saveMonthlyMetric, filters, transactions } = useFinanceStore()
   const { profile } = useAuth()
   const [isEditing, setIsEditing] = useState(false)
@@ -32,7 +36,11 @@ export function SalesTargetProgress() {
       pastMonth = currentYear < today.getFullYear()
       target = monthlyMetrics
         .filter((m) => m.year === currentYear)
-        .reduce((sum, m) => sum + (m.global_sales_target || 0), 0)
+        .reduce(
+          (sum, m) =>
+            sum + (variant === 'GLOBAL' ? m.global_sales_target || 0 : m.sales_target || 0),
+          0,
+        )
 
       transactions.forEach((tx) => {
         const d = new Date(tx.date)
@@ -41,7 +49,13 @@ export function SalesTargetProgress() {
           tx.type === 'INCOME' &&
           targetStatuses.includes(tx.status)
         ) {
-          inc += tx.amount
+          if (variant === 'GLOBAL') {
+            inc += tx.amount
+          } else if (variant === 'MANIPULACAO') {
+            if (tx.categoryId === 'RECEITA_OPERACIONAL') {
+              inc += tx.amount
+            }
+          }
         }
       })
       wDays = 252 // approx yearly
@@ -68,7 +82,10 @@ export function SalesTargetProgress() {
       ]
 
       foundMetric = monthlyMetrics.find((m) => m.year === currentYear && m.month === currentMonth)
-      target = foundMetric?.global_sales_target || 0
+      target =
+        variant === 'GLOBAL'
+          ? foundMetric?.global_sales_target || 0
+          : foundMetric?.sales_target || 0
       wDays = getWorkingDays(currentYear, currentMonth)
       mName = `${monthLabels[currentMonth - 1]}/${currentYear}`
 
@@ -80,7 +97,13 @@ export function SalesTargetProgress() {
           tx.type === 'INCOME' &&
           targetStatuses.includes(tx.status)
         ) {
-          inc += tx.amount
+          if (variant === 'GLOBAL') {
+            inc += tx.amount
+          } else if (variant === 'MANIPULACAO') {
+            if (tx.categoryId === 'RECEITA_OPERACIONAL') {
+              inc += tx.amount
+            }
+          }
         }
       })
     }
@@ -92,7 +115,7 @@ export function SalesTargetProgress() {
         month: defaultMonth,
         year: currentYear,
         sales_target: 0,
-        global_sales_target: target,
+        global_sales_target: 0,
         orders_count: 0,
         total_system_sales: 0,
         raw_material_costs: 0,
@@ -107,10 +130,9 @@ export function SalesTargetProgress() {
       workingDays: wDays,
       achieved: inc,
     }
-  }, [monthlyMetrics, filters, transactions])
+  }, [monthlyMetrics, filters, transactions, variant])
 
-  const target =
-    filters.months.length === 0 ? metric.global_sales_target || 0 : metric.global_sales_target || 0
+  const target = variant === 'GLOBAL' ? metric.global_sales_target || 0 : metric.sales_target || 0
   const remaining = Math.max(0, target - achieved)
   const exceeded = Math.max(0, achieved - target)
   const remainingPct = target > 0 ? (remaining / target) * 100 : 0
@@ -125,7 +147,11 @@ export function SalesTargetProgress() {
   const handleSave = async () => {
     const val = parseFloat(tempValue)
     if (!isNaN(val) && val >= 0) {
-      await saveMonthlyMetric({ ...metric, global_sales_target: val })
+      if (variant === 'GLOBAL') {
+        await saveMonthlyMetric({ ...metric, global_sales_target: val })
+      } else {
+        await saveMonthlyMetric({ ...metric, sales_target: val })
+      }
     }
     setIsEditing(false)
   }
@@ -138,20 +164,33 @@ export function SalesTargetProgress() {
     }).format(val)
 
   return (
-    <Card className="rounded-sm shadow-sm w-full flex flex-col justify-center border-t-4 border-t-emerald-500 relative">
+    <Card
+      className={cn(
+        'rounded-sm shadow-sm w-full flex flex-col justify-center border-t-4 relative',
+        variant === 'GLOBAL' ? 'border-t-emerald-500' : 'border-t-blue-500',
+      )}
+    >
       <CardContent className="p-3">
         <div className="flex justify-between items-start mb-2">
-          <div className="flex items-center gap-1.5 text-emerald-600">
+          <div
+            className={cn(
+              'flex items-center gap-1.5',
+              variant === 'GLOBAL' ? 'text-emerald-600' : 'text-blue-600',
+            )}
+          >
             <Target className="w-4 h-4" />
             <h3 className="text-xs font-bold uppercase tracking-wide">
-              Meta de Vendas Totais ({monthName})
+              Meta {variant === 'GLOBAL' ? 'Vendas Totais' : 'Vendas Manipulação'} ({monthName})
             </h3>
           </div>
           {!isEditing && profile?.role !== 'Visitante' && filters.months.length > 0 && (
             <Button
               variant="ghost"
               size="icon"
-              className="h-5 w-5 text-gray-400 hover:text-emerald-600 absolute right-2 top-2"
+              className={cn(
+                'h-5 w-5 absolute right-2 top-2 text-gray-400',
+                variant === 'GLOBAL' ? 'hover:text-emerald-600' : 'hover:text-blue-600',
+              )}
               onClick={handleEdit}
             >
               <Pencil className="h-3 w-3" />
@@ -174,7 +213,12 @@ export function SalesTargetProgress() {
             </div>
             <Button
               size="icon"
-              className="h-7 w-7 bg-emerald-500 hover:bg-emerald-600 shrink-0"
+              className={cn(
+                'h-7 w-7 shrink-0',
+                variant === 'GLOBAL'
+                  ? 'bg-emerald-500 hover:bg-emerald-600'
+                  : 'bg-blue-500 hover:bg-blue-600',
+              )}
               onClick={handleSave}
             >
               <Check className="h-3 w-3" />
@@ -196,7 +240,14 @@ export function SalesTargetProgress() {
             </div>
             <div className="text-right">
               <p className="text-[10px] text-gray-500 font-medium">Realizado</p>
-              <p className="text-sm font-bold text-emerald-600">{formatCurrency(achieved)}</p>
+              <p
+                className={cn(
+                  'text-sm font-bold',
+                  variant === 'GLOBAL' ? 'text-emerald-600' : 'text-blue-600',
+                )}
+              >
+                {formatCurrency(achieved)}
+              </p>
             </div>
           </div>
         )}
@@ -204,7 +255,10 @@ export function SalesTargetProgress() {
         <div className="space-y-1 mt-1.5">
           <Progress
             value={achievedPct}
-            className={exceeded > 0 ? 'h-2 bg-gray-100 [&>div]:bg-emerald-500' : 'h-2 bg-gray-100'}
+            className={cn(
+              'h-2 bg-gray-100',
+              variant === 'GLOBAL' ? '[&>div]:bg-emerald-500' : '[&>div]:bg-blue-500',
+            )}
           />
           <div className="flex justify-between items-start text-[10px] mt-1">
             {!isPastMonth ? (
@@ -222,7 +276,11 @@ export function SalesTargetProgress() {
                   <span
                     className={cn(
                       'font-bold',
-                      exceeded > 0 ? 'text-emerald-600' : 'text-orange-500',
+                      exceeded > 0
+                        ? variant === 'GLOBAL'
+                          ? 'text-emerald-600'
+                          : 'text-blue-600'
+                        : 'text-orange-500',
                     )}
                   >
                     {exceeded >= 0 ? 'Meta Batida' : 'Não Atingida'}
@@ -242,10 +300,20 @@ export function SalesTargetProgress() {
             )}
             {target > 0 && exceeded > 0 && (
               <div className="flex flex-col items-end">
-                <span className="font-bold text-emerald-600">
+                <span
+                  className={cn(
+                    'font-bold',
+                    variant === 'GLOBAL' ? 'text-emerald-600' : 'text-blue-600',
+                  )}
+                >
                   {isPastMonth ? 'Superou:' : 'Superado:'} +{formatCurrency(exceeded)}
                 </span>
-                <span className="text-emerald-500 font-medium text-[9px] -mt-0.5">
+                <span
+                  className={cn(
+                    'font-medium text-[9px] -mt-0.5',
+                    variant === 'GLOBAL' ? 'text-emerald-500' : 'text-blue-500',
+                  )}
+                >
                   ({((exceeded / target) * 100).toFixed(1)}% acima da meta)
                 </span>
               </div>

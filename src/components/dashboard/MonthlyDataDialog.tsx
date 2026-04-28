@@ -34,7 +34,6 @@ export function MonthlyDataDialog() {
     year: new Date().getFullYear(),
     isDirty: false,
     formData: {
-      sales_target: '',
       num_formulas_capsulas: '',
       vendas_capsulas: '',
       custo_mp_emb_capsulas: '',
@@ -78,7 +77,6 @@ export function MonthlyDataDialog() {
 
     const expectedData = currentExisting
       ? {
-          sales_target: currentExisting.sales_target ? String(currentExisting.sales_target) : '',
           num_formulas_capsulas: currentExisting.num_formulas_capsulas
             ? String(currentExisting.num_formulas_capsulas)
             : '',
@@ -108,7 +106,6 @@ export function MonthlyDataDialog() {
             : '',
         }
       : {
-          sales_target: '',
           num_formulas_capsulas: '',
           vendas_capsulas: '',
           custo_mp_emb_capsulas: '',
@@ -166,7 +163,6 @@ export function MonthlyDataDialog() {
         orders_count: orders_count,
         total_system_sales: total_system_sales,
         raw_material_costs: raw_material_costs,
-        sales_target: Number(formData.sales_target) || 0,
         num_formulas_capsulas: Number(formData.num_formulas_capsulas) || 0,
         vendas_capsulas: Number(formData.vendas_capsulas) || 0,
         custo_mp_emb_capsulas: Number(formData.custo_mp_emb_capsulas) || 0,
@@ -381,16 +377,6 @@ export function MonthlyDataDialog() {
                   value={raw_material_costs || ''}
                   disabled
                   className="bg-slate-50 text-slate-500 font-medium"
-                  placeholder="0.00"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label>Meta de Vendas Manipulados (R$)</Label>
-                <Input
-                  type="number"
-                  step="0.01"
-                  value={formData.sales_target}
-                  onChange={(e) => handleChange('sales_target', e.target.value)}
                   placeholder="0.00"
                 />
               </div>

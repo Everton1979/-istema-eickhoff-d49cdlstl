@@ -1,6 +1,16 @@
 import { useFinanceStore } from '@/stores/financeStore'
 import { useMemo } from 'react'
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts'
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Cell,
+  ResponsiveContainer,
+  Tooltip,
+  Legend,
+} from 'recharts'
 
 const FIXA_LABELS: Record<string, string> = {
   prolabore: 'Pró-labore',
@@ -147,13 +157,32 @@ export function ExpenseDistribution() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4 pt-4 border-t border-slate-100">
         {fixasData.length > 0 && (
-          <div className="flex flex-col items-center">
-            <h4 className="text-[11px] font-bold text-slate-500 uppercase tracking-wide mb-2">
+          <div className="flex flex-col">
+            <h4 className="text-[11px] font-bold text-slate-500 uppercase tracking-wide mb-2 text-center">
               Detalhamento Fixas
             </h4>
             <div className="h-[250px] w-full">
               <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
+                <BarChart data={fixasData} margin={{ top: 10, right: 10, left: 0, bottom: 25 }}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                  <XAxis
+                    dataKey="name"
+                    tick={{ fontSize: 10 }}
+                    interval={0}
+                    angle={-45}
+                    textAnchor="end"
+                    height={60}
+                  />
+                  <YAxis
+                    tickFormatter={(value) =>
+                      new Intl.NumberFormat('pt-BR', {
+                        notation: 'compact',
+                        compactDisplay: 'short',
+                      }).format(value)
+                    }
+                    tick={{ fontSize: 10 }}
+                    width={45}
+                  />
                   <Tooltip
                     formatter={(value: number) => formatCurrency(value)}
                     contentStyle={{
@@ -163,43 +192,46 @@ export function ExpenseDistribution() {
                       boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
                     }}
                     itemStyle={{ color: '#0f172a', fontWeight: 600 }}
+                    cursor={{ fill: '#f8fafc' }}
                   />
-                  <Pie
-                    data={fixasData}
-                    cx="50%"
-                    cy="45%"
-                    innerRadius={55}
-                    outerRadius={80}
-                    paddingAngle={3}
-                    dataKey="value"
-                    stroke="none"
-                  >
+                  <Bar dataKey="value" radius={[4, 4, 0, 0]}>
                     {fixasData.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
-                  </Pie>
-                  <Legend
-                    layout="horizontal"
-                    verticalAlign="bottom"
-                    align="center"
-                    wrapperStyle={{ fontSize: '10px', paddingTop: '10px' }}
-                    iconType="circle"
-                    iconSize={8}
-                  />
-                </PieChart>
+                  </Bar>
+                </BarChart>
               </ResponsiveContainer>
             </div>
           </div>
         )}
 
         {variaveisData.length > 0 && (
-          <div className="flex flex-col items-center">
-            <h4 className="text-[11px] font-bold text-slate-500 uppercase tracking-wide mb-2">
+          <div className="flex flex-col">
+            <h4 className="text-[11px] font-bold text-slate-500 uppercase tracking-wide mb-2 text-center">
               Detalhamento Variáveis
             </h4>
             <div className="h-[250px] w-full">
               <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
+                <BarChart data={variaveisData} margin={{ top: 10, right: 10, left: 0, bottom: 25 }}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                  <XAxis
+                    dataKey="name"
+                    tick={{ fontSize: 10 }}
+                    interval={0}
+                    angle={-45}
+                    textAnchor="end"
+                    height={60}
+                  />
+                  <YAxis
+                    tickFormatter={(value) =>
+                      new Intl.NumberFormat('pt-BR', {
+                        notation: 'compact',
+                        compactDisplay: 'short',
+                      }).format(value)
+                    }
+                    tick={{ fontSize: 10 }}
+                    width={45}
+                  />
                   <Tooltip
                     formatter={(value: number) => formatCurrency(value)}
                     contentStyle={{
@@ -209,30 +241,14 @@ export function ExpenseDistribution() {
                       boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
                     }}
                     itemStyle={{ color: '#0f172a', fontWeight: 600 }}
+                    cursor={{ fill: '#f8fafc' }}
                   />
-                  <Pie
-                    data={variaveisData}
-                    cx="50%"
-                    cy="45%"
-                    innerRadius={55}
-                    outerRadius={80}
-                    paddingAngle={3}
-                    dataKey="value"
-                    stroke="none"
-                  >
+                  <Bar dataKey="value" radius={[4, 4, 0, 0]}>
                     {variaveisData.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={COLORS[(index + 3) % COLORS.length]} />
                     ))}
-                  </Pie>
-                  <Legend
-                    layout="horizontal"
-                    verticalAlign="bottom"
-                    align="center"
-                    wrapperStyle={{ fontSize: '10px', paddingTop: '10px' }}
-                    iconType="circle"
-                    iconSize={8}
-                  />
-                </PieChart>
+                  </Bar>
+                </BarChart>
               </ResponsiveContainer>
             </div>
           </div>

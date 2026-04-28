@@ -74,6 +74,9 @@ export type Database = {
       }
       monthly_metrics: {
         Row: {
+          colaboradores_capsulas: number
+          colaboradores_dermato: number
+          colaboradores_vendas: number
           created_at: string
           custo_mp_emb_capsulas: number
           custo_mp_emb_dermato: number
@@ -94,6 +97,9 @@ export type Database = {
           year: number
         }
         Insert: {
+          colaboradores_capsulas?: number
+          colaboradores_dermato?: number
+          colaboradores_vendas?: number
           created_at?: string
           custo_mp_emb_capsulas?: number
           custo_mp_emb_dermato?: number
@@ -114,6 +120,9 @@ export type Database = {
           year: number
         }
         Update: {
+          colaboradores_capsulas?: number
+          colaboradores_dermato?: number
+          colaboradores_vendas?: number
           created_at?: string
           custo_mp_emb_capsulas?: number
           custo_mp_emb_dermato?: number
@@ -492,6 +501,9 @@ export const Constants = {
 //   custo_mp_emb_dermato: numeric (not null, default: 0)
 //   global_sales_target: numeric (not null, default: 0)
 //   project_id: text (not null, default: 'planilha'::text)
+//   colaboradores_capsulas: integer (not null, default: 0)
+//   colaboradores_dermato: integer (not null, default: 0)
+//   colaboradores_vendas: integer (not null, default: 0)
 // Table: profiles
 //   id: uuid (not null)
 //   email: text (not null)

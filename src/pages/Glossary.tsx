@@ -18,6 +18,28 @@ const GLOSSARY_TERMS = [
     trend: 'neutral',
   },
   {
+    id: 'cma',
+    title: 'CMA (Custo da Mercadoria Aplicada)',
+    definition:
+      'Custo efetivo de todos os insumos e matérias-primas que foram de fato utilizados e aplicados nas formulações manipuladas no período. Exclui desperdícios se bem apurado.',
+    calculation: 'Valor total dos insumos utilizados na produção.',
+    reference:
+      'Métrica mais precisa para farmácias de manipulação do que o CMV, pois foca na aplicação exata do insumo na fórmula vendida.',
+    category: 'Métricas de Performance',
+    trend: 'down',
+  },
+  {
+    id: 'colaboradores-setor',
+    title: 'Colaboradores por Setor (Cápsulas, Dermato, Vendas)',
+    definition:
+      'Número de funcionários alocados diretamente em cada área de produção ou atendimento da farmácia.',
+    calculation: 'Entrada manual no fechamento do mês.',
+    reference:
+      'Essencial para medir o Faturamento por Colaborador em cada setor e avaliar a eficiência e necessidade de contratações.',
+    category: 'Métricas de Performance',
+    trend: 'neutral',
+  },
+  {
     id: 'cfa-total',
     title: 'CFA Total (Custos Fixos Administrativos)',
     definition:
@@ -143,6 +165,17 @@ const GLOSSARY_TERMS = [
     reference:
       'Indica se a empresa gerou caixa excedente após pagar todas as obrigações no período.',
     category: 'Painel Geral (Cards)',
+    trend: 'up',
+  },
+  {
+    id: 'meta-vendas-manipulacao',
+    title: 'Meta de Vendas Manipulação',
+    definition:
+      'Objetivo de faturamento exclusivo para a operação de manipulação (receitas operacionais principais), separando de revendas ou outras receitas.',
+    calculation: 'Definido manualmente mês a mês no dashboard.',
+    reference:
+      'Importante para avaliar a saúde da atividade-fim da farmácia, sem distorção de outras entradas de caixa.',
+    category: 'Métricas de Performance',
     trend: 'up',
   },
   {
