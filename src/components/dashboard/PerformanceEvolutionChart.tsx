@@ -43,7 +43,7 @@ export function PerformanceEvolutionChart() {
         if (!t || !t.date) return
 
         const status = (t.status || '').trim().toUpperCase()
-        if (status === 'PENDENTE' || status === 'CANCELADO' || status === 'AGENDADO') return
+        if (status !== 'REALIZADO') return
 
         if (t.type !== 'INCOME' && t.type !== 'EXPENSE') return
 
