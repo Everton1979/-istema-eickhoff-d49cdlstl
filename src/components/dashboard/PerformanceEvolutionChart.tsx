@@ -54,11 +54,15 @@ export function PerformanceEvolutionChart() {
         if (t.type !== 'INCOME' && t.type !== 'EXPENSE') return
 
         try {
-          const d = new Date(t.date.includes('T') ? t.date : `${t.date}T12:00:00Z`)
-          if (isNaN(d.getTime())) return
+          // Extrair ano e mês diretamente da string para evitar problemas de fuso horário
+          const datePart = t.date.split('T')[0]
+          if (!datePart || datePart.length < 10) return
 
-          const txYear = d.getUTCFullYear()
-          const txMonth = d.getUTCMonth() + 1
+          const parts = datePart.split('-')
+          if (parts.length < 3) return
+
+          const txYear = parseInt(parts[0], 10)
+          const txMonth = parseInt(parts[1], 10)
 
           if (txMonth === m && txYear === y) {
             const amount = Number(t.amount) || 0

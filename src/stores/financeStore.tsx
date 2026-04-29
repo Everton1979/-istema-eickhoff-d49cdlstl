@@ -229,10 +229,13 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
     setFilters((prev) => {
       const newFilters = { ...prev, [key]: values }
       if (key === 'startDate' && typeof values === 'string') {
-        const d = new Date(values)
-        if (!isNaN(d.getTime())) {
-          newFilters.months = [(d.getUTCMonth() + 1).toString().padStart(2, '0')]
-          newFilters.years = [d.getUTCFullYear().toString()]
+        const datePart = values.split('T')[0]
+        if (datePart && datePart.length >= 10) {
+          const parts = datePart.split('-')
+          if (parts.length >= 3) {
+            newFilters.years = [parts[0]]
+            newFilters.months = [parts[1]]
+          }
         }
       }
       return newFilters
@@ -529,11 +532,15 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
       if (!tx || !tx.date) return false
 
       try {
-        const txDate = tx.date.includes('T') ? new Date(tx.date) : new Date(`${tx.date}T12:00:00Z`)
-        if (isNaN(txDate.getTime())) return false
+        // Extrair ano e mês diretamente da string
+        const datePart = tx.date.split('T')[0]
+        if (!datePart || datePart.length < 10) return false
 
-        const txYear = txDate.getUTCFullYear().toString()
-        const txMonth = (txDate.getUTCMonth() + 1).toString().padStart(2, '0')
+        const parts = datePart.split('-')
+        if (parts.length < 3) return false
+
+        const txYear = parts[0]
+        const txMonth = parts[1]
 
         if (filters.years && filters.years.length > 0 && !filters.years.includes(txYear))
           return false
