@@ -41,7 +41,10 @@ export function PerformanceEvolutionChart() {
 
       transactions.forEach((t) => {
         if (!t || !t.date) return
-        if (t.status?.toUpperCase() !== 'REALIZADO') return
+
+        const status = (t.status || '').trim().toUpperCase()
+        if (status === 'PENDENTE' || status === 'CANCELADO' || status === 'AGENDADO') return
+
         if (t.type !== 'INCOME' && t.type !== 'EXPENSE') return
 
         try {
@@ -79,11 +82,8 @@ export function PerformanceEvolutionChart() {
   }, [transactions, monthsCount, filters])
 
   return (
-    <div className="bg-white p-3 rounded-sm border shadow-sm flex flex-col h-full min-h-[300px] w-full">
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="text-xs font-bold text-gray-600 uppercase tracking-wide">
-          Evolução de Performance
-        </h3>
+    <div className="w-full flex flex-col">
+      <div className="flex items-center justify-end mb-4">
         <Select value={monthsCount.toString()} onValueChange={(v) => setMonthsCount(parseInt(v))}>
           <SelectTrigger className="h-7 w-[130px] text-xs">
             <SelectValue />
@@ -101,11 +101,11 @@ export function PerformanceEvolutionChart() {
           Despesas: { label: 'Despesas/Custos (R$)', color: '#ef4444' },
           Lucro: { label: 'Lucro Líquido (R$)', color: '#3b82f6' },
         }}
-        className="flex-1 w-full h-full min-h-[250px]"
+        className="w-full h-[350px] aspect-auto"
       >
         <BarChart
           data={data}
-          margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
+          margin={{ top: 20, right: 10, left: 10, bottom: 10 }}
           barGap={0}
           barCategoryGap="20%"
         >

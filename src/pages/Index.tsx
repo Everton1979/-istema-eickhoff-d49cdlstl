@@ -61,7 +61,7 @@ export default function Index() {
                 <div className="w-2 h-4 bg-emerald-500 rounded-sm" />
                 Evolução de Performance
               </h3>
-              <div className="w-full min-h-[300px]">
+              <div className="w-full">
                 <PerformanceEvolutionChart />
               </div>
             </div>
