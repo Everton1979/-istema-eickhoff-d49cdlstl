@@ -1,14 +1,5 @@
 import { useMemo, useState } from 'react'
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  ResponsiveContainer,
-  Tooltip,
-  Legend,
-} from 'recharts'
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts'
 import { useFinanceStore } from '@/stores/financeStore'
 import { ChartContainer, ChartTooltipContent } from '@/components/ui/chart'
 import {
@@ -88,7 +79,7 @@ export function PerformanceEvolutionChart() {
   }, [transactions, monthsCount, filters])
 
   return (
-    <div className="bg-white p-3 rounded-sm border shadow-sm flex flex-col h-full min-h-[280px]">
+    <div className="bg-white p-3 rounded-sm border shadow-sm flex flex-col h-full min-h-[300px] w-full">
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-xs font-bold text-gray-600 uppercase tracking-wide">
           Evolução de Performance
@@ -110,40 +101,36 @@ export function PerformanceEvolutionChart() {
           Despesas: { label: 'Despesas/Custos (R$)', color: '#ef4444' },
           Lucro: { label: 'Lucro Líquido (R$)', color: '#3b82f6' },
         }}
-        className="flex-1 w-full h-full min-h-[220px]"
+        className="flex-1 w-full h-full min-h-[250px]"
       >
-        <ResponsiveContainer width="100%" height="100%">
-          <BarChart
-            data={data}
-            margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
-            barGap={0}
-            barCategoryGap="20%"
-          >
-            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f3f4f6" />
-            <XAxis
-              dataKey="name"
-              axisLine={false}
-              tickLine={false}
-              tick={{ fontSize: 10, fill: '#6b7280' }}
-              dy={10}
-            />
-            <YAxis
-              axisLine={false}
-              tickLine={false}
-              tick={{ fontSize: 10, fill: '#6b7280' }}
-              tickFormatter={(val) =>
-                val >= 1000 ? `R$ ${(val / 1000).toFixed(0)}k` : `R$ ${val}`
-              }
-              width={55}
-            />
-            <Tooltip content={<ChartTooltipContent />} cursor={{ fill: '#f3f4f6', opacity: 0.4 }} />
-            <Legend wrapperStyle={{ fontSize: '10px', paddingTop: '10px' }} iconType="circle" />
+        <BarChart
+          data={data}
+          margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
+          barGap={0}
+          barCategoryGap="20%"
+        >
+          <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f3f4f6" />
+          <XAxis
+            dataKey="name"
+            axisLine={false}
+            tickLine={false}
+            tick={{ fontSize: 10, fill: '#6b7280' }}
+            dy={10}
+          />
+          <YAxis
+            axisLine={false}
+            tickLine={false}
+            tick={{ fontSize: 10, fill: '#6b7280' }}
+            tickFormatter={(val) => (val >= 1000 ? `R$ ${(val / 1000).toFixed(0)}k` : `R$ ${val}`)}
+            width={55}
+          />
+          <Tooltip content={<ChartTooltipContent />} cursor={{ fill: '#f3f4f6', opacity: 0.4 }} />
+          <Legend wrapperStyle={{ fontSize: '10px', paddingTop: '10px' }} iconType="circle" />
 
-            <Bar dataKey="Receitas" fill="var(--color-Receitas)" radius={[2, 2, 0, 0]} />
-            <Bar dataKey="Despesas" fill="var(--color-Despesas)" radius={[2, 2, 0, 0]} />
-            <Bar dataKey="Lucro" fill="var(--color-Lucro)" radius={[2, 2, 0, 0]} />
-          </BarChart>
-        </ResponsiveContainer>
+          <Bar dataKey="Receitas" fill="var(--color-Receitas)" radius={[2, 2, 0, 0]} />
+          <Bar dataKey="Despesas" fill="var(--color-Despesas)" radius={[2, 2, 0, 0]} />
+          <Bar dataKey="Lucro" fill="var(--color-Lucro)" radius={[2, 2, 0, 0]} />
+        </BarChart>
       </ChartContainer>
     </div>
   )
