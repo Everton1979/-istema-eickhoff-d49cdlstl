@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom'
 import { DashboardHeader } from '@/components/dashboard/DashboardHeader'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { BookOpen, TrendingUp, TrendingDown, Target, Calculator } from 'lucide-react'
+import { BookOpen, TrendingUp, TrendingDown, Target, Calculator, Lightbulb } from 'lucide-react'
 
 const GLOSSARY_TERMS = [
   {
@@ -12,6 +12,8 @@ const GLOSSARY_TERMS = [
     definition:
       'Calculadora que utiliza o Mark-up Multiplicador real da sua operação para sugerir o preço de Ponto de Equilíbrio. Nota: O cálculo é baseado na média dos últimos 3 meses.',
     calculation: 'Custo Informado (MP + Embalagem) * Mark-up Multiplicador.',
+    example:
+      'Se o custo da matéria-prima e embalagem de um creme for R$ 15,00 e o multiplicador dinâmico/ideal da sua farmácia for de 6x, o assistente sugerirá o preço de venda de R$ 90,00.',
     reference:
       'Ferramenta para garantir que orçamentos não sejam vendidos abaixo do custo operacional mínimo da farmácia.',
     category: 'Ferramentas do Dashboard',
@@ -23,6 +25,8 @@ const GLOSSARY_TERMS = [
     definition:
       'Custo efetivo de todos os insumos e matérias-primas que foram de fato utilizados e aplicados nas formulações manipuladas no período. Exclui desperdícios se bem apurado.',
     calculation: 'Valor total dos insumos utilizados na produção.',
+    example:
+      'Você comprou R$ 10.000 em matéria-prima no mês, mas apenas R$ 8.000 foram efetivamente pesados e consumidos (aplicados) nas fórmulas vendidas. O seu CMA é R$ 8.000.',
     reference:
       'Métrica mais precisa para farmácias de manipulação do que o CMV, pois foca na aplicação exata do insumo na fórmula vendida.',
     category: 'Métricas de Performance',
@@ -34,6 +38,8 @@ const GLOSSARY_TERMS = [
     definition:
       'Número de funcionários alocados diretamente em cada área de produção ou atendimento da farmácia.',
     calculation: 'Entrada manual no fechamento do mês.',
+    example:
+      'Se a farmácia possui 3 atendentes no balcão e 2 farmacêuticos encapsulando, você lança 3 no setor "Vendas" e 2 na "Produção de Cápsulas". Isso dividirá o faturamento para achar a receita gerada por cabeça.',
     reference:
       'Essencial para medir o Faturamento por Colaborador em cada setor e avaliar a eficiência e necessidade de contratações.',
     category: 'Métricas de Performance',
@@ -45,6 +51,8 @@ const GLOSSARY_TERMS = [
     definition:
       'Soma de todas as despesas que não variam diretamente com a quantidade produzida (ex: aluguel, salários, contador, energia básica).',
     calculation: 'Soma de todas as transações financeiras categorizadas como "Fixa".',
+    example:
+      'A farmácia pagou R$ 5.000 de aluguel, R$ 12.000 de folha de pagamento administrativa e R$ 1.500 de honorários contábeis. O CFA Total do mês fechou em R$ 18.500.',
     reference:
       'Quanto menor, melhor. Manter o CFA controlado é o principal fator para reduzir o risco do seu Ponto de Equilíbrio. O ideal é que seja menor que 35%.',
     category: 'Métricas de Performance',
@@ -56,6 +64,8 @@ const GLOSSARY_TERMS = [
     definition:
       'Saídas de produtos ou serviços concedidas sem cobrança (ex: amostras para médicos, brindes). Por se tratar de uma ação de marketing/relacionamento que não gera entrada de caixa e cujo custo de insumo já foi contabilizado na compra da matéria-prima, as cortesias não entram na contabilidade operacional (DRE) para não distorcer a margem de lucro.',
     calculation: 'Não aplicável ao DRE.',
+    example:
+      'Um prescritor parceiro recebeu 10 amostras grátis. O custo dessas amostras foi de R$ 200 em insumos. Você registra a cortesia de R$ 200 apenas para rastreabilidade, mas esse valor não abaterá o lucro mensal para não corromper a margem operacional.',
     reference:
       'Lançamentos de cortesia servem apenas para histórico e rastreabilidade de para quem os produtos foram destinados.',
     category: 'Tipos e Classificações',
@@ -66,7 +76,9 @@ const GLOSSARY_TERMS = [
     title: 'Custo Fixo por Fórmula',
     definition:
       'Indica qual é o "peso" do custo fixo que cada fórmula manipulada precisa pagar para manter a farmácia aberta.',
-    calculation: 'CFA Total / Número de Pedidos.',
+    calculation: 'CFA Total / Número de Pedidos (ou Fórmulas).',
+    example:
+      'Seu Custo Fixo Administrativo totalizou R$ 20.000 no mês. Foram produzidas 1.000 fórmulas. R$ 20.000 ÷ 1.000 = R$ 20,00. Ou seja, cada fórmula vendida precisa deixar pelo menos R$ 20 só para pagar a loja.',
     reference:
       'Quanto menor, melhor. Produzir um volume maior de fórmulas ajuda a "diluir" o custo fixo, reduzindo este indicador.',
     category: 'Métricas de Performance',
@@ -78,6 +90,8 @@ const GLOSSARY_TERMS = [
     definition:
       'Soma de todas as despesas que variam diretamente de acordo com o volume de produção ou vendas (ex: impostos, taxas de cartão, comissões).',
     calculation: 'Soma de todas as transações financeiras categorizadas como "Variável".',
+    example:
+      'Você faturou R$ 100.000. Deste valor, pagou R$ 5.000 de imposto Simples Nacional, R$ 2.000 de taxas de cartão e R$ 3.000 de comissões de vendedores. Seus Custos Variáveis totais somam R$ 10.000 (10% do faturamento).',
     reference:
       'Quanto menor, melhor. O ideal é que seja menor que 40% para garantir uma margem de contribuição saudável.',
     category: 'Métricas de Performance',
@@ -89,6 +103,8 @@ const GLOSSARY_TERMS = [
     definition:
       'São os gastos que a empresa possui independentemente de realizar vendas ou não. Eles se mantêm (ou variam muito pouco) todo mês. Exemplos: Aluguel, IPTU, salários da equipe administrativa, honorários contábeis, sistemas e softwares.',
     calculation: 'Soma dos lançamentos categorizados como "Fixa".',
+    example:
+      'No meio da pandemia a farmácia ficou fechada por 15 dias, mas o aluguel de R$ 4.000 teve que ser pago normalmente. O aluguel é uma despesa fixa clássica.',
     reference:
       'Essenciais para o cálculo do Ponto de Equilíbrio. Devem ser monitoradas de perto, pois não dependem do faturamento.',
     category: 'Tipos e Classificações',
@@ -100,6 +116,8 @@ const GLOSSARY_TERMS = [
     definition:
       'Soma das despesas e custos (fixos e variáveis) que ainda não foram pagos (status "Previsto" ou "Vencido") para o período filtrado.',
     calculation: 'Soma das transações de tipo "Despesa" que não estão com status "Realizado".',
+    example:
+      'Você registrou a conta de energia no valor de R$ 800 que vence no dia 25 do mês atual, mas o pagamento ainda não foi efetuado no banco. Ela aparecerá no dashboard como Prevista de R$ 800.',
     reference:
       'Fundamental para previsibilidade de caixa. Mostra o quanto a empresa ainda tem de compromissos a quitar no mês.',
     category: 'Painel Geral (Cards)',
@@ -111,6 +129,8 @@ const GLOSSARY_TERMS = [
     definition:
       'Soma de todas as saídas de caixa efetivamente pagas no período, incluindo custos fixos e variáveis.',
     calculation: 'Soma das transações de tipo "Despesa" com status "Realizado".',
+    example:
+      'Ao longo de março, você deu "baixa/pago" no aluguel (R$ 5.000), fornecedores (R$ 15.000) e salários (R$ 10.000). O painel vai consolidar suas Despesas Realizadas no mês em R$ 30.000.',
     reference: 'Representa o total de dinheiro que efetivamente saiu do caixa da empresa.',
     category: 'Painel Geral (Cards)',
     trend: 'down',
@@ -121,6 +141,8 @@ const GLOSSARY_TERMS = [
     definition:
       'São os gastos que ocorrem apenas quando há venda ou produção, crescendo proporcionalmente ao faturamento. Exemplos: Impostos sobre venda (Simples Nacional), taxas de cartão de crédito, comissões, fretes de entrega, embalagens e matérias-primas.',
     calculation: 'Soma dos lançamentos categorizados como "Variável".',
+    example:
+      'Se você vende 1 pote, usa 1 embalagem. Se vender 1.000 potes, usará 1.000 embalagens. O gasto com embalagens oscila diretamente com as vendas, logo é uma despesa variável.',
     reference:
       'Impactam diretamente a Margem de Contribuição. Precisam estar embutidas no preço de venda para não gerar prejuízo.',
     category: 'Tipos e Classificações',
@@ -132,6 +154,8 @@ const GLOSSARY_TERMS = [
     definition:
       'Entradas financeiras que não são provenientes da atividade principal da empresa. Exemplo: Rendimentos de aplicações financeiras, venda de um equipamento antigo.',
     calculation: 'Classificação de receita no DRE.',
+    example:
+      'O saldo em conta corrente gerou R$ 300,00 de rendimentos de CDI no mês. Você cadastra como "Dividendos e Lucros". Assim, esses R$ 300 não inflam artificialmente a receita das vendas de manipulação.',
     reference:
       'Separadas das receitas operacionais para não inflar a performance real de vendas da farmácia.',
     category: 'Tipos e Classificações',
@@ -143,8 +167,22 @@ const GLOSSARY_TERMS = [
     definition:
       'Geração de caixa operacional (Margem de Contribuição - Custos Fixos). Representa o lucro gerado exclusivamente pela operação, antes de juros, impostos sobre lucro, depreciação e amortização.',
     calculation: 'Margem de Contribuição - Custos Fixos.',
+    example:
+      'A farmácia teve uma Margem de Contribuição de R$ 60.000 (receita descontada dos insumos e impostos). Subtraindo os Custos Fixos que somaram R$ 40.000 (aluguel, folha), o lucro gerado puramente pela operação (EBITDA) foi de R$ 20.000.',
     reference: 'Um dos indicadores mais importantes. Mostra se o negócio principal é lucrativo.',
     category: 'Painel Geral (Cards)',
+    trend: 'up',
+  },
+  {
+    id: 'fat-colab',
+    title: 'Faturamento por Colaborador',
+    definition: 'Mede a eficiência e a produtividade da equipe em relação à receita gerada.',
+    calculation: 'Faturamento Total / Número de Colaboradores.',
+    example:
+      'A farmácia faturou R$ 150.000 no mês e possui no total 10 colaboradores. O Faturamento por Colaborador (Geral) é de R$ 15.000 por cabeça. Permite avaliar se a folha está pesada.',
+    reference:
+      'Usado para avaliar se a equipe está dimensionada corretamente. Faturamentos maiores com menos equipe aumentam esse índice.',
+    category: 'Inteligência Analítica',
     trend: 'up',
   },
   {
@@ -153,18 +191,47 @@ const GLOSSARY_TERMS = [
     definition:
       'Relação que indica quantas vezes o faturamento supera o custo direto de insumos (matéria-prima + embalagens).',
     calculation: 'Faturamento Total / Custo de Insumos.',
+    example:
+      'A farmácia faturou R$ 100.000. Todas as notas fiscais de matérias-primas e frascos usadas no mês custaram R$ 20.000. R$ 100.000 ÷ R$ 20.000 = Fator Médio de 5,0x.',
     reference: 'Um bom fator médio fica entre 5,0 e 6,5, dependendo do mix de produtos.',
     category: 'Métricas de Performance',
     trend: 'up',
   },
   {
+    id: 'lucro-liquido-pct',
+    title: 'Lucro Líquido Real (%)',
+    definition: 'Percentual que o lucro líquido final representa em relação ao faturamento total.',
+    calculation: '(Lucro Líquido / Faturamento Total) * 100.',
+    example:
+      'Entraram R$ 100.000 no caixa da farmácia. Após pagar fornecedores, impostos, salários e contas (despesas realizadas), sobraram livres na conta R$ 15.000. Seu Lucro Líquido Real foi de 15%.',
+    reference:
+      'O ideal para farmácias de manipulação saudáveis é buscar margens acima de 12 a 15%.',
+    category: 'Inteligência Analítica',
+    trend: 'up',
+  },
+  {
     id: 'lucro-liquido',
     title: 'Lucro Líquido Realizado',
-    definition: 'Resultado final de caixa no período analisado.',
+    definition: 'Resultado final de caixa no período analisado (em valores absolutos).',
     calculation: 'Receitas Realizadas - Despesas Realizadas.',
+    example:
+      'Você teve R$ 120.000 de entradas e R$ 90.000 de contas pagas no mês. O Lucro Líquido Realizado (o dinheiro que efetivamente sobrou livre para o dono ou para reinvestimento) é de R$ 30.000.',
     reference:
       'Indica se a empresa gerou caixa excedente após pagar todas as obrigações no período.',
     category: 'Painel Geral (Cards)',
+    trend: 'up',
+  },
+  {
+    id: 'meta-vendas-globais',
+    title: 'Meta de Vendas Totais (Global)',
+    definition:
+      'Objetivo financeiro total da loja, englobando a manipulação e também todas as revendas, drogaria e serviços agregados.',
+    calculation: 'Definido manualmente mês a mês na aba "Dados do Mês".',
+    example:
+      'A meta global desenhada para Novembro é R$ 200.000. Se as vendas de manipulados trouxeram R$ 150k e a perfumaria/drogaria trouxe R$ 30k, você está em R$ 180k (90% da meta global batida).',
+    reference:
+      'Métrica principal para acompanhar a força comercial completa do seu negócio frente ao mercado.',
+    category: 'Métricas de Performance',
     trend: 'up',
   },
   {
@@ -172,7 +239,9 @@ const GLOSSARY_TERMS = [
     title: 'Meta de Vendas Manipulação',
     definition:
       'Objetivo de faturamento exclusivo para a operação de manipulação (receitas operacionais principais), separando de revendas ou outras receitas.',
-    calculation: 'Definido manualmente mês a mês no dashboard.',
+    calculation: 'Definido manualmente mês a mês.',
+    example:
+      'Sua meta de manipulação era R$ 100.000. A farmácia faturou R$ 110.000 ao todo, mas R$ 20.000 vieram da venda de perfumaria pronta. O realizado de manipulação foi R$ 90.000, ou seja, faltaram 10k para bater a meta exclusiva do laboratório.',
     reference:
       'Importante para avaliar a saúde da atividade-fim da farmácia, sem distorção de outras entradas de caixa.',
     category: 'Métricas de Performance',
@@ -184,6 +253,8 @@ const GLOSSARY_TERMS = [
     definition:
       'O valor que sobra da receita bruta após subtrair os custos variáveis operacionais e os insumos (matéria-prima + embalagens). É o que contribui para pagar as despesas fixas e gerar lucro.',
     calculation: 'Receitas - (Custos Variáveis + Insumos).',
+    example:
+      'Vendeu-se uma loção por R$ 100. O pote e o ativo custaram R$ 20. Os impostos e comissão do balconista custaram R$ 15. Sobraram R$ 65 (Margem de Contribuição) para ajudar a pagar as luzes e o aluguel do fim do mês.',
     reference:
       'Margens positivas e robustas indicam que a operação consegue cobrir o custo fixo mais rapidamente.',
     category: 'Painel Geral (Cards)',
@@ -195,6 +266,8 @@ const GLOSSARY_TERMS = [
     definition:
       'Índice que representa a proporção do custo direto em relação ao custo total no ponto de equilíbrio.',
     calculation: 'Custo de Insumos / Custos Totais.',
+    example:
+      'Se, ao somar todas as suas despesas, os insumos representam exatamente 25% (0,25) do total gasto pela farmácia no mês, seu Divisor é 0,25.',
     reference: 'Quanto menor o divisor, maior o multiplicador necessário para cobrir os custos.',
     category: 'Métricas de Performance',
     trend: 'neutral',
@@ -205,6 +278,8 @@ const GLOSSARY_TERMS = [
     definition:
       'Fator aplicado sobre o custo direto (MP + Embalagem) para encontrar o preço de venda de Ponto de Equilíbrio.',
     calculation: '1 / Mark-up Divisor.',
+    example:
+      'Se o seu Divisor é 0,25 (25%), o cálculo é 1 ÷ 0,25 = 4. Seu Mark-up Multiplicador de Ponto de Equilíbrio é 4x. Significa que, na média geral, se uma embalagem+ativo custa R$ 10, você precisa vender por pelo menos R$ 40 para não ter prejuízo.',
     reference:
       'Valor ideal para balizar o preço mínimo. Vender abaixo deste fator significa operar em prejuízo.',
     category: 'Métricas de Performance',
@@ -215,6 +290,8 @@ const GLOSSARY_TERMS = [
     title: 'Mark-up Praticado',
     definition: 'Multiplicador efetivamente realizado pela farmácia no período.',
     calculation: 'Faturamento Total / Custo de Insumos.',
+    example:
+      'No final do mês, você faturou R$ 120.000. Olhando as notas fiscais, o gasto com frascos e matéria-prima foi de R$ 20.000. R$ 120k ÷ R$ 20k = 6,0. Seu Mark-up Praticado real foi 6x o custo.',
     reference: 'Deve ser sempre superior ao Mark-up Alvo (P.E.).',
     category: 'Métricas de Performance',
     trend: 'up',
@@ -225,6 +302,8 @@ const GLOSSARY_TERMS = [
     definition:
       'Gráfico visual de acompanhamento da receita acumulada em relação ao exigido para pagar todas as contas.',
     calculation: '(Receita Atual / Ponto de Equilíbrio) * 100.',
+    example:
+      'Os custos totais da farmácia dizem que você precisa faturar R$ 60.000 para empatar o mês (Ponto de Equilíbrio). Chegou dia 20 e as vendas atingiram R$ 60.000. O monitor vai marcar 100%. Tudo que faturar do dia 21 em diante gera lucro líquido puro.',
     reference: 'A barra deve sempre ultrapassar os 100%.',
     category: 'Ferramentas do Dashboard',
     trend: 'neutral',
@@ -235,9 +314,24 @@ const GLOSSARY_TERMS = [
     definition:
       'Valor mínimo absoluto pelo qual uma fórmula pode ser vendida para não gerar prejuízo de caixa imediato.',
     calculation: 'Custo Insumos + Rateio Custos Fixos + Rateio Despesas Variáveis.',
+    example:
+      'Para fazer uma cápsula específica, você gastou R$ 5 de pó e pote. O painel diz que seu custo fixo/var rateado é R$ 25 por fórmula. O Piso de Segurança é R$ 30,00. Vender esse orçamento por R$ 29 é tirar dinheiro do próprio bolso para pagar o cliente.',
     reference: 'Nenhum orçamento deve ser aprovado abaixo deste valor.',
     category: 'Ferramentas do Dashboard',
     trend: 'neutral',
+  },
+  {
+    id: 'pm-ideal',
+    title: 'PM Ideal (Ticket Médio por Setor)',
+    definition:
+      'O Preço Médio ou Ticket Médio exclusivo de um setor específico (ex: Cápsulas ou Dermato).',
+    calculation: 'Faturamento do Setor / Número de Fórmulas do Setor.',
+    example:
+      'Se o setor de Dermatologia faturou R$ 40.000 num mês produzindo exatamente 200 potes de cremes/pomadas, o PM (Preço Médio) Ideal de Dermato é R$ 200,00 por unidade.',
+    reference:
+      'Ajuda a identificar qual linha de produção (Cápsulas vs. Dermato) consegue praticar valores mais altos e com maior rentabilidade agregada.',
+    category: 'Inteligência Analítica',
+    trend: 'up',
   },
   {
     id: 'ponto-de-equilibrio',
@@ -245,6 +339,8 @@ const GLOSSARY_TERMS = [
     definition:
       'O faturamento necessário para cobrir exatamente todos os custos (fixos e variáveis). É o "zero a zero".',
     calculation: 'Custos Fixos / Índice de Margem de Contribuição.',
+    example:
+      'Seus custos com aluguel, contador e salários somam R$ 35.000 no mês. Sua margem de contribuição (o que sobra das vendas tirando imposto e mp) é de 70% (0,7). Ponto de Equilíbrio: R$ 35.000 ÷ 0,7 = R$ 50.000. Vendendo R$ 50k, o lucro é zero, mas não há dívidas.',
     reference: 'Quanto menor, mais segura é a operação.',
     category: 'Painel Geral (Cards)',
     trend: 'down',
@@ -253,10 +349,12 @@ const GLOSSARY_TERMS = [
     id: 'preco-min-formula',
     title: 'Preço Mínimo por Fórmula',
     definition:
-      'Ponto de equilíbrio unitário. O valor mínimo médio pelo qual cada fórmula deve ser vendida para não gerar prejuízo.',
-    calculation: 'Custos Totais / Número de Pedidos.',
+      'Ponto de equilíbrio unitário. O valor mínimo médio pelo qual cada fórmula deve ser vendida para não gerar prejuízo na globalidade.',
+    calculation: 'Custos Totais Operacionais / Número de Fórmulas.',
+    example:
+      'Você teve R$ 60.000 de saídas totais de caixa no mês e sua equipe manipulou 1.000 receitas. Na média, seu Preço Mínimo por Fórmula é R$ 60,00. Ter um ticket médio (PM) das fórmulas muito abaixo de R$ 60 indica risco financeiro.',
     reference:
-      'Indicador de balizamento. Suas vendas devem ter um ticket médio superior a este valor.',
+      'Indicador de balizamento. Suas vendas devem ter um ticket médio consideravelmente superior a este valor.',
     category: 'Métricas de Performance',
     trend: 'neutral',
   },
@@ -264,9 +362,11 @@ const GLOSSARY_TERMS = [
     id: 'preco-sugerido',
     title: 'Preço Sugerido (Markup Dinâmico)',
     definition:
-      'Preço de venda recomendado pelo algoritmo inteligente, ajustando a margem conforme o custo do insumo.',
+      'Preço de venda recomendado pelo algoritmo inteligente, ajustando a margem para baixo quando o insumo é muito caro, e para cima quando o insumo é barato.',
     calculation: 'Custo Informado * Curva de Markup Dinâmico.',
-    reference: 'Valor ideal para precificação ágil.',
+    example:
+      'Na tela do assistente, você digitou R$ 10 de custo do ativo. Como o custo é muito barato, o sistema não aplicará o multiplicador normal de 5x (que daria R$ 50), mas sim uma curva maior, sugerindo R$ 65 para rentabilizar bem. Se custasse R$ 200, ele esmagaria o markup para o produto não ficar "impossível" de vender.',
+    reference: 'Valor ideal para precificação ágil, maximizando a margem sem espantar o cliente.',
     category: 'Ferramentas do Dashboard',
     trend: 'neutral',
   },
@@ -275,7 +375,9 @@ const GLOSSARY_TERMS = [
     title: 'Receitas Realizadas',
     definition: 'Total de entradas financeiras registradas efetivamente na conta bancária/caixa.',
     calculation: 'Soma de todas as transações com tipo "Receita" e status "Realizado".',
-    reference: 'Representa o faturamento bruto que virou dinheiro em caixa.',
+    example:
+      'No final da sexta-feira, você conferiu o extrato: bateram R$ 2.000 em transferências PIX, a maquininha depositou R$ 1.500 das vendas de ontem, e no caixa de gaveta tem R$ 500 em espécie. Receita Realizada do dia: R$ 4.000.',
+    reference: 'Representa o faturamento bruto que virou dinheiro real disponível na mão.',
     category: 'Painel Geral (Cards)',
     trend: 'up',
   },
@@ -283,19 +385,23 @@ const GLOSSARY_TERMS = [
     id: 'retirada-socios',
     title: 'Retirada de Sócios (Tipo de Transação)',
     definition:
-      'Registra a distribuição de lucros ou retiradas esporádicas realizadas pelos proprietários da empresa. Assim como as cortesias, as Retiradas de Sócios são movimentos extra-operacionais. Elas afetam o saldo da conta bancária, mas não entram na DRE (Demonstração do Resultado do Exercício) e não impactam o Lucro Operacional do laboratório.',
+      'Registra a distribuição de lucros ou retiradas esporádicas realizadas pelos proprietários da empresa. Assim como as cortesias, não entram na DRE Operacional.',
     calculation: 'Não aplicável ao DRE/Lucro Operacional.',
-    reference:
-      'Usado exclusivamente para conciliação bancária e transparência de caixa, sem prejudicar os indicadores de performance da farmácia.',
+    example:
+      'Sobrou dinheiro na conta do CNPJ e os sócios decidiram transferir R$ 5.000 para as contas físicas (Pessoa Física). Esse registro abate do saldo do banco no painel, mas não mexe nos relatórios de performance (EBITDA/Lucro), pois o laboratório não foi pior ou melhor porque o dono retirou dinheiro.',
+    reference: 'Usado exclusivamente para conciliação bancária e transparência de caixa.',
     category: 'Tipos e Classificações',
     trend: 'neutral',
   },
   {
     id: 'ticket-medio',
     title: 'Ticket Médio',
-    definition: 'Valor médio de venda gerado por cada pedido no sistema.',
+    definition: 'Valor médio de venda gerado por cada orçamento aprovado/pedido no sistema.',
     calculation: 'Faturamento Total / Número de Pedidos.',
-    reference: 'Quanto maior, melhor. Indica otimização do esforço de vendas.',
+    example:
+      'O fechamento do mês apontou faturamento de R$ 100.000 derivado de 500 pedidos (receitas aviadas). R$ 100.000 ÷ 500 = Ticket Médio Geral de R$ 200,00 por atendimento.',
+    reference:
+      'Quanto maior, melhor. Indica eficácia do esforço do balconista em agregar vendas ou cross-selling.',
     category: 'Métricas de Performance',
     trend: 'up',
   },
@@ -305,8 +411,10 @@ const GLOSSARY_TERMS = [
     definition:
       'São as receitas oriundas exclusivamente da atividade principal do seu negócio: manipulação de fórmulas, venda de cosméticos ou serviços prestados aos clientes.',
     calculation: 'Soma das receitas classificadas como "Operacional".',
+    example:
+      'Um cliente pagou R$ 150 por 2 frascos manipulados e R$ 20 por uma bala na recepção. Você pode dividir esse laçamento em R$ 150 para Vendas Manipulação (Operacional) e R$ 20 para Revenda/Conveniência, permitindo medir exatamente o que a farmácia produz.',
     reference:
-      'Este é o valor que deve ser analisado para medir a saúde comercial e a aceitação do mercado aos seus produtos.',
+      'Este é o valor que deve ser analisado para medir a saúde comercial e a aceitação dos seus manipulados.',
     category: 'Tipos e Classificações',
     trend: 'neutral',
   },
@@ -357,8 +465,8 @@ export default function Glossary() {
             <h1 className="text-2xl font-bold text-slate-800">Glossário de Indicadores</h1>
             <p className="text-slate-500 max-w-2xl">
               Entenda exatamente o que cada métrica, classificação e botão do seu sistema significa,
-              como é calculado e qual a referência ideal para garantir a saúde financeira do seu
-              laboratório. (Organizado em ordem alfabética).
+              como é calculado e confira <strong>exemplos práticos</strong> para garantir o domínio
+              da saúde financeira do seu laboratório.
             </p>
           </div>
 
@@ -412,34 +520,48 @@ export default function Glossary() {
                       </div>
                     </CardHeader>
                     <CardContent className="space-y-3 text-sm flex-1 flex flex-col justify-between">
-                      <div>
-                        <strong className="text-slate-700 block text-xs uppercase mb-0.5">
-                          O que é
-                        </strong>
-                        <p className="text-slate-600 leading-relaxed text-[13px]">
-                          {term.definition}
-                        </p>
-                      </div>
-
-                      <div className="space-y-3 mt-3">
-                        <div className="bg-slate-50 p-2.5 rounded-sm border border-slate-100">
-                          <strong className="text-slate-700 flex items-center gap-1.5 text-xs uppercase mb-1">
-                            <Calculator className="w-3.5 h-3.5 text-slate-400" /> Como calcular
-                          </strong>
-                          <p className="text-slate-600 font-mono text-[11px] break-words">
-                            {term.calculation}
-                          </p>
-                        </div>
-
+                      <div className="flex-1 flex flex-col">
                         <div>
                           <strong className="text-slate-700 block text-xs uppercase mb-0.5">
-                            Visão Estratégica
+                            O que é
                           </strong>
-                          <p className="text-slate-600 leading-relaxed italic text-[12px]">
-                            {term.reference}
+                          <p className="text-slate-600 leading-relaxed text-[13px]">
+                            {term.definition}
                           </p>
                         </div>
+
+                        <div className="space-y-3 mt-3">
+                          <div className="bg-slate-50 p-2.5 rounded-sm border border-slate-100">
+                            <strong className="text-slate-700 flex items-center gap-1.5 text-xs uppercase mb-1">
+                              <Calculator className="w-3.5 h-3.5 text-slate-400" /> Como calcular
+                            </strong>
+                            <p className="text-slate-600 font-mono text-[11px] break-words">
+                              {term.calculation}
+                            </p>
+                          </div>
+
+                          <div>
+                            <strong className="text-slate-700 block text-xs uppercase mb-0.5">
+                              Visão Estratégica
+                            </strong>
+                            <p className="text-slate-600 leading-relaxed italic text-[12px]">
+                              {term.reference}
+                            </p>
+                          </div>
+                        </div>
                       </div>
+
+                      {/* Exemplo Prático Box */}
+                      {term.example && (
+                        <div className="bg-blue-50/60 p-3 rounded-md border border-blue-100/80 mt-3 shadow-sm">
+                          <strong className="text-blue-800 flex items-center gap-1.5 text-xs uppercase mb-1.5 font-bold">
+                            <Lightbulb className="w-4 h-4 text-amber-500" /> Exemplo Prático
+                          </strong>
+                          <p className="text-slate-700 leading-relaxed text-[12.5px]">
+                            {term.example}
+                          </p>
+                        </div>
+                      )}
                     </CardContent>
                   </Card>
                 ))}
