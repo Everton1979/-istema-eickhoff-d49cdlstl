@@ -252,6 +252,9 @@ export function MonthlyDataDialog() {
             <h3 className="font-bold text-slate-800 border-b border-slate-200 pb-2 flex items-center gap-2">
               <div className="w-1.5 h-4 bg-emerald-500 rounded-sm" />
               Setor Cápsulas
+              <span className="text-sm font-normal text-slate-500 ml-1">
+                (Dados extraídos do seu sistema)
+              </span>
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div className="space-y-2">
@@ -299,6 +302,9 @@ export function MonthlyDataDialog() {
             <h3 className="font-bold text-slate-800 border-b border-slate-200 pb-2 flex items-center gap-2">
               <div className="w-1.5 h-4 bg-purple-500 rounded-sm" />
               Setor Dermato
+              <span className="text-sm font-normal text-slate-500 ml-1">
+                (Dados extraídos do seu sistema)
+              </span>
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div className="space-y-2">
@@ -370,7 +376,7 @@ export function MonthlyDataDialog() {
                 />
               </div>
               <div className="space-y-2">
-                <Label>Custo Matéria Prima (R$)</Label>
+                <Label>Custo MP/Emb (R$)</Label>
                 <Input
                   type="number"
                   step="0.01"
