@@ -23,11 +23,25 @@ export default function PendingApproval() {
           </div>
         </div>
         <h2 className="text-2xl font-bold text-gray-800 mb-4">Conta em Análise</h2>
-        <p className="text-gray-600 mb-8">
-          Seu cadastro foi recebido com sucesso. No momento, sua conta está com o status{' '}
-          <strong>Pendente</strong>. Aguarde a aprovação de um administrador para ter acesso total
-          ao sistema.
-        </p>
+        <div className="text-gray-600 mb-8 space-y-4">
+          <p>
+            Cadastro realizado com sucesso! No momento, sua conta está com o status{' '}
+            <strong>Pendente</strong>.
+          </p>
+          <div className="bg-blue-50 text-blue-800 p-4 rounded-md text-sm text-left border border-blue-100">
+            <strong className="block mb-2 text-blue-900">Atenção aos próximos passos:</strong>
+            <ol className="list-decimal pl-5 space-y-1">
+              <li>
+                Verifique seu e-mail com o título <strong>"Supabase Auth"</strong>.
+              </li>
+              <li>
+                Abra o e-mail e clique em <strong>"Confirm your mail"</strong> para confirmar a
+                conta.
+              </li>
+              <li>Aguarde a aprovação do administrador para ter acesso total ao sistema.</li>
+            </ol>
+          </div>
+        </div>
         <Button onClick={() => signOut()} variant="outline" className="w-full gap-2">
           <LogOut className="w-4 h-4" /> Sair
         </Button>

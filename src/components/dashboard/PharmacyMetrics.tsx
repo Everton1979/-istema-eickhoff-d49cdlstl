@@ -137,7 +137,7 @@ export function PharmacyMetrics() {
     {
       id: 'markup-realizado',
       title: 'Mark-up Praticado',
-      tooltip: 'Multiplicador realizado no período (Faturamento / Custo MP).',
+      tooltip: 'Multiplicador realizado no período (Faturamento / Custo MP/Emb).',
       value: formatDecimal(metrics.mkpRealizado),
       color: 'text-purple-600',
     },

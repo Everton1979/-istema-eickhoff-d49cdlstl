@@ -67,8 +67,8 @@ export default function Register() {
       toast.error(error.message || 'Erro ao criar conta.')
     } else {
       toast.success(
-        'Cadastro realizado com sucesso! Verifique seu e-mail para confirmar a conta e aguarde a aprovação do administrador.',
-        { duration: 8000 },
+        'Cadastro realizado com sucesso! Verifique seu e-mail com o título "Supabase Auth", entre, clique em "Confirm your mail" para confirmar a conta e aguarde a aprovação do administrador.',
+        { duration: 15000 },
       )
       navigate('/pendente')
     }
