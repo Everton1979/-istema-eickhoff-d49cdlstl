@@ -46,7 +46,7 @@ export default function Login() {
             <LayoutDashboard className="w-6 h-6" />
           </div>
         </div>
-        <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">Entrar no Sistema</h2>
+        <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">$istema Eickhoff</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
