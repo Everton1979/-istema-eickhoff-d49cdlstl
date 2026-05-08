@@ -206,7 +206,7 @@ export function PricingAssistant() {
                 type="number"
                 step="0.01"
                 className="h-10 text-sm font-bold pl-9 bg-white shadow-inner border-slate-300 focus-visible:ring-blue-500 transition-shadow hover:shadow-md"
-                value={cost}
+                value={cost || ''}
                 onChange={(e) => setCost(e.target.value)}
                 placeholder="0.00"
               />

@@ -401,8 +401,8 @@ export function MonthlyDataDialog() {
                   type="number"
                   value={
                     (Number(formData.colaboradores_capsulas) || 0) +
-                    (Number(formData.colaboradores_dermato) || 0) +
-                    (Number(formData.colaboradores_vendas) || 0)
+                      (Number(formData.colaboradores_dermato) || 0) +
+                      (Number(formData.colaboradores_vendas) || 0) || ''
                   }
                   disabled
                   className="bg-slate-50 text-slate-500 font-medium"

@@ -136,7 +136,7 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
     : {
         date: new Date().toISOString().split('T')[0],
         description: '',
-        amount: 0,
+        amount: '' as unknown as number,
         type: 'EXPENSE' as const,
         status: 'REALIZADO' as const,
         categoryId: '',
@@ -368,7 +368,16 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
                 Valor (R$) <span className="text-red-500">*</span>
               </FormLabel>
               <FormControl>
-                <Input type="number" step="0.01" required {...field} />
+                <Input
+                  type="number"
+                  step="0.01"
+                  required
+                  {...field}
+                  value={field.value || ''}
+                  onChange={(e) =>
+                    field.onChange(e.target.value === '' ? '' : Number(e.target.value))
+                  }
+                />
               </FormControl>
               <FormMessage />
             </FormItem>

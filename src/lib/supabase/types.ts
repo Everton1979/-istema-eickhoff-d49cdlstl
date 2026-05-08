@@ -323,6 +323,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_user_app_name: { Args: never; Returns: string }
       get_user_role: { Args: never; Returns: string }
     }
     Enums: {
@@ -595,10 +596,10 @@ export const Constants = {
 //   Policy "Users can insert profiles" (INSERT, PERMISSIVE) roles={authenticated}
 //     WITH CHECK: ((id = auth.uid()) OR (get_user_role() = 'Administrador'::text))
 //   Policy "Users can read profiles" (SELECT, PERMISSIVE) roles={authenticated}
-//     USING: ((id = auth.uid()) OR (get_user_role() = 'Administrador'::text))
+//     USING: ((id = auth.uid()) OR ((get_user_role() = 'Administrador'::text) AND (COALESCE(app_name, 'farmacia'::text) = get_user_app_name())))
 //   Policy "Users can update profiles" (UPDATE, PERMISSIVE) roles={authenticated}
-//     USING: ((id = auth.uid()) OR (get_user_role() = 'Administrador'::text))
-//     WITH CHECK: ((id = auth.uid()) OR (get_user_role() = 'Administrador'::text))
+//     USING: ((id = auth.uid()) OR ((get_user_role() = 'Administrador'::text) AND (COALESCE(app_name, 'farmacia'::text) = get_user_app_name())))
+//     WITH CHECK: ((id = auth.uid()) OR ((get_user_role() = 'Administrador'::text) AND (COALESCE(app_name, 'farmacia'::text) = get_user_app_name())))
 // Table: transactions
 //   Policy "Users can manage own transactions" (ALL, PERMISSIVE) roles={authenticated}
 //     USING: (user_id = auth.uid())
@@ -609,6 +610,16 @@ export const Constants = {
 //     WITH CHECK: (user_id = auth.uid())
 
 // --- DATABASE FUNCTIONS ---
+// FUNCTION get_user_app_name()
+//   CREATE OR REPLACE FUNCTION public.get_user_app_name()
+//    RETURNS text
+//    LANGUAGE sql
+//    STABLE SECURITY DEFINER
+//    SET search_path TO 'public'
+//   AS $function$
+//     SELECT COALESCE(app_name, 'farmacia') FROM profiles WHERE id = auth.uid();
+//   $function$
+//
 // FUNCTION get_user_role()
 //   CREATE OR REPLACE FUNCTION public.get_user_role()
 //    RETURNS text
