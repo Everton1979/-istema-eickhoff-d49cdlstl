@@ -271,7 +271,7 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
                 </FormLabel>
                 <Select onValueChange={field.onChange} value={field.value || undefined}>
                   <FormControl>
-                    <SelectTrigger>
+                    <SelectTrigger autoFocus>
                       <SelectValue placeholder="Selecione o tipo" />
                     </SelectTrigger>
                   </FormControl>
@@ -300,8 +300,8 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value="PREVISTO">Previsto</SelectItem>
                     <SelectItem value="REALIZADO">Realizado</SelectItem>
+                    <SelectItem value="PREVISTO">Previsto</SelectItem>
                     {(type === 'EXPENSE' ||
                       type === 'CORTESIA' ||
                       type === 'PARTNER_WITHDRAWAL') && (
@@ -323,7 +323,7 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
                 Data <span className="text-red-500">*</span>
               </FormLabel>
               <FormControl>
-                <Input type="date" required {...field} autoFocus />
+                <Input type="date" required {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
