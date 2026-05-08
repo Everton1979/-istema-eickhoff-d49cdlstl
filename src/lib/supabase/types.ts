@@ -647,7 +647,8 @@ export const Constants = {
 //       NEW.raw_user_meta_data->>'complemento',
 //       NEW.raw_user_meta_data->>'bairro',
 //       NEW.raw_user_meta_data->>'cidade_estado',
-//       COALESCE(NEW.raw_user_meta_data->>'app_name', 'salao')
+//       -- Alterado o fallback para 'farmacia' para evitar que cadastros sem app_name caiam no salão
+//       COALESCE(NEW.raw_user_meta_data->>'app_name', 'farmacia')
 //     );
 //     RETURN NEW;
 //   END;

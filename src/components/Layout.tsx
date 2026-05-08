@@ -24,7 +24,9 @@ export default function Layout() {
             <div className="w-8 h-8 bg-blue-600 rounded-md flex items-center justify-center font-bold text-white shadow-sm uppercase">
               {companyInitials}
             </div>
-            <span className="font-bold text-lg tracking-wide hidden sm:block">{companyName}</span>
+            <span className="font-bold text-lg tracking-wide hidden sm:block">
+              $istema Eickhoff
+            </span>
           </div>
 
           <nav className="hidden md:flex items-center gap-1">

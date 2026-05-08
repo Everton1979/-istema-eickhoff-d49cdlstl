@@ -31,13 +31,15 @@ Deno.serve(async (req: Request) => {
     // Create admin client to bypass RLS and use auth.admin methods
     const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey)
 
-    const { action, email, password, userId, company_name } = await req.json()
+    const { action, email, password, userId, company_name, app_name } = await req.json()
 
     if (action === 'create') {
+      const targetAppName = app_name || 'farmacia'
       const { data, error } = await supabaseAdmin.auth.admin.createUser({
         email,
         password,
         email_confirm: true,
+        user_metadata: { app_name: targetAppName },
       })
       if (error) throw error
 
@@ -48,6 +50,7 @@ Deno.serve(async (req: Request) => {
           role: 'Usuário',
           company_name: company_name || null,
           status: 'Ativo',
+          app_name: targetAppName,
         })
         .eq('id', data.user.id)
 

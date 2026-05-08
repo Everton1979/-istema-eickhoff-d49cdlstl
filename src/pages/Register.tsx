@@ -47,6 +47,7 @@ export default function Register() {
     setLoading(true)
 
     const metadata = {
+      app_name: 'farmacia',
       cnpj: formData.cnpj,
       razao_social: formData.razaoSocial,
       nome_fantasia: formData.nomeFantasia,

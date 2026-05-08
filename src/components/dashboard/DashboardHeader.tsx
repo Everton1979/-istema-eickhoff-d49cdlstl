@@ -43,7 +43,7 @@ export function DashboardHeader({ onExport }: { onExport: (filters: any) => void
   return (
     <div className="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-4 mb-2 bg-white p-4 rounded-lg shadow-sm border border-slate-200">
       <div>
-        <h1 className="text-xl font-bold text-slate-800">Painel Geral</h1>
+        <h1 className="text-xl font-bold text-slate-800">$istema Eickhoff - Painel Geral</h1>
         <p className="text-sm text-slate-500">Visão geral e indicadores de performance</p>
       </div>
 
