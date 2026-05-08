@@ -23,7 +23,7 @@ import { useToast } from '@/hooks/use-toast'
 import { useEffect, useState, useMemo } from 'react'
 import { Transaction } from '@/types/finance'
 import { X, Plus, Tag as TagIcon } from 'lucide-react'
-import { cn, getTagColor } from '@/lib/utils'
+import { cn, getTagColor, formatCurrencyInput } from '@/lib/utils'
 
 const formSchema = z
   .object({
@@ -323,7 +323,7 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
                 Data <span className="text-red-500">*</span>
               </FormLabel>
               <FormControl>
-                <Input type="date" required {...field} />
+                <Input type="date" required {...field} autoFocus />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -368,16 +368,31 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
                 Valor (R$) <span className="text-red-500">*</span>
               </FormLabel>
               <FormControl>
-                <Input
-                  type="number"
-                  step="0.01"
-                  required
-                  {...field}
-                  value={field.value || ''}
-                  onChange={(e) =>
-                    field.onChange(e.target.value === '' ? '' : Number(e.target.value))
-                  }
-                />
+                <div className="relative">
+                  <span className="absolute left-3 top-2.5 text-sm text-slate-500 font-medium">
+                    R$
+                  </span>
+                  <Input
+                    type="text"
+                    required
+                    className="pl-9"
+                    placeholder="0,00"
+                    {...field}
+                    value={
+                      field.value !== undefined && field.value !== ''
+                        ? formatCurrencyInput(field.value)
+                        : ''
+                    }
+                    onChange={(e) => {
+                      const val = e.target.value.replace(/\D/g, '')
+                      if (!val) {
+                        field.onChange('')
+                      } else {
+                        field.onChange(parseInt(val, 10) / 100)
+                      }
+                    }}
+                  />
+                </div>
               </FormControl>
               <FormMessage />
             </FormItem>

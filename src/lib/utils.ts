@@ -5,6 +5,25 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
+export function formatCurrencyInput(value: number | string | undefined | null): string {
+  if (value === undefined || value === null || value === '') return ''
+  const numericValue =
+    typeof value === 'string' ? value.replace(/\D/g, '') : value.toFixed(2).replace(/\D/g, '')
+  if (!numericValue) return ''
+  const amount = parseInt(numericValue, 10) / 100
+  return new Intl.NumberFormat('pt-BR', {
+    style: 'decimal',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(amount)
+}
+
+export function parseCurrencyInput(value: string): number {
+  if (!value) return 0
+  const numericValue = value.replace(/\D/g, '')
+  return parseInt(numericValue, 10) / 100
+}
+
 export function getTagColor(tag: string) {
   if (!tag) return 'bg-slate-100 text-slate-700 border-slate-200'
   const colors = [

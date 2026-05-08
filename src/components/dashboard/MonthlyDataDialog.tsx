@@ -22,6 +22,7 @@ import {
 import { useAuth } from '@/hooks/use-auth'
 import { useFinanceStore } from '@/stores/financeStore'
 import { useDraft } from '@/hooks/use-draft'
+import { formatCurrencyInput } from '@/lib/utils'
 
 export function MonthlyDataDialog() {
   const { user } = useAuth()
@@ -244,6 +245,7 @@ export function MonthlyDataDialog() {
                 onChange={(e) => handleYearChange(Number(e.target.value))}
                 required
                 className="bg-white"
+                autoFocus
               />
             </div>
           </div>
@@ -269,21 +271,36 @@ export function MonthlyDataDialog() {
               <div className="space-y-2">
                 <Label>Vendas (R$)</Label>
                 <Input
-                  type="number"
-                  step="0.01"
-                  value={formData.vendas_capsulas}
-                  onChange={(e) => handleChange('vendas_capsulas', e.target.value)}
-                  placeholder="0.00"
+                  type="text"
+                  value={
+                    formData.vendas_capsulas !== ''
+                      ? formatCurrencyInput(formData.vendas_capsulas)
+                      : ''
+                  }
+                  onChange={(e) => {
+                    const val = e.target.value.replace(/\D/g, '')
+                    handleChange('vendas_capsulas', val ? String(parseInt(val, 10) / 100) : '')
+                  }}
+                  placeholder="0,00"
                 />
               </div>
               <div className="space-y-2">
                 <Label>Custo MP/Emb (R$)</Label>
                 <Input
-                  type="number"
-                  step="0.01"
-                  value={formData.custo_mp_emb_capsulas}
-                  onChange={(e) => handleChange('custo_mp_emb_capsulas', e.target.value)}
-                  placeholder="0.00"
+                  type="text"
+                  value={
+                    formData.custo_mp_emb_capsulas !== ''
+                      ? formatCurrencyInput(formData.custo_mp_emb_capsulas)
+                      : ''
+                  }
+                  onChange={(e) => {
+                    const val = e.target.value.replace(/\D/g, '')
+                    handleChange(
+                      'custo_mp_emb_capsulas',
+                      val ? String(parseInt(val, 10) / 100) : '',
+                    )
+                  }}
+                  placeholder="0,00"
                 />
               </div>
               <div className="space-y-2">
@@ -319,21 +336,33 @@ export function MonthlyDataDialog() {
               <div className="space-y-2">
                 <Label>Vendas (R$)</Label>
                 <Input
-                  type="number"
-                  step="0.01"
-                  value={formData.vendas_dermato}
-                  onChange={(e) => handleChange('vendas_dermato', e.target.value)}
-                  placeholder="0.00"
+                  type="text"
+                  value={
+                    formData.vendas_dermato !== ''
+                      ? formatCurrencyInput(formData.vendas_dermato)
+                      : ''
+                  }
+                  onChange={(e) => {
+                    const val = e.target.value.replace(/\D/g, '')
+                    handleChange('vendas_dermato', val ? String(parseInt(val, 10) / 100) : '')
+                  }}
+                  placeholder="0,00"
                 />
               </div>
               <div className="space-y-2">
                 <Label>Custo MP/Emb (R$)</Label>
                 <Input
-                  type="number"
-                  step="0.01"
-                  value={formData.custo_mp_emb_dermato}
-                  onChange={(e) => handleChange('custo_mp_emb_dermato', e.target.value)}
-                  placeholder="0.00"
+                  type="text"
+                  value={
+                    formData.custo_mp_emb_dermato !== ''
+                      ? formatCurrencyInput(formData.custo_mp_emb_dermato)
+                      : ''
+                  }
+                  onChange={(e) => {
+                    const val = e.target.value.replace(/\D/g, '')
+                    handleChange('custo_mp_emb_dermato', val ? String(parseInt(val, 10) / 100) : '')
+                  }}
+                  placeholder="0,00"
                 />
               </div>
               <div className="space-y-2">
@@ -367,23 +396,21 @@ export function MonthlyDataDialog() {
               <div className="space-y-2">
                 <Label>Vendas Totais (R$)</Label>
                 <Input
-                  type="number"
-                  step="0.01"
-                  value={total_system_sales || ''}
+                  type="text"
+                  value={total_system_sales ? formatCurrencyInput(total_system_sales) : ''}
                   disabled
                   className="bg-slate-50 text-slate-500 font-medium"
-                  placeholder="0.00"
+                  placeholder="0,00"
                 />
               </div>
               <div className="space-y-2">
                 <Label>Custo MP/Emb (R$)</Label>
                 <Input
-                  type="number"
-                  step="0.01"
-                  value={raw_material_costs || ''}
+                  type="text"
+                  value={raw_material_costs ? formatCurrencyInput(raw_material_costs) : ''}
                   disabled
                   className="bg-slate-50 text-slate-500 font-medium"
-                  placeholder="0.00"
+                  placeholder="0,00"
                 />
               </div>
               <div className="space-y-2">

@@ -6,7 +6,7 @@ import { Calculator, HelpCircle, AlertTriangle, CheckCircle2, Info } from 'lucid
 import { useState, useMemo } from 'react'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { Link } from 'react-router-dom'
-import { cn } from '@/lib/utils'
+import { cn, formatCurrencyInput } from '@/lib/utils'
 import {
   Select,
   SelectContent,
@@ -203,12 +203,14 @@ export function PricingAssistant() {
             <div className="relative">
               <span className="absolute left-3 top-2.5 text-sm text-slate-500 font-medium">R$</span>
               <Input
-                type="number"
-                step="0.01"
+                type="text"
                 className="h-10 text-sm font-bold pl-9 bg-white shadow-inner border-slate-300 focus-visible:ring-blue-500 transition-shadow hover:shadow-md"
-                value={cost || ''}
-                onChange={(e) => setCost(e.target.value)}
-                placeholder="0.00"
+                value={cost !== '' ? formatCurrencyInput(cost) : ''}
+                onChange={(e) => {
+                  const val = e.target.value.replace(/\D/g, '')
+                  setCost(val ? String(parseInt(val, 10) / 100) : '')
+                }}
+                placeholder="0,00"
               />
             </div>
           </div>
