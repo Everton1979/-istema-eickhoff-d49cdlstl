@@ -17,6 +17,7 @@ export const PAYMENT_METHODS: PaymentMethod[] = [
 export const CATEGORIES: Category[] = [
   { id: 'FIXA', name: 'Fixa', type: 'EXPENSE', isVariable: false },
   { id: 'VARIAVEL', name: 'Variável', type: 'EXPENSE', isVariable: true },
+  { id: 'INVESTIMENTO', name: 'Equipamentos e Investimentos', type: 'EXPENSE', isVariable: false },
   { id: 'RECEITA_OPERACIONAL', name: 'Receita Operacional', type: 'INCOME', isVariable: false },
   {
     id: 'RECEITA_NAO_OPERACIONAL',
@@ -82,6 +83,7 @@ const mapCategoryToDB = (cat: string | undefined) => {
   const c = cat.toUpperCase()
   if (c === 'FIXA') return 'fixa'
   if (c === 'VARIAVEL') return 'variável'
+  if (c === 'INVESTIMENTO') return 'investimento'
   if (c === 'RECEITA_OPERACIONAL') return 'receita_operacional'
   if (c === 'RECEITA_NAO_OPERACIONAL') return 'receita_nao_operacional'
   return cat.toLowerCase()
@@ -91,6 +93,7 @@ const mapCategoryFromDB = (cat: string | null) => {
   const c = cat.toLowerCase().trim()
   if (c === 'fixa') return 'FIXA'
   if (c === 'variável' || c === 'variavel') return 'VARIAVEL'
+  if (c === 'investimento') return 'INVESTIMENTO'
   if (c === 'receita_operacional') return 'RECEITA_OPERACIONAL'
   if (c === 'receita_nao_operacional') return 'RECEITA_NAO_OPERACIONAL'
   return cat.toUpperCase()

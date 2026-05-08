@@ -419,6 +419,7 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
                       <SelectContent>
                         <SelectItem value="FIXA">Fixa</SelectItem>
                         <SelectItem value="VARIAVEL">Variável</SelectItem>
+                        <SelectItem value="INVESTIMENTO">Equipamentos e Investimentos</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />
@@ -506,6 +507,19 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
                                 Fidelidade e Promoção: Programa de fidelidade
                               </SelectItem>
                               <SelectItem value="outros">Outros</SelectItem>
+                            </>
+                          )}
+                          {categoryId === 'INVESTIMENTO' && (
+                            <>
+                              <SelectItem value="equipamentos">Equipamentos e Máquinas</SelectItem>
+                              <SelectItem value="obras_reformas">Obras e Reformas</SelectItem>
+                              <SelectItem value="mobiliario">Mobiliário e Instalações</SelectItem>
+                              <SelectItem value="tecnologia">
+                                Tecnologia (Computadores, etc)
+                              </SelectItem>
+                              <SelectItem value="outros_investimentos">
+                                Outros Investimentos
+                              </SelectItem>
                             </>
                           )}
                         </SelectContent>
