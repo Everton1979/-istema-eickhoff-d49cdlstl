@@ -480,6 +480,12 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
                               <SelectItem value="juros_multas">
                                 Financeiro: Juros, Multas e Encargos
                               </SelectItem>
+                              <SelectItem value="manutencao_equipamentos">
+                                Manutenção de Equipamentos
+                              </SelectItem>
+                              <SelectItem value="educacao_treinamentos">
+                                Educação e Treinamentos (Cursos/Congressos)
+                              </SelectItem>
                               <SelectItem value="outros">Outros</SelectItem>
                             </>
                           )}

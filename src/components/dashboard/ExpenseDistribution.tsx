@@ -24,6 +24,8 @@ const FIXA_LABELS: Record<string, string> = {
   financeiro: 'Financeiro',
   marketing: 'Marketing',
   juros_multas: 'Juros/Multas',
+  manutencao_equipamentos: 'Manutenção Equip.',
+  educacao_treinamentos: 'Educação/Trein.',
   outros: 'Outros',
 }
 
