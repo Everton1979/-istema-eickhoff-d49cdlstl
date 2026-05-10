@@ -31,11 +31,6 @@ const parseCurrency = (val: string | number) => {
   return Number(clean) || 0
 }
 
-const formatCurrencyString = (val: number | null | undefined) => {
-  if (val === null || val === undefined) return ''
-  return val.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
-}
-
 const CurrencyInput = forwardRef<HTMLInputElement, any>(
   ({ value, onChange, className, disabled, placeholder, required, ...props }, ref) => {
     const [localValue, setLocalValue] = useState(() => {
@@ -79,7 +74,7 @@ const CurrencyInput = forwardRef<HTMLInputElement, any>(
         maximumFractionDigits: 2,
       })
       setLocalValue(formatted)
-      onChange(formatted)
+      onChange(num)
     }
 
     const handleBlur = () => {
@@ -193,14 +188,14 @@ export function MonthlyDataDialog() {
             currentExisting.num_formulas_capsulas != null
               ? String(currentExisting.num_formulas_capsulas)
               : '',
-          vendas_capsulas: formatCurrencyString(currentExisting.vendas_capsulas),
-          custo_mp_emb_capsulas: formatCurrencyString(currentExisting.custo_mp_emb_capsulas),
+          vendas_capsulas: currentExisting.vendas_capsulas ?? '',
+          custo_mp_emb_capsulas: currentExisting.custo_mp_emb_capsulas ?? '',
           num_formulas_dermato:
             currentExisting.num_formulas_dermato != null
               ? String(currentExisting.num_formulas_dermato)
               : '',
-          vendas_dermato: formatCurrencyString(currentExisting.vendas_dermato),
-          custo_mp_emb_dermato: formatCurrencyString(currentExisting.custo_mp_emb_dermato),
+          vendas_dermato: currentExisting.vendas_dermato ?? '',
+          custo_mp_emb_dermato: currentExisting.custo_mp_emb_dermato ?? '',
           colaboradores_capsulas:
             currentExisting.colaboradores_capsulas != null
               ? String(currentExisting.colaboradores_capsulas)
@@ -240,11 +235,13 @@ export function MonthlyDataDialog() {
   const orders_count =
     (Number(formData.num_formulas_capsulas) || 0) + (Number(formData.num_formulas_dermato) || 0)
   const total_system_sales =
-    parseCurrency(formData.vendas_capsulas) + parseCurrency(formData.vendas_dermato)
+    parseCurrency(formData.vendas_capsulas as string | number) +
+    parseCurrency(formData.vendas_dermato as string | number)
   const raw_material_costs =
-    parseCurrency(formData.custo_mp_emb_capsulas) + parseCurrency(formData.custo_mp_emb_dermato)
+    parseCurrency(formData.custo_mp_emb_capsulas as string | number) +
+    parseCurrency(formData.custo_mp_emb_dermato as string | number)
 
-  const handleChange = (field: string, value: string) => {
+  const handleChange = (field: string, value: string | number) => {
     saveDraft((prev) => ({
       ...prev,
       isDirty: true,
@@ -273,11 +270,11 @@ export function MonthlyDataDialog() {
         total_system_sales: total_system_sales,
         raw_material_costs: raw_material_costs,
         num_formulas_capsulas: Number(formData.num_formulas_capsulas) || 0,
-        vendas_capsulas: parseCurrency(formData.vendas_capsulas),
-        custo_mp_emb_capsulas: parseCurrency(formData.custo_mp_emb_capsulas),
+        vendas_capsulas: parseCurrency(formData.vendas_capsulas as string | number),
+        custo_mp_emb_capsulas: parseCurrency(formData.custo_mp_emb_capsulas as string | number),
         num_formulas_dermato: Number(formData.num_formulas_dermato) || 0,
-        vendas_dermato: parseCurrency(formData.vendas_dermato),
-        custo_mp_emb_dermato: parseCurrency(formData.custo_mp_emb_dermato),
+        vendas_dermato: parseCurrency(formData.vendas_dermato as string | number),
+        custo_mp_emb_dermato: parseCurrency(formData.custo_mp_emb_dermato as string | number),
         colaboradores_capsulas: Number(formData.colaboradores_capsulas) || 0,
         colaboradores_dermato: Number(formData.colaboradores_dermato) || 0,
         colaboradores_vendas: Number(formData.colaboradores_vendas) || 0,
@@ -541,7 +538,12 @@ export function MonthlyDataDialog() {
                 <Input
                   type="text"
                   value={
-                    total_system_sales !== undefined ? formatCurrencyString(total_system_sales) : ''
+                    total_system_sales !== undefined
+                      ? total_system_sales.toLocaleString('pt-BR', {
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2,
+                        })
+                      : ''
                   }
                   disabled
                   className="bg-slate-50 dark:bg-slate-900 text-slate-500 dark:text-slate-400 font-medium h-12 sm:h-10 text-base sm:text-sm"
@@ -553,7 +555,12 @@ export function MonthlyDataDialog() {
                 <Input
                   type="text"
                   value={
-                    raw_material_costs !== undefined ? formatCurrencyString(raw_material_costs) : ''
+                    raw_material_costs !== undefined
+                      ? raw_material_costs.toLocaleString('pt-BR', {
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2,
+                        })
+                      : ''
                   }
                   disabled
                   className="bg-slate-50 dark:bg-slate-900 text-slate-500 dark:text-slate-400 font-medium h-12 sm:h-10 text-base sm:text-sm"
