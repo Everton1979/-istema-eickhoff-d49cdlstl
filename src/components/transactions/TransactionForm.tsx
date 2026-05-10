@@ -125,30 +125,23 @@ const CurrencyFieldInput = forwardRef<HTMLInputElement, any>(
     }, [field.value])
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      const val = e.target.value.replace(/[^\d,.-]/g, '')
-      setLocalValue(val)
-    }
-
-    const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
-      isFocused.current = false
-      let val = e.target.value.replace(/[^\d,.-]/g, '')
-      val = val.replace(/\./g, ',')
-      const parts = val.split(',')
-      if (parts.length > 2) val = parts[0] + ',' + parts.slice(1).join('')
-
-      const clean = val.replace(',', '.')
-      const num = Number(clean)
-      if (!isNaN(num) && num > 0) {
-        const formatted = num.toLocaleString('pt-BR', {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2,
-        })
-        setLocalValue(formatted)
-        field.onChange(num)
-      } else {
+      const val = e.target.value.replace(/\D/g, '')
+      if (!val) {
         setLocalValue('')
         field.onChange(undefined)
+        return
       }
+      const num = parseInt(val, 10) / 100
+      const formatted = num.toLocaleString('pt-BR', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })
+      setLocalValue(formatted)
+      field.onChange(num)
+    }
+
+    const handleBlur = () => {
+      isFocused.current = false
       if (field.onBlur) field.onBlur()
     }
 
@@ -161,7 +154,7 @@ const CurrencyFieldInput = forwardRef<HTMLInputElement, any>(
         {...props}
         ref={ref}
         type="text"
-        inputMode="decimal"
+        inputMode="numeric"
         value={localValue}
         onChange={handleChange}
         onBlur={handleBlur}

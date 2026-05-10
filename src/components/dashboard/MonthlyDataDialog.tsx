@@ -59,40 +59,23 @@ function CurrencyInput({
   }, [value])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const val = e.target.value.replace(/[^\d,.-]/g, '')
-    setLocalValue(val)
-    onChange(val)
-  }
-
-  const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
-    isFocused.current = false
-    let val = e.target.value
+    const val = e.target.value.replace(/\D/g, '')
     if (!val) {
       setLocalValue('')
       onChange('')
       return
     }
+    const num = parseInt(val, 10) / 100
+    const formatted = num.toLocaleString('pt-BR', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    })
+    setLocalValue(formatted)
+    onChange(formatted)
+  }
 
-    val = val.replace(/[^\d,.-]/g, '')
-    val = val.replace(/\./g, ',')
-    const parts = val.split(',')
-    if (parts.length > 2) {
-      val = parts[0] + ',' + parts.slice(1).join('')
-    }
-
-    const clean = val.replace(',', '.')
-    const num = Number(clean)
-    if (!isNaN(num) && val !== '') {
-      const formatted = num.toLocaleString('pt-BR', {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-      })
-      setLocalValue(formatted)
-      onChange(formatted)
-    } else {
-      setLocalValue('')
-      onChange('')
-    }
+  const handleBlur = () => {
+    isFocused.current = false
   }
 
   const handleFocus = () => {
@@ -102,7 +85,7 @@ function CurrencyInput({
   return (
     <Input
       type="text"
-      inputMode="decimal"
+      inputMode="numeric"
       value={localValue}
       onChange={handleChange}
       onBlur={handleBlur}
@@ -112,7 +95,7 @@ function CurrencyInput({
       placeholder={placeholder || '0,00'}
       className={cn(
         'h-12 sm:h-10 text-base sm:text-sm',
-        required && !localValue && !isFocused.current
+        required && localValue === '' && !isFocused.current
           ? 'border-red-400 dark:border-red-500/50'
           : '',
       )}
@@ -189,15 +172,30 @@ export function MonthlyDataDialog() {
 
     const expectedData = currentExisting
       ? {
-          num_formulas_capsulas: String(currentExisting.num_formulas_capsulas || ''),
+          num_formulas_capsulas:
+            currentExisting.num_formulas_capsulas != null
+              ? String(currentExisting.num_formulas_capsulas)
+              : '',
           vendas_capsulas: formatCurrencyString(currentExisting.vendas_capsulas),
           custo_mp_emb_capsulas: formatCurrencyString(currentExisting.custo_mp_emb_capsulas),
-          num_formulas_dermato: String(currentExisting.num_formulas_dermato || ''),
+          num_formulas_dermato:
+            currentExisting.num_formulas_dermato != null
+              ? String(currentExisting.num_formulas_dermato)
+              : '',
           vendas_dermato: formatCurrencyString(currentExisting.vendas_dermato),
           custo_mp_emb_dermato: formatCurrencyString(currentExisting.custo_mp_emb_dermato),
-          colaboradores_capsulas: String(currentExisting.colaboradores_capsulas || ''),
-          colaboradores_dermato: String(currentExisting.colaboradores_dermato || ''),
-          colaboradores_vendas: String(currentExisting.colaboradores_vendas || ''),
+          colaboradores_capsulas:
+            currentExisting.colaboradores_capsulas != null
+              ? String(currentExisting.colaboradores_capsulas)
+              : '',
+          colaboradores_dermato:
+            currentExisting.colaboradores_dermato != null
+              ? String(currentExisting.colaboradores_dermato)
+              : '',
+          colaboradores_vendas:
+            currentExisting.colaboradores_vendas != null
+              ? String(currentExisting.colaboradores_vendas)
+              : '',
         }
       : {
           num_formulas_capsulas: '',
@@ -338,7 +336,7 @@ export function MonthlyDataDialog() {
               <Input
                 type="text"
                 inputMode="numeric"
-                value={year || ''}
+                value={year !== 0 ? year : ''}
                 onChange={(e) => {
                   const val = e.target.value.replace(/\D/g, '')
                   handleYearChange(val ? Number(val) : 0)
@@ -374,7 +372,9 @@ export function MonthlyDataDialog() {
                   placeholder="0"
                   className={cn(
                     'h-12 sm:h-10 text-base sm:text-sm',
-                    !formData.num_formulas_capsulas ? 'border-red-400 dark:border-red-500/50' : '',
+                    formData.num_formulas_capsulas === ''
+                      ? 'border-red-400 dark:border-red-500/50'
+                      : '',
                   )}
                 />
               </div>
@@ -416,7 +416,9 @@ export function MonthlyDataDialog() {
                   placeholder="0"
                   className={cn(
                     'h-12 sm:h-10 text-base sm:text-sm',
-                    !formData.colaboradores_capsulas ? 'border-red-400 dark:border-red-500/50' : '',
+                    formData.colaboradores_capsulas === ''
+                      ? 'border-red-400 dark:border-red-500/50'
+                      : '',
                   )}
                 />
               </div>
@@ -448,7 +450,9 @@ export function MonthlyDataDialog() {
                   placeholder="0"
                   className={cn(
                     'h-12 sm:h-10 text-base sm:text-sm',
-                    !formData.num_formulas_dermato ? 'border-red-400 dark:border-red-500/50' : '',
+                    formData.num_formulas_dermato === ''
+                      ? 'border-red-400 dark:border-red-500/50'
+                      : '',
                   )}
                 />
               </div>
@@ -490,7 +494,9 @@ export function MonthlyDataDialog() {
                   placeholder="0"
                   className={cn(
                     'h-12 sm:h-10 text-base sm:text-sm',
-                    !formData.colaboradores_dermato ? 'border-red-400 dark:border-red-500/50' : '',
+                    formData.colaboradores_dermato === ''
+                      ? 'border-red-400 dark:border-red-500/50'
+                      : '',
                   )}
                 />
               </div>
@@ -549,7 +555,9 @@ export function MonthlyDataDialog() {
                   placeholder="0"
                   className={cn(
                     'h-12 sm:h-10 text-base sm:text-sm',
-                    !formData.colaboradores_vendas ? 'border-red-400 dark:border-red-500/50' : '',
+                    formData.colaboradores_vendas === ''
+                      ? 'border-red-400 dark:border-red-500/50'
+                      : '',
                   )}
                 />
               </div>
