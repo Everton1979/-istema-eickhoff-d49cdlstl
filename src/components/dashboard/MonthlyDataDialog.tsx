@@ -59,8 +59,9 @@ function CurrencyInput({
   }, [value])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setLocalValue(e.target.value)
-    onChange(e.target.value)
+    const val = e.target.value.replace(/[^\d,.-]/g, '')
+    setLocalValue(val)
+    onChange(val)
   }
 
   const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
@@ -72,7 +73,8 @@ function CurrencyInput({
       return
     }
 
-    val = val.replace(/[^\d,]/g, '')
+    val = val.replace(/[^\d,.-]/g, '')
+    val = val.replace(/\./g, ',')
     const parts = val.split(',')
     if (parts.length > 2) {
       val = parts[0] + ',' + parts.slice(1).join('')
@@ -334,11 +336,13 @@ export function MonthlyDataDialog() {
                 Ano Referência <span className="text-red-500">*</span>
               </Label>
               <Input
-                type="number"
-                min={2000}
+                type="text"
                 inputMode="numeric"
-                value={year}
-                onChange={(e) => handleYearChange(Number(e.target.value))}
+                value={year || ''}
+                onChange={(e) => {
+                  const val = e.target.value.replace(/\D/g, '')
+                  handleYearChange(val ? Number(val) : 0)
+                }}
                 required
                 className="bg-white dark:bg-slate-950 h-12 sm:h-10 text-base sm:text-sm"
               />
@@ -359,11 +363,14 @@ export function MonthlyDataDialog() {
                   Nº Fórmulas <span className="text-red-500">*</span>
                 </Label>
                 <Input
-                  type="number"
+                  type="text"
                   inputMode="numeric"
                   required
                   value={formData.num_formulas_capsulas}
-                  onChange={(e) => handleChange('num_formulas_capsulas', e.target.value)}
+                  onChange={(e) => {
+                    const val = e.target.value.replace(/\D/g, '')
+                    handleChange('num_formulas_capsulas', val)
+                  }}
                   placeholder="0"
                   className={cn(
                     'h-12 sm:h-10 text-base sm:text-sm',
@@ -398,11 +405,14 @@ export function MonthlyDataDialog() {
                   Colaboradores <span className="text-red-500">*</span>
                 </Label>
                 <Input
-                  type="number"
+                  type="text"
                   inputMode="numeric"
                   required
                   value={formData.colaboradores_capsulas}
-                  onChange={(e) => handleChange('colaboradores_capsulas', e.target.value)}
+                  onChange={(e) => {
+                    const val = e.target.value.replace(/\D/g, '')
+                    handleChange('colaboradores_capsulas', val)
+                  }}
                   placeholder="0"
                   className={cn(
                     'h-12 sm:h-10 text-base sm:text-sm',
@@ -427,11 +437,14 @@ export function MonthlyDataDialog() {
                   Nº Fórmulas <span className="text-red-500">*</span>
                 </Label>
                 <Input
-                  type="number"
+                  type="text"
                   inputMode="numeric"
                   required
                   value={formData.num_formulas_dermato}
-                  onChange={(e) => handleChange('num_formulas_dermato', e.target.value)}
+                  onChange={(e) => {
+                    const val = e.target.value.replace(/\D/g, '')
+                    handleChange('num_formulas_dermato', val)
+                  }}
                   placeholder="0"
                   className={cn(
                     'h-12 sm:h-10 text-base sm:text-sm',
@@ -466,11 +479,14 @@ export function MonthlyDataDialog() {
                   Colaboradores <span className="text-red-500">*</span>
                 </Label>
                 <Input
-                  type="number"
+                  type="text"
                   inputMode="numeric"
                   required
                   value={formData.colaboradores_dermato}
-                  onChange={(e) => handleChange('colaboradores_dermato', e.target.value)}
+                  onChange={(e) => {
+                    const val = e.target.value.replace(/\D/g, '')
+                    handleChange('colaboradores_dermato', val)
+                  }}
                   placeholder="0"
                   className={cn(
                     'h-12 sm:h-10 text-base sm:text-sm',
@@ -522,11 +538,14 @@ export function MonthlyDataDialog() {
                   Colaboradores Vendas <span className="text-red-500">*</span>
                 </Label>
                 <Input
-                  type="number"
+                  type="text"
                   inputMode="numeric"
                   required
                   value={formData.colaboradores_vendas}
-                  onChange={(e) => handleChange('colaboradores_vendas', e.target.value)}
+                  onChange={(e) => {
+                    const val = e.target.value.replace(/\D/g, '')
+                    handleChange('colaboradores_vendas', val)
+                  }}
                   placeholder="0"
                   className={cn(
                     'h-12 sm:h-10 text-base sm:text-sm',

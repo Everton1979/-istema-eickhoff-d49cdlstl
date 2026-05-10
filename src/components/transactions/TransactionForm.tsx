@@ -125,16 +125,19 @@ const CurrencyFieldInput = forwardRef<HTMLInputElement, any>(
     }, [field.value])
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      setLocalValue(e.target.value)
+      const val = e.target.value.replace(/[^\d,.-]/g, '')
+      setLocalValue(val)
     }
 
     const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
       isFocused.current = false
-      let val = e.target.value.replace(/[^\d,]/g, '')
+      let val = e.target.value.replace(/[^\d,.-]/g, '')
+      val = val.replace(/\./g, ',')
       const parts = val.split(',')
       if (parts.length > 2) val = parts[0] + ',' + parts.slice(1).join('')
 
-      const num = Number(val.replace(',', '.'))
+      const clean = val.replace(',', '.')
+      const num = Number(clean)
       if (!isNaN(num) && num > 0) {
         const formatted = num.toLocaleString('pt-BR', {
           minimumFractionDigits: 2,
