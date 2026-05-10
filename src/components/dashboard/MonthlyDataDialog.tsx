@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useRef } from 'react'
+import { useState, useEffect, useMemo, useRef, forwardRef } from 'react'
 import {
   Dialog,
   DialogContent,
@@ -36,72 +36,89 @@ const formatCurrencyString = (val: number | null | undefined) => {
   return val.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 }
 
-function CurrencyInput({
-  value,
-  onChange,
-  disabled,
-  placeholder,
-  required,
-}: {
-  value: string
-  onChange: (val: string) => void
-  disabled?: boolean
-  placeholder?: string
-  required?: boolean
-}) {
-  const [localValue, setLocalValue] = useState(value)
-  const isFocused = useRef(false)
-
-  useEffect(() => {
-    if (!isFocused.current) {
-      setLocalValue(value)
-    }
-  }, [value])
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const val = e.target.value.replace(/\D/g, '')
-    if (!val) {
-      setLocalValue('')
-      onChange('')
-      return
-    }
-    const num = parseInt(val, 10) / 100
-    const formatted = num.toLocaleString('pt-BR', {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
+const CurrencyInput = forwardRef<HTMLInputElement, any>(
+  ({ value, onChange, className, disabled, placeholder, required, ...props }, ref) => {
+    const [localValue, setLocalValue] = useState(() => {
+      if (value !== undefined && value !== '') {
+        const num = typeof value === 'string' ? parseCurrency(value) : value
+        return num.toLocaleString('pt-BR', {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        })
+      }
+      return ''
     })
-    setLocalValue(formatted)
-    onChange(formatted)
-  }
+    const isFocused = useRef(false)
 
-  const handleBlur = () => {
-    isFocused.current = false
-  }
+    useEffect(() => {
+      if (!isFocused.current) {
+        if (value !== undefined && value !== '') {
+          const num = typeof value === 'string' ? parseCurrency(value) : value
+          setLocalValue(
+            num.toLocaleString('pt-BR', {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            }),
+          )
+        } else {
+          setLocalValue('')
+        }
+      }
+    }, [value])
 
-  const handleFocus = () => {
-    isFocused.current = true
-  }
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const val = e.target.value.replace(/\D/g, '')
+      if (!val) {
+        setLocalValue('')
+        onChange('')
+        return
+      }
+      const num = parseInt(val, 10) / 100
+      const formatted = num.toLocaleString('pt-BR', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })
+      setLocalValue(formatted)
+      onChange(formatted)
+    }
 
-  return (
-    <Input
-      type="text"
-      inputMode="numeric"
-      value={localValue}
-      onChange={handleChange}
-      onBlur={handleBlur}
-      onFocus={handleFocus}
-      disabled={disabled}
-      required={required}
-      placeholder={placeholder || '0,00'}
-      className={cn(
-        'h-12 sm:h-10 text-base sm:text-sm',
-        required && localValue === '' && !isFocused.current
-          ? 'border-red-400 dark:border-red-500/50'
-          : '',
-      )}
-    />
-  )
-}
+    const handleBlur = () => {
+      isFocused.current = false
+    }
+
+    const handleFocus = () => {
+      isFocused.current = true
+    }
+
+    return (
+      <div className="relative">
+        <span className="absolute left-3 top-3.5 sm:top-2.5 text-sm text-slate-500 dark:text-slate-400 font-medium">
+          R$
+        </span>
+        <Input
+          {...props}
+          ref={ref}
+          type="text"
+          inputMode="numeric"
+          value={localValue}
+          onChange={handleChange}
+          onBlur={handleBlur}
+          onFocus={handleFocus}
+          disabled={disabled}
+          required={required}
+          placeholder={placeholder || '0,00'}
+          className={cn(
+            'pl-9 h-12 sm:h-10 text-base sm:text-sm',
+            required && localValue === '' && !isFocused.current
+              ? 'border-red-400 dark:border-red-500/50'
+              : '',
+            className,
+          )}
+        />
+      </div>
+    )
+  },
+)
 
 export function MonthlyDataDialog() {
   const { user } = useAuth()
@@ -367,7 +384,7 @@ export function MonthlyDataDialog() {
                   value={formData.num_formulas_capsulas}
                   onChange={(e) => {
                     const val = e.target.value.replace(/\D/g, '')
-                    handleChange('num_formulas_capsulas', val)
+                    handleChange('num_formulas_capsulas', val ? parseInt(val, 10).toString() : '')
                   }}
                   placeholder="0"
                   className={cn(
@@ -411,7 +428,7 @@ export function MonthlyDataDialog() {
                   value={formData.colaboradores_capsulas}
                   onChange={(e) => {
                     const val = e.target.value.replace(/\D/g, '')
-                    handleChange('colaboradores_capsulas', val)
+                    handleChange('colaboradores_capsulas', val ? parseInt(val, 10).toString() : '')
                   }}
                   placeholder="0"
                   className={cn(
@@ -445,7 +462,7 @@ export function MonthlyDataDialog() {
                   value={formData.num_formulas_dermato}
                   onChange={(e) => {
                     const val = e.target.value.replace(/\D/g, '')
-                    handleChange('num_formulas_dermato', val)
+                    handleChange('num_formulas_dermato', val ? parseInt(val, 10).toString() : '')
                   }}
                   placeholder="0"
                   className={cn(
@@ -489,7 +506,7 @@ export function MonthlyDataDialog() {
                   value={formData.colaboradores_dermato}
                   onChange={(e) => {
                     const val = e.target.value.replace(/\D/g, '')
-                    handleChange('colaboradores_dermato', val)
+                    handleChange('colaboradores_dermato', val ? parseInt(val, 10).toString() : '')
                   }}
                   placeholder="0"
                   className={cn(
@@ -512,8 +529,8 @@ export function MonthlyDataDialog() {
               <div className="space-y-2">
                 <Label>Pedidos Totais (Cápsulas + Dermato)</Label>
                 <Input
-                  type="number"
-                  value={orders_count || ''}
+                  type="text"
+                  value={orders_count !== undefined ? orders_count.toString() : ''}
                   disabled
                   className="bg-slate-50 dark:bg-slate-900 text-slate-500 dark:text-slate-400 font-medium h-12 sm:h-10 text-base sm:text-sm"
                   placeholder="0"
@@ -523,7 +540,9 @@ export function MonthlyDataDialog() {
                 <Label>Vendas Totais (R$)</Label>
                 <Input
                   type="text"
-                  value={total_system_sales ? formatCurrencyString(total_system_sales) : ''}
+                  value={
+                    total_system_sales !== undefined ? formatCurrencyString(total_system_sales) : ''
+                  }
                   disabled
                   className="bg-slate-50 dark:bg-slate-900 text-slate-500 dark:text-slate-400 font-medium h-12 sm:h-10 text-base sm:text-sm"
                   placeholder="0,00"
@@ -533,7 +552,9 @@ export function MonthlyDataDialog() {
                 <Label>Custo MP/Emb (R$)</Label>
                 <Input
                   type="text"
-                  value={raw_material_costs ? formatCurrencyString(raw_material_costs) : ''}
+                  value={
+                    raw_material_costs !== undefined ? formatCurrencyString(raw_material_costs) : ''
+                  }
                   disabled
                   className="bg-slate-50 dark:bg-slate-900 text-slate-500 dark:text-slate-400 font-medium h-12 sm:h-10 text-base sm:text-sm"
                   placeholder="0,00"
@@ -550,7 +571,7 @@ export function MonthlyDataDialog() {
                   value={formData.colaboradores_vendas}
                   onChange={(e) => {
                     const val = e.target.value.replace(/\D/g, '')
-                    handleChange('colaboradores_vendas', val)
+                    handleChange('colaboradores_vendas', val ? parseInt(val, 10).toString() : '')
                   }}
                   placeholder="0"
                   className={cn(
@@ -564,12 +585,12 @@ export function MonthlyDataDialog() {
               <div className="space-y-2">
                 <Label>Total Colaboradores</Label>
                 <Input
-                  type="number"
-                  value={
+                  type="text"
+                  value={(
                     (Number(formData.colaboradores_capsulas) || 0) +
-                      (Number(formData.colaboradores_dermato) || 0) +
-                      (Number(formData.colaboradores_vendas) || 0) || ''
-                  }
+                    (Number(formData.colaboradores_dermato) || 0) +
+                    (Number(formData.colaboradores_vendas) || 0)
+                  ).toString()}
                   disabled
                   className="bg-slate-50 dark:bg-slate-900 text-slate-500 dark:text-slate-400 font-medium h-12 sm:h-10 text-base sm:text-sm"
                   placeholder="0"
