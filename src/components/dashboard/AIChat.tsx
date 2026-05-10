@@ -42,14 +42,13 @@ export function AIChat() {
     try {
       const reply = await sendMessageToAI([...messages, userMsg])
       setMessages((prev) => [...prev, reply])
-    } catch (error) {
-      console.error(error)
+    } catch (error: any) {
+      console.error('Erro no AIChat:', error)
       setMessages((prev) => [
         ...prev,
         {
           role: 'assistant',
-          content:
-            'Desculpe, ocorreu um erro ao processar sua mensagem. Verifique sua conexão ou tente novamente mais tarde.',
+          content: `Erro: ${error.message || 'Ocorreu um erro ao processar sua mensagem. Verifique sua conexão ou tente novamente mais tarde.'}`,
         },
       ])
     } finally {
