@@ -1,7 +1,6 @@
 {
   "_versions": {
-    "manage-users": 8,
-    "notify-new-user": 3,
-    "chat-assistant": 2
+    "manage-users": 9,
+    "notify-new-user": 4
   }
 }

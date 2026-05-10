@@ -14,7 +14,6 @@ import { StatusDetailPanel } from '@/components/dashboard/StatusDetailPanel'
 import { PendingUsersAlert } from '@/components/dashboard/PendingUsersAlert'
 import { AdminActivityReport } from '@/components/dashboard/AdminActivityReport'
 import { PlanExpirationBanner } from '@/components/dashboard/PlanExpirationBanner'
-import { AIChat } from '@/components/dashboard/AIChat'
 import { useState } from 'react'
 
 export default function Index() {
@@ -133,7 +132,6 @@ export default function Index() {
           <StatusDetailPanel />
         </div>
       </div>
-      <AIChat />
       <PrintableReport exportFilters={exportFilters} />
     </>
   )
