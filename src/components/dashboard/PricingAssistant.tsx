@@ -142,7 +142,7 @@ export function PricingAssistant() {
   }, [monthlyMetrics, transactions, tipoFormula])
 
   const numericCost = parseFloat(cost) || 0
-  const hasCost = numericCost > 0
+  const hasCost = cost !== ''
 
   const mkpAlvo = stats.mkpMultiplicador > 0 ? stats.mkpMultiplicador : 6.0
   let mkpDinamico = mkpAlvo
@@ -218,7 +218,11 @@ export function PricingAssistant() {
                 value={cost !== '' ? formatCurrencyInput(cost) : ''}
                 onChange={(e) => {
                   const val = e.target.value.replace(/\D/g, '')
-                  setCost(val ? String(parseInt(val, 10) / 100) : '')
+                  if (!val) {
+                    setCost('')
+                  } else {
+                    setCost(String(parseInt(val, 10) / 100))
+                  }
                 }}
                 placeholder="0,00"
               />

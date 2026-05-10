@@ -54,7 +54,7 @@ export default function Transactions() {
   const [search, setSearch] = useState('')
   const [dayFilter, setDayFilter] = useState<string>('ALL')
   const [quickFilter, setQuickFilter] = useState<
-    'ALL' | 'PREVISTO' | 'VENCIDO' | 'CORTESIA' | 'PARTNER_WITHDRAWAL'
+    'ALL' | 'PREVISTO' | 'VENCIDO' | 'CORTESIA' | 'PARTNER_WITHDRAWAL' | 'RECEITAS' | 'DESPESAS'
   >('ALL')
   const [isSheetOpen, setIsSheetOpen] = useState(false)
   const [editingTx, setEditingTx] = useState<Transaction | null>(null)
@@ -96,6 +96,12 @@ export default function Transactions() {
       }
       if (quickFilter === 'PARTNER_WITHDRAWAL') {
         return t.type === 'PARTNER_WITHDRAWAL'
+      }
+      if (quickFilter === 'RECEITAS') {
+        return t.type === 'INCOME'
+      }
+      if (quickFilter === 'DESPESAS') {
+        return t.type === 'EXPENSE'
       }
 
       return true
@@ -388,6 +394,29 @@ export default function Transactions() {
             >
               Retiradas Sócios
             </Button>
+            <Button
+              variant={quickFilter === 'RECEITAS' ? 'default' : 'ghost'}
+              size="sm"
+              className={cn(
+                'text-xs h-8 px-4 whitespace-nowrap flex-1 sm:flex-none',
+                quickFilter === 'RECEITAS' &&
+                  'bg-emerald-600 text-white hover:bg-emerald-700 shadow-sm',
+              )}
+              onClick={() => setQuickFilter('RECEITAS')}
+            >
+              Receitas
+            </Button>
+            <Button
+              variant={quickFilter === 'DESPESAS' ? 'default' : 'ghost'}
+              size="sm"
+              className={cn(
+                'text-xs h-8 px-4 whitespace-nowrap flex-1 sm:flex-none',
+                quickFilter === 'DESPESAS' && 'bg-red-600 text-white hover:bg-red-700 shadow-sm',
+              )}
+              onClick={() => setQuickFilter('DESPESAS')}
+            >
+              Despesas
+            </Button>
           </div>
         </div>
 
@@ -536,8 +565,28 @@ export default function Transactions() {
               </div>
             )}
 
+            {quickFilter === 'RECEITAS' && (
+              <div className="font-semibold text-emerald-600 bg-emerald-50 px-3 py-1.5 rounded-md">
+                Total Receitas:{' '}
+                {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(
+                  filteredData.reduce((acc, tx) => acc + tx.amount, 0),
+                )}
+              </div>
+            )}
+
+            {quickFilter === 'DESPESAS' && (
+              <div className="font-semibold text-red-600 bg-red-50 px-3 py-1.5 rounded-md">
+                Total Despesas:{' '}
+                {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(
+                  filteredData.reduce((acc, tx) => acc + tx.amount, 0),
+                )}
+              </div>
+            )}
+
             {quickFilter !== 'CORTESIA' &&
               quickFilter !== 'PARTNER_WITHDRAWAL' &&
+              quickFilter !== 'RECEITAS' &&
+              quickFilter !== 'DESPESAS' &&
               filteredData.length > 0 && (
                 <div
                   className={cn(

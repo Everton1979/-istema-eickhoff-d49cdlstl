@@ -7,7 +7,8 @@ import { HelpCircle } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
 export function PharmacyMetrics() {
-  const { filteredTransactions, filteredMonthlyMetrics, filters } = useFinanceStore()
+  const { filteredTransactions, filteredMonthlyMetrics, filters, monthlyMetrics, transactions } =
+    useFinanceStore()
 
   const metrics = useMemo(() => {
     const totalSales = filteredMonthlyMetrics.reduce((sum, m) => sum + m.total_system_sales, 0)
@@ -101,48 +102,58 @@ export function PharmacyMetrics() {
     const valuationEstimado = ebitdaMedioMensal * 12 * 4 // Múltiplo de 4x
 
     // Regra dos 70%
-    const sortedMetrics = [...filteredMonthlyMetrics].sort((a, b) => {
+    const sortedFiltered = [...filteredMonthlyMetrics].sort((a, b) => {
       if (a.year !== b.year) return a.year - b.year
       return a.month - b.month
     })
 
+    const targetMetric =
+      sortedFiltered.length > 0 ? sortedFiltered[sortedFiltered.length - 1] : null
+
     let regra70Status = 'neutral'
     let regra70Value = 'N/A'
 
-    if (sortedMetrics.length >= 2) {
-      const current = sortedMetrics[sortedMetrics.length - 1]
-      const previous = sortedMetrics[sortedMetrics.length - 2]
+    if (targetMetric) {
+      const previousDate = new Date(targetMetric.year, targetMetric.month - 2, 1)
+      const prevYear = previousDate.getFullYear()
+      const prevMonth = previousDate.getMonth() + 1
 
-      const salesGrowth = current.total_system_sales - previous.total_system_sales
+      const previousMetric = monthlyMetrics.find(
+        (m) => m.year === prevYear && m.month === prevMonth,
+      )
 
-      const getTxForMonth = (year: number, month: number) => {
-        return filteredTransactions.filter((t) => {
-          const d = new Date(t.date.includes('T') ? t.date : `${t.date}T12:00:00Z`)
-          return d.getFullYear() === year && d.getMonth() + 1 === month
-        })
-      }
+      if (previousMetric) {
+        const salesGrowth = targetMetric.total_system_sales - previousMetric.total_system_sales
 
-      const prevTx = getTxForMonth(previous.year, previous.month)
-      const currTx = getTxForMonth(current.year, current.month)
+        const getTxForMonth = (year: number, month: number) => {
+          return transactions.filter((t) => {
+            const d = new Date(t.date.includes('T') ? t.date : `${t.date}T12:00:00Z`)
+            return d.getFullYear() === year && d.getMonth() + 1 === month
+          })
+        }
 
-      const sumCfa = (txs: any[]) =>
-        txs
-          .filter((t) => t.type === 'EXPENSE' && t.categoryId === 'FIXA')
-          .reduce((sum, t) => sum + t.amount, 0)
+        const prevTx = getTxForMonth(previousMetric.year, previousMetric.month)
+        const currTx = getTxForMonth(targetMetric.year, targetMetric.month)
 
-      const cfaCurr = sumCfa(currTx)
-      const cfaPrev = sumCfa(prevTx)
+        const sumCfa = (txs: any[]) =>
+          txs
+            .filter((t) => t.type === 'EXPENSE' && t.categoryId === 'FIXA')
+            .reduce((sum, t) => sum + t.amount, 0)
 
-      const cfaGrowth = cfaCurr - cfaPrev
+        const cfaCurr = sumCfa(currTx)
+        const cfaPrev = sumCfa(prevTx)
 
-      if (salesGrowth > 0) {
-        const pct = (cfaGrowth / salesGrowth) * 100
-        regra70Value = `${pct.toFixed(1)}%`
-        if (pct <= 70) regra70Status = 'good'
-        else regra70Status = 'bad'
-      } else {
-        regra70Value = cfaGrowth <= 0 ? 'Bom (Queda)' : 'Atenção (CF Subiu)'
-        regra70Status = cfaGrowth <= 0 ? 'good' : 'bad'
+        const cfaGrowth = cfaCurr - cfaPrev
+
+        if (salesGrowth > 0) {
+          const pct = (cfaGrowth / salesGrowth) * 100
+          regra70Value = `${pct.toFixed(1)}%`
+          if (pct <= 70) regra70Status = 'good'
+          else regra70Status = 'bad'
+        } else {
+          regra70Value = cfaGrowth <= 0 ? 'Bom (Queda)' : 'Atenção (CF Subiu)'
+          regra70Status = cfaGrowth <= 0 ? 'good' : 'bad'
+        }
       }
     }
 
@@ -161,7 +172,7 @@ export function PharmacyMetrics() {
       regra70Value,
       regra70Status,
     }
-  }, [filteredTransactions, filteredMonthlyMetrics, filters])
+  }, [filteredTransactions, filteredMonthlyMetrics, filters, monthlyMetrics, transactions])
 
   const formatCurrency = (val: number) =>
     new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val)
