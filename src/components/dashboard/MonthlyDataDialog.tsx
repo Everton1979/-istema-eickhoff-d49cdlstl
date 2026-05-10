@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo, useRef } from 'react'
 import {
   Dialog,
   DialogContent,
@@ -47,9 +47,12 @@ function CurrencyInput({
   placeholder?: string
 }) {
   const [localValue, setLocalValue] = useState(value)
+  const isFocused = useRef(false)
 
   useEffect(() => {
-    setLocalValue(value)
+    if (!isFocused.current) {
+      setLocalValue(value)
+    }
   }, [value])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -59,7 +62,11 @@ function CurrencyInput({
   }
 
   const handleBlur = () => {
-    if (!localValue) return
+    isFocused.current = false
+    if (!localValue) {
+      onChange('')
+      return
+    }
     const clean = localValue.replace(/\./g, '').replace(',', '.')
     const num = Number(clean)
     if (!isNaN(num)) {
@@ -69,17 +76,26 @@ function CurrencyInput({
       })
       setLocalValue(formatted)
       onChange(formatted)
+    } else {
+      onChange(localValue)
     }
+  }
+
+  const handleFocus = () => {
+    isFocused.current = true
   }
 
   return (
     <Input
       type="text"
+      inputMode="decimal"
       value={localValue}
       onChange={handleChange}
       onBlur={handleBlur}
+      onFocus={handleFocus}
       disabled={disabled}
       placeholder={placeholder || '0,00'}
+      className="h-12 sm:h-10 text-base sm:text-sm"
     />
   )
 }
@@ -254,7 +270,7 @@ export function MonthlyDataDialog() {
           className="h-11 py-1 px-3 gap-1 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border-indigo-200 shadow-sm flex flex-col items-center justify-center"
         >
           <span className="flex items-center gap-1.5 font-bold text-sm leading-none">
-            <Database className="w-4 h-4 text-indigo-600" />
+            <Database className="w-4 h-4 text-indigo-600 shrink-0" />
             Dados Manipulação
           </span>
           <span className="text-[10px] font-medium opacity-80 leading-none">
@@ -262,7 +278,7 @@ export function MonthlyDataDialog() {
           </span>
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto p-4 sm:p-6 w-[95vw] sm:w-full rounded-xl">
         <DialogHeader>
           <DialogTitle className="text-xl font-bold flex items-center gap-2">
             Entrada de Dados Mensais (Manipulação)
@@ -270,11 +286,11 @@ export function MonthlyDataDialog() {
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-6 mt-2">
-          <div className="grid grid-cols-2 gap-4 bg-slate-50 p-4 rounded-lg border border-slate-100">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-slate-50 p-4 rounded-lg border border-slate-100">
             <div className="space-y-2">
               <Label className="font-semibold text-slate-700">Mês Referência</Label>
               <Select value={String(month)} onValueChange={(val) => handleMonthChange(Number(val))}>
-                <SelectTrigger className="bg-white">
+                <SelectTrigger className="bg-white h-12 sm:h-10 text-base sm:text-sm">
                   <SelectValue placeholder="Selecione o mês" />
                 </SelectTrigger>
                 <SelectContent>
@@ -298,31 +314,33 @@ export function MonthlyDataDialog() {
               <Input
                 type="number"
                 min={2000}
+                inputMode="numeric"
                 value={year}
                 onChange={(e) => handleYearChange(Number(e.target.value))}
                 required
-                className="bg-white"
-                autoFocus
+                className="bg-white h-12 sm:h-10 text-base sm:text-sm"
               />
             </div>
           </div>
 
           <div className="space-y-4">
-            <h3 className="font-bold text-slate-800 border-b border-slate-200 pb-2 flex items-center gap-2">
-              <div className="w-1.5 h-4 bg-emerald-500 rounded-sm" />
+            <h3 className="font-bold text-slate-800 border-b border-slate-200 pb-2 flex items-center gap-2 flex-wrap">
+              <div className="w-1.5 h-4 bg-emerald-500 rounded-sm shrink-0" />
               Setor Cápsulas
               <span className="text-sm font-normal text-slate-500 ml-1">
                 (Dados extraídos do seu sistema)
               </span>
             </h3>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
               <div className="space-y-2">
                 <Label>Nº Fórmulas</Label>
                 <Input
                   type="number"
+                  inputMode="numeric"
                   value={formData.num_formulas_capsulas}
                   onChange={(e) => handleChange('num_formulas_capsulas', e.target.value)}
                   placeholder="0"
+                  className="h-12 sm:h-10 text-base sm:text-sm"
                 />
               </div>
               <div className="space-y-2">
@@ -345,30 +363,34 @@ export function MonthlyDataDialog() {
                 <Label>Colaboradores</Label>
                 <Input
                   type="number"
+                  inputMode="numeric"
                   value={formData.colaboradores_capsulas}
                   onChange={(e) => handleChange('colaboradores_capsulas', e.target.value)}
                   placeholder="0"
+                  className="h-12 sm:h-10 text-base sm:text-sm"
                 />
               </div>
             </div>
           </div>
 
           <div className="space-y-4">
-            <h3 className="font-bold text-slate-800 border-b border-slate-200 pb-2 flex items-center gap-2">
-              <div className="w-1.5 h-4 bg-purple-500 rounded-sm" />
+            <h3 className="font-bold text-slate-800 border-b border-slate-200 pb-2 flex items-center gap-2 flex-wrap">
+              <div className="w-1.5 h-4 bg-purple-500 rounded-sm shrink-0" />
               Setor Dermato
               <span className="text-sm font-normal text-slate-500 ml-1">
                 (Dados extraídos do seu sistema)
               </span>
             </h3>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
               <div className="space-y-2">
                 <Label>Nº Fórmulas</Label>
                 <Input
                   type="number"
+                  inputMode="numeric"
                   value={formData.num_formulas_dermato}
                   onChange={(e) => handleChange('num_formulas_dermato', e.target.value)}
                   placeholder="0"
+                  className="h-12 sm:h-10 text-base sm:text-sm"
                 />
               </div>
               <div className="space-y-2">
@@ -391,9 +413,11 @@ export function MonthlyDataDialog() {
                 <Label>Colaboradores</Label>
                 <Input
                   type="number"
+                  inputMode="numeric"
                   value={formData.colaboradores_dermato}
                   onChange={(e) => handleChange('colaboradores_dermato', e.target.value)}
                   placeholder="0"
+                  className="h-12 sm:h-10 text-base sm:text-sm"
                 />
               </div>
             </div>
@@ -401,17 +425,17 @@ export function MonthlyDataDialog() {
 
           <div className="space-y-4">
             <h3 className="font-bold text-slate-800 border-b border-slate-200 pb-2 flex items-center gap-2">
-              <div className="w-1.5 h-4 bg-blue-500 rounded-sm" />
+              <div className="w-1.5 h-4 bg-blue-500 rounded-sm shrink-0" />
               Dados Gerais do Sistema
             </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               <div className="space-y-2">
                 <Label>Pedidos Totais (Cápsulas + Dermato)</Label>
                 <Input
                   type="number"
                   value={orders_count || ''}
                   disabled
-                  className="bg-slate-50 text-slate-500 font-medium"
+                  className="bg-slate-50 text-slate-500 font-medium h-12 sm:h-10 text-base sm:text-sm"
                   placeholder="0"
                 />
               </div>
@@ -421,7 +445,7 @@ export function MonthlyDataDialog() {
                   type="text"
                   value={total_system_sales ? formatCurrencyString(total_system_sales) : ''}
                   disabled
-                  className="bg-slate-50 text-slate-500 font-medium"
+                  className="bg-slate-50 text-slate-500 font-medium h-12 sm:h-10 text-base sm:text-sm"
                   placeholder="0,00"
                 />
               </div>
@@ -431,7 +455,7 @@ export function MonthlyDataDialog() {
                   type="text"
                   value={raw_material_costs ? formatCurrencyString(raw_material_costs) : ''}
                   disabled
-                  className="bg-slate-50 text-slate-500 font-medium"
+                  className="bg-slate-50 text-slate-500 font-medium h-12 sm:h-10 text-base sm:text-sm"
                   placeholder="0,00"
                 />
               </div>
@@ -439,9 +463,11 @@ export function MonthlyDataDialog() {
                 <Label>Colaboradores Vendas</Label>
                 <Input
                   type="number"
+                  inputMode="numeric"
                   value={formData.colaboradores_vendas}
                   onChange={(e) => handleChange('colaboradores_vendas', e.target.value)}
                   placeholder="0"
+                  className="h-12 sm:h-10 text-base sm:text-sm"
                 />
               </div>
               <div className="space-y-2">
@@ -454,27 +480,30 @@ export function MonthlyDataDialog() {
                       (Number(formData.colaboradores_vendas) || 0) || ''
                   }
                   disabled
-                  className="bg-slate-50 text-slate-500 font-medium"
+                  className="bg-slate-50 text-slate-500 font-medium h-12 sm:h-10 text-base sm:text-sm"
                   placeholder="0"
                 />
               </div>
             </div>
           </div>
 
-          <DialogFooter className="flex items-center justify-end w-full mt-8 border-t border-slate-100 pt-4">
-            <div className="flex gap-2">
-              <Button type="button" variant="outline" onClick={() => setOpen(false)}>
-                Cancelar
-              </Button>
-              <Button
-                type="submit"
-                disabled={loading}
-                className="bg-indigo-600 hover:bg-indigo-700 shadow-md"
-              >
-                <Save className="w-4 h-4 mr-2" />
-                {loading ? 'Salvando...' : 'Salvar Dados'}
-              </Button>
-            </div>
+          <DialogFooter className="flex flex-col sm:flex-row items-center justify-end w-full mt-8 border-t border-slate-100 pt-4 gap-3 sm:gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setOpen(false)}
+              className="w-full sm:w-auto h-12 sm:h-10 text-base sm:text-sm"
+            >
+              Cancelar
+            </Button>
+            <Button
+              type="submit"
+              disabled={loading}
+              className="w-full sm:w-auto h-12 sm:h-10 text-base sm:text-sm bg-indigo-600 hover:bg-indigo-700 shadow-md"
+            >
+              <Save className="w-4 h-4 mr-2" />
+              {loading ? 'Salvando...' : 'Salvar Dados'}
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>

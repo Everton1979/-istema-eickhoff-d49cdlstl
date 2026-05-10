@@ -25,11 +25,78 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { Drawer, DrawerContent, DrawerTrigger } from '@/components/ui/drawer'
 import { Calendar } from '@/components/ui/calendar'
 import { useFinanceStore } from '@/stores/financeStore'
 import { useToast } from '@/hooks/use-toast'
 import { Transaction } from '@/types/finance'
 import { cn } from '@/lib/utils'
+import { useIsMobile } from '@/hooks/use-mobile'
+
+function ResponsiveDatePicker({
+  date,
+  setDate,
+  disabled,
+}: {
+  date: Date | undefined
+  setDate: (d: Date | undefined) => void
+  disabled?: boolean
+}) {
+  const isMobile = useIsMobile()
+  const [open, setOpen] = useState(false)
+
+  const ButtonContent = (
+    <Button
+      variant="outline"
+      className={cn(
+        'w-full justify-start text-left font-normal bg-white h-12 sm:h-10 text-base sm:text-sm',
+        !date && 'text-muted-foreground',
+      )}
+      disabled={disabled}
+    >
+      <CalendarIcon className="mr-2 h-4 w-4 shrink-0" />
+      {date ? format(date, 'P', { locale: ptBR }) : <span>Selecione</span>}
+    </Button>
+  )
+
+  if (isMobile) {
+    return (
+      <Drawer open={open} onOpenChange={setOpen}>
+        <DrawerTrigger asChild>{ButtonContent}</DrawerTrigger>
+        <DrawerContent>
+          <div className="p-4 flex flex-col items-center">
+            <Calendar
+              mode="single"
+              selected={date}
+              onSelect={(d) => {
+                setDate(d)
+                setOpen(false)
+              }}
+              initialFocus
+            />
+          </div>
+        </DrawerContent>
+      </Drawer>
+    )
+  }
+
+  return (
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>{ButtonContent}</PopoverTrigger>
+      <PopoverContent className="w-auto p-0" align="start">
+        <Calendar
+          mode="single"
+          selected={date}
+          onSelect={(d) => {
+            setDate(d)
+            setOpen(false)
+          }}
+          initialFocus
+        />
+      </PopoverContent>
+    </Popover>
+  )
+}
 
 export function ExportReportDialog({ onExport }: { onExport?: (filters: any) => void }) {
   const now = new Date()
@@ -258,64 +325,29 @@ export function ExportReportDialog({ onExport }: { onExport?: (filters: any) => 
           Exportar Relatório
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="p-4 sm:p-6 w-[95vw] sm:w-full max-w-[425px] rounded-xl">
         <DialogHeader>
           <DialogTitle>Exportar Relatório Financeiro</DialogTitle>
         </DialogHeader>
         <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-2 flex flex-col">
               <Label>Data Inicial</Label>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className={cn(
-                      'w-full justify-start text-left font-normal bg-white',
-                      !startDate && 'text-muted-foreground',
-                    )}
-                    disabled={isExporting}
-                  >
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    {startDate ? format(startDate, 'P', { locale: ptBR }) : <span>Selecione</span>}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar
-                    mode="single"
-                    selected={startDate}
-                    onSelect={setStartDate}
-                    initialFocus
-                  />
-                </PopoverContent>
-              </Popover>
+              <ResponsiveDatePicker
+                date={startDate}
+                setDate={setStartDate}
+                disabled={isExporting}
+              />
             </div>
             <div className="space-y-2 flex flex-col">
               <Label>Data Final</Label>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className={cn(
-                      'w-full justify-start text-left font-normal bg-white',
-                      !endDate && 'text-muted-foreground',
-                    )}
-                    disabled={isExporting}
-                  >
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    {endDate ? format(endDate, 'P', { locale: ptBR }) : <span>Selecione</span>}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar mode="single" selected={endDate} onSelect={setEndDate} initialFocus />
-                </PopoverContent>
-              </Popover>
+              <ResponsiveDatePicker date={endDate} setDate={setEndDate} disabled={isExporting} />
             </div>
           </div>
           <div className="space-y-2">
             <Label>Tipo de Lançamento</Label>
             <Select value={type} onValueChange={setType} disabled={isExporting}>
-              <SelectTrigger className="bg-white">
+              <SelectTrigger className="bg-white h-12 sm:h-10 text-base sm:text-sm">
                 <SelectValue placeholder="Selecione o tipo" />
               </SelectTrigger>
               <SelectContent>
@@ -326,11 +358,11 @@ export function ExportReportDialog({ onExport }: { onExport?: (filters: any) => 
             </Select>
           </div>
         </div>
-        <div className="flex flex-col gap-2 mt-4">
+        <div className="flex flex-col gap-3 mt-4">
           <Button
             onClick={() => handleExport('pdf')}
             disabled={isExporting}
-            className="w-full bg-red-600 hover:bg-red-700 text-white flex items-center justify-center gap-2"
+            className="w-full h-12 sm:h-10 text-base sm:text-sm bg-red-600 hover:bg-red-700 text-white flex items-center justify-center gap-2"
           >
             {isExporting ? (
               <Loader2 className="w-4 h-4 animate-spin" />
@@ -342,7 +374,7 @@ export function ExportReportDialog({ onExport }: { onExport?: (filters: any) => 
           <Button
             onClick={() => handleExport('excel')}
             disabled={isExporting}
-            className="w-full bg-green-600 hover:bg-green-700 text-white flex items-center justify-center gap-2"
+            className="w-full h-12 sm:h-10 text-base sm:text-sm bg-green-600 hover:bg-green-700 text-white flex items-center justify-center gap-2"
           >
             {isExporting ? (
               <Loader2 className="w-4 h-4 animate-spin" />

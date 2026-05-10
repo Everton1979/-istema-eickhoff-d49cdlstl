@@ -272,7 +272,7 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
                 </FormLabel>
                 <Select onValueChange={field.onChange} value={field.value || undefined}>
                   <FormControl>
-                    <SelectTrigger autoFocus>
+                    <SelectTrigger autoFocus className="h-12 sm:h-10 text-base sm:text-sm">
                       <SelectValue placeholder="Selecione o tipo" />
                     </SelectTrigger>
                   </FormControl>
@@ -296,7 +296,7 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
                 </FormLabel>
                 <Select onValueChange={field.onChange} value={field.value || undefined}>
                   <FormControl>
-                    <SelectTrigger>
+                    <SelectTrigger className="h-12 sm:h-10 text-base sm:text-sm">
                       <SelectValue placeholder="Status" />
                     </SelectTrigger>
                   </FormControl>
@@ -324,7 +324,12 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
                 Data <span className="text-red-500">*</span>
               </FormLabel>
               <FormControl>
-                <Input type="date" required {...field} />
+                <Input
+                  type="date"
+                  required
+                  {...field}
+                  className="h-12 sm:h-10 text-base sm:text-sm block w-full"
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -353,6 +358,7 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
                     {...field}
                     value={field.value || ''}
                     onChange={(e) => field.onChange(e.target.value.toUpperCase())}
+                    className="h-12 sm:h-10 text-base sm:text-sm"
                   />
                 </FormControl>
                 <FormMessage />
@@ -371,13 +377,14 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
               </FormLabel>
               <FormControl>
                 <div className="relative">
-                  <span className="absolute left-3 top-2.5 text-sm text-slate-500 font-medium">
+                  <span className="absolute left-3 top-3.5 sm:top-2.5 text-sm text-slate-500 font-medium">
                     R$
                   </span>
                   <Input
                     type="text"
+                    inputMode="numeric"
                     required
-                    className="pl-9"
+                    className="pl-9 h-12 sm:h-10 text-base sm:text-sm"
                     placeholder="0,00"
                     {...field}
                     value={
@@ -414,7 +421,7 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
                     </FormLabel>
                     <Select onValueChange={field.onChange} value={field.value || undefined}>
                       <FormControl>
-                        <SelectTrigger>
+                        <SelectTrigger className="h-12 sm:h-10 text-base sm:text-sm">
                           <SelectValue placeholder="Categoria" />
                         </SelectTrigger>
                       </FormControl>
@@ -440,7 +447,7 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
                       </FormLabel>
                       <Select onValueChange={field.onChange} value={field.value || undefined}>
                         <FormControl>
-                          <SelectTrigger>
+                          <SelectTrigger className="h-12 sm:h-10 text-base sm:text-sm">
                             <SelectValue placeholder="Selecione a classificação..." />
                           </SelectTrigger>
                         </FormControl>
@@ -547,7 +554,7 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
                     value={tagInput}
                     onChange={(e) => setTagInput(e.target.value)}
                     placeholder="Adicionar observação..."
-                    className="h-9"
+                    className="h-12 sm:h-10 text-base sm:text-sm"
                     onKeyDown={(e) => {
                       if (e.key === 'Enter') {
                         e.preventDefault()
@@ -560,7 +567,7 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
                     size="sm"
                     variant="secondary"
                     onClick={() => addTag()}
-                    className="h-9 shrink-0"
+                    className="h-12 sm:h-10 px-4 shrink-0"
                   >
                     <Plus className="w-4 h-4" />
                   </Button>
@@ -628,7 +635,7 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
                     </FormLabel>
                     <Select onValueChange={field.onChange} value={field.value || undefined}>
                       <FormControl>
-                        <SelectTrigger>
+                        <SelectTrigger className="h-12 sm:h-10 text-base sm:text-sm">
                           <SelectValue placeholder="Selecione a categoria..." />
                         </SelectTrigger>
                       </FormControl>
@@ -656,7 +663,7 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
                     </FormLabel>
                     <Select onValueChange={field.onChange} value={field.value || undefined}>
                       <FormControl>
-                        <SelectTrigger>
+                        <SelectTrigger className="h-12 sm:h-10 text-base sm:text-sm">
                           <SelectValue placeholder="Selecione..." />
                         </SelectTrigger>
                       </FormControl>
@@ -676,7 +683,11 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
           )}
         </div>
 
-        <Button type="submit" className="w-full mt-4" disabled={loading}>
+        <Button
+          type="submit"
+          className="w-full mt-6 h-12 sm:h-10 text-base sm:text-sm font-semibold"
+          disabled={loading}
+        >
           {loading ? 'Salvando...' : initialData ? 'Atualizar Lançamento' : 'Salvar Lançamento'}
         </Button>
       </form>
