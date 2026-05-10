@@ -18,6 +18,7 @@ import { BackupDataButton } from './BackupDataButton'
 import { Link } from 'react-router-dom'
 import { ArrowRightLeft } from 'lucide-react'
 import { ScrollArea } from '@/components/ui/scroll-area'
+import { ThemeToggle } from '@/components/ThemeToggle'
 
 const PERIODS = [
   { label: 'Anual', value: 'anual', months: [] },
@@ -55,10 +56,14 @@ export function DashboardHeader({ onExport }: { onExport: (filters: any) => void
     PERIODS.find((p) => JSON.stringify(p.months) === JSON.stringify(filters.months)) || PERIODS[0]
 
   return (
-    <div className="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-4 mb-2 bg-white p-4 rounded-lg shadow-sm border border-slate-200">
+    <div className="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-4 mb-2 bg-white dark:bg-slate-900 p-4 rounded-lg shadow-sm border border-slate-200 dark:border-slate-800">
       <div>
-        <h1 className="text-xl font-bold text-slate-800">$istema Eickhoff - Painel Geral</h1>
-        <p className="text-sm text-slate-500">Visão geral e indicadores de performance</p>
+        <h1 className="text-xl font-bold text-slate-800 dark:text-slate-100">
+          $istema Eickhoff - Painel Geral
+        </h1>
+        <p className="text-sm text-slate-500 dark:text-slate-400">
+          Visão geral e indicadores de performance
+        </p>
       </div>
 
       <div className="flex flex-wrap items-center gap-3">
@@ -66,7 +71,7 @@ export function DashboardHeader({ onExport }: { onExport: (filters: any) => void
           <DropdownMenuTrigger asChild>
             <Button
               variant="outline"
-              className="h-11 w-[160px] text-sm bg-slate-50 border-slate-200 justify-start font-normal text-slate-700"
+              className="h-11 w-[160px] text-sm bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 justify-start font-normal text-slate-700 dark:text-slate-300"
             >
               {currentPeriod.label}
             </Button>
@@ -96,7 +101,7 @@ export function DashboardHeader({ onExport }: { onExport: (filters: any) => void
           <DropdownMenuTrigger asChild>
             <Button
               variant="outline"
-              className="h-11 w-[130px] text-sm bg-slate-50 border-slate-200 justify-start font-normal text-slate-700"
+              className="h-11 w-[130px] text-sm bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 justify-start font-normal text-slate-700 dark:text-slate-300"
             >
               {filters.years.length === 0
                 ? 'Todos os Anos'
@@ -135,12 +140,13 @@ export function DashboardHeader({ onExport }: { onExport: (filters: any) => void
           </DropdownMenuContent>
         </DropdownMenu>
 
-        <div className="h-6 w-px bg-slate-200 mx-1 hidden sm:block"></div>
+        <div className="h-6 w-px bg-slate-200 dark:bg-slate-700 mx-1 hidden sm:block"></div>
 
         <div className="flex items-center gap-2 flex-wrap">
+          <ThemeToggle />
           <Link
             to="/transacoes"
-            className="h-11 px-4 flex items-center justify-center gap-2 text-sm bg-blue-600 hover:bg-blue-700 text-white rounded-md shadow-sm font-bold transition-colors mr-1"
+            className="h-11 px-4 flex items-center justify-center gap-2 text-sm bg-blue-600 hover:bg-blue-700 text-white rounded-md shadow-sm font-bold transition-colors"
           >
             <ArrowRightLeft className="w-4 h-4" />
             Transações

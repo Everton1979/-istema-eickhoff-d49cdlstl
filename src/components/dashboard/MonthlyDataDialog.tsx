@@ -22,6 +22,7 @@ import {
 import { useAuth } from '@/hooks/use-auth'
 import { useFinanceStore } from '@/stores/financeStore'
 import { useDraft } from '@/hooks/use-draft'
+import { cn } from '@/lib/utils'
 
 const parseCurrency = (val: string | number) => {
   if (typeof val === 'number') return val
@@ -40,11 +41,13 @@ function CurrencyInput({
   onChange,
   disabled,
   placeholder,
+  required,
 }: {
   value: string
   onChange: (val: string) => void
   disabled?: boolean
   placeholder?: string
+  required?: boolean
 }) {
   const [localValue, setLocalValue] = useState(value)
   const isFocused = useRef(false)
@@ -56,20 +59,28 @@ function CurrencyInput({
   }, [value])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const val = e.target.value.replace(/[^\d.,]/g, '')
-    setLocalValue(val)
-    onChange(val)
+    setLocalValue(e.target.value)
+    onChange(e.target.value)
   }
 
-  const handleBlur = () => {
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
     isFocused.current = false
-    if (!localValue) {
+    let val = e.target.value
+    if (!val) {
+      setLocalValue('')
       onChange('')
       return
     }
-    const clean = localValue.replace(/\./g, '').replace(',', '.')
+
+    val = val.replace(/[^\d,]/g, '')
+    const parts = val.split(',')
+    if (parts.length > 2) {
+      val = parts[0] + ',' + parts.slice(1).join('')
+    }
+
+    const clean = val.replace(',', '.')
     const num = Number(clean)
-    if (!isNaN(num)) {
+    if (!isNaN(num) && val !== '') {
       const formatted = num.toLocaleString('pt-BR', {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2,
@@ -77,7 +88,8 @@ function CurrencyInput({
       setLocalValue(formatted)
       onChange(formatted)
     } else {
-      onChange(localValue)
+      setLocalValue('')
+      onChange('')
     }
   }
 
@@ -94,8 +106,14 @@ function CurrencyInput({
       onBlur={handleBlur}
       onFocus={handleFocus}
       disabled={disabled}
+      required={required}
       placeholder={placeholder || '0,00'}
-      className="h-12 sm:h-10 text-base sm:text-sm"
+      className={cn(
+        'h-12 sm:h-10 text-base sm:text-sm',
+        required && !localValue && !isFocused.current
+          ? 'border-red-400 dark:border-red-500/50'
+          : '',
+      )}
     />
   )
 }
@@ -267,10 +285,10 @@ export function MonthlyDataDialog() {
         <Button
           variant="outline"
           id="btn-dados-manipulacao"
-          className="h-11 py-1 px-3 gap-1 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border-indigo-200 shadow-sm flex flex-col items-center justify-center"
+          className="h-11 py-1 px-3 gap-1 bg-indigo-50 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-indigo-900 border-indigo-200 dark:border-indigo-800 shadow-sm flex flex-col items-center justify-center"
         >
           <span className="flex items-center gap-1.5 font-bold text-sm leading-none">
-            <Database className="w-4 h-4 text-indigo-600 shrink-0" />
+            <Database className="w-4 h-4 text-indigo-600 dark:text-indigo-400 shrink-0" />
             Dados Manipulação
           </span>
           <span className="text-[10px] font-medium opacity-80 leading-none">
@@ -286,11 +304,13 @@ export function MonthlyDataDialog() {
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-6 mt-2">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-slate-50 p-4 rounded-lg border border-slate-100">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-slate-50 dark:bg-slate-900 p-4 rounded-lg border border-slate-100 dark:border-slate-800">
             <div className="space-y-2">
-              <Label className="font-semibold text-slate-700">Mês Referência</Label>
+              <Label className="font-semibold text-slate-700 dark:text-slate-300">
+                Mês Referência <span className="text-red-500">*</span>
+              </Label>
               <Select value={String(month)} onValueChange={(val) => handleMonthChange(Number(val))}>
-                <SelectTrigger className="bg-white h-12 sm:h-10 text-base sm:text-sm">
+                <SelectTrigger className="bg-white dark:bg-slate-950 h-12 sm:h-10 text-base sm:text-sm">
                   <SelectValue placeholder="Selecione o mês" />
                 </SelectTrigger>
                 <SelectContent>
@@ -310,7 +330,9 @@ export function MonthlyDataDialog() {
               </Select>
             </div>
             <div className="space-y-2">
-              <Label className="font-semibold text-slate-700">Ano Referência</Label>
+              <Label className="font-semibold text-slate-700 dark:text-slate-300">
+                Ano Referência <span className="text-red-500">*</span>
+              </Label>
               <Input
                 type="number"
                 min={2000}
@@ -318,113 +340,149 @@ export function MonthlyDataDialog() {
                 value={year}
                 onChange={(e) => handleYearChange(Number(e.target.value))}
                 required
-                className="bg-white h-12 sm:h-10 text-base sm:text-sm"
+                className="bg-white dark:bg-slate-950 h-12 sm:h-10 text-base sm:text-sm"
               />
             </div>
           </div>
 
           <div className="space-y-4">
-            <h3 className="font-bold text-slate-800 border-b border-slate-200 pb-2 flex items-center gap-2 flex-wrap">
+            <h3 className="font-bold text-slate-800 dark:text-slate-100 border-b border-slate-200 dark:border-slate-800 pb-2 flex items-center gap-2 flex-wrap">
               <div className="w-1.5 h-4 bg-emerald-500 rounded-sm shrink-0" />
               Setor Cápsulas
-              <span className="text-sm font-normal text-slate-500 ml-1">
+              <span className="text-sm font-normal text-slate-500 dark:text-slate-400 ml-1">
                 (Dados extraídos do seu sistema)
               </span>
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
               <div className="space-y-2">
-                <Label>Nº Fórmulas</Label>
+                <Label>
+                  Nº Fórmulas <span className="text-red-500">*</span>
+                </Label>
                 <Input
                   type="number"
                   inputMode="numeric"
+                  required
                   value={formData.num_formulas_capsulas}
                   onChange={(e) => handleChange('num_formulas_capsulas', e.target.value)}
                   placeholder="0"
-                  className="h-12 sm:h-10 text-base sm:text-sm"
+                  className={cn(
+                    'h-12 sm:h-10 text-base sm:text-sm',
+                    !formData.num_formulas_capsulas ? 'border-red-400 dark:border-red-500/50' : '',
+                  )}
                 />
               </div>
               <div className="space-y-2">
-                <Label>Vendas (R$)</Label>
+                <Label>
+                  Vendas (R$) <span className="text-red-500">*</span>
+                </Label>
                 <CurrencyInput
+                  required
                   value={formData.vendas_capsulas}
                   onChange={(val) => handleChange('vendas_capsulas', val)}
                   placeholder="0,00"
                 />
               </div>
               <div className="space-y-2">
-                <Label>Custo MP/Emb (R$)</Label>
+                <Label>
+                  Custo MP/Emb (R$) <span className="text-red-500">*</span>
+                </Label>
                 <CurrencyInput
+                  required
                   value={formData.custo_mp_emb_capsulas}
                   onChange={(val) => handleChange('custo_mp_emb_capsulas', val)}
                   placeholder="0,00"
                 />
               </div>
               <div className="space-y-2">
-                <Label>Colaboradores</Label>
+                <Label>
+                  Colaboradores <span className="text-red-500">*</span>
+                </Label>
                 <Input
                   type="number"
                   inputMode="numeric"
+                  required
                   value={formData.colaboradores_capsulas}
                   onChange={(e) => handleChange('colaboradores_capsulas', e.target.value)}
                   placeholder="0"
-                  className="h-12 sm:h-10 text-base sm:text-sm"
+                  className={cn(
+                    'h-12 sm:h-10 text-base sm:text-sm',
+                    !formData.colaboradores_capsulas ? 'border-red-400 dark:border-red-500/50' : '',
+                  )}
                 />
               </div>
             </div>
           </div>
 
           <div className="space-y-4">
-            <h3 className="font-bold text-slate-800 border-b border-slate-200 pb-2 flex items-center gap-2 flex-wrap">
+            <h3 className="font-bold text-slate-800 dark:text-slate-100 border-b border-slate-200 dark:border-slate-800 pb-2 flex items-center gap-2 flex-wrap">
               <div className="w-1.5 h-4 bg-purple-500 rounded-sm shrink-0" />
               Setor Dermato
-              <span className="text-sm font-normal text-slate-500 ml-1">
+              <span className="text-sm font-normal text-slate-500 dark:text-slate-400 ml-1">
                 (Dados extraídos do seu sistema)
               </span>
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
               <div className="space-y-2">
-                <Label>Nº Fórmulas</Label>
+                <Label>
+                  Nº Fórmulas <span className="text-red-500">*</span>
+                </Label>
                 <Input
                   type="number"
                   inputMode="numeric"
+                  required
                   value={formData.num_formulas_dermato}
                   onChange={(e) => handleChange('num_formulas_dermato', e.target.value)}
                   placeholder="0"
-                  className="h-12 sm:h-10 text-base sm:text-sm"
+                  className={cn(
+                    'h-12 sm:h-10 text-base sm:text-sm',
+                    !formData.num_formulas_dermato ? 'border-red-400 dark:border-red-500/50' : '',
+                  )}
                 />
               </div>
               <div className="space-y-2">
-                <Label>Vendas (R$)</Label>
+                <Label>
+                  Vendas (R$) <span className="text-red-500">*</span>
+                </Label>
                 <CurrencyInput
+                  required
                   value={formData.vendas_dermato}
                   onChange={(val) => handleChange('vendas_dermato', val)}
                   placeholder="0,00"
                 />
               </div>
               <div className="space-y-2">
-                <Label>Custo MP/Emb (R$)</Label>
+                <Label>
+                  Custo MP/Emb (R$) <span className="text-red-500">*</span>
+                </Label>
                 <CurrencyInput
+                  required
                   value={formData.custo_mp_emb_dermato}
                   onChange={(val) => handleChange('custo_mp_emb_dermato', val)}
                   placeholder="0,00"
                 />
               </div>
               <div className="space-y-2">
-                <Label>Colaboradores</Label>
+                <Label>
+                  Colaboradores <span className="text-red-500">*</span>
+                </Label>
                 <Input
                   type="number"
                   inputMode="numeric"
+                  required
                   value={formData.colaboradores_dermato}
                   onChange={(e) => handleChange('colaboradores_dermato', e.target.value)}
                   placeholder="0"
-                  className="h-12 sm:h-10 text-base sm:text-sm"
+                  className={cn(
+                    'h-12 sm:h-10 text-base sm:text-sm',
+                    !formData.colaboradores_dermato ? 'border-red-400 dark:border-red-500/50' : '',
+                  )}
                 />
               </div>
             </div>
           </div>
 
           <div className="space-y-4">
-            <h3 className="font-bold text-slate-800 border-b border-slate-200 pb-2 flex items-center gap-2">
+            <h3 className="font-bold text-slate-800 dark:text-slate-100 border-b border-slate-200 dark:border-slate-800 pb-2 flex items-center gap-2">
               <div className="w-1.5 h-4 bg-blue-500 rounded-sm shrink-0" />
               Dados Gerais do Sistema
             </h3>
@@ -435,7 +493,7 @@ export function MonthlyDataDialog() {
                   type="number"
                   value={orders_count || ''}
                   disabled
-                  className="bg-slate-50 text-slate-500 font-medium h-12 sm:h-10 text-base sm:text-sm"
+                  className="bg-slate-50 dark:bg-slate-900 text-slate-500 dark:text-slate-400 font-medium h-12 sm:h-10 text-base sm:text-sm"
                   placeholder="0"
                 />
               </div>
@@ -445,7 +503,7 @@ export function MonthlyDataDialog() {
                   type="text"
                   value={total_system_sales ? formatCurrencyString(total_system_sales) : ''}
                   disabled
-                  className="bg-slate-50 text-slate-500 font-medium h-12 sm:h-10 text-base sm:text-sm"
+                  className="bg-slate-50 dark:bg-slate-900 text-slate-500 dark:text-slate-400 font-medium h-12 sm:h-10 text-base sm:text-sm"
                   placeholder="0,00"
                 />
               </div>
@@ -455,19 +513,25 @@ export function MonthlyDataDialog() {
                   type="text"
                   value={raw_material_costs ? formatCurrencyString(raw_material_costs) : ''}
                   disabled
-                  className="bg-slate-50 text-slate-500 font-medium h-12 sm:h-10 text-base sm:text-sm"
+                  className="bg-slate-50 dark:bg-slate-900 text-slate-500 dark:text-slate-400 font-medium h-12 sm:h-10 text-base sm:text-sm"
                   placeholder="0,00"
                 />
               </div>
               <div className="space-y-2">
-                <Label>Colaboradores Vendas</Label>
+                <Label>
+                  Colaboradores Vendas <span className="text-red-500">*</span>
+                </Label>
                 <Input
                   type="number"
                   inputMode="numeric"
+                  required
                   value={formData.colaboradores_vendas}
                   onChange={(e) => handleChange('colaboradores_vendas', e.target.value)}
                   placeholder="0"
-                  className="h-12 sm:h-10 text-base sm:text-sm"
+                  className={cn(
+                    'h-12 sm:h-10 text-base sm:text-sm',
+                    !formData.colaboradores_vendas ? 'border-red-400 dark:border-red-500/50' : '',
+                  )}
                 />
               </div>
               <div className="space-y-2">
@@ -480,14 +544,14 @@ export function MonthlyDataDialog() {
                       (Number(formData.colaboradores_vendas) || 0) || ''
                   }
                   disabled
-                  className="bg-slate-50 text-slate-500 font-medium h-12 sm:h-10 text-base sm:text-sm"
+                  className="bg-slate-50 dark:bg-slate-900 text-slate-500 dark:text-slate-400 font-medium h-12 sm:h-10 text-base sm:text-sm"
                   placeholder="0"
                 />
               </div>
             </div>
           </div>
 
-          <DialogFooter className="flex flex-col sm:flex-row items-center justify-end w-full mt-8 border-t border-slate-100 pt-4 gap-3 sm:gap-2">
+          <DialogFooter className="flex flex-col sm:flex-row items-center justify-end w-full mt-8 border-t border-slate-100 dark:border-slate-800 pt-4 gap-3 sm:gap-2">
             <Button
               type="button"
               variant="outline"
@@ -499,7 +563,7 @@ export function MonthlyDataDialog() {
             <Button
               type="submit"
               disabled={loading}
-              className="w-full sm:w-auto h-12 sm:h-10 text-base sm:text-sm bg-indigo-600 hover:bg-indigo-700 shadow-md"
+              className="w-full sm:w-auto h-12 sm:h-10 text-base sm:text-sm bg-indigo-600 hover:bg-indigo-700 text-white shadow-md"
             >
               <Save className="w-4 h-4 mr-2" />
               {loading ? 'Salvando...' : 'Salvar Dados'}

@@ -49,7 +49,7 @@ function ResponsiveDatePicker({
     <Button
       variant="outline"
       className={cn(
-        'w-full justify-start text-left font-normal bg-white h-12 sm:h-10 text-base sm:text-sm',
+        'w-full justify-start text-left font-normal bg-white dark:bg-slate-950 h-12 sm:h-10 text-base sm:text-sm',
         !date && 'text-muted-foreground',
       )}
       disabled={disabled}
@@ -319,9 +319,9 @@ export function ExportReportDialog({ onExport }: { onExport?: (filters: any) => 
         <Button
           variant="outline"
           size="sm"
-          className="h-11 px-4 text-sm bg-sky-50 hover:bg-sky-100 text-sky-700 border-sky-200 flex gap-2 shadow-sm font-bold"
+          className="h-11 px-4 text-sm bg-sky-50 dark:bg-sky-950 hover:bg-sky-100 dark:hover:bg-sky-900 text-sky-700 dark:text-sky-300 border-sky-200 dark:border-sky-800 flex gap-2 shadow-sm font-bold"
         >
-          <Download className="w-4 h-4 text-sky-600" />
+          <Download className="w-4 h-4 text-sky-600 dark:text-sky-400" />
           Exportar Relatório
         </Button>
       </DialogTrigger>
@@ -347,7 +347,7 @@ export function ExportReportDialog({ onExport }: { onExport?: (filters: any) => 
           <div className="space-y-2">
             <Label>Tipo de Lançamento</Label>
             <Select value={type} onValueChange={setType} disabled={isExporting}>
-              <SelectTrigger className="bg-white h-12 sm:h-10 text-base sm:text-sm">
+              <SelectTrigger className="bg-white dark:bg-slate-950 h-12 sm:h-10 text-base sm:text-sm">
                 <SelectValue placeholder="Selecione o tipo" />
               </SelectTrigger>
               <SelectContent>

@@ -4,6 +4,7 @@ import { Toaster as Sonner } from '@/components/ui/sonner'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import { FinanceProvider } from '@/stores/financeStore'
 import { AuthProvider, useAuth } from '@/hooks/use-auth'
+import { ThemeProvider } from '@/components/ThemeProvider'
 import Index from './pages/Index'
 import Transactions from './pages/Transactions'
 import Users from './pages/Users'
@@ -73,69 +74,71 @@ const ProtectedRoute = ({
 }
 
 const App = () => (
-  <BrowserRouter future={{ v7_startTransition: false, v7_relativeSplatPath: false }}>
-    <AuthProvider>
-      <FinanceProvider>
-        <TooltipProvider delayDuration={100}>
-          <Toaster />
-          <Sonner />
-          <Routes>
-            <Route path="/" element={<Navigate to="/dashboard" replace />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/cadastro" element={<Register />} />
-            <Route path="/esqueci-a-senha" element={<ForgotPassword />} />
-            <Route path="/nova-senha" element={<ResetPassword />} />
-            <Route
-              path="/pendente"
-              element={
-                <ProtectedRoute requireActive={false}>
-                  <PendingApproval />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/bloqueado"
-              element={
-                <ProtectedRoute requireActive={false}>
-                  <BlockedAccess />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              element={
-                <ProtectedRoute>
-                  <Layout />
-                </ProtectedRoute>
-              }
-            >
-              <Route path="/dashboard" element={<Index />} />
-              <Route path="/transacoes" element={<Transactions />} />
-              <Route path="/glossario" element={<Glossary />} />
-              <Route path="/perfil" element={<Profile />} />
-              <Route path="/configuracoes" element={<Navigate to="/usuarios" replace />} />
+  <ThemeProvider defaultTheme="light" storageKey="app-theme">
+    <BrowserRouter future={{ v7_startTransition: false, v7_relativeSplatPath: false }}>
+      <AuthProvider>
+        <FinanceProvider>
+          <TooltipProvider delayDuration={100}>
+            <Toaster />
+            <Sonner />
+            <Routes>
+              <Route path="/" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/cadastro" element={<Register />} />
+              <Route path="/esqueci-a-senha" element={<ForgotPassword />} />
+              <Route path="/nova-senha" element={<ResetPassword />} />
               <Route
-                path="/usuarios"
+                path="/pendente"
                 element={
-                  <ProtectedRoute>
-                    <Users />
+                  <ProtectedRoute requireActive={false}>
+                    <PendingApproval />
                   </ProtectedRoute>
                 }
               />
               <Route
-                path="/auditoria"
+                path="/bloqueado"
                 element={
-                  <ProtectedRoute>
-                    <AuditLogs />
+                  <ProtectedRoute requireActive={false}>
+                    <BlockedAccess />
                   </ProtectedRoute>
                 }
               />
-            </Route>
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </TooltipProvider>
-      </FinanceProvider>
-    </AuthProvider>
-  </BrowserRouter>
+              <Route
+                element={
+                  <ProtectedRoute>
+                    <Layout />
+                  </ProtectedRoute>
+                }
+              >
+                <Route path="/dashboard" element={<Index />} />
+                <Route path="/transacoes" element={<Transactions />} />
+                <Route path="/glossario" element={<Glossary />} />
+                <Route path="/perfil" element={<Profile />} />
+                <Route path="/configuracoes" element={<Navigate to="/usuarios" replace />} />
+                <Route
+                  path="/usuarios"
+                  element={
+                    <ProtectedRoute>
+                      <Users />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/auditoria"
+                  element={
+                    <ProtectedRoute>
+                      <AuditLogs />
+                    </ProtectedRoute>
+                  }
+                />
+              </Route>
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </TooltipProvider>
+        </FinanceProvider>
+      </AuthProvider>
+    </BrowserRouter>
+  </ThemeProvider>
 )
 
 export default App

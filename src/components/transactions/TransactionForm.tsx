@@ -20,10 +20,10 @@ import {
 } from '@/components/ui/select'
 import { useFinanceStore, PAYMENT_METHODS } from '@/stores/financeStore'
 import { useToast } from '@/hooks/use-toast'
-import { useEffect, useState, useMemo } from 'react'
+import { useEffect, useState, useMemo, forwardRef, useRef } from 'react'
 import { Transaction } from '@/types/finance'
 import { X, Plus, Tag as TagIcon } from 'lucide-react'
-import { cn, getTagColor, formatCurrencyInput } from '@/lib/utils'
+import { cn, getTagColor } from '@/lib/utils'
 
 const formSchema = z
   .object({
@@ -95,6 +95,80 @@ interface TransactionFormProps {
   onSuccess: () => void
   initialData?: Transaction | null
 }
+
+const CurrencyFieldInput = forwardRef<HTMLInputElement, any>(
+  ({ field, className, placeholder, ...props }, ref) => {
+    const [localValue, setLocalValue] = useState(() => {
+      if (field.value !== undefined && field.value !== '') {
+        return Number(field.value).toLocaleString('pt-BR', {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        })
+      }
+      return ''
+    })
+    const isFocused = useRef(false)
+
+    useEffect(() => {
+      if (!isFocused.current) {
+        if (field.value !== undefined && field.value !== '') {
+          setLocalValue(
+            Number(field.value).toLocaleString('pt-BR', {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            }),
+          )
+        } else {
+          setLocalValue('')
+        }
+      }
+    }, [field.value])
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      setLocalValue(e.target.value)
+    }
+
+    const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+      isFocused.current = false
+      let val = e.target.value.replace(/[^\d,]/g, '')
+      const parts = val.split(',')
+      if (parts.length > 2) val = parts[0] + ',' + parts.slice(1).join('')
+
+      const num = Number(val.replace(',', '.'))
+      if (!isNaN(num) && num > 0) {
+        const formatted = num.toLocaleString('pt-BR', {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        })
+        setLocalValue(formatted)
+        field.onChange(num)
+      } else {
+        setLocalValue('')
+        field.onChange(undefined)
+      }
+      if (field.onBlur) field.onBlur()
+    }
+
+    const handleFocus = () => {
+      isFocused.current = true
+    }
+
+    return (
+      <Input
+        {...props}
+        ref={ref}
+        type="text"
+        inputMode="decimal"
+        value={localValue}
+        onChange={handleChange}
+        onBlur={handleBlur}
+        onFocus={handleFocus}
+        className={className}
+        placeholder={placeholder}
+      />
+    )
+  },
+)
 
 export function TransactionForm({ onSuccess, initialData }: TransactionFormProps) {
   const { transactions, addTransaction, updateTransaction } = useFinanceStore()
@@ -377,29 +451,14 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
               </FormLabel>
               <FormControl>
                 <div className="relative">
-                  <span className="absolute left-3 top-3.5 sm:top-2.5 text-sm text-slate-500 font-medium">
+                  <span className="absolute left-3 top-3.5 sm:top-2.5 text-sm text-slate-500 dark:text-slate-400 font-medium">
                     R$
                   </span>
-                  <Input
-                    type="text"
-                    inputMode="numeric"
+                  <CurrencyFieldInput
+                    field={field}
                     required
                     className="pl-9 h-12 sm:h-10 text-base sm:text-sm"
                     placeholder="0,00"
-                    {...field}
-                    value={
-                      field.value !== undefined && field.value !== ''
-                        ? formatCurrencyInput(field.value)
-                        : ''
-                    }
-                    onChange={(e) => {
-                      const val = e.target.value.replace(/\D/g, '')
-                      if (!val) {
-                        field.onChange('')
-                      } else {
-                        field.onChange(parseInt(val, 10) / 100)
-                      }
-                    }}
                   />
                 </div>
               </FormControl>
