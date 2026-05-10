@@ -3,10 +3,81 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Calculator, HelpCircle, AlertTriangle, CheckCircle2, Info } from 'lucide-react'
-import { useState, useMemo } from 'react'
+import { useState, useMemo, forwardRef, useRef, useEffect } from 'react'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { Link } from 'react-router-dom'
-import { cn, formatCurrencyInput } from '@/lib/utils'
+import { cn } from '@/lib/utils'
+
+const PricingCurrencyInput = forwardRef<HTMLInputElement, any>(
+  ({ value, onChange, className, placeholder, ...props }, ref) => {
+    const [localValue, setLocalValue] = useState(() => {
+      if (value !== undefined && value !== '') {
+        const num = typeof value === 'string' ? parseFloat(value) : value
+        return num.toLocaleString('pt-BR', {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        })
+      }
+      return ''
+    })
+    const isFocused = useRef(false)
+
+    useEffect(() => {
+      if (!isFocused.current) {
+        if (value !== undefined && value !== '') {
+          const num = typeof value === 'string' ? parseFloat(value) : value
+          setLocalValue(
+            num.toLocaleString('pt-BR', {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            }),
+          )
+        } else {
+          setLocalValue('')
+        }
+      }
+    }, [value])
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const val = e.target.value.replace(/\D/g, '')
+      if (!val) {
+        setLocalValue('')
+        onChange('')
+        return
+      }
+      const num = parseInt(val, 10) / 100
+      const formatted = num.toLocaleString('pt-BR', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })
+      setLocalValue(formatted)
+      onChange(num)
+    }
+
+    const handleBlur = () => {
+      isFocused.current = false
+    }
+
+    const handleFocus = () => {
+      isFocused.current = true
+    }
+
+    return (
+      <Input
+        {...props}
+        ref={ref}
+        type="text"
+        inputMode="numeric"
+        value={localValue}
+        onChange={handleChange}
+        onBlur={handleBlur}
+        onFocus={handleFocus}
+        className={className}
+        placeholder={placeholder}
+      />
+    )
+  },
+)
 import {
   Select,
   SelectContent,
@@ -18,7 +89,7 @@ import { Transaction } from '@/types/finance'
 
 export function PricingAssistant() {
   const { monthlyMetrics, transactions } = useFinanceStore()
-  const [cost, setCost] = useState('')
+  const [cost, setCost] = useState<number | ''>('')
   const [tipoFormula, setTipoFormula] = useState<'capsulas' | 'dermato'>('capsulas')
 
   const stats = useMemo(() => {
@@ -141,7 +212,7 @@ export function PricingAssistant() {
     }
   }, [monthlyMetrics, transactions, tipoFormula])
 
-  const numericCost = parseFloat(cost) || 0
+  const numericCost = typeof cost === 'number' ? cost : 0
   const hasCost = cost !== ''
 
   const mkpAlvo = stats.mkpMultiplicador > 0 ? stats.mkpMultiplicador : 6.0
@@ -212,18 +283,10 @@ export function PricingAssistant() {
             </Label>
             <div className="relative">
               <span className="absolute left-3 top-2.5 text-sm text-slate-500 font-medium">R$</span>
-              <Input
-                type="text"
+              <PricingCurrencyInput
                 className="h-10 text-sm font-bold pl-9 bg-white shadow-inner border-slate-300 focus-visible:ring-blue-500 transition-shadow hover:shadow-md"
-                value={cost !== '' ? formatCurrencyInput(cost) : ''}
-                onChange={(e) => {
-                  const val = e.target.value.replace(/\D/g, '')
-                  if (!val) {
-                    setCost('')
-                  } else {
-                    setCost(String(parseInt(val, 10) / 100))
-                  }
-                }}
+                value={cost}
+                onChange={(val: number | '') => setCost(val)}
                 placeholder="0,00"
               />
             </div>
