@@ -23,6 +23,67 @@ import { useAuth } from '@/hooks/use-auth'
 import { useFinanceStore } from '@/stores/financeStore'
 import { useDraft } from '@/hooks/use-draft'
 
+const parseCurrency = (val: string | number) => {
+  if (typeof val === 'number') return val
+  if (!val) return 0
+  const clean = String(val).replace(/\./g, '').replace(',', '.')
+  return Number(clean) || 0
+}
+
+const formatCurrencyString = (val: number | null | undefined) => {
+  if (val === null || val === undefined) return ''
+  return val.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+}
+
+function CurrencyInput({
+  value,
+  onChange,
+  disabled,
+  placeholder,
+}: {
+  value: string
+  onChange: (val: string) => void
+  disabled?: boolean
+  placeholder?: string
+}) {
+  const [localValue, setLocalValue] = useState(value)
+
+  useEffect(() => {
+    setLocalValue(value)
+  }, [value])
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value.replace(/[^\d.,]/g, '')
+    setLocalValue(val)
+    onChange(val)
+  }
+
+  const handleBlur = () => {
+    if (!localValue) return
+    const clean = localValue.replace(/\./g, '').replace(',', '.')
+    const num = Number(clean)
+    if (!isNaN(num)) {
+      const formatted = num.toLocaleString('pt-BR', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })
+      setLocalValue(formatted)
+      onChange(formatted)
+    }
+  }
+
+  return (
+    <Input
+      type="text"
+      value={localValue}
+      onChange={handleChange}
+      onBlur={handleBlur}
+      disabled={disabled}
+      placeholder={placeholder || '0,00'}
+    />
+  )
+}
+
 export function MonthlyDataDialog() {
   const { user } = useAuth()
   const { monthlyMetrics, saveMonthlyMetric, filters } = useFinanceStore()
@@ -90,20 +151,17 @@ export function MonthlyDataDialog() {
     if (!open) return
     if (isDirty) return
 
-    const toStringVal = (val: number | null | undefined) =>
-      val !== null && val !== undefined ? String(val) : ''
-
     const expectedData = currentExisting
       ? {
-          num_formulas_capsulas: toStringVal(currentExisting.num_formulas_capsulas),
-          vendas_capsulas: toStringVal(currentExisting.vendas_capsulas),
-          custo_mp_emb_capsulas: toStringVal(currentExisting.custo_mp_emb_capsulas),
-          num_formulas_dermato: toStringVal(currentExisting.num_formulas_dermato),
-          vendas_dermato: toStringVal(currentExisting.vendas_dermato),
-          custo_mp_emb_dermato: toStringVal(currentExisting.custo_mp_emb_dermato),
-          colaboradores_capsulas: toStringVal(currentExisting.colaboradores_capsulas),
-          colaboradores_dermato: toStringVal(currentExisting.colaboradores_dermato),
-          colaboradores_vendas: toStringVal(currentExisting.colaboradores_vendas),
+          num_formulas_capsulas: String(currentExisting.num_formulas_capsulas || ''),
+          vendas_capsulas: formatCurrencyString(currentExisting.vendas_capsulas),
+          custo_mp_emb_capsulas: formatCurrencyString(currentExisting.custo_mp_emb_capsulas),
+          num_formulas_dermato: String(currentExisting.num_formulas_dermato || ''),
+          vendas_dermato: formatCurrencyString(currentExisting.vendas_dermato),
+          custo_mp_emb_dermato: formatCurrencyString(currentExisting.custo_mp_emb_dermato),
+          colaboradores_capsulas: String(currentExisting.colaboradores_capsulas || ''),
+          colaboradores_dermato: String(currentExisting.colaboradores_dermato || ''),
+          colaboradores_vendas: String(currentExisting.colaboradores_vendas || ''),
         }
       : {
           num_formulas_capsulas: '',
@@ -131,9 +189,9 @@ export function MonthlyDataDialog() {
   const orders_count =
     (Number(formData.num_formulas_capsulas) || 0) + (Number(formData.num_formulas_dermato) || 0)
   const total_system_sales =
-    (Number(formData.vendas_capsulas) || 0) + (Number(formData.vendas_dermato) || 0)
+    parseCurrency(formData.vendas_capsulas) + parseCurrency(formData.vendas_dermato)
   const raw_material_costs =
-    (Number(formData.custo_mp_emb_capsulas) || 0) + (Number(formData.custo_mp_emb_dermato) || 0)
+    parseCurrency(formData.custo_mp_emb_capsulas) + parseCurrency(formData.custo_mp_emb_dermato)
 
   const handleChange = (field: string, value: string) => {
     saveDraft((prev) => ({
@@ -151,23 +209,6 @@ export function MonthlyDataDialog() {
     saveDraft((prev) => ({ ...prev, year: val, isDirty: false }))
   }
 
-  const formatLocalCurrency = (val: string | number) => {
-    if (val === '' || val === null || val === undefined) return ''
-    const num = Number(val)
-    if (isNaN(num)) return ''
-    return num.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
-  }
-
-  const handleCurrencyChange = (field: string, value: string) => {
-    const numericValue = value.replace(/\D/g, '')
-    if (!numericValue) {
-      handleChange(field, '')
-      return
-    }
-    const floatValue = parseInt(numericValue, 10) / 100
-    handleChange(field, floatValue.toFixed(2))
-  }
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!user) return
@@ -181,11 +222,11 @@ export function MonthlyDataDialog() {
         total_system_sales: total_system_sales,
         raw_material_costs: raw_material_costs,
         num_formulas_capsulas: Number(formData.num_formulas_capsulas) || 0,
-        vendas_capsulas: Number(formData.vendas_capsulas) || 0,
-        custo_mp_emb_capsulas: Number(formData.custo_mp_emb_capsulas) || 0,
+        vendas_capsulas: parseCurrency(formData.vendas_capsulas),
+        custo_mp_emb_capsulas: parseCurrency(formData.custo_mp_emb_capsulas),
         num_formulas_dermato: Number(formData.num_formulas_dermato) || 0,
-        vendas_dermato: Number(formData.vendas_dermato) || 0,
-        custo_mp_emb_dermato: Number(formData.custo_mp_emb_dermato) || 0,
+        vendas_dermato: parseCurrency(formData.vendas_dermato),
+        custo_mp_emb_dermato: parseCurrency(formData.custo_mp_emb_dermato),
         colaboradores_capsulas: Number(formData.colaboradores_capsulas) || 0,
         colaboradores_dermato: Number(formData.colaboradores_dermato) || 0,
         colaboradores_vendas: Number(formData.colaboradores_vendas) || 0,
@@ -286,19 +327,17 @@ export function MonthlyDataDialog() {
               </div>
               <div className="space-y-2">
                 <Label>Vendas (R$)</Label>
-                <Input
-                  type="text"
-                  value={formatLocalCurrency(formData.vendas_capsulas)}
-                  onChange={(e) => handleCurrencyChange('vendas_capsulas', e.target.value)}
+                <CurrencyInput
+                  value={formData.vendas_capsulas}
+                  onChange={(val) => handleChange('vendas_capsulas', val)}
                   placeholder="0,00"
                 />
               </div>
               <div className="space-y-2">
                 <Label>Custo MP/Emb (R$)</Label>
-                <Input
-                  type="text"
-                  value={formatLocalCurrency(formData.custo_mp_emb_capsulas)}
-                  onChange={(e) => handleCurrencyChange('custo_mp_emb_capsulas', e.target.value)}
+                <CurrencyInput
+                  value={formData.custo_mp_emb_capsulas}
+                  onChange={(val) => handleChange('custo_mp_emb_capsulas', val)}
                   placeholder="0,00"
                 />
               </div>
@@ -334,19 +373,17 @@ export function MonthlyDataDialog() {
               </div>
               <div className="space-y-2">
                 <Label>Vendas (R$)</Label>
-                <Input
-                  type="text"
-                  value={formatLocalCurrency(formData.vendas_dermato)}
-                  onChange={(e) => handleCurrencyChange('vendas_dermato', e.target.value)}
+                <CurrencyInput
+                  value={formData.vendas_dermato}
+                  onChange={(val) => handleChange('vendas_dermato', val)}
                   placeholder="0,00"
                 />
               </div>
               <div className="space-y-2">
                 <Label>Custo MP/Emb (R$)</Label>
-                <Input
-                  type="text"
-                  value={formatLocalCurrency(formData.custo_mp_emb_dermato)}
-                  onChange={(e) => handleCurrencyChange('custo_mp_emb_dermato', e.target.value)}
+                <CurrencyInput
+                  value={formData.custo_mp_emb_dermato}
+                  onChange={(val) => handleChange('custo_mp_emb_dermato', val)}
                   placeholder="0,00"
                 />
               </div>
@@ -382,7 +419,7 @@ export function MonthlyDataDialog() {
                 <Label>Vendas Totais (R$)</Label>
                 <Input
                   type="text"
-                  value={total_system_sales ? formatLocalCurrency(total_system_sales) : ''}
+                  value={total_system_sales ? formatCurrencyString(total_system_sales) : ''}
                   disabled
                   className="bg-slate-50 text-slate-500 font-medium"
                   placeholder="0,00"
@@ -392,7 +429,7 @@ export function MonthlyDataDialog() {
                 <Label>Custo MP/Emb (R$)</Label>
                 <Input
                   type="text"
-                  value={raw_material_costs ? formatLocalCurrency(raw_material_costs) : ''}
+                  value={raw_material_costs ? formatCurrencyString(raw_material_costs) : ''}
                   disabled
                   className="bg-slate-50 text-slate-500 font-medium"
                   placeholder="0,00"

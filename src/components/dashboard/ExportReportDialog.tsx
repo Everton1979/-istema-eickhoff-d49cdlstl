@@ -1,4 +1,13 @@
 import { useState } from 'react'
+import { format } from 'date-fns'
+import { ptBR } from 'date-fns/locale'
+import {
+  Calendar as CalendarIcon,
+  Download,
+  FileText,
+  FileSpreadsheet,
+  Loader2,
+} from 'lucide-react'
 import {
   Dialog,
   DialogContent,
@@ -7,7 +16,6 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import {
   Select,
@@ -16,18 +24,20 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { Download, FileText, FileSpreadsheet, Loader2 } from 'lucide-react'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { Calendar } from '@/components/ui/calendar'
 import { useFinanceStore } from '@/stores/financeStore'
 import { useToast } from '@/hooks/use-toast'
 import { Transaction } from '@/types/finance'
+import { cn } from '@/lib/utils'
 
 export function ExportReportDialog({ onExport }: { onExport?: (filters: any) => void }) {
   const now = new Date()
-  const firstDay = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0]
-  const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0).toISOString().split('T')[0]
+  const firstDay = new Date(now.getFullYear(), now.getMonth(), 1)
+  const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0)
 
-  const [startDate, setStartDate] = useState(firstDay)
-  const [endDate, setEndDate] = useState(lastDay)
+  const [startDate, setStartDate] = useState<Date | undefined>(firstDay)
+  const [endDate, setEndDate] = useState<Date | undefined>(lastDay)
   const [type, setType] = useState('ALL')
   const [open, setOpen] = useState(false)
   const [isExporting, setIsExporting] = useState(false)
@@ -35,7 +45,7 @@ export function ExportReportDialog({ onExport }: { onExport?: (filters: any) => 
   const { fetchTransactionsForExport } = useFinanceStore()
   const { toast } = useToast()
 
-  const generateCSV = (data: Transaction[]) => {
+  const generateCSV = (data: Transaction[], startStr: string, endStr: string) => {
     const headers = ['Data', 'Descrição', 'Valor', 'Tipo', 'Categoria', 'Status']
     const rows = data.map((tx) => {
       const dateObj = tx.date.includes('T') ? new Date(tx.date) : new Date(tx.date + 'T12:00:00Z')
@@ -54,14 +64,14 @@ export function ExportReportDialog({ onExport }: { onExport?: (filters: any) => 
     const url = URL.createObjectURL(blob)
     const link = document.createElement('a')
     link.href = url
-    link.setAttribute('download', `relatorio_financeiro_${startDate}_a_${endDate}.csv`)
+    link.setAttribute('download', `relatorio_financeiro_${startStr}_a_${endStr}.csv`)
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
     URL.revokeObjectURL(url)
   }
 
-  const generatePDF = (data: Transaction[]) => {
+  const generatePDF = (data: Transaction[], startStr: string, endStr: string) => {
     const printWindow = window.open('', '_blank')
     if (!printWindow) {
       toast({
@@ -126,7 +136,7 @@ export function ExportReportDialog({ onExport }: { onExport?: (filters: any) => 
           <div class="summary">
             <div>
               <h3>Período</h3>
-              <p>${formatDate(startDate)} a ${formatDate(endDate)}</p>
+              <p>${formatDate(startStr)} a ${formatDate(endStr)}</p>
               <p><strong>Tipo:</strong> ${typeLabel}</p>
             </div>
             <div>
@@ -180,7 +190,16 @@ export function ExportReportDialog({ onExport }: { onExport?: (filters: any) => 
     printWindow.document.close()
   }
 
-  const handleExport = async (format: 'pdf' | 'excel') => {
+  const handleExport = async (formatType: 'pdf' | 'excel') => {
+    if (!startDate || !endDate) {
+      toast({
+        title: 'Datas inválidas',
+        description: 'Por favor, selecione as datas de início e fim no calendário.',
+        variant: 'destructive',
+      })
+      return
+    }
+
     try {
       setIsExporting(true)
       toast({
@@ -188,7 +207,10 @@ export function ExportReportDialog({ onExport }: { onExport?: (filters: any) => 
         description: 'Coletando todos os lançamentos do período selecionado.',
       })
 
-      const data = await fetchTransactionsForExport(startDate, endDate, type)
+      const startStr = format(startDate, 'yyyy-MM-dd')
+      const endStr = format(endDate, 'yyyy-MM-dd')
+
+      const data = await fetchTransactionsForExport(startStr, endStr, type)
 
       if (data.length === 0) {
         toast({
@@ -200,10 +222,10 @@ export function ExportReportDialog({ onExport }: { onExport?: (filters: any) => 
         return
       }
 
-      if (format === 'excel') {
-        generateCSV(data)
+      if (formatType === 'excel') {
+        generateCSV(data, startStr, endStr)
       } else {
-        generatePDF(data)
+        generatePDF(data, startStr, endStr)
       }
 
       toast({
@@ -242,29 +264,58 @@ export function ExportReportDialog({ onExport }: { onExport?: (filters: any) => 
         </DialogHeader>
         <div className="grid gap-4 py-4">
           <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
+            <div className="space-y-2 flex flex-col">
               <Label>Data Inicial</Label>
-              <Input
-                type="date"
-                value={startDate}
-                onChange={(e) => setStartDate(e.target.value)}
-                disabled={isExporting}
-              />
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className={cn(
+                      'w-full justify-start text-left font-normal bg-white',
+                      !startDate && 'text-muted-foreground',
+                    )}
+                    disabled={isExporting}
+                  >
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {startDate ? format(startDate, 'P', { locale: ptBR }) : <span>Selecione</span>}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={startDate}
+                    onSelect={setStartDate}
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
             </div>
-            <div className="space-y-2">
+            <div className="space-y-2 flex flex-col">
               <Label>Data Final</Label>
-              <Input
-                type="date"
-                value={endDate}
-                onChange={(e) => setEndDate(e.target.value)}
-                disabled={isExporting}
-              />
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className={cn(
+                      'w-full justify-start text-left font-normal bg-white',
+                      !endDate && 'text-muted-foreground',
+                    )}
+                    disabled={isExporting}
+                  >
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {endDate ? format(endDate, 'P', { locale: ptBR }) : <span>Selecione</span>}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar mode="single" selected={endDate} onSelect={setEndDate} initialFocus />
+                </PopoverContent>
+              </Popover>
             </div>
           </div>
           <div className="space-y-2">
             <Label>Tipo de Lançamento</Label>
             <Select value={type} onValueChange={setType} disabled={isExporting}>
-              <SelectTrigger>
+              <SelectTrigger className="bg-white">
                 <SelectValue placeholder="Selecione o tipo" />
               </SelectTrigger>
               <SelectContent>
