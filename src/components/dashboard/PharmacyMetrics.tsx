@@ -127,8 +127,13 @@ export function PharmacyMetrics() {
 
         const getTxForMonth = (year: number, month: number) => {
           return transactions.filter((t) => {
-            const d = new Date(t.date.includes('T') ? t.date : `${t.date}T12:00:00Z`)
-            return d.getFullYear() === year && d.getMonth() + 1 === month
+            const datePart = t.date.split('T')[0]
+            if (!datePart || datePart.length < 10) return false
+            const parts = datePart.split('-')
+            if (parts.length < 3) return false
+            const txYear = parseInt(parts[0], 10)
+            const txMonth = parseInt(parts[1], 10)
+            return txYear === year && txMonth === month
           })
         }
 
@@ -137,7 +142,9 @@ export function PharmacyMetrics() {
 
         const sumCfa = (txs: any[]) =>
           txs
-            .filter((t) => t.type === 'EXPENSE' && t.categoryId === 'FIXA')
+            .filter(
+              (t) => t.type === 'EXPENSE' && t.categoryId === 'FIXA' && t.status === 'REALIZADO',
+            )
             .reduce((sum, t) => sum + t.amount, 0)
 
         const cfaCurr = sumCfa(currTx)

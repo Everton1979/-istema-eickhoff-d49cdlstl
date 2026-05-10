@@ -2,12 +2,14 @@ import { useFinanceStore } from '@/stores/financeStore'
 import { MonthlyDataDialog } from './MonthlyDataDialog'
 import { useAuth } from '@/hooks/use-auth'
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuCheckboxItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+} from '@/components/ui/dropdown-menu'
+import { Button } from '@/components/ui/button'
 import { ExportReportDialog } from './ExportReportDialog'
 import { DREDialog } from './DREDialog'
 import { MonthlyEvolutionDialog } from './MonthlyEvolutionDialog'
@@ -48,31 +50,91 @@ export function DashboardHeader({ onExport }: { onExport: (filters: any) => void
       </div>
 
       <div className="flex flex-wrap items-center gap-3">
-        <Select value={filters.months[0] || ''} onValueChange={(v) => setFilter('months', [v])}>
-          <SelectTrigger className="h-11 w-[140px] text-sm bg-slate-50 border-slate-200">
-            <SelectValue placeholder="Mês" />
-          </SelectTrigger>
-          <SelectContent>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="outline"
+              className="h-11 w-[140px] text-sm bg-slate-50 border-slate-200 justify-start font-normal text-slate-700"
+            >
+              {filters.months.length === 0
+                ? 'Todos os Meses'
+                : filters.months.length === 1
+                  ? MONTHS.find((m) => m.value === filters.months[0])?.label
+                  : `${filters.months.length} meses`}
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="w-[200px]">
+            <DropdownMenuLabel>Meses</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuCheckboxItem
+              checked={filters.months.length === 0}
+              onCheckedChange={() => setFilter('months', [])}
+            >
+              Todos
+            </DropdownMenuCheckboxItem>
             {MONTHS.map((m) => (
-              <SelectItem key={m.value} value={m.value}>
+              <DropdownMenuCheckboxItem
+                key={m.value}
+                checked={filters.months.includes(m.value)}
+                onCheckedChange={(checked) => {
+                  if (checked) {
+                    setFilter('months', [...filters.months, m.value])
+                  } else {
+                    setFilter(
+                      'months',
+                      filters.months.filter((v) => v !== m.value),
+                    )
+                  }
+                }}
+              >
                 {m.label}
-              </SelectItem>
+              </DropdownMenuCheckboxItem>
             ))}
-          </SelectContent>
-        </Select>
+          </DropdownMenuContent>
+        </DropdownMenu>
 
-        <Select value={filters.years[0] || ''} onValueChange={(v) => setFilter('years', [v])}>
-          <SelectTrigger className="h-11 w-[110px] text-sm bg-slate-50 border-slate-200">
-            <SelectValue placeholder="Ano" />
-          </SelectTrigger>
-          <SelectContent>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="outline"
+              className="h-11 w-[130px] text-sm bg-slate-50 border-slate-200 justify-start font-normal text-slate-700"
+            >
+              {filters.years.length === 0
+                ? 'Todos os Anos'
+                : filters.years.length === 1
+                  ? filters.years[0]
+                  : `${filters.years.length} anos`}
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="w-[140px]">
+            <DropdownMenuLabel>Anos</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuCheckboxItem
+              checked={filters.years.length === 0}
+              onCheckedChange={() => setFilter('years', [])}
+            >
+              Todos
+            </DropdownMenuCheckboxItem>
             {YEARS.map((y) => (
-              <SelectItem key={y} value={y}>
+              <DropdownMenuCheckboxItem
+                key={y}
+                checked={filters.years.includes(y)}
+                onCheckedChange={(checked) => {
+                  if (checked) {
+                    setFilter('years', [...filters.years, y])
+                  } else {
+                    setFilter(
+                      'years',
+                      filters.years.filter((v) => v !== y),
+                    )
+                  }
+                }}
+              >
                 {y}
-              </SelectItem>
+              </DropdownMenuCheckboxItem>
             ))}
-          </SelectContent>
-        </Select>
+          </DropdownMenuContent>
+        </DropdownMenu>
 
         <div className="h-6 w-px bg-slate-200 mx-1 hidden sm:block"></div>
 

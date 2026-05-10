@@ -26,7 +26,7 @@ import { formatCurrencyInput } from '@/lib/utils'
 
 export function MonthlyDataDialog() {
   const { user } = useAuth()
-  const { monthlyMetrics, saveMonthlyMetric } = useFinanceStore()
+  const { monthlyMetrics, saveMonthlyMetric, filters } = useFinanceStore()
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
 
@@ -73,38 +73,36 @@ export function MonthlyDataDialog() {
   }, [monthlyMetrics, month, year])
 
   useEffect(() => {
+    if (open && !isDirty) {
+      const targetMonth =
+        filters.months.length === 1 ? parseInt(filters.months[0], 10) : new Date().getMonth() + 1
+      const targetYear =
+        filters.years.length === 1 ? parseInt(filters.years[0], 10) : new Date().getFullYear()
+
+      if (targetMonth !== month || targetYear !== year) {
+        saveDraft((prev) => ({ ...prev, month: targetMonth, year: targetYear }))
+      }
+    }
+  }, [open, filters.months, filters.years, isDirty, month, year, saveDraft])
+
+  useEffect(() => {
     if (!open) return
     if (isDirty) return
 
+    const toStringVal = (val: number | null | undefined) =>
+      val !== null && val !== undefined ? String(val) : ''
+
     const expectedData = currentExisting
       ? {
-          num_formulas_capsulas: currentExisting.num_formulas_capsulas
-            ? String(currentExisting.num_formulas_capsulas)
-            : '',
-          vendas_capsulas: currentExisting.vendas_capsulas
-            ? String(currentExisting.vendas_capsulas)
-            : '',
-          custo_mp_emb_capsulas: currentExisting.custo_mp_emb_capsulas
-            ? String(currentExisting.custo_mp_emb_capsulas)
-            : '',
-          num_formulas_dermato: currentExisting.num_formulas_dermato
-            ? String(currentExisting.num_formulas_dermato)
-            : '',
-          vendas_dermato: currentExisting.vendas_dermato
-            ? String(currentExisting.vendas_dermato)
-            : '',
-          custo_mp_emb_dermato: currentExisting.custo_mp_emb_dermato
-            ? String(currentExisting.custo_mp_emb_dermato)
-            : '',
-          colaboradores_capsulas: currentExisting.colaboradores_capsulas
-            ? String(currentExisting.colaboradores_capsulas)
-            : '',
-          colaboradores_dermato: currentExisting.colaboradores_dermato
-            ? String(currentExisting.colaboradores_dermato)
-            : '',
-          colaboradores_vendas: currentExisting.colaboradores_vendas
-            ? String(currentExisting.colaboradores_vendas)
-            : '',
+          num_formulas_capsulas: toStringVal(currentExisting.num_formulas_capsulas),
+          vendas_capsulas: toStringVal(currentExisting.vendas_capsulas),
+          custo_mp_emb_capsulas: toStringVal(currentExisting.custo_mp_emb_capsulas),
+          num_formulas_dermato: toStringVal(currentExisting.num_formulas_dermato),
+          vendas_dermato: toStringVal(currentExisting.vendas_dermato),
+          custo_mp_emb_dermato: toStringVal(currentExisting.custo_mp_emb_dermato),
+          colaboradores_capsulas: toStringVal(currentExisting.colaboradores_capsulas),
+          colaboradores_dermato: toStringVal(currentExisting.colaboradores_dermato),
+          colaboradores_vendas: toStringVal(currentExisting.colaboradores_vendas),
         }
       : {
           num_formulas_capsulas: '',
