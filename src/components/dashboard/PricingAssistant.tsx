@@ -111,12 +111,21 @@ export function PricingAssistant() {
     }
 
     const custoOperacionalSetor = despesasManipulacao * peso_setor
-    const precoMinimoPorFormula =
+
+    const taxaTecnica =
       n_grupo > 0
-        ? custoOperacionalSetor / n_grupo
+        ? (cfaTotal * participacaoManipulacao * peso_setor) / n_grupo
         : formulasTotais > 0
-          ? despesasManipulacao / formulasTotais
+          ? cfaTotal / formulasTotais
           : 0
+    const custoVariavelPorFormula =
+      n_grupo > 0
+        ? (varExpOperacional * participacaoManipulacao * peso_setor) / n_grupo
+        : formulasTotais > 0
+          ? varExpOperacional / formulasTotais
+          : 0
+
+    const precoMinimoPorFormula = taxaTecnica + custoVariavelPorFormula
 
     const precoMedioIdeal = n_grupo > 0 ? vendas_grupo / n_grupo : 0
     const mkpMultiplicador = mpemb_grupo > 0 ? vendas_grupo / mpemb_grupo : 0
@@ -124,6 +133,7 @@ export function PricingAssistant() {
 
     return {
       precoMinimoPorFormula,
+      taxaTecnica,
       precoMedioIdeal,
       mkpMultiplicador,
       custoMedioInsumo,
@@ -403,16 +413,16 @@ export function PricingAssistant() {
             <Tooltip>
               <TooltipTrigger asChild>
                 <span className="cursor-help flex items-center gap-1">
-                  Custo Fixo + Var / Fórm:{' '}
+                  Taxa Técnica (CF/Fórm):{' '}
                   <span className="font-black text-slate-700 text-sm">
-                    R$ {stats.precoMinimoPorFormula.toFixed(2)}
+                    R$ {stats.taxaTecnica.toFixed(2)}
                   </span>
                 </span>
               </TooltipTrigger>
               <TooltipContent className="max-w-[200px] text-center" side="top">
                 <p className="text-xs">
-                  Custo Fixo e Variável ponderado pela representatividade do setor de manipulação e
-                  rateado por fórmula.
+                  Custo Fixo rateado por fórmula (Taxa Técnica). Essencial para cálculo do Preço
+                  Mínimo.
                 </p>
               </TooltipContent>
             </Tooltip>

@@ -67,7 +67,6 @@ export function PharmacyMetrics() {
 
     const ticketMedio = totalOrders > 0 ? totalSales / totalOrders : 0
 
-    // Alocação de Custos Fixos proporcionais à receita do setor
     const pesoCapsulas = totalSales > 0 ? vendasCapsulas / totalSales : 0.5
     const pesoDermato = totalSales > 0 ? vendasDermato / totalSales : 0.5
 
@@ -94,6 +93,59 @@ export function PharmacyMetrics() {
     const fatPorColabGeral = avgTotalColab > 0 ? totalSales / avgTotalColab : 0
     const fatPorColabVendas = avgColabVendas > 0 ? totalSales / avgColabVendas : 0
 
+    const margem = totalSales - varExpOperacional - totalRawMaterial
+    const ebitda = margem - cfaTotal
+
+    const loPorColab = avgTotalColab > 0 ? ebitda / avgTotalColab : 0
+    const ebitdaMedioMensal = countMonths > 0 ? ebitda / countMonths : 0
+    const valuationEstimado = ebitdaMedioMensal * 12 * 4 // Múltiplo de 4x
+
+    // Regra dos 70%
+    const sortedMetrics = [...filteredMonthlyMetrics].sort((a, b) => {
+      if (a.year !== b.year) return a.year - b.year
+      return a.month - b.month
+    })
+
+    let regra70Status = 'neutral'
+    let regra70Value = 'N/A'
+
+    if (sortedMetrics.length >= 2) {
+      const current = sortedMetrics[sortedMetrics.length - 1]
+      const previous = sortedMetrics[sortedMetrics.length - 2]
+
+      const salesGrowth = current.total_system_sales - previous.total_system_sales
+
+      const getTxForMonth = (year: number, month: number) => {
+        return filteredTransactions.filter((t) => {
+          const d = new Date(t.date.includes('T') ? t.date : `${t.date}T12:00:00Z`)
+          return d.getFullYear() === year && d.getMonth() + 1 === month
+        })
+      }
+
+      const prevTx = getTxForMonth(previous.year, previous.month)
+      const currTx = getTxForMonth(current.year, current.month)
+
+      const sumCfa = (txs: any[]) =>
+        txs
+          .filter((t) => t.type === 'EXPENSE' && t.categoryId === 'FIXA')
+          .reduce((sum, t) => sum + t.amount, 0)
+
+      const cfaCurr = sumCfa(currTx)
+      const cfaPrev = sumCfa(prevTx)
+
+      const cfaGrowth = cfaCurr - cfaPrev
+
+      if (salesGrowth > 0) {
+        const pct = (cfaGrowth / salesGrowth) * 100
+        regra70Value = `${pct.toFixed(1)}%`
+        if (pct <= 70) regra70Status = 'good'
+        else regra70Status = 'bad'
+      } else {
+        regra70Value = cfaGrowth <= 0 ? 'Bom (Queda)' : 'Atenção (CF Subiu)'
+        regra70Status = cfaGrowth <= 0 ? 'good' : 'bad'
+      }
+    }
+
     return {
       ticketMedio,
       mkpRealizado,
@@ -104,6 +156,10 @@ export function PharmacyMetrics() {
       pmIdealDerm,
       fatPorColabGeral,
       fatPorColabVendas,
+      loPorColab,
+      valuationEstimado,
+      regra70Value,
+      regra70Status,
     }
   }, [filteredTransactions, filteredMonthlyMetrics, filters])
 
@@ -142,6 +198,32 @@ export function PharmacyMetrics() {
       color: 'text-purple-600',
     },
     {
+      id: 'lo-colaborador',
+      title: 'LO / Colaborador',
+      tooltip: 'Lucro Operacional (EBITDA) gerado por cada membro da equipe.',
+      value: formatCurrency(metrics.loPorColab),
+      color: 'text-emerald-600',
+    },
+    {
+      id: 'valuation',
+      title: 'Valuation Estimado',
+      tooltip: 'Estimativa de valor de mercado (EBITDA Anualizado x 4).',
+      value: formatCurrency(metrics.valuationEstimado),
+      color: 'text-blue-600',
+    },
+    {
+      id: 'regra-70',
+      title: 'Regra dos 70%',
+      tooltip: 'Aumento do Custo Fixo / Aumento das Vendas. Ideal < 70%.',
+      value: metrics.regra70Value,
+      color:
+        metrics.regra70Status === 'good'
+          ? 'text-emerald-600'
+          : metrics.regra70Status === 'bad'
+            ? 'text-red-500'
+            : 'text-slate-500',
+    },
+    {
       id: 'pm-ideal-capsulas',
       title: 'PM Ideal (Cápsulas)',
       tooltip: 'Preço Médio (Ticket Médio) exclusivo do setor de Cápsulas.',
@@ -171,14 +253,14 @@ export function PharmacyMetrics() {
     },
     {
       id: 'fat-colab-geral',
-      title: 'Faturamento / Colab (Geral)',
+      title: 'Fat / Colab (Geral)',
       tooltip: 'Faturamento total dividido pelo número médio de colaboradores totais.',
       value: formatCurrency(metrics.fatPorColabGeral),
       color: 'text-emerald-600',
     },
     {
       id: 'fat-colab-vendas',
-      title: 'Faturamento / Colab (Vendas)',
+      title: 'Fat / Colab (Vendas)',
       tooltip: 'Faturamento total dividido pelo número médio de colaboradores de vendas.',
       value: formatCurrency(metrics.fatPorColabVendas),
       color: 'text-emerald-600',
@@ -190,7 +272,7 @@ export function PharmacyMetrics() {
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wide flex items-center gap-2">
           <div className="w-2 h-4 bg-indigo-500 rounded-sm" />
-          Inteligência Analítica por Segmento
+          Inteligência Analítica (KPIs 3.0)
         </h3>
       </div>
       <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
@@ -199,7 +281,7 @@ export function PharmacyMetrics() {
             key={item.id}
             className={cn(
               'rounded-md shadow-sm border-slate-200 bg-slate-50/50 hover:bg-white hover:border-indigo-200 transition-all',
-              i === 0 ? 'col-span-2 lg:col-span-3 bg-indigo-50/50 border-indigo-100' : '',
+              i < 3 ? 'bg-indigo-50/50 border-indigo-100' : '',
             )}
           >
             <CardContent className="p-3 text-center flex flex-col justify-center h-full">

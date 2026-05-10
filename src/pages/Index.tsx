@@ -7,6 +7,7 @@ import { PharmacyMetrics } from '@/components/dashboard/PharmacyMetrics'
 import { ExpenseDistribution } from '@/components/dashboard/ExpenseDistribution'
 import { SalesTargetProgress } from '@/components/dashboard/SalesTargetProgress'
 import { PricingAssistant } from '@/components/dashboard/PricingAssistant'
+import { KumonSimulator } from '@/components/dashboard/KumonSimulator'
 import { PerformanceEvolutionChart } from '@/components/dashboard/PerformanceEvolutionChart'
 import { PrintableReport } from '@/components/dashboard/PrintableReport'
 import { StatusDetailPanel } from '@/components/dashboard/StatusDetailPanel'
@@ -54,8 +55,13 @@ export default function Index() {
             </div>
           </section>
 
+          {/* Simulador KUMON */}
+          <section className="w-full mt-1">
+            <KumonSimulator />
+          </section>
+
           {/* Main Analytics - Visão Operacional Empilhada */}
-          <div className="flex flex-col gap-6 mt-2">
+          <div className="flex flex-col gap-6 mt-3">
             <div className="bg-white p-4 rounded-lg shadow-sm border border-slate-200">
               <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wide mb-4 flex items-center gap-2">
                 <div className="w-2 h-4 bg-emerald-500 rounded-sm" />

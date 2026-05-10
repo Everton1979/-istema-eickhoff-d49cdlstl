@@ -198,6 +198,18 @@ const GLOSSARY_TERMS = [
     trend: 'up',
   },
   {
+    id: 'lo-colaborador',
+    title: 'LO / Colaborador',
+    definition: 'Lucro Operacional (EBITDA) gerado por cada pessoa da equipe.',
+    calculation: 'Lucro Operacional (EBITDA) / Total de Colaboradores.',
+    example:
+      'Se a farmácia gerou R$ 30.000 de lucro operacional no mês e tem 10 funcionários no total, cada colaborador gerou R$ 3.000 de lucro.',
+    reference:
+      'Métrica superior ao Faturamento por Colaborador, pois mede a eficiência real da equipe baseada na sobra de caixa e não apenas na venda bruta.',
+    category: 'Inteligência Analítica',
+    trend: 'up',
+  },
+  {
     id: 'lucro-liquido-pct',
     title: 'Lucro Líquido Real (%)',
     definition: 'Percentual que o lucro líquido final representa em relação ao faturamento total.',
@@ -382,6 +394,19 @@ const GLOSSARY_TERMS = [
     trend: 'up',
   },
   {
+    id: 'regra-70',
+    title: 'Regra dos 70%',
+    definition:
+      'Indicador de saúde do crescimento. O aumento dos custos fixos não deve ultrapassar 70% do ritmo de crescimento das vendas.',
+    calculation: '(Crescimento Custos Fixos / Crescimento Vendas) * 100.',
+    example:
+      'Se suas vendas cresceram R$ 10.000 de um mês para outro, seus custos fixos não deveriam ter subido mais do que R$ 7.000 para manter a operação sustentável.',
+    reference:
+      'Serve como uma bússola de longevidade para evitar que a estrutura devore o crescimento comercial.',
+    category: 'Inteligência Analítica',
+    trend: 'down',
+  },
+  {
     id: 'retirada-socios',
     title: 'Retirada de Sócios (Tipo de Transação)',
     definition:
@@ -394,6 +419,32 @@ const GLOSSARY_TERMS = [
     trend: 'neutral',
   },
   {
+    id: 'simulador-kumon',
+    title: 'Simulador de Impacto (KUMON)',
+    definition:
+      'Ferramenta de simulação de ganho marginal. Ajuda a entender como pequenos ajustes (ex: R$ 1,00 a mais no preço ou a menos no custo) impactam o lucro mensal.',
+    calculation: 'Volume Total de Fórmulas × Ajuste pretendido.',
+    example:
+      'Se você faz 3.000 fórmulas/mês e aumenta o preço médio em R$ 1,00, o lucro líquido sobe R$ 3.000,00 sem nenhum esforço adicional de vendas.',
+    reference:
+      'Ferramenta estratégica para ajuste fino da lucratividade e percepção de ganhos em escala.',
+    category: 'Ferramentas do Dashboard',
+    trend: 'up',
+  },
+  {
+    id: 'taxa-tecnica',
+    title: 'Taxa Técnica',
+    definition:
+      'O valor fixo que cada fórmula produzida precisa carregar para manter o seu laboratório aberto (salários, aluguel, energia, manutenção).',
+    calculation: 'Custos Fixos Totais / Total de Fórmulas Produzidas.',
+    example:
+      'Se os custos fixos são R$ 10.000 e você produziu 1.000 fórmulas, a Taxa Técnica é R$ 10,00 por fórmula.',
+    reference:
+      'Ajuda a compor o Piso de Segurança junto com o custo da matéria-prima e custos variáveis.',
+    category: 'Métricas de Performance',
+    trend: 'down',
+  },
+  {
     id: 'ticket-medio',
     title: 'Ticket Médio',
     definition: 'Valor médio de venda gerado por cada orçamento aprovado/pedido no sistema.',
@@ -403,6 +454,18 @@ const GLOSSARY_TERMS = [
     reference:
       'Quanto maior, melhor. Indica eficácia do esforço do balconista em agregar vendas ou cross-selling.',
     category: 'Métricas de Performance',
+    trend: 'up',
+  },
+  {
+    id: 'valuation',
+    title: 'Valuation (Estimativa)',
+    definition:
+      'Estimativa simplificada do valor de mercado da sua farmácia baseada na geração de caixa.',
+    calculation: 'EBITDA Anualizado × Múltiplo de Mercado (Ex: 4x).',
+    example:
+      'Se a farmácia gera R$ 200.000 de EBITDA no ano, a um múltiplo de 4x, o valuation estimado é de R$ 800.000.',
+    reference: 'Fornece uma visão clara sobre a construção de patrimônio ao longo do tempo.',
+    category: 'Inteligência Analítica',
     trend: 'up',
   },
   {
