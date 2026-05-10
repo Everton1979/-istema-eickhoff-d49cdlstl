@@ -23,8 +23,11 @@ export function PerformanceEvolutionChart() {
     if (filters.years && filters.years.length > 0 && !isNaN(parseInt(filters.years[0], 10))) {
       refYear = parseInt(filters.years[0], 10)
     }
-    if (filters.months && filters.months.length > 0 && !isNaN(parseInt(filters.months[0], 10))) {
-      refMonth = parseInt(filters.months[0], 10)
+
+    if (filters.months && filters.months.length > 0) {
+      refMonth = parseInt(filters.months[filters.months.length - 1], 10)
+    } else {
+      refMonth = 12
     }
 
     for (let i = monthsCount - 1; i >= 0; i--) {
@@ -74,8 +77,11 @@ export function PerformanceEvolutionChart() {
 
       const metric = monthlyMetrics.find((mm) => mm.month === m && mm.year === y)
       const orders = metric ? metric.orders_count : 0
+      const rawMaterialCosts = metric ? metric.raw_material_costs : 0
+      const systemSales = metric ? metric.total_system_sales : 0
 
-      const pmIdeal = orders > 0 ? receitas / orders : 0
+      const ticketMedio = orders > 0 ? receitas / orders : 0
+      const markup = rawMaterialCosts > 0 ? systemSales / rawMaterialCosts : 0
       const taxaTecnica = orders > 0 ? cfaTotal / orders : 0
 
       result.push({
@@ -83,12 +89,13 @@ export function PerformanceEvolutionChart() {
         Receitas: receitas,
         Despesas: despesas,
         Lucro: receitas - despesas,
-        PM_Ideal: pmIdeal,
+        Ticket_Medio: ticketMedio,
         Taxa_Tecnica: taxaTecnica,
+        Markup: markup,
       })
     }
     return result
-  }, [transactions, monthsCount, filters])
+  }, [transactions, monthsCount, filters, monthlyMetrics])
 
   return (
     <div className="w-full flex flex-col">
@@ -109,8 +116,9 @@ export function PerformanceEvolutionChart() {
           Receitas: { label: 'Receitas (R$)', color: '#10b981' },
           Despesas: { label: 'Despesas/Custos (R$)', color: '#ef4444' },
           Lucro: { label: 'Lucro Líquido (R$)', color: '#3b82f6' },
-          PM_Ideal: { label: 'PM Ideal (R$)', color: '#f59e0b' },
-          Taxa_Tecnica: { label: 'Taxa Técnica (R$)', color: '#8b5cf6' },
+          Ticket_Medio: { label: 'Ticket Médio (R$)', color: '#f59e0b' },
+          Taxa_Tecnica: { label: 'Taxa Técnica Média (R$)', color: '#8b5cf6' },
+          Markup: { label: 'Mark-up', color: '#ec4899' },
         }}
         className="w-full h-[350px] aspect-auto"
       >
@@ -142,7 +150,7 @@ export function PerformanceEvolutionChart() {
             axisLine={false}
             tickLine={false}
             tick={{ fontSize: 10, fill: '#6b7280' }}
-            tickFormatter={(val) => `R$ ${val}`}
+            tickFormatter={(val) => val.toLocaleString('pt-BR', { maximumFractionDigits: 1 })}
             width={45}
           />
           <Tooltip content={<ChartTooltipContent />} cursor={{ fill: '#f3f4f6', opacity: 0.4 }} />
@@ -165,8 +173,8 @@ export function PerformanceEvolutionChart() {
           <Line
             yAxisId="right"
             type="monotone"
-            dataKey="PM_Ideal"
-            stroke="var(--color-PM_Ideal)"
+            dataKey="Ticket_Medio"
+            stroke="var(--color-Ticket_Medio)"
             strokeWidth={2}
             dot={{ r: 3 }}
           />
@@ -175,6 +183,14 @@ export function PerformanceEvolutionChart() {
             type="monotone"
             dataKey="Taxa_Tecnica"
             stroke="var(--color-Taxa_Tecnica)"
+            strokeWidth={2}
+            dot={{ r: 3 }}
+          />
+          <Line
+            yAxisId="right"
+            type="monotone"
+            dataKey="Markup"
+            stroke="var(--color-Markup)"
             strokeWidth={2}
             dot={{ r: 3 }}
           />

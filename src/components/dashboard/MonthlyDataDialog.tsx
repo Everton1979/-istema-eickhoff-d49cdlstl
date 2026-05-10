@@ -22,7 +22,6 @@ import {
 import { useAuth } from '@/hooks/use-auth'
 import { useFinanceStore } from '@/stores/financeStore'
 import { useDraft } from '@/hooks/use-draft'
-import { formatCurrencyInput } from '@/lib/utils'
 
 export function MonthlyDataDialog() {
   const { user } = useAuth()
@@ -75,7 +74,9 @@ export function MonthlyDataDialog() {
   useEffect(() => {
     if (open && !isDirty) {
       const targetMonth =
-        filters.months.length === 1 ? parseInt(filters.months[0], 10) : new Date().getMonth() + 1
+        filters.months.length > 0
+          ? parseInt(filters.months[filters.months.length - 1], 10)
+          : new Date().getMonth() + 1
       const targetYear =
         filters.years.length === 1 ? parseInt(filters.years[0], 10) : new Date().getFullYear()
 
@@ -148,6 +149,23 @@ export function MonthlyDataDialog() {
 
   const handleYearChange = (val: number) => {
     saveDraft((prev) => ({ ...prev, year: val, isDirty: false }))
+  }
+
+  const formatLocalCurrency = (val: string | number) => {
+    if (val === '' || val === null || val === undefined) return ''
+    const num = Number(val)
+    if (isNaN(num)) return ''
+    return num.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+  }
+
+  const handleCurrencyChange = (field: string, value: string) => {
+    const numericValue = value.replace(/\D/g, '')
+    if (!numericValue) {
+      handleChange(field, '')
+      return
+    }
+    const floatValue = parseInt(numericValue, 10) / 100
+    handleChange(field, floatValue.toFixed(2))
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -270,15 +288,8 @@ export function MonthlyDataDialog() {
                 <Label>Vendas (R$)</Label>
                 <Input
                   type="text"
-                  value={
-                    formData.vendas_capsulas !== ''
-                      ? formatCurrencyInput(formData.vendas_capsulas)
-                      : ''
-                  }
-                  onChange={(e) => {
-                    const val = e.target.value.replace(/\D/g, '')
-                    handleChange('vendas_capsulas', val ? String(parseInt(val, 10) / 100) : '')
-                  }}
+                  value={formatLocalCurrency(formData.vendas_capsulas)}
+                  onChange={(e) => handleCurrencyChange('vendas_capsulas', e.target.value)}
                   placeholder="0,00"
                 />
               </div>
@@ -286,18 +297,8 @@ export function MonthlyDataDialog() {
                 <Label>Custo MP/Emb (R$)</Label>
                 <Input
                   type="text"
-                  value={
-                    formData.custo_mp_emb_capsulas !== ''
-                      ? formatCurrencyInput(formData.custo_mp_emb_capsulas)
-                      : ''
-                  }
-                  onChange={(e) => {
-                    const val = e.target.value.replace(/\D/g, '')
-                    handleChange(
-                      'custo_mp_emb_capsulas',
-                      val ? String(parseInt(val, 10) / 100) : '',
-                    )
-                  }}
+                  value={formatLocalCurrency(formData.custo_mp_emb_capsulas)}
+                  onChange={(e) => handleCurrencyChange('custo_mp_emb_capsulas', e.target.value)}
                   placeholder="0,00"
                 />
               </div>
@@ -335,15 +336,8 @@ export function MonthlyDataDialog() {
                 <Label>Vendas (R$)</Label>
                 <Input
                   type="text"
-                  value={
-                    formData.vendas_dermato !== ''
-                      ? formatCurrencyInput(formData.vendas_dermato)
-                      : ''
-                  }
-                  onChange={(e) => {
-                    const val = e.target.value.replace(/\D/g, '')
-                    handleChange('vendas_dermato', val ? String(parseInt(val, 10) / 100) : '')
-                  }}
+                  value={formatLocalCurrency(formData.vendas_dermato)}
+                  onChange={(e) => handleCurrencyChange('vendas_dermato', e.target.value)}
                   placeholder="0,00"
                 />
               </div>
@@ -351,15 +345,8 @@ export function MonthlyDataDialog() {
                 <Label>Custo MP/Emb (R$)</Label>
                 <Input
                   type="text"
-                  value={
-                    formData.custo_mp_emb_dermato !== ''
-                      ? formatCurrencyInput(formData.custo_mp_emb_dermato)
-                      : ''
-                  }
-                  onChange={(e) => {
-                    const val = e.target.value.replace(/\D/g, '')
-                    handleChange('custo_mp_emb_dermato', val ? String(parseInt(val, 10) / 100) : '')
-                  }}
+                  value={formatLocalCurrency(formData.custo_mp_emb_dermato)}
+                  onChange={(e) => handleCurrencyChange('custo_mp_emb_dermato', e.target.value)}
                   placeholder="0,00"
                 />
               </div>
@@ -395,7 +382,7 @@ export function MonthlyDataDialog() {
                 <Label>Vendas Totais (R$)</Label>
                 <Input
                   type="text"
-                  value={total_system_sales ? formatCurrencyInput(total_system_sales) : ''}
+                  value={total_system_sales ? formatLocalCurrency(total_system_sales) : ''}
                   disabled
                   className="bg-slate-50 text-slate-500 font-medium"
                   placeholder="0,00"
@@ -405,7 +392,7 @@ export function MonthlyDataDialog() {
                 <Label>Custo MP/Emb (R$)</Label>
                 <Input
                   type="text"
-                  value={raw_material_costs ? formatCurrencyInput(raw_material_costs) : ''}
+                  value={raw_material_costs ? formatLocalCurrency(raw_material_costs) : ''}
                   disabled
                   className="bg-slate-50 text-slate-500 font-medium"
                   placeholder="0,00"

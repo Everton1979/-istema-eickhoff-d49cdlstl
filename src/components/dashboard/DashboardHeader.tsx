@@ -5,31 +5,40 @@ import {
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
-  DropdownMenuCheckboxItem,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
+  DropdownMenuCheckboxItem,
 } from '@/components/ui/dropdown-menu'
 import { Button } from '@/components/ui/button'
 import { ExportReportDialog } from './ExportReportDialog'
 import { DREDialog } from './DREDialog'
-import { MonthlyEvolutionDialog } from './MonthlyEvolutionDialog'
 import { BackupDataButton } from './BackupDataButton'
 import { Link } from 'react-router-dom'
 import { ArrowRightLeft } from 'lucide-react'
+import { ScrollArea } from '@/components/ui/scroll-area'
 
-const MONTHS = [
-  { value: '01', label: 'Janeiro' },
-  { value: '02', label: 'Fevereiro' },
-  { value: '03', label: 'Março' },
-  { value: '04', label: 'Abril' },
-  { value: '05', label: 'Maio' },
-  { value: '06', label: 'Junho' },
-  { value: '07', label: 'Julho' },
-  { value: '08', label: 'Agosto' },
-  { value: '09', label: 'Setembro' },
-  { value: '10', label: 'Outubro' },
-  { value: '11', label: 'Novembro' },
-  { value: '12', label: 'Dezembro' },
+const PERIODS = [
+  { label: 'Anual', value: 'anual', months: [] },
+  { label: '1º Semestre', value: 'sem-1', months: ['01', '02', '03', '04', '05', '06'] },
+  { label: '2º Semestre', value: 'sem-2', months: ['07', '08', '09', '10', '11', '12'] },
+  { label: '1º Trimestre', value: 'tri-1', months: ['01', '02', '03'] },
+  { label: '2º Trimestre', value: 'tri-2', months: ['04', '05', '06'] },
+  { label: '3º Trimestre', value: 'tri-3', months: ['07', '08', '09'] },
+  { label: '4º Trimestre', value: 'tri-4', months: ['10', '11', '12'] },
+  { label: 'Janeiro', value: '01', months: ['01'] },
+  { label: 'Fevereiro', value: '02', months: ['02'] },
+  { label: 'Março', value: '03', months: ['03'] },
+  { label: 'Abril', value: '04', months: ['04'] },
+  { label: 'Maio', value: '05', months: ['05'] },
+  { label: 'Junho', value: '06', months: ['06'] },
+  { label: 'Julho', value: '07', months: ['07'] },
+  { label: 'Agosto', value: '08', months: ['08'] },
+  { label: 'Setembro', value: '09', months: ['09'] },
+  { label: 'Outubro', value: '10', months: ['10'] },
+  { label: 'Novembro', value: '11', months: ['11'] },
+  { label: 'Dezembro', value: '12', months: ['12'] },
 ]
 
 export function DashboardHeader({ onExport }: { onExport: (filters: any) => void }) {
@@ -41,6 +50,9 @@ export function DashboardHeader({ onExport }: { onExport: (filters: any) => void
 
   const currentYear = new Date().getFullYear()
   const YEARS = Array.from({ length: 5 }, (_, i) => (currentYear - 2 + i).toString())
+
+  const currentPeriod =
+    PERIODS.find((p) => JSON.stringify(p.months) === JSON.stringify(filters.months)) || PERIODS[0]
 
   return (
     <div className="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-4 mb-2 bg-white p-4 rounded-lg shadow-sm border border-slate-200">
@@ -54,42 +66,29 @@ export function DashboardHeader({ onExport }: { onExport: (filters: any) => void
           <DropdownMenuTrigger asChild>
             <Button
               variant="outline"
-              className="h-11 w-[140px] text-sm bg-slate-50 border-slate-200 justify-start font-normal text-slate-700"
+              className="h-11 w-[160px] text-sm bg-slate-50 border-slate-200 justify-start font-normal text-slate-700"
             >
-              {filters.months.length === 0
-                ? 'Todos os Meses'
-                : filters.months.length === 1
-                  ? MONTHS.find((m) => m.value === filters.months[0])?.label
-                  : `${filters.months.length} meses`}
+              {currentPeriod.label}
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-[200px]">
-            <DropdownMenuLabel>Meses</DropdownMenuLabel>
+            <DropdownMenuLabel>Período</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuCheckboxItem
-              checked={filters.months.length === 0}
-              onCheckedChange={() => setFilter('months', [])}
-            >
-              Todos
-            </DropdownMenuCheckboxItem>
-            {MONTHS.map((m) => (
-              <DropdownMenuCheckboxItem
-                key={m.value}
-                checked={filters.months.includes(m.value)}
-                onCheckedChange={(checked) => {
-                  if (checked) {
-                    setFilter('months', [...filters.months, m.value])
-                  } else {
-                    setFilter(
-                      'months',
-                      filters.months.filter((v) => v !== m.value),
-                    )
-                  }
+            <ScrollArea className="h-[250px]">
+              <DropdownMenuRadioGroup
+                value={currentPeriod.value}
+                onValueChange={(val) => {
+                  const p = PERIODS.find((x) => x.value === val)
+                  if (p) setFilter('months', p.months)
                 }}
               >
-                {m.label}
-              </DropdownMenuCheckboxItem>
-            ))}
+                {PERIODS.map((p) => (
+                  <DropdownMenuRadioItem key={p.value} value={p.value}>
+                    {p.label}
+                  </DropdownMenuRadioItem>
+                ))}
+              </DropdownMenuRadioGroup>
+            </ScrollArea>
           </DropdownMenuContent>
         </DropdownMenu>
 
@@ -150,7 +149,6 @@ export function DashboardHeader({ onExport }: { onExport: (filters: any) => void
           <ExportReportDialog onExport={onExport} />
           <BackupDataButton />
           <DREDialog />
-          <MonthlyEvolutionDialog />
         </div>
       </div>
     </div>
