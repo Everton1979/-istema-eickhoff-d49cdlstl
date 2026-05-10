@@ -21,13 +21,6 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import { ThemeToggle } from '@/components/ThemeToggle'
 
 const PERIODS = [
-  { label: 'Anual', value: 'anual', months: [] },
-  { label: '1º Semestre', value: 'sem-1', months: ['01', '02', '03', '04', '05', '06'] },
-  { label: '2º Semestre', value: 'sem-2', months: ['07', '08', '09', '10', '11', '12'] },
-  { label: '1º Trimestre', value: 'tri-1', months: ['01', '02', '03'] },
-  { label: '2º Trimestre', value: 'tri-2', months: ['04', '05', '06'] },
-  { label: '3º Trimestre', value: 'tri-3', months: ['07', '08', '09'] },
-  { label: '4º Trimestre', value: 'tri-4', months: ['10', '11', '12'] },
   { label: 'Janeiro', value: '01', months: ['01'] },
   { label: 'Fevereiro', value: '02', months: ['02'] },
   { label: 'Março', value: '03', months: ['03'] },
@@ -40,6 +33,13 @@ const PERIODS = [
   { label: 'Outubro', value: '10', months: ['10'] },
   { label: 'Novembro', value: '11', months: ['11'] },
   { label: 'Dezembro', value: '12', months: ['12'] },
+  { label: 'Anual', value: 'anual', months: [] },
+  { label: '1º Semestre', value: 'sem-1', months: ['01', '02', '03', '04', '05', '06'] },
+  { label: '2º Semestre', value: 'sem-2', months: ['07', '08', '09', '10', '11', '12'] },
+  { label: '1º Trimestre', value: 'tri-1', months: ['01', '02', '03'] },
+  { label: '2º Trimestre', value: 'tri-2', months: ['04', '05', '06'] },
+  { label: '3º Trimestre', value: 'tri-3', months: ['07', '08', '09'] },
+  { label: '4º Trimestre', value: 'tri-4', months: ['10', '11', '12'] },
 ]
 
 export function DashboardHeader({ onExport }: { onExport: (filters: any) => void }) {
