@@ -1,7 +1,8 @@
 import { useFinanceStore } from '@/stores/financeStore'
 import { ScrollArea } from '@/components/ui/scroll-area'
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import { cn } from '@/lib/utils'
-import { ListFilter, Wallet } from 'lucide-react'
+import { ListFilter, Wallet, CalendarDays } from 'lucide-react'
 import { useMemo } from 'react'
 
 export function SidebarFilters() {
@@ -9,6 +10,11 @@ export function SidebarFilters() {
 
   const toggleMonth = (m: string) => {
     setFilter('months', filters.months.includes(m) ? [] : [m])
+  }
+
+  const isPeriodActive = (vals: string[]) => {
+    if (filters.months.length !== vals.length) return false
+    return vals.every((v) => filters.months.includes(v))
   }
 
   const toggleStatus = (status: string) => {
@@ -62,25 +68,123 @@ export function SidebarFilters() {
   ]
 
   return (
-    <ScrollArea className="h-full bg-blue-50/50 p-3 rounded-bl-md border-r min-w-[180px]">
-      <FilterSection title="Mês">
-        <div className="grid grid-cols-3 gap-1">
-          {months.map((m, i) => (
-            <button
-              key={m}
-              onClick={() => toggleMonth(m)}
-              className={cn(
-                'text-[10px] py-1 rounded-sm text-center transition-colors border',
-                filters.months.includes(m)
-                  ? 'bg-[#5f9ea0] text-white font-medium border-transparent'
-                  : 'bg-white hover:bg-gray-100',
-              )}
-            >
-              {monthLabels[i]}
-            </button>
-          ))}
+    <ScrollArea className="h-full bg-blue-50/50 p-3 rounded-bl-md border-r min-w-[200px]">
+      <div className="mb-4">
+        <div className="flex items-center gap-1 text-xs font-semibold text-gray-600 mb-2 border-b pb-1">
+          <CalendarDays className="w-3 h-3" /> Período
         </div>
-      </FilterSection>
+        <Tabs defaultValue="meses" className="w-full">
+          <TabsList className="grid w-full grid-cols-4 h-auto p-1 bg-slate-200/50 gap-1 mb-3">
+            <TabsTrigger
+              value="meses"
+              className="text-[9px] py-1 px-0.5 data-[state=active]:bg-[#5f9ea0] data-[state=active]:text-white"
+            >
+              Meses
+            </TabsTrigger>
+            <TabsTrigger
+              value="anual"
+              className="text-[9px] py-1 px-0.5 data-[state=active]:bg-[#5f9ea0] data-[state=active]:text-white"
+            >
+              Anual
+            </TabsTrigger>
+            <TabsTrigger
+              value="semestres"
+              className="text-[9px] py-1 px-0.5 data-[state=active]:bg-[#5f9ea0] data-[state=active]:text-white"
+            >
+              Semestres
+            </TabsTrigger>
+            <TabsTrigger
+              value="trimestres"
+              className="text-[9px] py-1 px-0.5 data-[state=active]:bg-[#5f9ea0] data-[state=active]:text-white"
+            >
+              Trimestres
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="meses" className="mt-0">
+            <div className="grid grid-cols-3 gap-1">
+              {months.map((m, i) => (
+                <button
+                  key={m}
+                  onClick={() => toggleMonth(m)}
+                  className={cn(
+                    'text-[10px] py-1.5 rounded-sm text-center transition-colors border',
+                    filters.months.includes(m) && filters.months.length === 1
+                      ? 'bg-[#5f9ea0] text-white font-medium border-transparent'
+                      : filters.months.includes(m)
+                        ? 'bg-[#5f9ea0]/80 text-white font-medium border-transparent'
+                        : 'bg-white hover:bg-gray-100',
+                  )}
+                >
+                  {monthLabels[i]}
+                </button>
+              ))}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="anual" className="mt-0">
+            <div className="grid grid-cols-1 gap-1">
+              <button
+                onClick={() => setFilter('months', months)}
+                className={cn(
+                  'text-xs py-2 rounded-sm text-center transition-colors border',
+                  isPeriodActive(months)
+                    ? 'bg-[#5f9ea0] text-white font-medium border-transparent'
+                    : 'bg-white hover:bg-gray-100',
+                )}
+              >
+                Ano Completo
+              </button>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="semestres" className="mt-0">
+            <div className="grid grid-cols-1 gap-1">
+              {[
+                { label: '1º Semestre', vals: ['01', '02', '03', '04', '05', '06'] },
+                { label: '2º Semestre', vals: ['07', '08', '09', '10', '11', '12'] },
+              ].map((sem) => (
+                <button
+                  key={sem.label}
+                  onClick={() => setFilter('months', sem.vals)}
+                  className={cn(
+                    'text-xs py-2 rounded-sm text-center transition-colors border',
+                    isPeriodActive(sem.vals)
+                      ? 'bg-[#5f9ea0] text-white font-medium border-transparent'
+                      : 'bg-white hover:bg-gray-100',
+                  )}
+                >
+                  {sem.label}
+                </button>
+              ))}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="trimestres" className="mt-0">
+            <div className="grid grid-cols-2 gap-1">
+              {[
+                { label: '1º Trim', vals: ['01', '02', '03'] },
+                { label: '2º Trim', vals: ['04', '05', '06'] },
+                { label: '3º Trim', vals: ['07', '08', '09'] },
+                { label: '4º Trim', vals: ['10', '11', '12'] },
+              ].map((trim) => (
+                <button
+                  key={trim.label}
+                  onClick={() => setFilter('months', trim.vals)}
+                  className={cn(
+                    'text-[10px] py-2 rounded-sm text-center transition-colors border',
+                    isPeriodActive(trim.vals)
+                      ? 'bg-[#5f9ea0] text-white font-medium border-transparent'
+                      : 'bg-white hover:bg-gray-100',
+                  )}
+                >
+                  {trim.label}
+                </button>
+              ))}
+            </div>
+          </TabsContent>
+        </Tabs>
+      </div>
 
       <FilterSection title="Status">
         <div className="flex flex-col gap-1">
@@ -91,7 +195,7 @@ export function SidebarFilters() {
               className={cn(
                 'text-xs py-1 px-2 rounded-sm text-left transition-colors border',
                 filters.statuses.includes(status.toUpperCase())
-                  ? 'bg-[#5f9ea0] text-white font-medium'
+                  ? 'bg-[#5f9ea0] text-white font-medium border-transparent'
                   : 'bg-white hover:bg-gray-100',
               )}
             >

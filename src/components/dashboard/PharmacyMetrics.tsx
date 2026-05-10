@@ -112,6 +112,7 @@ export function PharmacyMetrics() {
 
     let regra70Status = 'neutral'
     let regra70Value = 'N/A'
+    let regra70Text = ''
 
     if (targetMetric) {
       const previousDate = new Date(targetMetric.year, targetMetric.month - 2, 1)
@@ -155,11 +156,20 @@ export function PharmacyMetrics() {
         if (salesGrowth > 0) {
           const pct = (cfaGrowth / salesGrowth) * 100
           regra70Value = `${pct.toFixed(1)}%`
-          if (pct <= 70) regra70Status = 'good'
-          else regra70Status = 'bad'
+          if (pct <= 50) {
+            regra70Status = 'good'
+            regra70Text = 'Bom'
+          } else if (pct <= 70) {
+            regra70Status = 'regular'
+            regra70Text = 'Regular'
+          } else {
+            regra70Status = 'bad'
+            regra70Text = 'Ruim'
+          }
         } else {
-          regra70Value = cfaGrowth <= 0 ? 'Bom (Queda)' : 'Atenção (CF Subiu)'
+          regra70Value = cfaGrowth <= 0 ? 'N/A' : 'Atenção'
           regra70Status = cfaGrowth <= 0 ? 'good' : 'bad'
+          regra70Text = cfaGrowth <= 0 ? 'Queda Vendas/CF' : 'CF Subiu c/ Queda'
         }
       }
     }
@@ -178,6 +188,7 @@ export function PharmacyMetrics() {
       valuationEstimado,
       regra70Value,
       regra70Status,
+      regra70Text,
     }
   }, [filteredTransactions, filteredMonthlyMetrics, filters, monthlyMetrics, transactions])
 
@@ -234,12 +245,15 @@ export function PharmacyMetrics() {
       title: 'Regra dos 70%',
       tooltip: 'Aumento do Custo Fixo / Aumento das Vendas. Ideal < 70%.',
       value: metrics.regra70Value,
+      statusText: metrics.regra70Text,
       color:
         metrics.regra70Status === 'good'
           ? 'text-emerald-600'
-          : metrics.regra70Status === 'bad'
-            ? 'text-red-500'
-            : 'text-slate-500',
+          : metrics.regra70Status === 'regular'
+            ? 'text-amber-500'
+            : metrics.regra70Status === 'bad'
+              ? 'text-red-500'
+              : 'text-slate-500',
     },
     {
       id: 'pm-ideal-capsulas',
@@ -317,6 +331,9 @@ export function PharmacyMetrics() {
                 </Tooltip>
               </h4>
               <p className={cn('text-lg font-bold tracking-tight', item.color)}>{item.value}</p>
+              {item.statusText && (
+                <p className={cn('text-[11px] font-bold mt-1', item.color)}>{item.statusText}</p>
+              )}
             </CardContent>
           </Card>
         ))}
