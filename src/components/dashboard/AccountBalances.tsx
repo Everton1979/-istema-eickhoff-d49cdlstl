@@ -8,7 +8,8 @@ export function AccountBalances() {
     let total = 0
     const pmTotals: Record<string, number> = {}
 
-    const targetStatuses = filters.statuses.length > 0 ? filters.statuses : ['REALIZADO']
+    const targetStatuses =
+      (filters as any).statuses?.length > 0 ? (filters as any).statuses : ['REALIZADO']
 
     filteredTransactions.forEach((tx) => {
       if (tx.type === 'INCOME' && targetStatuses.includes(tx.status)) {
