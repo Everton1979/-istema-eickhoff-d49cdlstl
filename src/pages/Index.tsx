@@ -14,10 +14,25 @@ import { StatusDetailPanel } from '@/components/dashboard/StatusDetailPanel'
 import { PendingUsersAlert } from '@/components/dashboard/PendingUsersAlert'
 import { AdminActivityReport } from '@/components/dashboard/AdminActivityReport'
 import { PlanExpirationBanner } from '@/components/dashboard/PlanExpirationBanner'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { useAuth } from '@/hooks/use-auth'
 
 export default function Index() {
   const [exportFilters, setExportFilters] = useState<any>(null)
+  const { profile, loading } = useAuth()
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    // Checagem de segurança em tempo real para barrar acessos não aprovados
+    if (!loading && profile && profile.status === 'Pendente' && profile.role !== 'Administrador') {
+      navigate('/pendente', { replace: true })
+    }
+  }, [profile, loading, navigate])
+
+  if (profile?.status === 'Pendente' && profile?.role !== 'Administrador') {
+    return null // Evita renderizar o dashboard (piscar tela) antes do redirecionamento
+  }
 
   return (
     <>

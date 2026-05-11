@@ -1,22 +1,67 @@
 import { useAuth } from '@/hooks/use-auth'
 import { Button } from '@/components/ui/button'
-import { LogOut, Clock, Mail, CheckCircle2, ShieldCheck, ArrowRight, ArrowLeft } from 'lucide-react'
+import {
+  LogOut,
+  Clock,
+  Mail,
+  CheckCircle2,
+  ShieldCheck,
+  ArrowRight,
+  ArrowLeft,
+  RefreshCw,
+} from 'lucide-react'
 import { useNavigate, useLocation, Link } from 'react-router-dom'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Card, CardContent } from '@/components/ui/card'
+import { supabase } from '@/lib/supabase/client'
+import { toast } from 'sonner'
 
 export default function PendingApproval() {
-  const { signOut, profile, user } = useAuth()
+  const { signOut, profile, user, loading } = useAuth()
+  const [resending, setResending] = useState(false)
   const navigate = useNavigate()
   const location = useLocation()
 
   const displayEmail = location.state?.email || user?.email || 'seu e-mail'
 
   useEffect(() => {
-    if (profile?.status === 'Ativo' || profile?.role === 'Administrador') {
+    if (!loading && profile && (profile.status === 'Ativo' || profile.role === 'Administrador')) {
       navigate('/dashboard', { replace: true })
     }
-  }, [profile, navigate])
+  }, [profile, loading, navigate])
+
+  const handleResendEmail = async () => {
+    if (!displayEmail || displayEmail === 'seu e-mail') {
+      toast.error('Não foi possível identificar seu e-mail para reenvio.')
+      return
+    }
+
+    setResending(true)
+    const { error } = await supabase.auth.resend({
+      type: 'signup',
+      email: displayEmail,
+      options: {
+        emailRedirectTo: `${window.location.origin}/dashboard`,
+      },
+    })
+    setResending(false)
+
+    if (error) {
+      toast.error('Erro ao reenviar e-mail: ' + error.message)
+    } else {
+      toast.success(
+        'E-mail de confirmação reenviado! Verifique sua caixa de entrada e também a pasta de spam/lixo eletrônico.',
+      )
+    }
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#1e3a8a]"></div>
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col">
@@ -83,12 +128,28 @@ export default function PendingApproval() {
                   sua caixa de entrada ou na pasta de spam por um e-mail com o título{' '}
                   <strong>"Supabase Auth"</strong> ou <strong>"Confirm Your Signup"</strong>.
                 </p>
-                <div className="bg-blue-50/50 p-4 rounded-lg border border-blue-100 flex items-start gap-3">
-                  <CheckCircle2 className="w-5 h-5 text-blue-600 mt-0.5 shrink-0" />
-                  <span className="text-sm text-blue-900 font-medium">
-                    Abra a mensagem e clique no link de confirmação para validar sua identidade e
-                    ativar o login.
-                  </span>
+                <div className="bg-blue-50/50 p-4 rounded-lg border border-blue-100 flex flex-col gap-3">
+                  <div className="flex items-start gap-3">
+                    <CheckCircle2 className="w-5 h-5 text-blue-600 mt-0.5 shrink-0" />
+                    <span className="text-sm text-blue-900 font-medium">
+                      Abra a mensagem e clique no link de confirmação para validar sua identidade e
+                      ativar o login.
+                    </span>
+                  </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-full mt-2 bg-white border-blue-200 text-blue-700 hover:bg-blue-50"
+                    onClick={handleResendEmail}
+                    disabled={resending || displayEmail === 'seu e-mail'}
+                  >
+                    {resending ? (
+                      <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+                    ) : (
+                      <Mail className="w-4 h-4 mr-2" />
+                    )}
+                    Não recebeu? Reenviar e-mail
+                  </Button>
                 </div>
               </CardContent>
             </Card>
