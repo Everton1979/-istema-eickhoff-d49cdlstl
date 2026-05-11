@@ -21,8 +21,8 @@ export function SalesTargetProgress({
 
   const { metric, monthName, workingDays, achieved, isPastMonth } = useMemo(() => {
     const today = new Date()
-    const currentYear = parseInt(filters.years[0] || today.getFullYear().toString())
-    const targetStatuses = filters.statuses.length > 0 ? filters.statuses : ['REALIZADO']
+    const currentYear = parseInt(filters?.years?.[0] || today.getFullYear().toString())
+    const targetStatuses = filters?.statuses?.length > 0 ? filters.statuses : ['REALIZADO']
 
     let target = 0
     let inc = 0
@@ -32,7 +32,7 @@ export function SalesTargetProgress({
     let foundMetric = null
     let pastMonth = false
 
-    if (filters.months.length === 0) {
+    if (!filters?.months || filters.months.length === 0) {
       pastMonth = currentYear < today.getFullYear()
       target = monthlyMetrics
         .filter((m) => m.year === currentYear)
@@ -183,7 +183,7 @@ export function SalesTargetProgress({
               Meta {variant === 'GLOBAL' ? 'Vendas Totais' : 'Vendas Manipulação'} ({monthName})
             </h3>
           </div>
-          {!isEditing && profile?.role !== 'Visitante' && filters.months.length > 0 && (
+          {!isEditing && profile?.role !== 'Visitante' && filters?.months?.length > 0 && (
             <Button
               variant="ghost"
               size="icon"
