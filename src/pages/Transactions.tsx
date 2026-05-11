@@ -575,8 +575,26 @@ export default function Transactions() {
             )}
 
             {quickFilter === 'DESPESAS' && (
-              <div className="font-semibold text-red-600 bg-red-50 px-3 py-1.5 rounded-md">
+              <div className="font-semibold text-red-600 bg-red-50 px-3 py-1.5 rounded-md border border-red-100 shadow-sm">
                 Total Despesas:{' '}
+                {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(
+                  filteredData.reduce((acc, tx) => acc + tx.amount, 0),
+                )}
+              </div>
+            )}
+
+            {quickFilter === 'PREVISTO' && (
+              <div className="font-semibold text-blue-600 bg-blue-50 px-3 py-1.5 rounded-md border border-blue-100 shadow-sm">
+                Total Previsto:{' '}
+                {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(
+                  filteredData.reduce((acc, tx) => acc + tx.amount, 0),
+                )}
+              </div>
+            )}
+
+            {quickFilter === 'VENCIDO' && (
+              <div className="font-semibold text-rose-600 bg-rose-50 px-3 py-1.5 rounded-md border border-rose-100 shadow-sm">
+                Total Vencido:{' '}
                 {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(
                   filteredData.reduce((acc, tx) => acc + tx.amount, 0),
                 )}
@@ -587,19 +605,23 @@ export default function Transactions() {
               quickFilter !== 'PARTNER_WITHDRAWAL' &&
               quickFilter !== 'RECEITAS' &&
               quickFilter !== 'DESPESAS' &&
+              quickFilter !== 'PREVISTO' &&
+              quickFilter !== 'VENCIDO' &&
               filteredData.length > 0 && (
                 <div
                   className={cn(
-                    'font-semibold px-3 py-1.5 rounded-md border shadow-sm',
+                    'font-semibold px-3 py-1.5 rounded-md border shadow-sm flex gap-4',
                     visibleBalance >= 0
                       ? 'text-emerald-700 bg-emerald-50 border-emerald-100'
                       : 'text-red-700 bg-red-50 border-red-100',
                   )}
                 >
-                  Saldo visível:{' '}
-                  {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(
-                    visibleBalance,
-                  )}
+                  <span>
+                    Saldo visível:{' '}
+                    {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(
+                      visibleBalance,
+                    )}
+                  </span>
                 </div>
               )}
 

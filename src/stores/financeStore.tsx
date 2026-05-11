@@ -307,6 +307,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
 
   const updateTransaction = async (id: string, tx: Partial<Omit<Transaction, 'id'>>) => {
     if (!user) return
+    const original = transactions.find((t) => t.id === id)
     const updateData: any = {}
     if (tx.description !== undefined) updateData.description = tx.description
     if (tx.amount !== undefined) updateData.amount = tx.amount
@@ -348,18 +349,43 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
         ),
       )
       await logAction('ATUALIZAR', 'Transação', id, {
-        description: data.description,
-        amount: data.amount,
+        original: original
+          ? {
+              description: original.description,
+              amount: original.amount,
+              type: original.type,
+              status: original.status,
+              date: original.date,
+            }
+          : null,
+        updated: {
+          description: data.description,
+          amount: data.amount,
+          type: data.type,
+          status: data.status,
+          date: data.date,
+        },
       })
     } else if (error) throw error
   }
 
   const deleteTransaction = async (id: string) => {
     if (!user) return
+    const original = transactions.find((t) => t.id === id)
     const { error } = await supabase.from('transactions').delete().eq('id', id)
     if (!error) {
       setTransactions((prev) => prev.filter((t) => t.id !== id))
-      await logAction('EXCLUIR', 'Transação', id)
+      await logAction('EXCLUIR', 'Transação', id, {
+        deleted_data: original
+          ? {
+              description: original.description,
+              amount: original.amount,
+              type: original.type,
+              status: original.status,
+              date: original.date,
+            }
+          : null,
+      })
     } else throw error
   }
 
