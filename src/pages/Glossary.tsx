@@ -39,7 +39,7 @@ const GLOSSARY_TERMS = [
       'Número de funcionários alocados diretamente em cada área de produção ou atendimento da farmácia.',
     calculation: 'Entrada manual no fechamento do mês.',
     example:
-      'Se a farmácia possui 3 atendentes no balcão e 2 farmacêuticos encapsulando, você lança 3 no setor "Vendas" e 2 na "Produção de Cápsulas". Isso dividirá o faturamento para achar a receita gerada por cabeça.',
+      'Se a farmácia possui 3 atendentes no balcão e 2 farmacêuticos encapsulando, você lança 3 no setor "Vendas" e 2 na "Produção de Cápsulas". Isso dividirá o faturamento para achar a receita gerada por colaborador.',
     reference:
       'Essencial para medir o Faturamento por Colaborador em cada setor e avaliar a eficiência e necessidade de contratações.',
     category: 'Métricas de Performance',
@@ -179,7 +179,7 @@ const GLOSSARY_TERMS = [
     definition: 'Mede a eficiência e a produtividade da equipe em relação à receita gerada.',
     calculation: 'Faturamento Total / Número de Colaboradores.',
     example:
-      'A farmácia faturou R$ 150.000 no mês e possui no total 10 colaboradores. O Faturamento por Colaborador (Geral) é de R$ 15.000 por cabeça. Permite avaliar se a folha está pesada.',
+      'A farmácia faturou R$ 150.000 no mês e possui no total 10 colaboradores. O Faturamento por Colaborador (Geral) é de R$ 15.000 por colaborador. Permite avaliar se a folha está pesada.',
     reference:
       'Usado para avaliar se a equipe está dimensionada corretamente. Faturamentos maiores com menos equipe aumentam esse índice.',
     category: 'Inteligência Analítica',
