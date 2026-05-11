@@ -83,9 +83,9 @@ export function ExpenseDistribution() {
     const variaveisMap: Record<string, number> = {}
     const invMap: Record<string, number> = {}
 
-    const targetStatuses = filters.statuses.length > 0 ? filters.statuses : ['REALIZADO']
+    const targetStatuses = filters?.statuses?.length > 0 ? filters.statuses : ['REALIZADO']
 
-    filteredTransactions.forEach((t) => {
+    ;(filteredTransactions || []).forEach((t) => {
       if (t.type === 'EXPENSE' && targetStatuses.includes(t.status)) {
         if (t.categoryId === 'FIXA') {
           cfaTotal += t.amount
