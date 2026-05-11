@@ -21,8 +21,13 @@ export function SalesTargetProgress({
 
   const { metric, monthName, workingDays, achieved, isPastMonth } = useMemo(() => {
     const today = new Date()
-    const currentYear = parseInt(filters?.years?.[0] || today.getFullYear().toString())
-    const targetStatuses = filters?.statuses?.length > 0 ? filters.statuses : ['REALIZADO']
+    const currentYear = parseInt(
+      (filters?.years && filters.years[0]) || today.getFullYear().toString(),
+    )
+    const targetStatuses =
+      Array.isArray(filters?.statuses) && filters.statuses.length > 0
+        ? filters.statuses
+        : ['REALIZADO']
 
     let target = 0
     let inc = 0
@@ -32,9 +37,9 @@ export function SalesTargetProgress({
     let foundMetric = null
     let pastMonth = false
 
-    if (!filters?.months || filters.months.length === 0) {
+    if (!Array.isArray(filters?.months) || filters.months.length === 0) {
       pastMonth = currentYear < today.getFullYear()
-      target = monthlyMetrics
+      target = (monthlyMetrics || [])
         .filter((m) => m.year === currentYear)
         .reduce(
           (sum, m) =>
@@ -42,7 +47,7 @@ export function SalesTargetProgress({
           0,
         )
 
-      transactions.forEach((tx) => {
+      ;(transactions || []).forEach((tx) => {
         const d = new Date(tx.date)
         if (
           d.getFullYear() === currentYear &&
@@ -81,7 +86,9 @@ export function SalesTargetProgress({
         'Dez',
       ]
 
-      foundMetric = monthlyMetrics.find((m) => m.year === currentYear && m.month === currentMonth)
+      foundMetric = (monthlyMetrics || []).find(
+        (m) => m.year === currentYear && m.month === currentMonth,
+      )
       target =
         variant === 'GLOBAL'
           ? foundMetric?.global_sales_target || 0
@@ -89,7 +96,7 @@ export function SalesTargetProgress({
       wDays = getWorkingDays(currentYear, currentMonth)
       mName = `${monthLabels[currentMonth - 1]}/${currentYear}`
 
-      transactions.forEach((tx) => {
+      ;(transactions || []).forEach((tx) => {
         const d = new Date(tx.date)
         if (
           d.getFullYear() === currentYear &&
@@ -183,19 +190,22 @@ export function SalesTargetProgress({
               Meta {variant === 'GLOBAL' ? 'Vendas Totais' : 'Vendas Manipulação'} ({monthName})
             </h3>
           </div>
-          {!isEditing && profile?.role !== 'Visitante' && filters?.months?.length > 0 && (
-            <Button
-              variant="ghost"
-              size="icon"
-              className={cn(
-                'h-5 w-5 absolute right-2 top-2 text-gray-400',
-                variant === 'GLOBAL' ? 'hover:text-emerald-600' : 'hover:text-blue-600',
-              )}
-              onClick={handleEdit}
-            >
-              <Pencil className="h-3 w-3" />
-            </Button>
-          )}
+          {!isEditing &&
+            profile?.role !== 'Visitante' &&
+            Array.isArray(filters?.months) &&
+            filters.months.length > 0 && (
+              <Button
+                variant="ghost"
+                size="icon"
+                className={cn(
+                  'h-5 w-5 absolute right-2 top-2 text-gray-400',
+                  variant === 'GLOBAL' ? 'hover:text-emerald-600' : 'hover:text-blue-600',
+                )}
+                onClick={handleEdit}
+              >
+                <Pencil className="h-3 w-3" />
+              </Button>
+            )}
         </div>
 
         {isEditing ? (

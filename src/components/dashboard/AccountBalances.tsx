@@ -8,10 +8,11 @@ export function AccountBalances() {
     let total = 0
     const pmTotals: Record<string, number> = {}
 
-    const statuses = Array.isArray((filters as any)?.statuses) ? (filters as any).statuses : []
+    const statuses =
+      filters && Array.isArray((filters as any).statuses) ? (filters as any).statuses : []
     const targetStatuses = statuses.length > 0 ? statuses : null
 
-    filteredTransactions.forEach((tx) => {
+    ;(filteredTransactions || []).forEach((tx) => {
       if (tx.type === 'INCOME' && (!targetStatuses || targetStatuses.includes(tx.status))) {
         total += tx.amount
         const pm = tx.paymentMethodId || 'outros'

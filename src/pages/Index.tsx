@@ -30,8 +30,15 @@ export default function Index() {
     }
   }, [profile, loading, navigate])
 
-  if (profile?.status === 'Pendente' && profile?.role !== 'Administrador') {
-    return null // Evita renderizar o dashboard (piscar tela) antes do redirecionamento
+  if (!loading && profile && profile.status === 'Pendente' && profile.role !== 'Administrador') {
+    return (
+      <div className="flex items-center justify-center h-full w-full bg-[#f8fafc] animate-fade-in">
+        <div className="flex flex-col items-center gap-4 mt-20">
+          <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+          <p className="text-slate-500 font-medium">Redirecionando para aprovação...</p>
+        </div>
+      </div>
+    )
   }
 
   return (

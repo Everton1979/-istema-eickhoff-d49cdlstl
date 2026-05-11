@@ -50,50 +50,66 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null)
   const [profile, setProfile] = useState<UserProfile | null>(null)
   const [session, setSession] = useState<Session | null>(null)
-  const [loading, setLoading] = useState(true)
+  const [loadingUser, setLoadingUser] = useState(true)
+  const [loadingProfile, setLoadingProfile] = useState(true)
+
+  useEffect(() => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event, currentSession) => {
+      // FORBIDDEN: no async/await inside this callback — sync only
+      setSession(currentSession)
+      setUser(currentSession?.user ?? null)
+      setLoadingUser(false)
+    })
+
+    supabase.auth.getSession().then(({ data: { session: initialSession } }) => {
+      setSession(initialSession)
+      setUser(initialSession?.user ?? null)
+      setLoadingUser(false)
+    })
+
+    return () => {
+      subscription.unsubscribe()
+    }
+  }, [])
 
   useEffect(() => {
     let mounted = true
 
-    const fetchProfileAndSetState = async (currentSession: Session | null) => {
-      if (currentSession?.user) {
-        const { data } = await supabase
+    const loadProfile = async () => {
+      if (user) {
+        setLoadingProfile(true)
+        const { data, error } = await supabase
           .from('profiles')
           .select('*')
-          .eq('id', currentSession.user.id)
+          .eq('id', user.id)
           .single()
 
         if (mounted) {
-          setSession(currentSession)
-          setUser(currentSession.user)
-          setProfile(data as UserProfile | null)
-          setLoading(false)
+          if (!error && data) {
+            setProfile(data as UserProfile)
+          } else {
+            setProfile(null)
+          }
+          setLoadingProfile(false)
         }
       } else {
         if (mounted) {
-          setSession(null)
-          setUser(null)
           setProfile(null)
-          setLoading(false)
+          setLoadingProfile(false)
         }
       }
     }
 
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((event, currentSession) => {
-      fetchProfileAndSetState(currentSession)
-    })
-
-    supabase.auth.getSession().then(({ data: { session: initialSession } }) => {
-      fetchProfileAndSetState(initialSession)
-    })
+    if (!loadingUser) {
+      loadProfile()
+    }
 
     return () => {
       mounted = false
-      subscription.unsubscribe()
     }
-  }, [])
+  }, [user, loadingUser])
 
   const signUp = async (email: string, password: string, metadata?: any) => {
     const { error } = await supabase.auth.signUp({
@@ -128,6 +144,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const { error } = await supabase.auth.updateUser({ password })
     return { error }
   }
+
+  const loading = loadingUser || loadingProfile
 
   return (
     <AuthContext.Provider
