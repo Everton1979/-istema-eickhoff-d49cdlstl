@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react'
 import { DashboardHeader } from '@/components/dashboard/DashboardHeader'
 import { supabase } from '@/lib/supabase/client'
-import { FileText, Search, Activity, AlertTriangle, ArrowRight } from 'lucide-react'
+import { FileText, Search, Activity, AlertTriangle, ArrowRight, RotateCcw } from 'lucide-react'
 import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
+import { useToast } from '@/hooks/use-toast'
 import {
   Table,
   TableBody,
@@ -20,6 +22,7 @@ export default function AuditLogs() {
   const [logs, setLogs] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
+  const { toast } = useToast()
 
   useEffect(() => {
     fetchLogs()
@@ -60,6 +63,66 @@ export default function AuditLogs() {
   )
 
   const financialLogs = filteredLogs.filter((log) => log.entity === 'Transação')
+
+  const mapTypeToDB = (type: string) => {
+    if (!type) return 'despesa'
+    const t = type.toUpperCase()
+    if (t === 'INCOME' || t === 'RECEITA') return 'receita'
+    if (t === 'CORTESIA') return 'cortesia'
+    if (t === 'PARTNER_WITHDRAWAL' || t === 'RETIRADA_SOCIOS') return 'retirada_socios'
+    return 'despesa'
+  }
+
+  const handleRevert = async (log: any) => {
+    if (log.entity === 'Transação' && log.action === 'ATUALIZAR' && log.entity_id) {
+      const original = log.details?.original
+      if (!original) return
+
+      const updateData: any = {}
+      if (original.status) updateData.status = original.status
+      if (original.amount !== undefined) updateData.amount = original.amount
+      if (original.type) updateData.type = mapTypeToDB(original.type)
+      if (original.description) updateData.description = original.description
+      if (original.date) updateData.date = original.date.split('T')[0] + 'T12:00:00Z'
+
+      setLoading(true)
+      const { error } = await supabase
+        .from('transactions')
+        .update(updateData)
+        .eq('id', log.entity_id)
+
+      if (!error) {
+        toast({
+          title: 'Alteração revertida',
+          description: 'A transação foi restaurada para os valores originais.',
+        })
+
+        const {
+          data: { user },
+        } = await supabase.auth.getUser()
+        await supabase.from('audit_logs').insert({
+          user_id: user?.id || log.user_id,
+          project_id: log.project_id || 'farmacia',
+          action: 'REVERTER',
+          entity: 'Transação',
+          entity_id: log.entity_id,
+          details: {
+            reverted_from_log_id: log.id,
+            restored_data: updateData,
+          },
+        })
+
+        await fetchLogs()
+      } else {
+        toast({
+          title: 'Erro ao reverter',
+          description: error.message,
+          variant: 'destructive',
+        })
+        setLoading(false)
+      }
+    }
+  }
 
   const renderDetails = (details: any) => {
     if (!details) return <span className="text-slate-400">-</span>
@@ -195,18 +258,19 @@ export default function AuditLogs() {
             <TableHead className="w-24">Ação</TableHead>
             <TableHead className="w-32">Módulo</TableHead>
             <TableHead>Detalhes da Modificação</TableHead>
+            <TableHead className="w-28 text-center">Ações</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {loading ? (
             <TableRow>
-              <TableCell colSpan={5} className="text-center py-8 text-slate-500">
+              <TableCell colSpan={6} className="text-center py-8 text-slate-500">
                 Carregando histórico...
               </TableCell>
             </TableRow>
           ) : data.length === 0 ? (
             <TableRow>
-              <TableCell colSpan={5} className="text-center py-8 text-slate-500">
+              <TableCell colSpan={6} className="text-center py-8 text-slate-500">
                 Nenhum registro encontrado.
               </TableCell>
             </TableRow>
@@ -248,6 +312,24 @@ export default function AuditLogs() {
                 </TableCell>
                 <TableCell className="text-slate-700 font-medium text-sm">{log.entity}</TableCell>
                 <TableCell>{renderDetails(log.details)}</TableCell>
+                <TableCell className="text-center">
+                  {log.action === 'ATUALIZAR' &&
+                    log.entity === 'Transação' &&
+                    log.details?.original && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleRevert(log)}
+                        className="h-7 text-xs flex items-center gap-1 bg-white hover:bg-slate-50 text-slate-600 border-slate-200 w-full justify-center"
+                        title="Desfazer esta alteração"
+                      >
+                        <RotateCcw className="w-3 h-3" /> Reverter
+                      </Button>
+                    )}
+                  {log.action === 'REVERTER' && (
+                    <span className="text-[10px] text-slate-400 font-medium italic">Revertido</span>
+                  )}
+                </TableCell>
               </TableRow>
             ))
           )}
