@@ -13,12 +13,21 @@ export function PendingUsersAlert() {
     if (profile?.role !== 'Administrador') return
 
     const fetchPending = async () => {
-      const { count } = await supabase
-        .from('profiles')
-        .select('*', { count: 'exact', head: true })
-        .eq('status', 'Pendente')
+      try {
+        const { count, error } = await supabase
+          .from('profiles')
+          .select('id', { count: 'exact' })
+          .eq('status', 'Pendente')
 
-      if (count !== null) setPendingCount(count)
+        if (error) {
+          console.error('Error fetching pending users:', error)
+          return
+        }
+
+        if (count !== null) setPendingCount(count)
+      } catch (err) {
+        console.error('Unexpected error fetching pending users:', err)
+      }
     }
 
     fetchPending()
