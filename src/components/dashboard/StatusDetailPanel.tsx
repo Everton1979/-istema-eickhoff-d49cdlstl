@@ -32,12 +32,12 @@ export function StatusDetailPanel() {
 
   const data = useMemo(() => {
     // Only show if at least one status is selected
-    if (filters.statuses.length === 0) return []
+    if (!filters?.statuses?.length) return []
 
     const monthlyData: Record<number, { entradas: number; saidas: number; saldo: number }> = {}
-    const targetYear = filters.years[0] || new Date().getFullYear().toString()
+    const targetYear = filters?.years?.[0] || new Date().getFullYear().toString()
 
-    transactions.forEach((tx) => {
+    ;(transactions || []).forEach((tx) => {
       let txYear = ''
       if (tx.date.includes('T')) {
         txYear = tx.date.split('-')[0]
@@ -46,7 +46,7 @@ export function StatusDetailPanel() {
       }
 
       if (txYear !== targetYear) return
-      if (!filters.statuses.includes(tx.status)) return
+      if (!filters?.statuses?.includes(tx.status)) return
 
       const month = new Date(tx.date).getMonth()
       if (!monthlyData[month]) {
@@ -63,9 +63,9 @@ export function StatusDetailPanel() {
         ...vals,
       }))
       .sort((a, b) => a.month - b.month)
-  }, [transactions, filters.statuses, filters.years])
+  }, [transactions, filters?.statuses, filters?.years])
 
-  if (filters.statuses.length === 0) return null
+  if (!filters?.statuses?.length) return null
 
   const formatCurrency = (val: number) =>
     new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val)
@@ -75,9 +75,9 @@ export function StatusDetailPanel() {
       <CardHeader className="py-3 px-4 bg-slate-50 border-b">
         <CardTitle className="text-sm font-bold text-slate-700 uppercase tracking-wide flex items-center gap-2">
           <ListOrdered className="w-4 h-4 text-blue-500" />
-          Detalhamento Mensal ({filters.years[0] || new Date().getFullYear()})
+          Detalhamento Mensal ({filters?.years?.[0] || new Date().getFullYear()})
           <span className="text-[10px] font-normal bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full normal-case ml-2">
-            {filters.statuses.join(', ')}
+            {filters?.statuses?.join(', ')}
           </span>
         </CardTitle>
       </CardHeader>
