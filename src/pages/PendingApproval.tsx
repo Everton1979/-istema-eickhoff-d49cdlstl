@@ -14,7 +14,7 @@ export default function PendingApproval() {
 
   useEffect(() => {
     if (profile?.status === 'Ativo' || profile?.role === 'Administrador') {
-      navigate('/dashboard')
+      navigate('/dashboard', { replace: true })
     }
   }, [profile, navigate])
 

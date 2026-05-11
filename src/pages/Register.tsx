@@ -25,7 +25,7 @@ export default function Register() {
     password: '',
   })
   const [loading, setLoading] = useState(false)
-  const { signUp, user, loading: authLoading } = useAuth()
+  const { signUp, user, profile, loading: authLoading } = useAuth()
   const navigate = useNavigate()
 
   if (authLoading) {
@@ -35,7 +35,12 @@ export default function Register() {
   }
 
   if (user) {
-    return <Navigate to="/dashboard" replace />
+    if (profile?.status === 'Ativo' || profile?.role === 'Administrador') {
+      return <Navigate to="/dashboard" replace />
+    }
+    if (profile?.status === 'Pendente' || profile?.status === 'Bloqueado') {
+      return <Navigate to="/pendente" replace />
+    }
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

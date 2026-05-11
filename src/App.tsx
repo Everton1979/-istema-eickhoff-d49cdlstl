@@ -41,22 +41,13 @@ const ProtectedRoute = ({
     return <Navigate to="/login" replace />
   }
 
+  if (requireActive && !profile) {
+    return <Navigate to="/pendente" replace />
+  }
+
   if (allowedRoles) {
     if (!profile) return <Navigate to="/" replace />
     if (!allowedRoles.includes(profile.role)) return <Navigate to="/" replace />
-  }
-
-  if (requireActive) {
-    if (profile?.status === 'Bloqueado') {
-      return <Navigate to="/bloqueado" replace />
-    }
-
-    if (profile?.plan_end_date) {
-      const endDate = new Date(profile.plan_end_date)
-      if (new Date() > endDate) {
-        return <Navigate to="/bloqueado" replace />
-      }
-    }
   }
 
   // Administrador tem acesso total
@@ -67,6 +58,17 @@ const ProtectedRoute = ({
   if (requireActive) {
     if (profile?.status === 'Pendente') {
       return <Navigate to="/pendente" replace />
+    }
+
+    if (profile?.status === 'Bloqueado') {
+      return <Navigate to="/bloqueado" replace />
+    }
+
+    if (profile?.plan_end_date) {
+      const endDate = new Date(profile.plan_end_date)
+      if (new Date() > endDate) {
+        return <Navigate to="/bloqueado" replace />
+      }
     }
   }
 

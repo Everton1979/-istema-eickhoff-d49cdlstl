@@ -102,10 +102,15 @@ export function UserManagement() {
     if (a.status === 'Pendente' && b.status !== 'Pendente') return -1
     if (b.status === 'Pendente' && a.status !== 'Pendente') return 1
 
-    // 2. Sort by days remaining (ascending)
+    // 2. Administradores no fundo
+    if (a.role === 'Administrador' && b.role !== 'Administrador') return 1
+    if (b.role === 'Administrador' && a.role !== 'Administrador') return -1
+
+    // 3. Sort by days remaining (ascending)
     const getDays = (dateStr: string | null | undefined) => {
-      if (!dateStr) return Infinity // No expiration -> bottom
+      if (!dateStr) return 999999 // No expiration -> bottom
       const end = new Date(dateStr)
+      if (isNaN(end.getTime())) return 999999
       end.setHours(0, 0, 0, 0)
       const today = new Date()
       today.setHours(0, 0, 0, 0)
@@ -190,7 +195,7 @@ export function UserManagement() {
           <TableHeader className="bg-slate-50">
             <TableRow>
               <TableHead>Usuário</TableHead>
-              <TableHead>Empresa</TableHead>
+              <TableHead>Empresa / Local</TableHead>
               <TableHead>Contato</TableHead>
               <TableHead>Plano</TableHead>
               <TableHead className="w-[120px]">Dias Restantes</TableHead>
@@ -218,7 +223,7 @@ export function UserManagement() {
                       <div className="font-medium text-sm">{u.razao_social}</div>
                       <div className="text-xs text-muted-foreground">CNPJ: {u.cnpj}</div>
                       {u.cidade_estado && (
-                        <div className="text-[10px] text-muted-foreground mt-0.5">
+                        <div className="text-xs font-semibold text-blue-600 mt-0.5 flex items-center gap-1">
                           {u.cidade_estado}
                         </div>
                       )}
