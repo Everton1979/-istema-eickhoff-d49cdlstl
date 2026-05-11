@@ -8,11 +8,11 @@ export function AccountBalances() {
     let total = 0
     const pmTotals: Record<string, number> = {}
 
-    const targetStatuses =
-      (filters as any).statuses?.length > 0 ? (filters as any).statuses : ['REALIZADO']
+    const statuses = Array.isArray((filters as any)?.statuses) ? (filters as any).statuses : []
+    const targetStatuses = statuses.length > 0 ? statuses : null
 
     filteredTransactions.forEach((tx) => {
-      if (tx.type === 'INCOME' && targetStatuses.includes(tx.status)) {
+      if (tx.type === 'INCOME' && (!targetStatuses || targetStatuses.includes(tx.status))) {
         total += tx.amount
         const pm = tx.paymentMethodId || 'outros'
         pmTotals[pm] = (pmTotals[pm] || 0) + tx.amount
@@ -48,7 +48,7 @@ export function AccountBalances() {
         </span>
       </div>
       <div className="p-2 flex-1 overflow-y-auto bg-slate-50/50">
-        {breakdowns.length > 0 ? (
+        {breakdowns && breakdowns.length > 0 ? (
           <div className="grid grid-cols-2 gap-2">
             {breakdowns.map((item) => (
               <div
