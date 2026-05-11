@@ -49,7 +49,7 @@ const MONTHS_PT = [
 ]
 
 export default function Transactions() {
-  const { transactions, accounts, loadingData, filters } = useFinanceStore()
+  const { filteredTransactions, accounts, loadingData, filters } = useFinanceStore()
   const { profile } = useAuth()
   const [search, setSearch] = useState('')
   const [dayFilter, setDayFilter] = useState<string>('ALL')
@@ -60,7 +60,7 @@ export default function Transactions() {
   const [editingTx, setEditingTx] = useState<Transaction | null>(null)
   const [deletingId, setDeletingId] = useState<string | null>(null)
 
-  const filteredData = transactions
+  const filteredData = filteredTransactions
     .filter((t) => {
       const searchLower = search.toLowerCase()
       const matchesSearch =
