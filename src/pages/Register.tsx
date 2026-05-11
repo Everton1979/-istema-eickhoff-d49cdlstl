@@ -6,6 +6,13 @@ import { toast } from 'sonner'
 import { useNavigate, Navigate, Link } from 'react-router-dom'
 import { Building2, Eye, EyeOff } from 'lucide-react'
 import { Label } from '@/components/ui/label'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 
 export default function Register() {
   const [showPassword, setShowPassword] = useState(false)
@@ -18,7 +25,8 @@ export default function Register() {
     numero: '',
     complemento: '',
     bairro: '',
-    cidadeEstado: '',
+    cidade: '',
+    estado: '',
     telefone: '',
     responsavel: '',
     email: '',
@@ -47,8 +55,27 @@ export default function Register() {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }))
   }
 
+  const handleCnpjChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let value = e.target.value.replace(/\D/g, '')
+    if (value.length > 14) value = value.slice(0, 14)
+
+    // Apply mask 00.000.000/0000-00
+    value = value.replace(/^(\d{2})(\d)/, '$1.$2')
+    value = value.replace(/^(\d{2})\.(\d{3})(\d)/, '$1.$2.$3')
+    value = value.replace(/\.(\d{3})(\d)/, '.$1/$2')
+    value = value.replace(/(\d{4})(\d)/, '$1-$2')
+
+    setFormData((prev) => ({ ...prev, cnpj: value }))
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+
+    if (!formData.estado) {
+      toast.error('Por favor, selecione um estado.')
+      return
+    }
+
     setLoading(true)
 
     const metadata = {
@@ -61,7 +88,7 @@ export default function Register() {
       numero: formData.numero,
       complemento: formData.complemento,
       bairro: formData.bairro,
-      cidade_estado: formData.cidadeEstado,
+      cidade_estado: `${formData.cidade} - ${formData.estado}`,
       telefone: formData.telefone,
       responsavel: formData.responsavel,
     }
@@ -114,8 +141,15 @@ export default function Register() {
               />
             </div>
             <div className="space-y-1">
-              <Label>CNPJ</Label>
-              <Input required name="cnpj" value={formData.cnpj} onChange={handleChange} />
+              <Label>CNPJ (somente números)</Label>
+              <Input
+                required
+                name="cnpj"
+                value={formData.cnpj}
+                onChange={handleCnpjChange}
+                placeholder="00.000.000/0000-00"
+                maxLength={18}
+              />
             </div>
             <div className="space-y-1">
               <Label>Telefone / WhatsApp</Label>
@@ -162,7 +196,7 @@ export default function Register() {
                 value={formData.complemento}
                 onChange={handleChange}
                 autoComplete="address-line2"
-                placeholder="Apto 101 (opcional)"
+                placeholder="(opcional)"
               />
             </div>
             <div className="space-y-1">
@@ -177,15 +211,55 @@ export default function Register() {
               />
             </div>
             <div className="space-y-1">
-              <Label>Cidade/Estado</Label>
+              <Label>Cidade</Label>
               <Input
                 required
-                name="cidadeEstado"
-                value={formData.cidadeEstado}
+                name="cidade"
+                value={formData.cidade}
                 onChange={handleChange}
                 autoComplete="address-level2"
-                placeholder="Ex: São Paulo / SP"
+                placeholder="Ex: São Paulo"
               />
+            </div>
+            <div className="space-y-1">
+              <Label>Estado</Label>
+              <Select
+                value={formData.estado}
+                onValueChange={(value) => setFormData((prev) => ({ ...prev, estado: value }))}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Selecione o estado" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="AC">Acre</SelectItem>
+                  <SelectItem value="AL">Alagoas</SelectItem>
+                  <SelectItem value="AP">Amapá</SelectItem>
+                  <SelectItem value="AM">Amazonas</SelectItem>
+                  <SelectItem value="BA">Bahia</SelectItem>
+                  <SelectItem value="CE">Ceará</SelectItem>
+                  <SelectItem value="DF">Distrito Federal</SelectItem>
+                  <SelectItem value="ES">Espírito Santo</SelectItem>
+                  <SelectItem value="GO">Goiás</SelectItem>
+                  <SelectItem value="MA">Maranhão</SelectItem>
+                  <SelectItem value="MT">Mato Grosso</SelectItem>
+                  <SelectItem value="MS">Mato Grosso do Sul</SelectItem>
+                  <SelectItem value="MG">Minas Gerais</SelectItem>
+                  <SelectItem value="PA">Pará</SelectItem>
+                  <SelectItem value="PB">Paraíba</SelectItem>
+                  <SelectItem value="PR">Paraná</SelectItem>
+                  <SelectItem value="PE">Pernambuco</SelectItem>
+                  <SelectItem value="PI">Piauí</SelectItem>
+                  <SelectItem value="RJ">Rio de Janeiro</SelectItem>
+                  <SelectItem value="RN">Rio Grande do Norte</SelectItem>
+                  <SelectItem value="RS">Rio Grande do Sul</SelectItem>
+                  <SelectItem value="RO">Rondônia</SelectItem>
+                  <SelectItem value="RR">Roraima</SelectItem>
+                  <SelectItem value="SC">Santa Catarina</SelectItem>
+                  <SelectItem value="SP">São Paulo</SelectItem>
+                  <SelectItem value="SE">Sergipe</SelectItem>
+                  <SelectItem value="TO">Tocantins</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
             <div className="space-y-1 md:col-span-2 border-t pt-4 mt-2">
               <Label>Nome do Responsável</Label>
