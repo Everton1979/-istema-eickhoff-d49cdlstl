@@ -11,47 +11,57 @@ export function PharmacyMetrics() {
     useFinanceStore()
 
   const metrics = useMemo(() => {
-    const totalSales = filteredMonthlyMetrics.reduce((sum, m) => sum + m.total_system_sales, 0)
-    const totalOrders = filteredMonthlyMetrics.reduce((sum, m) => sum + m.orders_count, 0)
-    const totalRawMaterial = filteredMonthlyMetrics.reduce(
-      (sum, m) => sum + m.raw_material_costs,
+    const safeFilteredMonthlyMetrics = filteredMonthlyMetrics || []
+    const safeFilteredTransactions = filteredTransactions || []
+    const safeTransactions = transactions || []
+
+    const totalSales = safeFilteredMonthlyMetrics.reduce(
+      (sum, m) => sum + (m?.total_system_sales || 0),
       0,
     )
-    const totalColaboradoresCapsulas = filteredMonthlyMetrics.reduce(
-      (sum, m) => sum + (m.colaboradores_capsulas || 0),
+    const totalOrders = safeFilteredMonthlyMetrics.reduce(
+      (sum, m) => sum + (m?.orders_count || 0),
       0,
     )
-    const totalColaboradoresDermato = filteredMonthlyMetrics.reduce(
-      (sum, m) => sum + (m.colaboradores_dermato || 0),
+    const totalRawMaterial = safeFilteredMonthlyMetrics.reduce(
+      (sum, m) => sum + (m?.raw_material_costs || 0),
       0,
     )
-    const totalColaboradoresVendas = filteredMonthlyMetrics.reduce(
-      (sum, m) => sum + (m.colaboradores_vendas || 0),
+    const totalColaboradoresCapsulas = safeFilteredMonthlyMetrics.reduce(
+      (sum, m) => sum + (m?.colaboradores_capsulas || 0),
+      0,
+    )
+    const totalColaboradoresDermato = safeFilteredMonthlyMetrics.reduce(
+      (sum, m) => sum + (m?.colaboradores_dermato || 0),
+      0,
+    )
+    const totalColaboradoresVendas = safeFilteredMonthlyMetrics.reduce(
+      (sum, m) => sum + (m?.colaboradores_vendas || 0),
       0,
     )
 
-    const numCapsulas = filteredMonthlyMetrics.reduce(
-      (sum, m) => sum + (m.num_formulas_capsulas || 0),
+    const numCapsulas = safeFilteredMonthlyMetrics.reduce(
+      (sum, m) => sum + (m?.num_formulas_capsulas || 0),
       0,
     )
-    const numDermato = filteredMonthlyMetrics.reduce(
-      (sum, m) => sum + (m.num_formulas_dermato || 0),
+    const numDermato = safeFilteredMonthlyMetrics.reduce(
+      (sum, m) => sum + (m?.num_formulas_dermato || 0),
       0,
     )
-    const vendasCapsulas = filteredMonthlyMetrics.reduce(
-      (sum, m) => sum + (m.vendas_capsulas || 0),
+    const vendasCapsulas = safeFilteredMonthlyMetrics.reduce(
+      (sum, m) => sum + (m?.vendas_capsulas || 0),
       0,
     )
-    const vendasDermato = filteredMonthlyMetrics.reduce(
-      (sum, m) => sum + (m.vendas_dermato || 0),
+    const vendasDermato = safeFilteredMonthlyMetrics.reduce(
+      (sum, m) => sum + (m?.vendas_dermato || 0),
       0,
     )
 
     let cfaTotal = 0
     let varExpOperacional = 0
-    const targetStatuses = filters.statuses.length > 0 ? filters.statuses : ['REALIZADO']
+    const targetStatuses = filters?.statuses?.length > 0 ? filters.statuses : ['REALIZADO']
 
-    filteredTransactions.forEach((t) => {
+    safeFilteredTransactions.forEach((t) => {
       if (t.type === 'EXPENSE' && targetStatuses.includes(t.status)) {
         if (t.categoryId === 'FIXA') cfaTotal += t.amount
         if (t.categoryId === 'VARIAVEL') {
@@ -85,7 +95,7 @@ export function PharmacyMetrics() {
 
     const lucroLiquidoPct = totalSales > 0 ? ((totalSales - custoTotal) / totalSales) * 100 : 0
 
-    const countMonths = filteredMonthlyMetrics.length || 1
+    const countMonths = safeFilteredMonthlyMetrics.length || 1
     const avgColabCaps = totalColaboradoresCapsulas / countMonths
     const avgColabDerm = totalColaboradoresDermato / countMonths
     const avgColabVendas = totalColaboradoresVendas / countMonths
@@ -102,7 +112,7 @@ export function PharmacyMetrics() {
     const valuationEstimado = ebitdaMedioMensal * 12 * 4 // Múltiplo de 4x
 
     // Regra dos 70%
-    const sortedFiltered = [...filteredMonthlyMetrics].sort((a, b) => {
+    const sortedFiltered = [...safeFilteredMonthlyMetrics].sort((a, b) => {
       if (a.year !== b.year) return a.year - b.year
       return a.month - b.month
     })
@@ -119,15 +129,17 @@ export function PharmacyMetrics() {
       const prevYear = previousDate.getFullYear()
       const prevMonth = previousDate.getMonth() + 1
 
-      const previousMetric = monthlyMetrics.find(
+      const safeMonthlyMetrics = monthlyMetrics || []
+      const previousMetric = safeMonthlyMetrics.find(
         (m) => m.year === prevYear && m.month === prevMonth,
       )
 
       if (previousMetric) {
-        const salesGrowth = targetMetric.total_system_sales - previousMetric.total_system_sales
+        const salesGrowth =
+          (targetMetric.total_system_sales || 0) - (previousMetric.total_system_sales || 0)
 
         const getTxForMonth = (year: number, month: number) => {
-          return transactions.filter((t) => {
+          return safeTransactions.filter((t) => {
             const datePart = t.date.split('T')[0]
             if (!datePart || datePart.length < 10) return false
             const parts = datePart.split('-')
