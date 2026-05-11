@@ -17,16 +17,6 @@ export function SidebarFilters() {
     return vals.every((v) => filters.months.includes(v))
   }
 
-  const toggleStatus = (status: string) => {
-    const upperStatus = status.toUpperCase()
-    const current = filters.statuses as string[]
-    if (current.includes(upperStatus)) {
-      setFilter('statuses', [])
-    } else {
-      setFilter('statuses', [upperStatus])
-    }
-  }
-
   const summary = useMemo(() => {
     let entradas = 0
     let saidas = 0
@@ -185,25 +175,6 @@ export function SidebarFilters() {
           </TabsContent>
         </Tabs>
       </div>
-
-      <FilterSection title="Status">
-        <div className="flex flex-col gap-1">
-          {['Previsto', 'Realizado', 'Vencido'].map((status) => (
-            <button
-              key={status}
-              onClick={() => toggleStatus(status)}
-              className={cn(
-                'text-xs py-1 px-2 rounded-sm text-left transition-colors border',
-                filters.statuses.includes(status.toUpperCase())
-                  ? 'bg-[#5f9ea0] text-white font-medium border-transparent'
-                  : 'bg-white hover:bg-gray-100',
-              )}
-            >
-              {status}
-            </button>
-          ))}
-        </div>
-      </FilterSection>
 
       <div className="mt-6 border-t border-slate-200 pt-4 px-1">
         <h3 className="text-xs font-semibold text-slate-600 mb-3 flex items-center gap-1.5">

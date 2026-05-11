@@ -33,7 +33,6 @@ interface FinanceFilters {
   type: string
   years: string[]
   months: string[]
-  statuses: string[]
 }
 
 interface FinanceContextType {
@@ -131,7 +130,6 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
       type: 'ALL',
       years: [now.getFullYear().toString()],
       months: [(now.getMonth() + 1).toString().padStart(2, '0')],
-      statuses: [],
     }
   })
 
@@ -574,13 +572,6 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
         if (filters.years && filters.years.length > 0 && !filters.years.includes(txYear))
           return false
         if (filters.months && filters.months.length > 0 && !filters.months.includes(txMonth))
-          return false
-
-        if (
-          filters.statuses &&
-          filters.statuses.length > 0 &&
-          !filters.statuses.includes(tx.status?.toUpperCase() || '')
-        )
           return false
 
         return true

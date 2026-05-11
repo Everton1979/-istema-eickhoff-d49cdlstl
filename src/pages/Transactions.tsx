@@ -49,7 +49,7 @@ const MONTHS_PT = [
 ]
 
 export default function Transactions() {
-  const { filteredTransactions, accounts, loadingData, filters } = useFinanceStore()
+  const { transactions, accounts, loadingData, filters } = useFinanceStore()
   const { profile } = useAuth()
   const [search, setSearch] = useState('')
   const [dayFilter, setDayFilter] = useState<string>('ALL')
@@ -60,12 +60,7 @@ export default function Transactions() {
   const [editingTx, setEditingTx] = useState<Transaction | null>(null)
   const [deletingId, setDeletingId] = useState<string | null>(null)
 
-  const activeMonthsText =
-    filters.months.length > 0
-      ? filters.months.map((m) => MONTHS_PT[parseInt(m, 10) - 1]).join(', ')
-      : 'Todos os meses'
-
-  const filteredData = filteredTransactions
+  const filteredData = transactions
     .filter((t) => {
       const searchLower = search.toLowerCase()
       const matchesSearch =
@@ -201,7 +196,7 @@ export default function Transactions() {
     let receitas = 0
     let despesas = 0
 
-    filteredTransactions.forEach((tx) => {
+    filteredData.forEach((tx) => {
       if (tx.status === 'REALIZADO') {
         if (tx.type === 'INCOME') receitas += tx.amount
         else if (tx.type === 'EXPENSE') despesas += tx.amount
@@ -296,18 +291,6 @@ export default function Transactions() {
               </SheetContent>
             </Sheet>
           </div>
-        </div>
-
-        <div className="bg-blue-50 text-blue-700 p-3 rounded-md mb-6 flex flex-col sm:flex-row sm:items-center gap-2 text-sm border border-blue-100 shadow-sm">
-          <div className="flex items-center gap-2">
-            <Info className="w-4 h-4 shrink-0" />
-            <span>
-              Exibindo transações do período filtrado: <strong>{activeMonthsText}</strong>
-            </span>
-          </div>
-          <span className="text-blue-600/80 text-xs sm:ml-auto">
-            (Altere o filtro de mês no menu lateral do Painel Geral)
-          </span>
         </div>
 
         <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 mb-4">
