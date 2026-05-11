@@ -1,13 +1,16 @@
 import { useAuth } from '@/hooks/use-auth'
 import { Button } from '@/components/ui/button'
-import { LogOut, Clock, Mail, CheckCircle2, ShieldCheck, ArrowRight } from 'lucide-react'
-import { useNavigate } from 'react-router-dom'
+import { LogOut, Clock, Mail, CheckCircle2, ShieldCheck, ArrowRight, ArrowLeft } from 'lucide-react'
+import { useNavigate, useLocation, Link } from 'react-router-dom'
 import { useEffect } from 'react'
 import { Card, CardContent } from '@/components/ui/card'
 
 export default function PendingApproval() {
   const { signOut, profile, user } = useAuth()
   const navigate = useNavigate()
+  const location = useLocation()
+
+  const displayEmail = location.state?.email || user?.email || 'seu e-mail'
 
   useEffect(() => {
     if (profile?.status === 'Ativo' || profile?.role === 'Administrador') {
@@ -26,13 +29,21 @@ export default function PendingApproval() {
             Controle Financeiro
           </span>
         </div>
-        <Button
-          onClick={() => signOut()}
-          variant="ghost"
-          className="gap-2 text-slate-600 hover:text-slate-900"
-        >
-          <LogOut className="w-4 h-4" /> Sair
-        </Button>
+        {user ? (
+          <Button
+            onClick={() => signOut()}
+            variant="ghost"
+            className="gap-2 text-slate-600 hover:text-slate-900"
+          >
+            <LogOut className="w-4 h-4" /> Sair
+          </Button>
+        ) : (
+          <Link to="/login">
+            <Button variant="ghost" className="gap-2 text-slate-600 hover:text-slate-900">
+              <ArrowLeft className="w-4 h-4" /> Voltar ao Login
+            </Button>
+          </Link>
+        )}
       </header>
 
       <main className="flex-1 flex flex-col items-center justify-center p-6 sm:p-12 animate-fade-in-up">
@@ -68,10 +79,9 @@ export default function PendingApproval() {
                   </div>
                 </div>
                 <p className="text-slate-600 leading-relaxed mb-6 text-base">
-                  Enviamos um link de confirmação para{' '}
-                  <strong>{user?.email || 'seu e-mail'}</strong>. Procure na sua caixa de entrada ou
-                  na pasta de spam por um e-mail com o título <strong>"Supabase Auth"</strong> ou{' '}
-                  <strong>"Confirm Your Signup"</strong>.
+                  Enviamos um link de confirmação para <strong>{displayEmail}</strong>. Procure na
+                  sua caixa de entrada ou na pasta de spam por um e-mail com o título{' '}
+                  <strong>"Supabase Auth"</strong> ou <strong>"Confirm Your Signup"</strong>.
                 </p>
                 <div className="bg-blue-50/50 p-4 rounded-lg border border-blue-100 flex items-start gap-3">
                   <CheckCircle2 className="w-5 h-5 text-blue-600 mt-0.5 shrink-0" />

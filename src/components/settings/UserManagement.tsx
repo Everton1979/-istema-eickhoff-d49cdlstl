@@ -97,6 +97,27 @@ export function UserManagement() {
     return <div className="p-8 text-center text-muted-foreground">Carregando usuários...</div>
   }
 
+  const sortedUsers = [...users].sort((a, b) => {
+    // 1. Pendentes at the top
+    if (a.status === 'Pendente' && b.status !== 'Pendente') return -1
+    if (b.status === 'Pendente' && a.status !== 'Pendente') return 1
+
+    // 2. Sort by days remaining (ascending)
+    const getDays = (dateStr: string | null | undefined) => {
+      if (!dateStr) return Infinity // No expiration -> bottom
+      const end = new Date(dateStr)
+      end.setHours(0, 0, 0, 0)
+      const today = new Date()
+      today.setHours(0, 0, 0, 0)
+      return Math.ceil((end.getTime() - today.getTime()) / (1000 * 60 * 60 * 24))
+    }
+
+    const daysA = getDays(a.plan_end_date)
+    const daysB = getDays(b.plan_end_date)
+
+    return daysA - daysB
+  })
+
   const pendingCount = users.filter((u) => u.status === 'Pendente').length
 
   return (
@@ -179,7 +200,7 @@ export function UserManagement() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {users.map((u) => (
+            {sortedUsers.map((u) => (
               <TableRow key={u.id} className="group">
                 <TableCell>
                   <div className="font-medium text-sm flex items-center gap-2">
@@ -196,9 +217,9 @@ export function UserManagement() {
                     <div>
                       <div className="font-medium text-sm">{u.razao_social}</div>
                       <div className="text-xs text-muted-foreground">CNPJ: {u.cnpj}</div>
-                      {(u.cidade_estado || u.bairro) && (
+                      {u.cidade_estado && (
                         <div className="text-[10px] text-muted-foreground mt-0.5">
-                          {u.cidade_estado} {u.bairro ? `- ${u.bairro}` : ''}
+                          {u.cidade_estado}
                         </div>
                       )}
                     </div>

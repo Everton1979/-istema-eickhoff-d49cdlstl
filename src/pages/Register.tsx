@@ -71,7 +71,7 @@ export default function Register() {
         'Cadastro realizado com sucesso! Siga as instruções na tela para concluir seu acesso.',
         { duration: 10000 },
       )
-      navigate('/pendente')
+      navigate('/pendente', { state: { email: formData.email } })
     }
   }
 

@@ -87,14 +87,7 @@ const App = () => (
               <Route path="/cadastro" element={<Register />} />
               <Route path="/esqueci-a-senha" element={<ForgotPassword />} />
               <Route path="/nova-senha" element={<ResetPassword />} />
-              <Route
-                path="/pendente"
-                element={
-                  <ProtectedRoute requireActive={false}>
-                    <PendingApproval />
-                  </ProtectedRoute>
-                }
-              />
+              <Route path="/pendente" element={<PendingApproval />} />
               <Route
                 path="/bloqueado"
                 element={
