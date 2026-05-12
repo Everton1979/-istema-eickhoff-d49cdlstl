@@ -596,7 +596,7 @@ export const Constants = {
 //   Policy "Users can insert profiles" (INSERT, PERMISSIVE) roles={authenticated}
 //     WITH CHECK: ((id = auth.uid()) OR ((get_user_role() = 'Administrador'::text) AND (app_name = get_user_app_name())))
 //   Policy "Users can read profiles" (SELECT, PERMISSIVE) roles={authenticated}
-//     USING: ((id = auth.uid()) OR ((get_user_role() = 'Administrador'::text) AND (app_name = get_user_app_name())))
+//     USING: ((id = auth.uid()) OR ((get_user_role() = 'Administrador'::text) AND (app_name IS NOT NULL) AND (app_name = get_user_app_name())))
 //   Policy "Users can update profiles" (UPDATE, PERMISSIVE) roles={authenticated}
 //     USING: ((id = auth.uid()) OR ((get_user_role() = 'Administrador'::text) AND (app_name = get_user_app_name())))
 //     WITH CHECK: ((id = auth.uid()) OR ((get_user_role() = 'Administrador'::text) AND (app_name = get_user_app_name())))
