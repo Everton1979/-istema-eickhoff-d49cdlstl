@@ -34,6 +34,7 @@ interface FinanceFilters {
   years: string[]
   months: string[]
   dayFilter: string
+  statuses?: string[]
 }
 
 interface FinanceContextType {
@@ -55,10 +56,6 @@ interface FinanceContextType {
   filteredMonthlyMetrics: MonthlyMetric[]
   updateAccountInitialBalances: (balances: Record<string, number>) => Promise<{ error: any }>
   loadingData: boolean
-  isTransactionSheetOpen: boolean
-  setTransactionSheetOpen: (open: boolean) => void
-  editingTransaction: Transaction | null
-  setEditingTransaction: (tx: Transaction | null) => void
   fetchData: () => Promise<void>
   fetchTransactionsForExport: (
     startDate: string,
@@ -77,7 +74,12 @@ const mapTypeToDB = (type: string) => {
   if (type === 'PARTNER_WITHDRAWAL') return 'retirada_socios'
   return 'despesa'
 }
-const mapTypeFromDB = (type: string | null) => {
+const mapTypeFromDB = (type: string | null, category?: string | null) => {
+  const cat = (category || '').toLowerCase().trim()
+  if (cat === 'cortesia') return 'CORTESIA'
+  if (cat === 'retirada_socios' || cat === 'retirada de sócios' || cat === 'retirada')
+    return 'PARTNER_WITHDRAWAL'
+
   if (!type) return 'EXPENSE'
   const t = type.toLowerCase().trim()
   if (t === 'receita' || t === 'income') return 'INCOME'
@@ -104,6 +106,9 @@ const mapCategoryFromDB = (cat: string | null) => {
   if (c === 'investimento') return 'INVESTIMENTO'
   if (c === 'receita_operacional') return 'RECEITA_OPERACIONAL'
   if (c === 'receita_nao_operacional') return 'RECEITA_NAO_OPERACIONAL'
+  if (c === 'cortesia') return 'CORTESIA'
+  if (c === 'retirada_socios' || c === 'retirada de sócios' || c === 'retirada')
+    return 'PARTNER_WITHDRAWAL'
   return cat.toUpperCase()
 }
 
@@ -131,6 +136,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
   const [loadingData, setLoadingData] = useState(true)
   const [isTransactionSheetOpen, setTransactionSheetOpen] = useState(false)
   const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null)
+
   const [filters, setFilters] = useState<FinanceFilters>(() => {
     const now = new Date()
     const firstDay = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0]
@@ -142,6 +148,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
       years: [now.getFullYear().toString()],
       months: [(now.getMonth() + 1).toString().padStart(2, '0')],
       dayFilter: 'ALL',
+      statuses: ['REALIZADO'],
     }
   })
 
@@ -157,8 +164,23 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
   }, [user])
 
   const fetchData = async () => {
-    setLoadingData(true)
     if (!user) return
+
+    // Load from cache first for instant UI response (Performance Optimization)
+    try {
+      const cachedTx = localStorage.getItem(`finance_tx_cache_${user.id}`)
+      if (cachedTx && transactions.length === 0) {
+        setTransactions(JSON.parse(cachedTx))
+      }
+      const cachedMetrics = localStorage.getItem(`finance_metrics_cache_${user.id}`)
+      if (cachedMetrics && monthlyMetrics.length === 0) {
+        setMonthlyMetrics(JSON.parse(cachedMetrics))
+      }
+    } catch (e) {
+      console.warn('Cache loading failed', e)
+    }
+
+    setLoadingData(true)
 
     const [txRes, settingsRes, metricsRes] = await Promise.all([
       supabase
@@ -184,45 +206,46 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
     ])
 
     if (txRes.data) {
-      setTransactions(
-        txRes.data.map((d: any) => ({
-          id: d.id,
-          date: d.date || '',
-          description: d.description || '',
-          amount: Number(d.amount) || 0,
-          type: mapTypeFromDB(d.type) as any,
-          categoryId: mapCategoryFromDB(d.category),
-          subcategoryId: d.subcategory || '',
-          accountId: mapAccountFromDB(d.account),
-          paymentMethodId: mapPaymentMethodFromDB(d.payment_method),
-          status: (d.status || 'REALIZADO').toUpperCase() as any,
-          tags: d.tags || '',
-        })),
-      )
+      const parsedTx = txRes.data.map((d: any) => ({
+        id: d.id,
+        date: d.date || '',
+        description: d.description || '',
+        amount: Number(d.amount) || 0,
+        type: mapTypeFromDB(d.type, d.category) as any,
+        categoryId: mapCategoryFromDB(d.category),
+        subcategoryId: d.subcategory || '',
+        accountId: mapAccountFromDB(d.account),
+        paymentMethodId: mapPaymentMethodFromDB(d.payment_method),
+        status: (d.status || 'REALIZADO').toUpperCase() as any,
+        tags: d.tags || '',
+      }))
+      setTransactions(parsedTx)
+      if (user?.id) localStorage.setItem(`finance_tx_cache_${user.id}`, JSON.stringify(parsedTx))
     }
 
     if (metricsRes.data) {
-      setMonthlyMetrics(
-        metricsRes.data.map((m: any) => ({
-          id: m.id,
-          month: m.month,
-          year: m.year,
-          orders_count: Number(m.orders_count),
-          total_system_sales: Number(m.total_system_sales),
-          raw_material_costs: Number(m.raw_material_costs),
-          sales_target: Number(m.sales_target || 0),
-          global_sales_target: Number(m.global_sales_target || 0),
-          num_formulas_capsulas: Number(m.num_formulas_capsulas || 0),
-          vendas_capsulas: Number(m.vendas_capsulas || 0),
-          custo_mp_emb_capsulas: Number(m.custo_mp_emb_capsulas || 0),
-          num_formulas_dermato: Number(m.num_formulas_dermato || 0),
-          vendas_dermato: Number(m.vendas_dermato || 0),
-          custo_mp_emb_dermato: Number(m.custo_mp_emb_dermato || 0),
-          colaboradores_capsulas: Number(m.colaboradores_capsulas || 0),
-          colaboradores_dermato: Number(m.colaboradores_dermato || 0),
-          colaboradores_vendas: Number(m.colaboradores_vendas || 0),
-        })),
-      )
+      const parsedMetrics = metricsRes.data.map((m: any) => ({
+        id: m.id,
+        month: m.month,
+        year: m.year,
+        orders_count: Number(m.orders_count),
+        total_system_sales: Number(m.total_system_sales),
+        raw_material_costs: Number(m.raw_material_costs),
+        sales_target: Number(m.sales_target || 0),
+        global_sales_target: Number(m.global_sales_target || 0),
+        num_formulas_capsulas: Number(m.num_formulas_capsulas || 0),
+        vendas_capsulas: Number(m.vendas_capsulas || 0),
+        custo_mp_emb_capsulas: Number(m.custo_mp_emb_capsulas || 0),
+        num_formulas_dermato: Number(m.num_formulas_dermato || 0),
+        vendas_dermato: Number(m.vendas_dermato || 0),
+        custo_mp_emb_dermato: Number(m.custo_mp_emb_dermato || 0),
+        colaboradores_capsulas: Number(m.colaboradores_capsulas || 0),
+        colaboradores_dermato: Number(m.colaboradores_dermato || 0),
+        colaboradores_vendas: Number(m.colaboradores_vendas || 0),
+      }))
+      setMonthlyMetrics(parsedMetrics)
+      if (user?.id)
+        localStorage.setItem(`finance_metrics_cache_${user.id}`, JSON.stringify(parsedMetrics))
     }
 
     let accBalances = { sicredi: 0 }
@@ -298,7 +321,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
         date: data.date,
         description: data.description,
         amount: Number(data.amount),
-        type: mapTypeFromDB(data.type) as any,
+        type: mapTypeFromDB(data.type, data.category) as any,
         categoryId: mapCategoryFromDB(data.category),
         subcategoryId: (data as any).subcategory || '',
         accountId: mapAccountFromDB(data.account),
@@ -306,7 +329,11 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
         status: (data.status || 'REALIZADO').toUpperCase() as any,
         tags: (data as any).tags || '',
       }
-      setTransactions((prev) => [newTx, ...prev])
+      setTransactions((prev) => {
+        const updated = [newTx, ...prev]
+        if (user?.id) localStorage.setItem(`finance_tx_cache_${user.id}`, JSON.stringify(updated))
+        return updated
+      })
       await logAction('CRIAR', 'Transação', data.id, {
         description: data.description,
         amount: data.amount,
@@ -339,15 +366,15 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
       .single()
 
     if (!error && data) {
-      setTransactions((prev) =>
-        prev.map((t) =>
+      setTransactions((prev) => {
+        const updated = prev.map((t) =>
           t.id === id
             ? {
                 ...t,
                 date: data.date,
                 description: data.description,
                 amount: Number(data.amount),
-                type: mapTypeFromDB(data.type) as any,
+                type: mapTypeFromDB(data.type, data.category) as any,
                 categoryId: mapCategoryFromDB(data.category),
                 subcategoryId: (data as any).subcategory || '',
                 accountId: mapAccountFromDB(data.account),
@@ -356,8 +383,10 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
                 tags: (data as any).tags || '',
               }
             : t,
-        ),
-      )
+        )
+        if (user?.id) localStorage.setItem(`finance_tx_cache_${user.id}`, JSON.stringify(updated))
+        return updated
+      })
       await logAction('ATUALIZAR', 'Transação', id, {
         original: original
           ? {
@@ -384,7 +413,11 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
     const original = transactions.find((t) => t.id === id)
     const { error } = await supabase.from('transactions').delete().eq('id', id)
     if (!error) {
-      setTransactions((prev) => prev.filter((t) => t.id !== id))
+      setTransactions((prev) => {
+        const updated = prev.filter((t) => t.id !== id)
+        if (user?.id) localStorage.setItem(`finance_tx_cache_${user.id}`, JSON.stringify(updated))
+        return updated
+      })
       await logAction('EXCLUIR', 'Transação', id, {
         deleted_data: original
           ? {
@@ -457,7 +490,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
     if (!error && data) {
       setMonthlyMetrics((prev) => {
         const filtered = prev.filter((m) => m.id !== data.id)
-        return [
+        const updated = [
           ...filtered,
           {
             id: data.id,
@@ -479,6 +512,9 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
             colaboradores_vendas: Number(data.colaboradores_vendas || 0),
           },
         ]
+        if (user?.id)
+          localStorage.setItem(`finance_metrics_cache_${user.id}`, JSON.stringify(updated))
+        return updated
       })
       await logAction(existing ? 'ATUALIZAR' : 'CRIAR', 'Métrica Mensal', data.id, {
         month: data.month,
@@ -526,7 +562,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
       date: d.date || '',
       description: d.description || '',
       amount: Number(d.amount) || 0,
-      type: mapTypeFromDB(d.type) as any,
+      type: mapTypeFromDB(d.type, d.category) as any,
       categoryId: mapCategoryFromDB(d.category),
       subcategoryId: d.subcategory || '',
       accountId: mapAccountFromDB(d.account),
