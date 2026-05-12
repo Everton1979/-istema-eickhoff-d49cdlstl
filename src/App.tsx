@@ -17,7 +17,6 @@ import ForgotPassword from './pages/ForgotPassword'
 import ResetPassword from './pages/ResetPassword'
 import Layout from './components/Layout'
 import Profile from './pages/Profile'
-import AuditLogs from './pages/AuditLogs'
 import BlockedAccess from './pages/BlockedAccess'
 
 const ProtectedRoute = ({
@@ -115,14 +114,6 @@ const App = () => (
                   element={
                     <ProtectedRoute>
                       <Users />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/auditoria"
-                  element={
-                    <ProtectedRoute>
-                      <AuditLogs />
                     </ProtectedRoute>
                   }
                 />

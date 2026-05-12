@@ -12,7 +12,6 @@ import { PerformanceEvolutionChart } from '@/components/dashboard/PerformanceEvo
 import { PrintableReport } from '@/components/dashboard/PrintableReport'
 import { StatusDetailPanel } from '@/components/dashboard/StatusDetailPanel'
 import { PendingUsersAlert } from '@/components/dashboard/PendingUsersAlert'
-import { AdminActivityReport } from '@/components/dashboard/AdminActivityReport'
 import { PlanExpirationBanner } from '@/components/dashboard/PlanExpirationBanner'
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -53,7 +52,6 @@ export default function Index() {
         <div className="flex-1 overflow-y-auto p-4 md:p-6 flex flex-col gap-8">
           <PlanExpirationBanner />
           <PendingUsersAlert />
-          <AdminActivityReport />
 
           {/* Top row: Operational KPIs */}
           <section className="w-full">

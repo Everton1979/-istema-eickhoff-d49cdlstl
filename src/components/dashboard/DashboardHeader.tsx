@@ -16,7 +16,7 @@ import { ExportReportDialog } from './ExportReportDialog'
 import { DREDialog } from './DREDialog'
 import { BackupDataButton } from './BackupDataButton'
 import { Link } from 'react-router-dom'
-import { ArrowRightLeft, FileText } from 'lucide-react'
+import { ArrowRightLeft } from 'lucide-react'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { ThemeToggle } from '@/components/ThemeToggle'
 
@@ -150,14 +150,6 @@ export function DashboardHeader({ onExport }: { onExport: (filters: any) => void
           >
             <ArrowRightLeft className="w-4 h-4" />
             Transações
-          </Link>
-          <Link
-            to="/auditoria"
-            className="h-11 px-4 hidden md:flex items-center justify-center gap-2 text-sm bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-md shadow-sm font-bold transition-colors"
-            title="Investigar Auditoria"
-          >
-            <FileText className="w-4 h-4" />
-            Auditoria
           </Link>
           <MonthlyDataDialog />
           <ExportReportDialog onExport={onExport} />

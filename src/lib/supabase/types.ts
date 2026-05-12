@@ -594,12 +594,12 @@ export const Constants = {
 //     WITH CHECK: (user_id = auth.uid())
 // Table: profiles
 //   Policy "Users can insert profiles" (INSERT, PERMISSIVE) roles={authenticated}
-//     WITH CHECK: ((id = auth.uid()) OR (get_user_role() = 'Administrador'::text))
+//     WITH CHECK: ((id = auth.uid()) OR ((get_user_role() = 'Administrador'::text) AND (app_name = get_user_app_name())))
 //   Policy "Users can read profiles" (SELECT, PERMISSIVE) roles={authenticated}
-//     USING: ((id = auth.uid()) OR (get_user_role() = 'Administrador'::text))
+//     USING: ((id = auth.uid()) OR ((get_user_role() = 'Administrador'::text) AND (app_name = get_user_app_name())))
 //   Policy "Users can update profiles" (UPDATE, PERMISSIVE) roles={authenticated}
-//     USING: ((id = auth.uid()) OR (get_user_role() = 'Administrador'::text))
-//     WITH CHECK: ((id = auth.uid()) OR (get_user_role() = 'Administrador'::text))
+//     USING: ((id = auth.uid()) OR ((get_user_role() = 'Administrador'::text) AND (app_name = get_user_app_name())))
+//     WITH CHECK: ((id = auth.uid()) OR ((get_user_role() = 'Administrador'::text) AND (app_name = get_user_app_name())))
 // Table: transactions
 //   Policy "Users can manage own transactions" (ALL, PERMISSIVE) roles={authenticated}
 //     USING: (user_id = auth.uid())
