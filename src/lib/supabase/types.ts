@@ -473,7 +473,7 @@ export const Constants = {
 //   type: text (not null)
 //   count: integer (not null, default: 1)
 //   created_at: timestamp with time zone (not null, default: now())
-//   project_id: text (not null, default: 'planilha'::text)
+//   project_id: text (not null, default: 'farmacia'::text)
 // Table: audit_logs
 //   id: uuid (not null, default: gen_random_uuid())
 //   user_id: uuid (not null)
@@ -482,7 +482,7 @@ export const Constants = {
 //   entity_id: text (nullable)
 //   details: jsonb (nullable)
 //   created_at: timestamp with time zone (not null, default: now())
-//   project_id: text (not null, default: 'planilha'::text)
+//   project_id: text (not null, default: 'farmacia'::text)
 // Table: monthly_metrics
 //   id: uuid (not null, default: gen_random_uuid())
 //   user_id: uuid (not null)
@@ -501,7 +501,7 @@ export const Constants = {
 //   vendas_dermato: numeric (not null, default: 0)
 //   custo_mp_emb_dermato: numeric (not null, default: 0)
 //   global_sales_target: numeric (not null, default: 0)
-//   project_id: text (not null, default: 'planilha'::text)
+//   project_id: text (not null, default: 'farmacia'::text)
 //   colaboradores_capsulas: integer (not null, default: 0)
 //   colaboradores_dermato: integer (not null, default: 0)
 //   colaboradores_vendas: integer (not null, default: 0)
@@ -545,7 +545,7 @@ export const Constants = {
 //   tags: text (nullable, default: ''::text)
 //   payment_method: text (nullable)
 //   subcategory: text (nullable)
-//   project_id: text (not null, default: 'planilha'::text)
+//   project_id: text (not null, default: 'farmacia'::text)
 // Table: user_settings
 //   user_id: uuid (not null)
 //   initial_balance_dinheiro: numeric (nullable, default: 0)
@@ -556,7 +556,7 @@ export const Constants = {
 //   updated_at: timestamp with time zone (not null, default: now())
 //   initial_balance_banricompras: numeric (nullable, default: 0)
 //   initial_balance_sicredi: numeric (nullable, default: 0)
-//   project_id: text (not null, default: 'planilha'::text)
+//   project_id: text (not null, default: 'farmacia'::text)
 
 // --- CONSTRAINTS ---
 // Table: appointments

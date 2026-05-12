@@ -33,9 +33,14 @@ interface FinanceFilters {
   type: string
   years: string[]
   months: string[]
+  dayFilter: string
 }
 
 interface FinanceContextType {
+  isTransactionSheetOpen: boolean
+  setTransactionSheetOpen: (open: boolean) => void
+  editingTransaction: Transaction | null
+  setEditingTransaction: (tx: Transaction | null) => void
   transactions: Transaction[]
   accounts: Account[]
   categories: Category[]
@@ -50,6 +55,10 @@ interface FinanceContextType {
   filteredMonthlyMetrics: MonthlyMetric[]
   updateAccountInitialBalances: (balances: Record<string, number>) => Promise<{ error: any }>
   loadingData: boolean
+  isTransactionSheetOpen: boolean
+  setTransactionSheetOpen: (open: boolean) => void
+  editingTransaction: Transaction | null
+  setEditingTransaction: (tx: Transaction | null) => void
   fetchData: () => Promise<void>
   fetchTransactionsForExport: (
     startDate: string,
@@ -120,6 +129,8 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
   const [accounts, setAccounts] = useState<Account[]>(ACCOUNTS)
   const [monthlyMetrics, setMonthlyMetrics] = useState<MonthlyMetric[]>([])
   const [loadingData, setLoadingData] = useState(true)
+  const [isTransactionSheetOpen, setTransactionSheetOpen] = useState(false)
+  const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null)
   const [filters, setFilters] = useState<FinanceFilters>(() => {
     const now = new Date()
     const firstDay = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0]
@@ -130,6 +141,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
       type: 'ALL',
       years: [now.getFullYear().toString()],
       months: [(now.getMonth() + 1).toString().padStart(2, '0')],
+      dayFilter: 'ALL',
     }
   })
 
@@ -612,6 +624,10 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
         loadingData,
         fetchData,
         fetchTransactionsForExport,
+        isTransactionSheetOpen,
+        setTransactionSheetOpen,
+        editingTransaction,
+        setEditingTransaction,
       }}
     >
       {children}

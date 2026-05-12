@@ -20,6 +20,7 @@ import {
 } from '@/components/ui/select'
 import { useFinanceStore, PAYMENT_METHODS } from '@/stores/financeStore'
 import { useToast } from '@/hooks/use-toast'
+import { useDraft } from '@/hooks/use-draft'
 import { useEffect, useState, useMemo, forwardRef, useRef } from 'react'
 import { Transaction } from '@/types/finance'
 import { X, Plus, Tag as TagIcon } from 'lucide-react'
@@ -171,9 +172,31 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
   const { toast } = useToast()
   const [loading, setLoading] = useState(false)
 
-  const [tagsList, setTagsList] = useState<string[]>(
-    initialData?.tags ? initialData.tags.split(',').filter(Boolean) : [],
+  const defaultEmptyValues = useMemo(
+    () => ({
+      date: new Date().toISOString().split('T')[0],
+      description: '',
+      amount: '' as unknown as number,
+      type: 'EXPENSE' as const,
+      status: 'REALIZADO' as const,
+      categoryId: '',
+      subcategoryId: '',
+      paymentMethodId: '',
+      tags: '',
+    }),
+    [],
   )
+
+  const { draft, saveDraft, clearDraft } = useDraft<any>(
+    'transaction-form-draft',
+    defaultEmptyValues,
+  )
+
+  const [tagsList, setTagsList] = useState<string[]>(() => {
+    if (initialData?.tags) return initialData.tags.split(',').filter(Boolean)
+    if (!initialData && draft?.tags) return draft.tags.split(',').filter(Boolean)
+    return []
+  })
   const [tagInput, setTagInput] = useState('')
 
   const allUniqueTags = useMemo(() => {
@@ -203,27 +226,28 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
         paymentMethodId: initialData.paymentMethodId || '',
         tags: initialData.tags || '',
       }
-    : {
-        date: new Date().toISOString().split('T')[0],
-        description: '',
-        amount: '' as unknown as number,
-        type: 'EXPENSE' as const,
-        status: 'REALIZADO' as const,
-        categoryId: '',
-        subcategoryId: '',
-        paymentMethodId: '',
-        tags: '',
-      }
+    : draft
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues,
   })
 
+  useEffect(() => {
+    const subscription = form.watch((value) => {
+      if (!initialData) {
+        saveDraft(value)
+      }
+    })
+    return () => subscription.unsubscribe()
+  }, [form, initialData, saveDraft])
+
   const type = form.watch('type')
   const categoryId = form.watch('categoryId')
-  const [prevType, setPrevType] = useState(initialData?.type || 'EXPENSE')
-  const [prevCategoryId, setPrevCategoryId] = useState(initialData?.categoryId || '')
+  const [prevType, setPrevType] = useState(initialData?.type || form.getValues('type'))
+  const [prevCategoryId, setPrevCategoryId] = useState(
+    initialData?.categoryId || form.getValues('categoryId'),
+  )
 
   useEffect(() => {
     if (type !== prevType) {
@@ -314,11 +338,13 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
       if (initialData) {
         await updateTransaction(initialData.id, payload as any)
         toast({ title: 'Sucesso', description: 'Transação atualizada com sucesso!' })
+        form.reset()
       } else {
         await addTransaction(payload as any)
         toast({ title: 'Sucesso', description: 'Transação salva com sucesso!' })
+        clearDraft()
+        form.reset(defaultEmptyValues)
       }
-      form.reset()
       setTagsList([])
       onSuccess()
     } catch (error) {

@@ -48,16 +48,26 @@ const MONTHS_PT = [
 ]
 
 export default function Transactions() {
-  const { filteredTransactions, accounts, loadingData, filters } = useFinanceStore()
+  const {
+    filteredTransactions,
+    accounts,
+    loadingData,
+    filters,
+    setFilter,
+    isTransactionSheetOpen,
+    setTransactionSheetOpen,
+    editingTransaction,
+    setEditingTransaction,
+  } = useFinanceStore()
   const { profile } = useAuth()
   const [search, setSearch] = useState('')
-  const [dayFilter, setDayFilter] = useState<string>('ALL')
   const [quickFilter, setQuickFilter] = useState<
     'ALL' | 'PREVISTO' | 'VENCIDO' | 'CORTESIA' | 'PARTNER_WITHDRAWAL' | 'RECEITAS' | 'DESPESAS'
   >('ALL')
-  const [isSheetOpen, setIsSheetOpen] = useState(false)
-  const [editingTx, setEditingTx] = useState<Transaction | null>(null)
   const [deletingId, setDeletingId] = useState<string | null>(null)
+  const dayFilter = filters.dayFilter || 'ALL'
+
+  const setDayFilter = (val: string) => setFilter('dayFilter', val)
 
   const filteredData = filteredTransactions
     .filter((t) => {
@@ -176,13 +186,13 @@ export default function Transactions() {
   }
 
   const handleEdit = (tx: Transaction) => {
-    setEditingTx(tx)
-    setIsSheetOpen(true)
+    setEditingTransaction(tx)
+    setTransactionSheetOpen(true)
   }
 
   const handleSheetChange = (open: boolean) => {
-    setIsSheetOpen(open)
-    if (!open) setEditingTx(null)
+    setTransactionSheetOpen(open)
+    if (!open) setEditingTransaction(null)
   }
 
   const visibleBalance = filteredData.reduce((acc, tx) => {
@@ -274,22 +284,24 @@ export default function Transactions() {
               </DropdownMenuContent>
             </DropdownMenu>
 
-            <Sheet open={isSheetOpen} onOpenChange={handleSheetChange}>
+            <Sheet open={isTransactionSheetOpen} onOpenChange={handleSheetChange}>
               <SheetTrigger asChild>
                 <Button
                   className="gap-2 bg-green-600 hover:bg-green-700 flex-1 sm:flex-none"
-                  onClick={() => setEditingTx(null)}
+                  onClick={() => setEditingTransaction(null)}
                 >
                   <Plus className="h-4 w-4" /> Novo Lançamento
                 </Button>
               </SheetTrigger>
               <SheetContent className="overflow-y-auto w-full sm:max-w-md p-4 sm:p-6">
                 <SheetHeader>
-                  <SheetTitle>{editingTx ? 'Editar Transação' : 'Adicionar Transação'}</SheetTitle>
+                  <SheetTitle>
+                    {editingTransaction ? 'Editar Transação' : 'Adicionar Transação'}
+                  </SheetTitle>
                 </SheetHeader>
                 <TransactionForm
                   onSuccess={() => handleSheetChange(false)}
-                  initialData={editingTx}
+                  initialData={editingTransaction}
                 />
               </SheetContent>
             </Sheet>
