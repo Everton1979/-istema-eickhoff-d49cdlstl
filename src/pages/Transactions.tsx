@@ -28,10 +28,13 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { TransactionForm } from '@/components/transactions/TransactionForm'
 import { DeleteTransactionDialog } from '@/components/transactions/DeleteTransactionDialog'
-import { Plus, Search, Pencil, Trash2, Info, Download } from 'lucide-react'
+import { Plus, Search, Pencil, Trash2, Info, Download, Activity } from 'lucide-react'
 import { cn, getTagColor } from '@/lib/utils'
 import { Transaction } from '@/types/finance'
 import { PrintableReport } from '@/components/dashboard/PrintableReport'
+import { Switch } from '@/components/ui/switch'
+import { Label } from '@/components/ui/label'
+import { RecentChangesLog } from '@/components/transactions/RecentChangesLog'
 
 const MONTHS_PT = [
   'Janeiro',
@@ -59,6 +62,7 @@ export default function Transactions() {
   const [isSheetOpen, setIsSheetOpen] = useState(false)
   const [editingTx, setEditingTx] = useState<Transaction | null>(null)
   const [deletingId, setDeletingId] = useState<string | null>(null)
+  const [auditMode, setAuditMode] = useState(false)
 
   const filteredData = filteredTransactions
     .filter((t) => {
@@ -255,10 +259,53 @@ export default function Transactions() {
       <div className="flex flex-col bg-white rounded-md shadow-md border p-4 sm:p-6 animate-fade-in-up mb-8 w-full print:hidden shrink-0">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
           <div>
-            <h1 className="text-2xl font-bold text-primary">Transações</h1>
-            <p className="text-sm text-muted-foreground">Gerencie seus lançamentos financeiros</p>
+            <div className="flex items-center gap-3">
+              <h1 className="text-2xl font-bold text-primary">Transações</h1>
+              <div className="hidden sm:flex items-center space-x-2 bg-amber-50 px-3 py-1.5 rounded-full border border-amber-200">
+                <Switch id="audit-mode" checked={auditMode} onCheckedChange={setAuditMode} />
+                <Label
+                  htmlFor="audit-mode"
+                  className="text-amber-800 text-xs font-semibold cursor-pointer"
+                >
+                  Modo Auditoria
+                </Label>
+              </div>
+            </div>
+            <p className="text-sm text-muted-foreground mt-1">
+              Gerencie seus lançamentos financeiros
+            </p>
+
+            <div className="flex sm:hidden items-center space-x-2 bg-amber-50 px-3 py-1.5 rounded-md border border-amber-200 mt-3 w-max">
+              <Switch id="audit-mode-mobile" checked={auditMode} onCheckedChange={setAuditMode} />
+              <Label
+                htmlFor="audit-mode-mobile"
+                className="text-amber-800 text-xs font-semibold cursor-pointer"
+              >
+                Modo Auditoria
+              </Label>
+            </div>
           </div>
-          <div className="flex flex-wrap sm:flex-nowrap gap-2 w-full sm:w-auto">
+          <div className="flex flex-wrap sm:flex-nowrap gap-2 w-full sm:w-auto mt-2 sm:mt-0">
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button
+                  variant="outline"
+                  className="gap-2 text-amber-700 border-amber-200 hover:bg-amber-50 bg-amber-50/50 flex-1 sm:flex-none"
+                >
+                  <Activity className="h-4 w-4" /> Logs
+                </Button>
+              </SheetTrigger>
+              <SheetContent className="overflow-y-auto w-full sm:max-w-md p-4 sm:p-6">
+                <SheetHeader>
+                  <SheetTitle>Log de Alterações Recentes</SheetTitle>
+                  <SheetDescription>
+                    Últimas modificações no status e valores das transações.
+                  </SheetDescription>
+                </SheetHeader>
+                <RecentChangesLog />
+              </SheetContent>
+            </Sheet>
+
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" className="gap-2 text-slate-600 flex-1 sm:flex-none">
@@ -432,7 +479,15 @@ export default function Transactions() {
                   </TableRow>
                 ) : (
                   filteredData.map((tx) => (
-                    <TableRow key={tx.id} className="hover:bg-slate-50/50">
+                    <TableRow
+                      key={tx.id}
+                      className={cn(
+                        'hover:bg-slate-50/50',
+                        auditMode &&
+                          tx.status === 'PREVISTO' &&
+                          'bg-amber-50/60 border-amber-200 shadow-[inset_2px_0_0_0_#f59e0b]',
+                      )}
+                    >
                       <TableCell className="whitespace-nowrap font-medium text-slate-600">
                         {tx.date.split('T')[0].split('-').reverse().join('/')}
                       </TableCell>
@@ -478,6 +533,9 @@ export default function Transactions() {
                           className={cn(
                             'text-[10px] font-semibold',
                             tx.status === 'REALIZADO' && 'bg-emerald-500 hover:bg-emerald-600',
+                            auditMode &&
+                              tx.status === 'PREVISTO' &&
+                              'bg-amber-500 text-white hover:bg-amber-600 animate-pulse shadow-md border-amber-600',
                           )}
                         >
                           {tx.status}
