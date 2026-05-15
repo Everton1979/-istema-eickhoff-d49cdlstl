@@ -147,9 +147,12 @@ export function PharmacyMetrics() {
         const sumCfa = (txs: any[]) =>
           txs
             .filter(
-              (t) => t.type === 'EXPENSE' && t.categoryId === 'FIXA' && t.status === 'REALIZADO',
+              (t) =>
+                t.type === 'EXPENSE' &&
+                t.categoryId === 'FIXA' &&
+                targetStatuses.includes(t.status),
             )
-            .reduce((sum, t) => sum + t.amount, 0)
+            .reduce((sum, t) => sum + Number(t.amount || 0), 0)
 
         const cfaCurr = sumCfa(currTx)
         const cfaPrev = sumCfa(prevTx)
@@ -159,6 +162,7 @@ export function PharmacyMetrics() {
         if (salesGrowth > 0) {
           const pct = (cfaGrowth / salesGrowth) * 100
           regra70Value = `${pct.toFixed(1)}%`
+
           if (pct <= 70) {
             regra70Status = 'good'
             regra70Text = 'Bom'
@@ -166,10 +170,27 @@ export function PharmacyMetrics() {
             regra70Status = 'bad'
             regra70Text = 'Atenção'
           }
+        } else if (salesGrowth < 0) {
+          if (cfaGrowth > 0) {
+            const pct = Math.abs((cfaGrowth / salesGrowth) * 100)
+            regra70Value = `${pct.toFixed(1)}%`
+            regra70Status = 'bad'
+            regra70Text = 'Atenção (Queda)'
+          } else {
+            regra70Value = 'N/A'
+            regra70Status = 'neutral'
+            regra70Text = 'Queda Vendas/CF'
+          }
         } else {
-          regra70Value = cfaGrowth <= 0 ? 'N/A' : 'Atenção'
-          regra70Status = cfaGrowth <= 0 ? 'good' : 'bad'
-          regra70Text = cfaGrowth <= 0 ? 'Queda Vendas/CF' : 'CF Subiu c/ Queda'
+          if (cfaGrowth > 0) {
+            regra70Value = 'Atenção'
+            regra70Status = 'bad'
+            regra70Text = 'CF Subiu s/ Vendas'
+          } else {
+            regra70Value = 'N/A'
+            regra70Status = 'neutral'
+            regra70Text = 'Sem Crescimento'
+          }
         }
       }
     }
