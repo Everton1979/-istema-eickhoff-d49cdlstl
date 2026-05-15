@@ -239,7 +239,15 @@ export function PharmacyMetrics() {
       val,
     )
 
-  const items = [
+  const items: Array<{
+    id: string
+    title: string
+    tooltip: string
+    value: string
+    color: string
+    statusText?: string
+    dynamicTooltip?: string
+  }> = [
     {
       id: 'ticket-medio',
       title: 'Ticket Médio Geral',
@@ -306,6 +314,16 @@ export function PharmacyMetrics() {
         }
 
         return 'text-slate-500'
+      })(),
+      dynamicTooltip: (() => {
+        if (metrics.regra70Value === 'Atenção')
+          return 'Custo Fixo subiu em um cenário desfavorável de vendas.'
+
+        const parsed = parseFloat(metrics.regra70Value.replace('%', '').replace(',', '.'))
+        if (!isNaN(parsed) && parsed > 70) {
+          return 'Valor de magnitude superior a 70% (critério de alerta atingido).'
+        }
+        return undefined
       })(),
     },
     {
@@ -383,9 +401,41 @@ export function PharmacyMetrics() {
                   </TooltipContent>
                 </Tooltip>
               </h4>
-              <p className={cn('text-lg font-bold tracking-tight', item.color)}>{item.value}</p>
-              {item.statusText && (
-                <p className={cn('text-[11px] font-bold mt-1', item.color)}>{item.statusText}</p>
+              {item.dynamicTooltip ? (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div className="cursor-help group flex flex-col items-center">
+                      <p
+                        className={cn(
+                          'text-lg font-bold tracking-tight decoration-dashed underline-offset-4 decoration-red-300 group-hover:underline',
+                          item.color,
+                        )}
+                      >
+                        {item.value}
+                      </p>
+                      {item.statusText && (
+                        <p className={cn('text-[11px] font-bold mt-1', item.color)}>
+                          {item.statusText}
+                        </p>
+                      )}
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent
+                    side="bottom"
+                    className="max-w-[220px] text-center bg-red-50 text-red-900 border-red-200"
+                  >
+                    <p className="text-xs font-medium">{item.dynamicTooltip}</p>
+                  </TooltipContent>
+                </Tooltip>
+              ) : (
+                <>
+                  <p className={cn('text-lg font-bold tracking-tight', item.color)}>{item.value}</p>
+                  {item.statusText && (
+                    <p className={cn('text-[11px] font-bold mt-1', item.color)}>
+                      {item.statusText}
+                    </p>
+                  )}
+                </>
               )}
             </CardContent>
           </Card>
