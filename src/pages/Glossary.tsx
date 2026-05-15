@@ -88,12 +88,12 @@ const GLOSSARY_TERMS = [
     id: 'custos-variaveis',
     title: 'Custos Variáveis',
     definition:
-      'Soma de todas as despesas que variam diretamente de acordo com o volume de produção ou vendas (ex: impostos, taxas de cartão, comissões).',
-    calculation: 'Soma de todas as transações financeiras categorizadas como "Variável".',
+      'Soma de todas as despesas que variam diretamente de acordo com o volume de produção ou vendas (ex: impostos, taxas de cartão, comissões, insumos). Agora são a base oficial para o cálculo da Margem de Contribuição.',
+    calculation: 'Soma de todas as transações financeiras categorizadas como "VARIAVEL".',
     example:
       'Você faturou R$ 100.000. Deste valor, pagou R$ 5.000 de imposto Simples Nacional, R$ 2.000 de taxas de cartão e R$ 3.000 de comissões de vendedores. Seus Custos Variáveis totais somam R$ 10.000 (10% do faturamento).',
     reference:
-      'Quanto menor, melhor. O ideal é que seja menor que 40% para garantir uma margem de contribuição saudável.',
+      'Quanto menor, melhor. Fundamental categorizar corretamente suas despesas no financeiro para não distorcer a margem.',
     category: 'Métricas de Performance',
     trend: 'down',
   },
@@ -168,8 +168,9 @@ const GLOSSARY_TERMS = [
       'Geração de caixa operacional (Margem de Contribuição - Custos Fixos). Representa o lucro gerado exclusivamente pela operação, antes de juros, impostos sobre lucro, depreciação e amortização.',
     calculation: 'Margem de Contribuição - Custos Fixos.',
     example:
-      'A farmácia teve uma Margem de Contribuição de R$ 60.000 (receita descontada dos insumos e impostos). Subtraindo os Custos Fixos que somaram R$ 40.000 (aluguel, folha), o lucro gerado puramente pela operação (EBITDA) foi de R$ 20.000.',
-    reference: 'Um dos indicadores mais importantes. Mostra se o negócio principal é lucrativo.',
+      'A farmácia teve uma Margem de Contribuição de R$ 84.934,89 (calculada pelas transações). Subtraindo os Custos Fixos que somaram R$ 40.000 (aluguel, folha), o lucro gerado puramente pela operação (EBITDA) foi de R$ 44.934,89.',
+    reference:
+      'Um dos indicadores mais importantes. Agora totalmente baseado nos lançamentos financeiros reais (Receitas e Despesas) da sua conta.',
     category: 'Painel Geral (Cards)',
     trend: 'up',
   },
@@ -263,12 +264,12 @@ const GLOSSARY_TERMS = [
     id: 'margem-de-contribuicao',
     title: 'Margem de Contribuição',
     definition:
-      'O valor que sobra da receita bruta após subtrair os custos variáveis operacionais e os insumos (matéria-prima + embalagens). É o que contribui para pagar as despesas fixas e gerar lucro.',
-    calculation: 'Receitas - (Custos Variáveis + Insumos).',
+      'O valor que sobra das receitas realizadas após subtrair todos os custos variáveis lançados. É o que contribui para pagar as despesas fixas e gerar lucro.',
+    calculation: 'Receitas Realizadas - Custo Variável Total (via Transações).',
     example:
-      'Vendeu-se uma loção por R$ 100. O pote e o ativo custaram R$ 20. Os impostos e comissão do balconista custaram R$ 15. Sobraram R$ 65 (Margem de Contribuição) para ajudar a pagar as luzes e o aluguel do fim do mês.',
+      'Se suas receitas realizadas foram de R$ 139.991,00 e todas as despesas lançadas como VARIAVEL somaram R$ 55.056,11, a sua Margem de Contribuição é de R$ 84.934,89.',
     reference:
-      'Margens positivas e robustas indicam que a operação consegue cobrir o custo fixo mais rapidamente.',
+      'Margem agora baseada diretamente nos lançamentos financeiros reais. Exige disciplina na categorização das despesas para não corromper o cálculo.',
     category: 'Painel Geral (Cards)',
     trend: 'up',
   },
@@ -349,11 +350,12 @@ const GLOSSARY_TERMS = [
     id: 'ponto-de-equilibrio',
     title: 'Ponto de Equilíbrio',
     definition:
-      'O faturamento necessário para cobrir exatamente todos os custos (fixos e variáveis). É o "zero a zero".',
+      'O faturamento necessário para cobrir exatamente todos os custos. É o "zero a zero". Atualizado com a nova Margem de Contribuição baseada no financeiro.',
     calculation: 'Custos Fixos / Índice de Margem de Contribuição.',
     example:
-      'Seus custos com aluguel, contador e salários somam R$ 35.000 no mês. Sua margem de contribuição (o que sobra das vendas tirando imposto e mp) é de 70% (0,7). Ponto de Equilíbrio: R$ 35.000 ÷ 0,7 = R$ 50.000. Vendendo R$ 50k, o lucro é zero, mas não há dívidas.',
-    reference: 'Quanto menor, mais segura é a operação.',
+      'Seus custos fixos somam R$ 35.000. Sua margem de contribuição (agora baseada nas transações) é de 60% (0,6). Ponto de Equilíbrio: R$ 35.000 ÷ 0,6 = R$ 58.333. Vendendo esse valor, o lucro é zero.',
+    reference:
+      'Quanto menor, mais segura é a operação. Calculado com dados reais e automáticos do seu fluxo de caixa.',
     category: 'Painel Geral (Cards)',
     trend: 'down',
   },
@@ -385,11 +387,13 @@ const GLOSSARY_TERMS = [
   {
     id: 'receitas-operacionais',
     title: 'Receitas Realizadas',
-    definition: 'Total de entradas financeiras registradas efetivamente na conta bancária/caixa.',
+    definition:
+      'Total de entradas financeiras registradas efetivamente na conta bancária/caixa. Devem refletir apenas valores que entraram efetivamente no dia.',
     calculation: 'Soma de todas as transações com tipo "Receita" e status "Realizado".',
     example:
       'No final da sexta-feira, você conferiu o extrato: bateram R$ 2.000 em transferências PIX, a maquininha depositou R$ 1.500 das vendas de ontem, e no caixa de gaveta tem R$ 500 em espécie. Receita Realizada do dia: R$ 4.000.',
-    reference: 'Representa o faturamento bruto que virou dinheiro real disponível na mão.',
+    reference:
+      'Representa o faturamento bruto que virou dinheiro real disponível na mão, fundamental para os novos cálculos automáticos da Margem de Contribuição.',
     category: 'Painel Geral (Cards)',
     trend: 'up',
   },

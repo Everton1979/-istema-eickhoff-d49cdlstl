@@ -23,7 +23,7 @@ import { useToast } from '@/hooks/use-toast'
 import { useDraft } from '@/hooks/use-draft'
 import { useEffect, useState, useMemo, forwardRef, useRef } from 'react'
 import { Transaction } from '@/types/finance'
-import { X, Plus, Tag as TagIcon } from 'lucide-react'
+import { X, Plus, Tag as TagIcon, Lightbulb } from 'lucide-react'
 import { cn, getTagColor } from '@/lib/utils'
 
 const formSchema = z
@@ -756,6 +756,10 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
                         ))}
                       </SelectContent>
                     </Select>
+                    <p className="text-[11px] text-slate-500 mt-2 flex items-start gap-1.5 leading-tight">
+                      <Lightbulb className="w-3.5 h-3.5 shrink-0 text-amber-500 mt-0.5" />
+                      Registre apenas os valores que entraram efetivamente no caixa no dia.
+                    </p>
                     <FormMessage />
                   </FormItem>
                 )}
