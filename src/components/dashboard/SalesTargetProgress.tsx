@@ -57,9 +57,7 @@ export function SalesTargetProgress({
           if (variant === 'GLOBAL') {
             inc += tx.amount
           } else if (variant === 'MANIPULACAO') {
-            if (tx.categoryId === 'RECEITA_OPERACIONAL') {
-              inc += tx.amount
-            }
+            inc += tx.amount
           }
         }
       })
@@ -107,9 +105,7 @@ export function SalesTargetProgress({
           if (variant === 'GLOBAL') {
             inc += tx.amount
           } else if (variant === 'MANIPULACAO') {
-            if (tx.categoryId === 'RECEITA_OPERACIONAL') {
-              inc += tx.amount
-            }
+            inc += tx.amount
           }
         }
       })
@@ -286,14 +282,14 @@ export function SalesTargetProgress({
                   <span
                     className={cn(
                       'font-bold',
-                      exceeded > 0
+                      achieved >= target && target > 0
                         ? variant === 'GLOBAL'
                           ? 'text-emerald-600'
                           : 'text-blue-600'
                         : 'text-orange-500',
                     )}
                   >
-                    {exceeded >= 0 ? 'Meta Batida' : 'Não Atingida'}
+                    {achieved >= target && target > 0 ? 'Meta Batida' : 'Não Atingida'}
                   </span>
                 </p>
               </div>
