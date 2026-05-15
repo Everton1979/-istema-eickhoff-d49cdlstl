@@ -1,6 +1,7 @@
 import { useFinanceStore } from '@/stores/financeStore'
 import { useMemo } from 'react'
 import { Card, CardContent } from '@/components/ui/card'
+import { useKpiMetrics } from '@/components/dashboard/KpiCards'
 import { cn } from '@/lib/utils'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { HelpCircle } from 'lucide-react'
@@ -9,6 +10,7 @@ import { Link } from 'react-router-dom'
 export function PharmacyMetrics() {
   const { filteredTransactions, filteredMonthlyMetrics, filters, monthlyMetrics, transactions } =
     useFinanceStore()
+  const kpiMetrics = useKpiMetrics()
 
   const metrics = useMemo(() => {
     const safeFilteredMonthlyMetrics = filteredMonthlyMetrics || []
@@ -99,9 +101,8 @@ export function PharmacyMetrics() {
 
     const mkpRealizado = totalRawMaterial > 0 ? totalSales / totalRawMaterial : 0
 
-    const custoTotalReal = despesasOperacionais + totalRawMaterial
-    const lucroLiquidoReal = totalSales - custoTotalReal
-    const lucroLiquidoPct = totalSales > 0 ? (lucroLiquidoReal / totalSales) * 100 : 0
+    const lucroLiquidoPct =
+      kpiMetrics.receitas > 0 ? (kpiMetrics.lucro / kpiMetrics.receitas) * 100 : 0
 
     const countMonths = safeFilteredMonthlyMetrics.length || 1
     const avgColabCaps = totalColaboradoresCapsulas / countMonths
@@ -210,7 +211,14 @@ export function PharmacyMetrics() {
       regra70Status,
       regra70Text,
     }
-  }, [filteredTransactions, filteredMonthlyMetrics, filters, monthlyMetrics, transactions])
+  }, [
+    filteredTransactions,
+    filteredMonthlyMetrics,
+    filters,
+    monthlyMetrics,
+    transactions,
+    kpiMetrics,
+  ])
 
   const formatCurrency = (val: number) =>
     new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val)
