@@ -59,17 +59,24 @@ export function PharmacyMetrics() {
 
     let cfaTotal = 0
     let varExpOperacional = 0
+    let despesasOperacionais = 0
     const targetStatuses = filters?.statuses?.length > 0 ? filters.statuses : ['REALIZADO']
 
     safeFilteredTransactions.forEach((t) => {
       if (t.type === 'EXPENSE' && targetStatuses.includes(t.status)) {
+        const isCMVTransaction =
+          t.categoryId === 'VARIAVEL' &&
+          (t.subcategoryId === 'materia_prima' ||
+            t.subcategoryId === 'embalagens' ||
+            t.subcategoryId === 'medicamentos_drogaria')
+
+        if (!isCMVTransaction) {
+          despesasOperacionais += t.amount
+        }
+
         if (t.categoryId === 'FIXA') cfaTotal += t.amount
         if (t.categoryId === 'VARIAVEL') {
-          if (
-            t.subcategoryId !== 'materia_prima' &&
-            t.subcategoryId !== 'embalagens' &&
-            t.subcategoryId !== 'medicamentos_drogaria'
-          ) {
+          if (!isCMVTransaction) {
             varExpOperacional += t.amount
           }
         }
@@ -90,10 +97,11 @@ export function PharmacyMetrics() {
     const pmIdealCaps = numCapsulas > 0 ? vendasCapsulas / numCapsulas : 0
     const pmIdealDerm = numDermato > 0 ? vendasDermato / numDermato : 0
 
-    const custoTotal = cfaTotal + varExpOperacional + totalRawMaterial
     const mkpRealizado = totalRawMaterial > 0 ? totalSales / totalRawMaterial : 0
 
-    const lucroLiquidoPct = totalSales > 0 ? ((totalSales - custoTotal) / totalSales) * 100 : 0
+    const custoTotalReal = despesasOperacionais + totalRawMaterial
+    const lucroLiquidoReal = totalSales - custoTotalReal
+    const lucroLiquidoPct = totalSales > 0 ? (lucroLiquidoReal / totalSales) * 100 : 0
 
     const countMonths = safeFilteredMonthlyMetrics.length || 1
     const avgColabCaps = totalColaboradoresCapsulas / countMonths
