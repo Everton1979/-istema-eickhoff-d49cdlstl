@@ -176,13 +176,8 @@ export function PharmacyMetrics() {
           rawPct = (cfaGrowth / salesGrowth) * 100
           isValidPct = true
         } else if (salesGrowth < 0) {
-          if (cfaGrowth > 0) {
-            rawPct = Math.abs((cfaGrowth / salesGrowth) * 100)
-            isValidPct = true
-          } else {
-            rawPct = (cfaGrowth / salesGrowth) * 100
-            isValidPct = true
-          }
+          rawPct = (cfaGrowth / salesGrowth) * 100
+          isValidPct = true
         } else {
           if (cfaGrowth > 0) {
             regra70Value = 'Atenção'
@@ -195,6 +190,7 @@ export function PharmacyMetrics() {
         }
 
         if (isValidPct) {
+          rawPct = Math.abs(rawPct)
           regra70Value = `${rawPct.toFixed(1).replace('.', ',')}%`
 
           const statusVal = parseFloat(rawPct.toFixed(1))
