@@ -157,13 +157,13 @@ export function PharmacyMetrics() {
         const cfaCurr = sumCfa(currTx)
         const cfaPrev = sumCfa(prevTx)
 
-        const cfaGrowth = cfaCurr - cfaPrev
+        const cfaGrowth = Number(cfaCurr) - Number(cfaPrev)
 
         if (salesGrowth > 0) {
           const pct = (cfaGrowth / salesGrowth) * 100
-          regra70Value = `${pct.toFixed(1)}%`
+          regra70Value = `${pct.toFixed(1).replace('.', ',')}%`
 
-          if (pct <= 70) {
+          if (Number(pct) <= 70) {
             regra70Status = 'good'
             regra70Text = 'Bom'
           } else {
@@ -173,23 +173,29 @@ export function PharmacyMetrics() {
         } else if (salesGrowth < 0) {
           if (cfaGrowth > 0) {
             const pct = Math.abs((cfaGrowth / salesGrowth) * 100)
-            regra70Value = `${pct.toFixed(1)}%`
+            regra70Value = `${pct.toFixed(1).replace('.', ',')}%`
             regra70Status = 'bad'
             regra70Text = 'Atenção (Queda)'
           } else {
-            regra70Value = 'N/A'
-            regra70Status = 'neutral'
-            regra70Text = 'Queda Vendas/CF'
+            const pct = (cfaGrowth / salesGrowth) * 100
+            regra70Value = `${pct.toFixed(1).replace('.', ',')}%`
+            if (Number(pct) <= 70) {
+              regra70Status = 'good'
+              regra70Text = 'Bom'
+            } else {
+              regra70Status = 'bad'
+              regra70Text = 'Atenção'
+            }
           }
         } else {
           if (cfaGrowth > 0) {
             regra70Value = 'Atenção'
             regra70Status = 'bad'
-            regra70Text = 'CF Subiu s/ Vendas'
+            regra70Text = 'CF Subiu'
           } else {
-            regra70Value = 'N/A'
-            regra70Status = 'neutral'
-            regra70Text = 'Sem Crescimento'
+            regra70Value = '0,0%'
+            regra70Status = 'good'
+            regra70Text = 'Bom'
           }
         }
       }
