@@ -64,7 +64,14 @@ export function PharmacyMetrics() {
 
     safeFilteredTransactions.forEach((t) => {
       if (t.type === 'EXPENSE' && targetStatuses.includes(t.status)) {
-        if (t.categoryId === 'FIXA') cfaTotal += t.amount
+        if (
+          t.categoryId === 'FIXA' ||
+          String(t.category).toUpperCase() === 'FIXA' ||
+          String(t.category).toUpperCase() === 'DESPESAS FIXAS' ||
+          String(t.category).toUpperCase() === 'CUSTO FIXO'
+        ) {
+          cfaTotal += t.amount
+        }
       }
     })
 
@@ -149,7 +156,10 @@ export function PharmacyMetrics() {
             .filter(
               (t) =>
                 t.type === 'EXPENSE' &&
-                t.categoryId === 'FIXA' &&
+                (t.categoryId === 'FIXA' ||
+                  String(t.category).toUpperCase() === 'FIXA' ||
+                  String(t.category).toUpperCase() === 'DESPESAS FIXAS' ||
+                  String(t.category).toUpperCase() === 'CUSTO FIXO') &&
                 targetStatuses.includes(t.status),
             )
             .reduce((sum, t) => sum + Number(t.amount || 0), 0)
@@ -159,33 +169,19 @@ export function PharmacyMetrics() {
 
         const cfaGrowth = Number(cfaCurr) - Number(cfaPrev)
 
-        if (salesGrowth > 0) {
-          const pct = (cfaGrowth / salesGrowth) * 100
-          regra70Value = `${pct.toFixed(1).replace('.', ',')}%`
+        let rawPct = 0
+        let isValidPct = false
 
-          if (Number(pct) <= 70) {
-            regra70Status = 'good'
-            regra70Text = 'Bom'
-          } else {
-            regra70Status = 'bad'
-            regra70Text = 'Atenção'
-          }
+        if (salesGrowth > 0) {
+          rawPct = (cfaGrowth / salesGrowth) * 100
+          isValidPct = true
         } else if (salesGrowth < 0) {
           if (cfaGrowth > 0) {
-            const pct = Math.abs((cfaGrowth / salesGrowth) * 100)
-            regra70Value = `${pct.toFixed(1).replace('.', ',')}%`
-            regra70Status = 'bad'
-            regra70Text = 'Atenção (Queda)'
+            rawPct = Math.abs((cfaGrowth / salesGrowth) * 100)
+            isValidPct = true
           } else {
-            const pct = (cfaGrowth / salesGrowth) * 100
-            regra70Value = `${pct.toFixed(1).replace('.', ',')}%`
-            if (Number(pct) <= 70) {
-              regra70Status = 'good'
-              regra70Text = 'Bom'
-            } else {
-              regra70Status = 'bad'
-              regra70Text = 'Atenção'
-            }
+            rawPct = (cfaGrowth / salesGrowth) * 100
+            isValidPct = true
           }
         } else {
           if (cfaGrowth > 0) {
@@ -193,9 +189,23 @@ export function PharmacyMetrics() {
             regra70Status = 'bad'
             regra70Text = 'CF Subiu'
           } else {
-            regra70Value = '0,0%'
+            rawPct = 0
+            isValidPct = true
+          }
+        }
+
+        if (isValidPct) {
+          regra70Value = `${rawPct.toFixed(1).replace('.', ',')}%`
+
+          const statusVal = parseFloat(rawPct.toFixed(1))
+          const status = statusVal <= 70 ? 'bom' : 'atencao'
+
+          if (status === 'bom') {
             regra70Status = 'good'
             regra70Text = 'Bom'
+          } else {
+            regra70Status = 'bad'
+            regra70Text = 'Atenção'
           }
         }
       }
@@ -279,15 +289,28 @@ export function PharmacyMetrics() {
       title: 'Regra dos 70%',
       tooltip: 'Aumento do Custo Fixo / Aumento das Vendas. Ideal < 70%.',
       value: metrics.regra70Value,
-      statusText: metrics.regra70Text,
-      color:
-        metrics.regra70Status === 'good'
-          ? 'text-emerald-600'
-          : metrics.regra70Status === 'regular'
-            ? 'text-amber-500'
-            : metrics.regra70Status === 'bad'
-              ? 'text-red-500'
-              : 'text-slate-500',
+      statusText: (() => {
+        if (metrics.regra70Value === 'N/A') return ''
+        if (metrics.regra70Value === 'Atenção') return 'CF Subiu'
+
+        const parsed = parseFloat(metrics.regra70Value.replace('%', '').replace(',', '.'))
+        if (!isNaN(parsed)) {
+          return parsed <= 70 ? 'Bom' : 'Atenção'
+        }
+
+        return metrics.regra70Text
+      })(),
+      color: (() => {
+        if (metrics.regra70Value === 'N/A') return 'text-slate-500'
+        if (metrics.regra70Value === 'Atenção') return 'text-red-500 font-bold'
+
+        const parsed = parseFloat(metrics.regra70Value.replace('%', '').replace(',', '.'))
+        if (!isNaN(parsed)) {
+          return parsed <= 70 ? 'text-emerald-600 font-bold' : 'text-red-500 font-bold'
+        }
+
+        return 'text-slate-500'
+      })(),
     },
     {
       id: 'pm-ideal-capsulas',
