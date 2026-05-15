@@ -18,7 +18,7 @@ export function useKpiMetrics() {
     let receitas = 0
     let despesasFluxo = 0
     let despesasPrevistas = 0
-    let custosVariaveisOperacionais = 0
+    let custoVariavelTotal = 0
     let custosFixos = 0
 
     transactions.forEach((tx) => {
@@ -42,13 +42,7 @@ export function useKpiMetrics() {
           despesasFluxo += tx.amount
           const cat = categories.find((c) => c.id === tx.categoryId)
           if (cat?.isVariable) {
-            if (
-              tx.subcategoryId !== 'materia_prima' &&
-              tx.subcategoryId !== 'embalagens' &&
-              tx.subcategoryId !== 'medicamentos_drogaria'
-            ) {
-              custosVariaveisOperacionais += tx.amount
-            }
+            custoVariavelTotal += tx.amount
           } else {
             custosFixos += tx.amount
           }
@@ -60,7 +54,7 @@ export function useKpiMetrics() {
       }
     })
 
-    const margem = receitas - (custosVariaveisOperacionais + totalRawMaterial)
+    const margem = receitas - custoVariavelTotal
     const lucro = receitas - despesasFluxo
     const ebitda = margem - custosFixos
     const indiceMargem = receitas > 0 ? margem / receitas : 0
@@ -169,7 +163,7 @@ export function StrategicKpis() {
     {
       id: 'margem-de-contribuicao',
       title: 'MARGEM DE CONTRIBUIÇÃO',
-      tooltip: 'Receita bruta menos custos variáveis operacionais e insumos.',
+      tooltip: 'Receita bruta menos os custos variáveis totais das transações.',
       value: formatCurrency(metrics.margem),
       color: 'text-blue-600',
       border: 'border-t-blue-500',

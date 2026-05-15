@@ -60,28 +60,11 @@ export function PharmacyMetrics() {
     )
 
     let cfaTotal = 0
-    let varExpOperacional = 0
-    let despesasOperacionais = 0
     const targetStatuses = filters?.statuses?.length > 0 ? filters.statuses : ['REALIZADO']
 
     safeFilteredTransactions.forEach((t) => {
       if (t.type === 'EXPENSE' && targetStatuses.includes(t.status)) {
-        const isCMVTransaction =
-          t.categoryId === 'VARIAVEL' &&
-          (t.subcategoryId === 'materia_prima' ||
-            t.subcategoryId === 'embalagens' ||
-            t.subcategoryId === 'medicamentos_drogaria')
-
-        if (!isCMVTransaction) {
-          despesasOperacionais += t.amount
-        }
-
         if (t.categoryId === 'FIXA') cfaTotal += t.amount
-        if (t.categoryId === 'VARIAVEL') {
-          if (!isCMVTransaction) {
-            varExpOperacional += t.amount
-          }
-        }
       }
     })
 
@@ -113,8 +96,7 @@ export function PharmacyMetrics() {
     const fatPorColabGeral = avgTotalColab > 0 ? totalSales / avgTotalColab : 0
     const fatPorColabVendas = avgColabVendas > 0 ? totalSales / avgColabVendas : 0
 
-    const margem = totalSales - varExpOperacional - totalRawMaterial
-    const ebitda = margem - cfaTotal
+    const ebitda = kpiMetrics.ebitda
 
     const loPorColab = avgTotalColab > 0 ? ebitda / avgTotalColab : 0
     const ebitdaMedioMensal = countMonths > 0 ? ebitda / countMonths : 0
