@@ -159,15 +159,12 @@ export function PharmacyMetrics() {
         if (salesGrowth > 0) {
           const pct = (cfaGrowth / salesGrowth) * 100
           regra70Value = `${pct.toFixed(1)}%`
-          if (pct <= 50) {
+          if (pct <= 70) {
             regra70Status = 'good'
             regra70Text = 'Bom'
-          } else if (pct <= 70) {
-            regra70Status = 'regular'
-            regra70Text = 'Regular'
           } else {
             regra70Status = 'bad'
-            regra70Text = 'Ruim'
+            regra70Text = 'Atenção'
           }
         } else {
           regra70Value = cfaGrowth <= 0 ? 'N/A' : 'Atenção'
