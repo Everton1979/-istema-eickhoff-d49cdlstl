@@ -75,11 +75,6 @@ export default function Index() {
             </div>
           </section>
 
-          {/* Simulador KUMON */}
-          <section className="w-full mt-1">
-            <KumonSimulator />
-          </section>
-
           {/* Main Analytics - Visão Operacional Empilhada */}
           <div className="flex flex-col gap-6 mt-3">
             <div className="bg-white p-4 rounded-lg shadow-sm border border-slate-200">
@@ -143,6 +138,10 @@ export default function Index() {
             </div>
 
             <StrategicKpis />
+
+            <div className="mt-6">
+              <KumonSimulator />
+            </div>
 
             <div className="mt-6">
               <PharmacyMetrics />

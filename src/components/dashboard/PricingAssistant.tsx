@@ -240,6 +240,16 @@ export function PricingAssistant() {
   return (
     <div className="w-full flex flex-col justify-center bg-gradient-to-br from-white to-blue-50/30 h-full min-h-[140px] relative rounded-b-xl">
       <div className="p-4 md:p-6 flex flex-col h-full justify-between">
+        <div className="mb-6 text-xs bg-blue-50 border border-blue-200 text-blue-800 p-3 rounded-md flex items-start gap-2 shadow-sm">
+          <Info className="w-4 h-4 text-blue-500 shrink-0 mt-0.5" />
+          <p>
+            <strong className="font-bold">Observação Estratégica:</strong> Este assistente utiliza
+            como base a média dos últimos 3 meses fechados (excluindo o mês atual). Ele estará
+            plenamente funcional após o fechamento do seu primeiro mês de uso, pois requer este
+            histórico mínimo para configurar o cenário de markup dinâmico com precisão.
+          </p>
+        </div>
+
         <div className="flex items-center gap-3 w-full justify-between md:justify-start mb-6">
           <span className="text-sm font-bold text-blue-900 uppercase tracking-wide flex items-center gap-2">
             <Calculator className="w-5 h-5" /> Configurar Cenário:

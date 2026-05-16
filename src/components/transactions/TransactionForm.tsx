@@ -399,11 +399,6 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
                   <SelectContent>
                     <SelectItem value="REALIZADO">Realizado</SelectItem>
                     <SelectItem value="PREVISTO">Previsto</SelectItem>
-                    {(type === 'EXPENSE' ||
-                      type === 'CORTESIA' ||
-                      type === 'PARTNER_WITHDRAWAL') && (
-                      <SelectItem value="VENCIDO">Vencido</SelectItem>
-                    )}
                   </SelectContent>
                 </Select>
               </FormItem>
