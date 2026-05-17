@@ -89,10 +89,6 @@ export function PrintableReport({ exportFilters }: { exportFilters: any }) {
 
     if (exportFilters.format === 'pdf') {
       setShouldPrint(true)
-      setTimeout(() => {
-        window.print()
-        setShouldPrint(false)
-      }, 500)
     }
   }, [exportFilters, transactions])
 
@@ -120,67 +116,102 @@ export function PrintableReport({ exportFilters }: { exportFilters: any }) {
   const periodLabel = `${(exportFilters.startDate || '').split('-').reverse().join('/')} até ${(exportFilters.endDate || '').split('-').reverse().join('/')}`
 
   return (
-    <div className="hidden print:block p-8 bg-white text-black min-h-screen">
-      <div className="text-center mb-8 border-b pb-6">
-        <h1 className="text-2xl font-bold mb-2">Relatório Financeiro</h1>
-        <p className="text-gray-600 font-medium">Período: {periodLabel}</p>
-        <p className="text-gray-600">Filtro Aplicado: {typeLabel}</p>
-      </div>
+    <>
+      <style>{`
+      @media print {
+        body * { visibility: hidden; }
+        .printable-area, .printable-area * { visibility: visible; }
+        .printable-area {
+          position: absolute !important;
+          left: 0 !important;
+          top: 0 !important;
+          width: 100% !important;
+          height: auto !important;
+          margin: 0 !important;
+          padding: 0 !important;
+          overflow: visible !important;
+        }
+      }
+    `}</style>
+      <div className="fixed inset-0 z-50 bg-white text-black overflow-auto p-8 print:p-0">
+        <div className="flex justify-between items-center mb-6 print:hidden">
+          <h2 className="text-xl font-bold">Visualização do Relatório</h2>
+          <div className="flex gap-2">
+            <button onClick={() => setShouldPrint(false)} className="px-4 py-2 border rounded-md">
+              Fechar
+            </button>
+            <button
+              onClick={() => window.print()}
+              className="px-4 py-2 bg-blue-600 text-white rounded-md font-bold shadow-sm"
+            >
+              Imprimir
+            </button>
+          </div>
+        </div>
 
-      <div className="grid grid-cols-3 gap-4 mb-8">
-        <div className="p-4 border rounded-lg bg-gray-50 text-center">
-          <p className="text-sm text-gray-600 uppercase font-bold mb-1">Total Entradas</p>
-          <p className="text-xl font-bold text-green-600">{formatCurrency(totalEntradas)}</p>
-        </div>
-        <div className="p-4 border rounded-lg bg-gray-50 text-center">
-          <p className="text-sm text-gray-600 uppercase font-bold mb-1">Total Despesas</p>
-          <p className="text-xl font-bold text-red-600">{formatCurrency(totalSaidas)}</p>
-        </div>
-        <div className="p-4 border rounded-lg bg-gray-50 text-center">
-          <p className="text-sm text-gray-600 uppercase font-bold mb-1">Lucro (Saldo)</p>
-          <p className={`text-xl font-bold ${lucro >= 0 ? 'text-blue-600' : 'text-red-600'}`}>
-            {formatCurrency(lucro)}
-          </p>
-        </div>
-      </div>
+        <div className="printable-area max-w-4xl mx-auto">
+          <div className="text-center mb-8 border-b pb-6">
+            <h1 className="text-2xl font-bold mb-2">Relatório Financeiro</h1>
+            <p className="text-gray-600 font-medium">Período: {periodLabel}</p>
+            <p className="text-gray-600">Filtro Aplicado: {typeLabel}</p>
+          </div>
 
-      <div className="mb-6">
-        <h2 className="text-lg font-bold mb-4 border-b pb-2">
-          Detalhamento de Transações ({exportTransactions.length})
-        </h2>
-        <table className="w-full text-sm border-collapse">
-          <thead>
-            <tr className="border-b bg-gray-50">
-              <th className="text-left py-2 px-2">Data</th>
-              <th className="text-left py-2 px-2">Descrição</th>
-              <th className="text-left py-2 px-2">Categoria</th>
-              <th className="text-right py-2 px-2">Valor</th>
-            </tr>
-          </thead>
-          <tbody>
-            {exportTransactions.map((t) => (
-              <tr key={t.id} className="border-b">
-                <td className="py-2 px-2">{new Date(t.date).toLocaleDateString('pt-BR')}</td>
-                <td className="py-2 px-2">{t.description}</td>
-                <td className="py-2 px-2">{(t.category as any) || (t as any).categoryId}</td>
-                <td
-                  className={`py-2 px-2 text-right ${t.type === 'INCOME' ? 'text-green-600' : 'text-red-600'}`}
-                >
-                  {t.type === 'INCOME' ? '+' : '-'}
-                  {formatCurrency(Number(t.amount))}
-                </td>
-              </tr>
-            ))}
-            {exportTransactions.length === 0 && (
-              <tr>
-                <td colSpan={4} className="py-4 text-center text-gray-500">
-                  Nenhuma transação encontrada no período selecionado.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+          <div className="grid grid-cols-3 gap-4 mb-8">
+            <div className="p-4 border rounded-lg bg-gray-50 text-center">
+              <p className="text-sm text-gray-600 uppercase font-bold mb-1">Total Entradas</p>
+              <p className="text-xl font-bold text-green-600">{formatCurrency(totalEntradas)}</p>
+            </div>
+            <div className="p-4 border rounded-lg bg-gray-50 text-center">
+              <p className="text-sm text-gray-600 uppercase font-bold mb-1">Total Despesas</p>
+              <p className="text-xl font-bold text-red-600">{formatCurrency(totalSaidas)}</p>
+            </div>
+            <div className="p-4 border rounded-lg bg-gray-50 text-center">
+              <p className="text-sm text-gray-600 uppercase font-bold mb-1">Lucro (Saldo)</p>
+              <p className={`text-xl font-bold ${lucro >= 0 ? 'text-blue-600' : 'text-red-600'}`}>
+                {formatCurrency(lucro)}
+              </p>
+            </div>
+          </div>
+
+          <div className="mb-6">
+            <h2 className="text-lg font-bold mb-4 border-b pb-2">
+              Detalhamento de Transações ({exportTransactions.length})
+            </h2>
+            <table className="w-full text-sm border-collapse">
+              <thead>
+                <tr className="border-b bg-gray-50">
+                  <th className="text-left py-2 px-2">Data</th>
+                  <th className="text-left py-2 px-2">Descrição</th>
+                  <th className="text-left py-2 px-2">Categoria</th>
+                  <th className="text-right py-2 px-2">Valor</th>
+                </tr>
+              </thead>
+              <tbody>
+                {exportTransactions.map((t) => (
+                  <tr key={t.id} className="border-b">
+                    <td className="py-2 px-2">{new Date(t.date).toLocaleDateString('pt-BR')}</td>
+                    <td className="py-2 px-2">{t.description}</td>
+                    <td className="py-2 px-2">{(t.category as any) || (t as any).categoryId}</td>
+                    <td
+                      className={`py-2 px-2 text-right ${t.type === 'INCOME' ? 'text-green-600' : 'text-red-600'}`}
+                    >
+                      {t.type === 'INCOME' ? '+' : '-'}
+                      {formatCurrency(Number(t.amount))}
+                    </td>
+                  </tr>
+                ))}
+                {exportTransactions.length === 0 && (
+                  <tr>
+                    <td colSpan={4} className="py-4 text-center text-gray-500">
+                      Nenhuma transação encontrada no período selecionado.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
-    </div>
+    </>
   )
 }

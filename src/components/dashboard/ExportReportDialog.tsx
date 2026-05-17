@@ -7,6 +7,7 @@ import {
   FileText,
   FileSpreadsheet,
   Loader2,
+  Printer,
 } from 'lucide-react'
 import {
   Dialog,
@@ -108,6 +109,12 @@ export function ExportReportDialog({ onExport }: { onExport?: (filters: any) => 
   const [type, setType] = useState('ALL')
   const [open, setOpen] = useState(false)
   const [isExporting, setIsExporting] = useState(false)
+  const [previewData, setPreviewData] = useState<{
+    data: Transaction[]
+    startStr: string
+    endStr: string
+    type: string
+  } | null>(null)
 
   const { fetchTransactionsForExport } = useFinanceStore()
   const { toast } = useToast()
@@ -138,123 +145,15 @@ export function ExportReportDialog({ onExport }: { onExport?: (filters: any) => 
     URL.revokeObjectURL(url)
   }
 
-  const generatePDF = (data: Transaction[], startStr: string, endStr: string) => {
-    const printWindow = window.open('', '_blank')
-    if (!printWindow) {
-      toast({
-        title: 'Erro',
-        description: 'Por favor, permita pop-ups no seu navegador para gerar o PDF.',
-        variant: 'destructive',
-      })
-      return
-    }
+  const formatCurrency = (val: number) =>
+    val.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
+  const formatDate = (dateStr: string) => {
+    const d = dateStr.includes('T') ? new Date(dateStr) : new Date(dateStr + 'T12:00:00Z')
+    return d.toLocaleDateString('pt-BR')
+  }
 
-    const totalReceitas = data
-      .filter((d) => d.type === 'INCOME')
-      .reduce((acc, curr) => acc + curr.amount, 0)
-    const totalDespesas = data
-      .filter((d) => d.type === 'EXPENSE')
-      .reduce((acc, curr) => acc + curr.amount, 0)
-    const saldo = totalReceitas - totalDespesas
-
-    const formatCurrency = (val: number) =>
-      val.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
-    const formatDate = (dateStr: string) => {
-      const d = dateStr.includes('T') ? new Date(dateStr) : new Date(dateStr + 'T12:00:00Z')
-      return d.toLocaleDateString('pt-BR')
-    }
-
-    const typeLabel =
-      type === 'ALL'
-        ? 'Todos os Lançamentos'
-        : type === 'INCOME'
-          ? 'Apenas Receitas'
-          : 'Apenas Despesas'
-
-    const html = `
-      <!DOCTYPE html>
-      <html>
-        <head>
-          <title>Relatório Financeiro</title>
-          <style>
-            body { font-family: Arial, sans-serif; padding: 20px; color: #333; }
-            h1 { color: #111; border-bottom: 2px solid #eee; padding-bottom: 10px; font-size: 24px; }
-            .summary { display: flex; gap: 20px; margin-bottom: 30px; padding: 15px; background: #f8f9fa; border-radius: 8px; border: 1px solid #e9ecef; }
-            .summary div { flex: 1; }
-            .summary p { margin: 5px 0; font-size: 14px; }
-            .summary h3 { margin: 0 0 10px 0; font-size: 16px; color: #555; }
-            table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 12px; }
-            th, td { border: 1px solid #ddd; padding: 8px 12px; text-align: left; }
-            th { background-color: #f4f4f4; font-weight: bold; }
-            tr:nth-child(even) { background-color: #fafafa; }
-            .receita { color: #16a34a; font-weight: 500; }
-            .despesa { color: #dc2626; font-weight: 500; }
-            .amount { text-align: right; }
-            @media print {
-              body { padding: 0; }
-              .summary { break-inside: avoid; }
-              table { break-inside: auto; }
-              tr { break-inside: avoid; break-after: auto; }
-            }
-          </style>
-        </head>
-        <body>
-          <h1>Relatório Financeiro</h1>
-          <div class="summary">
-            <div>
-              <h3>Período</h3>
-              <p>${formatDate(startStr)} a ${formatDate(endStr)}</p>
-              <p><strong>Tipo:</strong> ${typeLabel}</p>
-            </div>
-            <div>
-              <h3>Resumo</h3>
-              <p><strong>Total Receitas:</strong> <span class="receita">${formatCurrency(totalReceitas)}</span></p>
-              <p><strong>Total Despesas:</strong> <span class="despesa">${formatCurrency(totalDespesas)}</span></p>
-              <p><strong>Saldo no Período:</strong> <strong>${formatCurrency(saldo)}</strong></p>
-            </div>
-          </div>
-          <table>
-            <thead>
-              <tr>
-                <th>Data</th>
-                <th>Descrição</th>
-                <th>Categoria</th>
-                <th>Tipo</th>
-                <th>Status</th>
-                <th class="amount">Valor</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${data
-                .map(
-                  (tx) => `
-                <tr>
-                  <td>${formatDate(tx.date)}</td>
-                  <td>${tx.description}</td>
-                  <td>${tx.categoryId || '-'}</td>
-                  <td class="${tx.type === 'INCOME' ? 'receita' : 'despesa'}">${tx.type === 'INCOME' ? 'Receita' : 'Despesa'}</td>
-                  <td>${tx.status}</td>
-                  <td class="amount">${formatCurrency(tx.amount)}</td>
-                </tr>
-              `,
-                )
-                .join('')}
-            </tbody>
-          </table>
-          <script>
-            window.onload = () => { 
-              setTimeout(() => {
-                window.print(); 
-                window.close();
-              }, 500);
-            }
-          </script>
-        </body>
-      </html>
-    `
-
-    printWindow.document.write(html)
-    printWindow.document.close()
+  const handlePrint = () => {
+    window.print()
   }
 
   const handleExport = async (formatType: 'pdf' | 'excel') => {
@@ -291,16 +190,18 @@ export function ExportReportDialog({ onExport }: { onExport?: (filters: any) => 
 
       if (formatType === 'excel') {
         generateCSV(data, startStr, endStr)
+        toast({
+          title: 'Exportação concluída',
+          description: `${data.length} lançamentos exportados com sucesso!`,
+        })
+        setOpen(false)
       } else {
-        generatePDF(data, startStr, endStr)
+        setPreviewData({ data, startStr, endStr, type })
+        toast({
+          title: 'Pré-visualização gerada',
+          description: `Relatório gerado com sucesso. Você pode conferir os dados antes de imprimir.`,
+        })
       }
-
-      toast({
-        title: 'Exportação concluída',
-        description: `${data.length} lançamentos exportados com sucesso!`,
-      })
-
-      setOpen(false)
     } catch (error) {
       console.error('Erro ao exportar:', error)
       toast({
@@ -313,78 +214,259 @@ export function ExportReportDialog({ onExport }: { onExport?: (filters: any) => 
     }
   }
 
+  const typeLabel =
+    previewData?.type === 'ALL'
+      ? 'Todos os Lançamentos'
+      : previewData?.type === 'INCOME'
+        ? 'Apenas Receitas'
+        : 'Apenas Despesas'
+
+  const totalReceitas =
+    previewData?.data
+      .filter((d) => d.type === 'INCOME')
+      .reduce((acc, curr) => acc + curr.amount, 0) || 0
+  const totalDespesas =
+    previewData?.data
+      .filter((d) => d.type === 'EXPENSE')
+      .reduce((acc, curr) => acc + curr.amount, 0) || 0
+  const saldo = totalReceitas - totalDespesas
+
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button
-          variant="outline"
-          size="sm"
-          className="h-11 px-4 text-sm bg-sky-50 dark:bg-sky-950 hover:bg-sky-100 dark:hover:bg-sky-900 text-sky-700 dark:text-sky-300 border-sky-200 dark:border-sky-800 flex gap-2 shadow-sm font-bold"
+    <>
+      <style>{`
+      @media print {
+        body * { visibility: hidden; }
+        .printable-area, .printable-area * { visibility: visible; }
+        .printable-area {
+          position: absolute !important;
+          left: 0 !important;
+          top: 0 !important;
+          width: 100% !important;
+          height: auto !important;
+          margin: 0 !important;
+          padding: 0 !important;
+          overflow: visible !important;
+        }
+      }
+    `}</style>
+      <Dialog
+        open={open}
+        onOpenChange={(val) => {
+          setOpen(val)
+          if (!val) setPreviewData(null)
+        }}
+      >
+        <DialogTrigger asChild>
+          <Button
+            variant="outline"
+            size="sm"
+            className="h-11 px-4 text-sm bg-sky-50 dark:bg-sky-950 hover:bg-sky-100 dark:hover:bg-sky-900 text-sky-700 dark:text-sky-300 border-sky-200 dark:border-sky-800 flex gap-2 shadow-sm font-bold"
+          >
+            <Download className="w-4 h-4 text-sky-600 dark:text-sky-400" />
+            Exportar Relatório
+          </Button>
+        </DialogTrigger>
+        <DialogContent
+          className={cn(
+            'rounded-xl flex flex-col transition-all duration-300',
+            previewData
+              ? 'w-[95vw] sm:w-[90vw] max-w-5xl h-[90vh] p-0'
+              : 'p-4 sm:p-6 w-[95vw] sm:w-full max-w-[425px]',
+          )}
         >
-          <Download className="w-4 h-4 text-sky-600 dark:text-sky-400" />
-          Exportar Relatório
-        </Button>
-      </DialogTrigger>
-      <DialogContent className="p-4 sm:p-6 w-[95vw] sm:w-full max-w-[425px] rounded-xl">
-        <DialogHeader>
-          <DialogTitle>Exportar Relatório Financeiro</DialogTitle>
-        </DialogHeader>
-        <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="space-y-2 flex flex-col">
-              <Label>Data Inicial</Label>
-              <ResponsiveDatePicker
-                date={startDate}
-                setDate={setStartDate}
-                disabled={isExporting}
-              />
-            </div>
-            <div className="space-y-2 flex flex-col">
-              <Label>Data Final</Label>
-              <ResponsiveDatePicker date={endDate} setDate={setEndDate} disabled={isExporting} />
-            </div>
-          </div>
-          <div className="space-y-2">
-            <Label>Tipo de Lançamento</Label>
-            <Select value={type} onValueChange={setType} disabled={isExporting}>
-              <SelectTrigger className="bg-white dark:bg-slate-950 h-12 sm:h-10 text-base sm:text-sm">
-                <SelectValue placeholder="Selecione o tipo" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="ALL">Todos os Lançamentos</SelectItem>
-                <SelectItem value="INCOME">Apenas Receitas</SelectItem>
-                <SelectItem value="EXPENSE">Apenas Despesas</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
-        <div className="flex flex-col gap-3 mt-4">
-          <Button
-            onClick={() => handleExport('pdf')}
-            disabled={isExporting}
-            className="w-full h-12 sm:h-10 text-base sm:text-sm bg-red-600 hover:bg-red-700 text-white flex items-center justify-center gap-2"
-          >
-            {isExporting ? (
-              <Loader2 className="w-4 h-4 animate-spin" />
-            ) : (
-              <FileText className="w-4 h-4" />
-            )}
-            Exportar como PDF
-          </Button>
-          <Button
-            onClick={() => handleExport('excel')}
-            disabled={isExporting}
-            className="w-full h-12 sm:h-10 text-base sm:text-sm bg-green-600 hover:bg-green-700 text-white flex items-center justify-center gap-2"
-          >
-            {isExporting ? (
-              <Loader2 className="w-4 h-4 animate-spin" />
-            ) : (
-              <FileSpreadsheet className="w-4 h-4" />
-            )}
-            Exportar como Excel (CSV)
-          </Button>
-        </div>
-      </DialogContent>
-    </Dialog>
+          {previewData ? (
+            <>
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 border-b bg-slate-50 dark:bg-slate-900 rounded-t-xl print:hidden shrink-0">
+                <DialogTitle className="text-lg font-bold text-slate-800 dark:text-slate-100">
+                  Visualização do Relatório
+                </DialogTitle>
+                <div className="flex items-center gap-2 w-full sm:w-auto">
+                  <Button
+                    variant="outline"
+                    onClick={() => setPreviewData(null)}
+                    className="flex-1 sm:flex-none"
+                  >
+                    Voltar
+                  </Button>
+                  <Button
+                    onClick={handlePrint}
+                    className="flex-1 sm:flex-none bg-blue-600 hover:bg-blue-700 text-white gap-2 font-bold shadow-sm"
+                  >
+                    <Printer className="w-4 h-4" />
+                    Imprimir / Salvar PDF
+                  </Button>
+                </div>
+              </div>
+
+              <div className="flex-1 overflow-auto p-6 sm:p-8 bg-white text-black printable-area">
+                <div className="max-w-[800px] mx-auto">
+                  <div className="border-b-2 border-slate-200 pb-4 mb-6">
+                    <h1 className="text-2xl font-bold text-slate-900">Relatório Financeiro</h1>
+                  </div>
+
+                  <div className="flex flex-col sm:flex-row gap-6 mb-8 p-4 bg-slate-50 rounded-lg border border-slate-200 break-inside-avoid">
+                    <div className="flex-1">
+                      <h3 className="text-sm font-bold text-slate-500 uppercase mb-2">Período</h3>
+                      <p className="text-sm text-slate-800 font-medium">
+                        {formatDate(previewData.startStr)} a {formatDate(previewData.endStr)}
+                      </p>
+                      <p className="text-sm text-slate-600 mt-1">
+                        <strong>Tipo:</strong> {typeLabel}
+                      </p>
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="text-sm font-bold text-slate-500 uppercase mb-2">Resumo</h3>
+                      <div className="space-y-1">
+                        <p className="text-sm text-slate-600 flex justify-between">
+                          <span>Total Receitas:</span>
+                          <span className="text-green-600 font-medium">
+                            {formatCurrency(totalReceitas)}
+                          </span>
+                        </p>
+                        <p className="text-sm text-slate-600 flex justify-between">
+                          <span>Total Despesas:</span>
+                          <span className="text-red-600 font-medium">
+                            {formatCurrency(totalDespesas)}
+                          </span>
+                        </p>
+                        <div className="h-px bg-slate-200 my-1"></div>
+                        <p className="text-sm text-slate-800 font-bold flex justify-between">
+                          <span>Saldo no Período:</span>
+                          <span className={saldo >= 0 ? 'text-blue-600' : 'text-red-600'}>
+                            {formatCurrency(saldo)}
+                          </span>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-sm border-collapse">
+                      <thead>
+                        <tr className="border-b-2 border-slate-200 bg-slate-50">
+                          <th className="py-2 px-3 text-left font-bold text-slate-700 whitespace-nowrap">
+                            Data
+                          </th>
+                          <th className="py-2 px-3 text-left font-bold text-slate-700">
+                            Descrição
+                          </th>
+                          <th className="py-2 px-3 text-left font-bold text-slate-700">
+                            Categoria
+                          </th>
+                          <th className="py-2 px-3 text-left font-bold text-slate-700">Tipo</th>
+                          <th className="py-2 px-3 text-left font-bold text-slate-700">Status</th>
+                          <th className="py-2 px-3 text-right font-bold text-slate-700 whitespace-nowrap">
+                            Valor
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-100">
+                        {previewData.data.map((tx) => (
+                          <tr key={tx.id} className="hover:bg-slate-50/50">
+                            <td className="py-2 px-3 text-slate-600 whitespace-nowrap">
+                              {formatDate(tx.date)}
+                            </td>
+                            <td className="py-2 px-3 text-slate-800">{tx.description}</td>
+                            <td className="py-2 px-3 text-slate-600">
+                              {(tx.category as any) || (tx as any).categoryId || '-'}
+                            </td>
+                            <td className="py-2 px-3">
+                              <span
+                                className={cn(
+                                  'inline-flex px-2 py-0.5 rounded text-[11px] font-medium',
+                                  tx.type === 'INCOME'
+                                    ? 'bg-green-100 text-green-700'
+                                    : 'bg-red-100 text-red-700',
+                                )}
+                              >
+                                {tx.type === 'INCOME' ? 'Receita' : 'Despesa'}
+                              </span>
+                            </td>
+                            <td className="py-2 px-3 text-slate-600 text-[12px]">{tx.status}</td>
+                            <td
+                              className={cn(
+                                'py-2 px-3 text-right font-medium whitespace-nowrap',
+                                tx.type === 'INCOME' ? 'text-green-600' : 'text-red-600',
+                              )}
+                            >
+                              {formatCurrency(tx.amount)}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </>
+          ) : (
+            <>
+              <DialogHeader>
+                <DialogTitle>Exportar Relatório Financeiro</DialogTitle>
+              </DialogHeader>
+              <div className="grid gap-4 py-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-2 flex flex-col">
+                    <Label>Data Inicial</Label>
+                    <ResponsiveDatePicker
+                      date={startDate}
+                      setDate={setStartDate}
+                      disabled={isExporting}
+                    />
+                  </div>
+                  <div className="space-y-2 flex flex-col">
+                    <Label>Data Final</Label>
+                    <ResponsiveDatePicker
+                      date={endDate}
+                      setDate={setEndDate}
+                      disabled={isExporting}
+                    />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label>Tipo de Lançamento</Label>
+                  <Select value={type} onValueChange={setType} disabled={isExporting}>
+                    <SelectTrigger className="bg-white dark:bg-slate-950 h-12 sm:h-10 text-base sm:text-sm">
+                      <SelectValue placeholder="Selecione o tipo" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="ALL">Todos os Lançamentos</SelectItem>
+                      <SelectItem value="INCOME">Apenas Receitas</SelectItem>
+                      <SelectItem value="EXPENSE">Apenas Despesas</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              <div className="flex flex-col gap-3 mt-4">
+                <Button
+                  onClick={() => handleExport('pdf')}
+                  disabled={isExporting}
+                  className="w-full h-12 sm:h-10 text-base sm:text-sm bg-red-600 hover:bg-red-700 text-white flex items-center justify-center gap-2 font-bold shadow-sm"
+                >
+                  {isExporting ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <FileText className="w-4 h-4" />
+                  )}
+                  Visualizar PDF
+                </Button>
+                <Button
+                  onClick={() => handleExport('excel')}
+                  disabled={isExporting}
+                  className="w-full h-12 sm:h-10 text-base sm:text-sm bg-green-600 hover:bg-green-700 text-white flex items-center justify-center gap-2"
+                >
+                  {isExporting ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <FileSpreadsheet className="w-4 h-4" />
+                  )}
+                  Exportar como Excel (CSV)
+                </Button>
+              </div>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
+    </>
   )
 }
