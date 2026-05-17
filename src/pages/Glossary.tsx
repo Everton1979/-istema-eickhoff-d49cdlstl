@@ -302,7 +302,7 @@ const GLOSSARY_TERMS = [
     id: 'markup-realizado',
     title: 'Mark-up Praticado',
     definition: 'Multiplicador efetivamente realizado pela farmácia no período.',
-    calculation: 'Faturamento Total / Custo de Insumos.',
+    calculation: 'Vendas Totais Manipulação / (Custo de matérias primas + embalagens).',
     example:
       'No final do mês, você faturou R$ 120.000. Olhando as notas fiscais, o gasto com frascos e matéria-prima foi de R$ 20.000. R$ 120k ÷ R$ 20k = 6,0. Seu Mark-up Praticado real foi 6x o custo.',
     reference: 'Deve ser sempre superior ao Mark-up Alvo (P.E.).',
@@ -335,12 +335,12 @@ const GLOSSARY_TERMS = [
   },
   {
     id: 'pm-ideal',
-    title: 'PM Ideal (Ticket Médio por Setor)',
+    title: 'Ticket-médio por Setor',
     definition:
       'O Preço Médio ou Ticket Médio exclusivo de um setor específico (ex: Cápsulas ou Dermato).',
     calculation: 'Faturamento do Setor / Número de Fórmulas do Setor.',
     example:
-      'Se o setor de Dermatologia faturou R$ 40.000 num mês produzindo exatamente 200 potes de cremes/pomadas, o PM (Preço Médio) Ideal de Dermato é R$ 200,00 por unidade.',
+      'Se o setor de Dermatologia faturou R$ 40.000 num mês produzindo exatamente 200 potes de cremes/pomadas, o Ticket-médio Dermato é R$ 200,00 por unidade.',
     reference:
       'Ajuda a identificar qual linha de produção (Cápsulas vs. Dermato) consegue praticar valores mais altos e com maior rentabilidade agregada.',
     category: 'Inteligência Analítica',
@@ -450,11 +450,11 @@ const GLOSSARY_TERMS = [
   },
   {
     id: 'ticket-medio',
-    title: 'Ticket Médio',
+    title: 'Ticket Médio Manipulação',
     definition: 'Valor médio de venda gerado por cada orçamento aprovado/pedido no sistema.',
     calculation: 'Faturamento Total / Número de Pedidos.',
     example:
-      'O fechamento do mês apontou faturamento de R$ 100.000 derivado de 500 pedidos (receitas aviadas). R$ 100.000 ÷ 500 = Ticket Médio Geral de R$ 200,00 por atendimento.',
+      'O fechamento do mês apontou faturamento de R$ 100.000 derivado de 500 pedidos (receitas aviadas). R$ 100.000 ÷ 500 = Ticket Médio Manipulação de R$ 200,00 por atendimento.',
     reference:
       'Quanto maior, melhor. Indica eficácia do esforço do balconista em agregar vendas ou cross-selling.',
     category: 'Métricas de Performance',

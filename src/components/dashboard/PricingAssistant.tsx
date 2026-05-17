@@ -474,16 +474,14 @@ export function PricingAssistant() {
             <Tooltip>
               <TooltipTrigger asChild>
                 <span className="cursor-help flex items-center gap-1">
-                  PM Ideal (Ticket):{' '}
+                  Ticket Médio:{' '}
                   <span className="font-black text-emerald-700 text-sm">
                     R$ {stats.precoMedioIdeal.toFixed(2)}
                   </span>
                 </span>
               </TooltipTrigger>
               <TooltipContent className="max-w-[200px] text-center" side="top">
-                <p className="text-xs">
-                  Preço Médio Ideal (Ticket Médio Histórico) do laboratório selecionado.
-                </p>
+                <p className="text-xs">Ticket Médio Histórico do laboratório selecionado.</p>
               </TooltipContent>
             </Tooltip>
             <span className="text-blue-300 hidden sm:inline">|</span>

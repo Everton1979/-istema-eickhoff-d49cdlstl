@@ -250,7 +250,7 @@ export function PharmacyMetrics() {
   }> = [
     {
       id: 'ticket-medio',
-      title: 'Ticket Médio Geral',
+      title: 'Ticket Médio Manipulação',
       tooltip: 'Valor médio por venda (Faturamento / Número de pedidos).',
       value: formatCurrency(metrics.ticketMedio),
       color: 'text-indigo-600',
@@ -328,14 +328,14 @@ export function PharmacyMetrics() {
     },
     {
       id: 'pm-ideal-capsulas',
-      title: 'PM Ideal (Cápsulas)',
+      title: 'Ticket-médio Cápsulas',
       tooltip: 'Preço Médio (Ticket Médio) exclusivo do setor de Cápsulas.',
       value: formatCurrency(metrics.pmIdealCaps),
       color: 'text-blue-600',
     },
     {
       id: 'pm-ideal-dermato',
-      title: 'PM Ideal (Dermato)',
+      title: 'Ticket-médio Dermato',
       tooltip: 'Preço Médio (Ticket Médio) exclusivo do setor de Dermato.',
       value: formatCurrency(metrics.pmIdealDerm),
       color: 'text-blue-600',
@@ -375,7 +375,7 @@ export function PharmacyMetrics() {
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wide flex items-center gap-2">
           <div className="w-2 h-4 bg-indigo-500 rounded-sm" />
-          Inteligência Analítica (KPIs 3.0)
+          Inteligência Analítica
         </h3>
       </div>
       <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">

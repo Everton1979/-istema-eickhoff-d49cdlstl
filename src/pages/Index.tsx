@@ -14,6 +14,7 @@ import { StatusDetailPanel } from '@/components/dashboard/StatusDetailPanel'
 import { PendingUsersAlert } from '@/components/dashboard/PendingUsersAlert'
 import { PlanExpirationBanner } from '@/components/dashboard/PlanExpirationBanner'
 import { useState, useEffect } from 'react'
+import { AlertTriangle } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/hooks/use-auth'
 
@@ -50,6 +51,15 @@ export default function Index() {
         </div>
 
         <div className="flex-1 overflow-y-auto p-4 md:p-6 flex flex-col gap-8">
+          <div className="bg-amber-50 border border-amber-200 text-amber-800 px-4 py-3 rounded-md flex items-start gap-3 shadow-sm text-sm">
+            <AlertTriangle className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
+            <p>
+              <strong>Aviso de Navegação:</strong> Por favor, deixe sempre no modo inglês e não
+              traduza a página. A utilização da tradução automática do navegador pode desconfigurar
+              o layout e as funcionalidades do sistema.
+            </p>
+          </div>
+
           <PlanExpirationBanner />
           <PendingUsersAlert />
 
