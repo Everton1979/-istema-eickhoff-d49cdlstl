@@ -102,11 +102,12 @@ const GLOSSARY_TERMS = [
     title: 'Despesas Fixas',
     definition:
       'São os gastos que a empresa possui independentemente de realizar vendas ou não. Eles se mantêm (ou variam muito pouco) todo mês. Exemplos: Aluguel, IPTU, salários da equipe administrativa, honorários contábeis, sistemas e softwares.',
-    calculation: 'Soma dos lançamentos categorizados como "Fixa".',
+    calculation:
+      'Soma dos lançamentos categorizados como "Fixa". Percentual calculado sobre as Receitas Realizadas: (Despesas Fixas / Receitas Realizadas) * 100.',
     example:
       'No meio da pandemia a farmácia ficou fechada por 15 dias, mas o aluguel de R$ 4.000 teve que ser pago normalmente. O aluguel é uma despesa fixa clássica.',
     reference:
-      'Essenciais para o cálculo do Ponto de Equilíbrio. Devem ser monitoradas de perto, pois não dependem do faturamento.',
+      'Meta: Menor ou igual a 35% (≤ 35%). Essenciais para o cálculo do Ponto de Equilíbrio. Devem ser monitoradas de perto, pois não dependem do faturamento. O cálculo percentual é realizado estritamente sobre as Receitas Realizadas.',
     category: 'Tipos e Classificações',
     trend: 'neutral',
   },
@@ -140,11 +141,12 @@ const GLOSSARY_TERMS = [
     title: 'Despesas Variáveis',
     definition:
       'São os gastos que ocorrem apenas quando há venda ou produção, crescendo proporcionalmente ao faturamento. Exemplos: Impostos sobre venda (Simples Nacional), taxas de cartão de crédito, comissões, fretes de entrega, embalagens e matérias-primas.',
-    calculation: 'Soma dos lançamentos categorizados como "Variável".',
+    calculation:
+      'Soma dos lançamentos categorizados como "Variável". Percentual calculado sobre as Receitas Realizadas: (Despesas Variáveis / Receitas Realizadas) * 100.',
     example:
       'Se você vende 1 pote, usa 1 embalagem. Se vender 1.000 potes, usará 1.000 embalagens. O gasto com embalagens oscila diretamente com as vendas, logo é uma despesa variável.',
     reference:
-      'Impactam diretamente a Margem de Contribuição. Precisam estar embutidas no preço de venda para não gerar prejuízo.',
+      'Meta: Menor ou igual a 40% (≤ 40%). Impactam diretamente a Margem de Contribuição. Precisam estar embutidas no preço de venda para não gerar prejuízo. O cálculo percentual é realizado estritamente sobre as Receitas Realizadas.',
     category: 'Tipos e Classificações',
     trend: 'neutral',
   },
@@ -285,12 +287,13 @@ const GLOSSARY_TERMS = [
   {
     id: 'lucro-liquido-pct',
     title: 'Lucro Líquido Real (%)',
-    definition: 'Percentual que o lucro líquido final representa em relação ao faturamento total.',
-    calculation: '(Lucro Líquido / Faturamento Total) * 100.',
+    definition:
+      'Percentual que o lucro líquido final representa em relação às receitas realizadas.',
+    calculation: '(Lucro Líquido / Receitas Realizadas) * 100.',
     example:
-      'Entraram R$ 100.000 no caixa da farmácia. Após pagar fornecedores, impostos, salários e contas (despesas realizadas), sobraram livres na conta R$ 15.000. Seu Lucro Líquido Real foi de 15%.',
+      'Entraram R$ 100.000 no caixa da farmácia (Receitas Realizadas). Após pagar fornecedores, impostos, salários e contas (despesas realizadas), sobraram livres na conta R$ 15.000. Seu Lucro Líquido Real foi de 15%.',
     reference:
-      'O ideal para farmácias de manipulação saudáveis é buscar margens acima de 12 a 15%.',
+      'Meta: Maior ou igual a 15% (≥ 15%). O cálculo é realizado estritamente sobre o valor total das Receitas Realizadas. Junto com Despesas Fixas (≤ 35%) e Variáveis (≤ 40%), forma o modelo de referência ideal.',
     rangesTitle: 'Classificação de Desempenho',
     ranges: [
       { label: 'Péssimo', condition: '< 5%', color: 'text-red-700 bg-red-50 border-red-200' },

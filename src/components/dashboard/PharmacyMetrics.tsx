@@ -60,6 +60,7 @@ export function PharmacyMetrics() {
     )
 
     let cfaTotal = 0
+    let varExpenses = 0
     const targetStatuses = filters?.statuses?.length > 0 ? filters.statuses : ['REALIZADO']
 
     safeFilteredTransactions.forEach((t) => {
@@ -71,6 +72,14 @@ export function PharmacyMetrics() {
           String(t.category).toUpperCase() === 'CUSTO FIXO'
         ) {
           cfaTotal += t.amount
+        } else if (
+          t.categoryId === 'VARIAVEL' ||
+          String(t.category).toUpperCase() === 'VARIAVEL' ||
+          String(t.category).toUpperCase() === 'DESPESAS VARIÁVEIS' ||
+          String(t.category).toUpperCase() === 'CUSTO VARIÁVEL' ||
+          String(t.category).toUpperCase() === 'VARIAVEIS'
+        ) {
+          varExpenses += t.amount
         }
       }
     })
@@ -93,6 +102,11 @@ export function PharmacyMetrics() {
 
     const lucroLiquidoPct =
       kpiMetrics.receitas > 0 ? (kpiMetrics.lucro / kpiMetrics.receitas) * 100 : 0
+
+    const despesasFixasPct = kpiMetrics.receitas > 0 ? (cfaTotal / kpiMetrics.receitas) * 100 : 0
+
+    const despesasVariaveisPct =
+      kpiMetrics.receitas > 0 ? (varExpenses / kpiMetrics.receitas) * 100 : 0
 
     const countMonths = safeFilteredMonthlyMetrics.length || 1
     const avgColabCaps = totalColaboradoresCapsulas / countMonths
@@ -222,6 +236,8 @@ export function PharmacyMetrics() {
       regra70Value,
       regra70Status,
       regra70Text,
+      despesasFixasPct,
+      despesasVariaveisPct,
     }
   }, [
     filteredTransactions,
@@ -268,6 +284,20 @@ export function PharmacyMetrics() {
       if (value < 25) return { text: 'Excelente', color: 'text-blue-600' }
       return { text: 'Sensacional', color: 'text-indigo-600' }
     }
+    if (type === 'despesas-fixas-pct') {
+      if (value > 45) return { text: 'Péssimo', color: 'text-red-600' }
+      if (value > 40) return { text: 'Ruim', color: 'text-orange-500' }
+      if (value > 35) return { text: 'Atenção', color: 'text-amber-500' }
+      if (value > 30) return { text: 'Bom', color: 'text-emerald-600' }
+      return { text: 'Sensacional', color: 'text-indigo-600' }
+    }
+    if (type === 'despesas-variaveis-pct') {
+      if (value > 50) return { text: 'Péssimo', color: 'text-red-600' }
+      if (value > 45) return { text: 'Ruim', color: 'text-orange-500' }
+      if (value > 40) return { text: 'Atenção', color: 'text-amber-500' }
+      if (value > 35) return { text: 'Bom', color: 'text-emerald-600' }
+      return { text: 'Sensacional', color: 'text-indigo-600' }
+    }
     if (type === 'lo-colaborador') {
       if (value < 500) return { text: 'Péssimo', color: 'text-red-600' }
       if (value < 1000) return { text: 'Ruim', color: 'text-orange-500' }
@@ -310,10 +340,31 @@ export function PharmacyMetrics() {
     {
       id: 'lucro-liquido-pct',
       title: 'Lucro Líquido Real (%)',
-      tooltip: 'Percentual de lucro líquido realizado no período.',
+      tooltip: 'Percentual de lucro líquido realizado no período. Meta: ≥ 15%.',
       value: `${metrics.lucroLiquidoPct.toFixed(1)}%`,
       color: lucroLiquidoPerf?.color || 'text-slate-600',
       statusText: lucroLiquidoPerf?.text,
+    },
+    {
+      id: 'despesas-fixas-pct',
+      title: 'Despesas Fixas (%)',
+      tooltip: 'Despesas Fixas em relação às Receitas Realizadas. Meta: ≤ 35%.',
+      value: `${metrics.despesasFixasPct.toFixed(1)}%`,
+      color:
+        getPerformanceStatus(metrics.despesasFixasPct, 'despesas-fixas-pct')?.color ||
+        'text-slate-600',
+      statusText: getPerformanceStatus(metrics.despesasFixasPct, 'despesas-fixas-pct')?.text,
+    },
+    {
+      id: 'despesas-variaveis-pct',
+      title: 'Despesas Variáveis (%)',
+      tooltip: 'Despesas Variáveis em relação às Receitas Realizadas. Meta: ≤ 40%.',
+      value: `${metrics.despesasVariaveisPct.toFixed(1)}%`,
+      color:
+        getPerformanceStatus(metrics.despesasVariaveisPct, 'despesas-variaveis-pct')?.color ||
+        'text-slate-600',
+      statusText: getPerformanceStatus(metrics.despesasVariaveisPct, 'despesas-variaveis-pct')
+        ?.text,
     },
     {
       id: 'markup-realizado',
