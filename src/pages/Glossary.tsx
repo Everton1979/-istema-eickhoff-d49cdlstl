@@ -335,7 +335,7 @@ const GLOSSARY_TERMS = [
   },
   {
     id: 'meta-vendas-globais',
-    title: 'Meta de Vendas Totais (Global)',
+    title: 'Meta de Vendas Totais (manipulação + vendas extras)',
     definition:
       'Objetivo financeiro total da loja, englobando a manipulação e também todas as revendas, drogaria e serviços agregados.',
     calculation: 'Definido manualmente mês a mês na aba "Dados do Mês".',

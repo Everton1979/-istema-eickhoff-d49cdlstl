@@ -175,16 +175,25 @@ export function SalesTargetProgress({
     >
       <CardContent className="p-3">
         <div className="flex justify-between items-start mb-2">
-          <div
-            className={cn(
-              'flex items-center gap-1.5',
-              variant === 'GLOBAL' ? 'text-emerald-600' : 'text-blue-600',
-            )}
-          >
-            <Target className="w-4 h-4" />
-            <h3 className="text-xs font-bold uppercase tracking-wide">
-              Meta {variant === 'GLOBAL' ? 'Vendas Totais' : 'Vendas Manipulação'} ({monthName})
-            </h3>
+          <div className="flex flex-col">
+            <div
+              className={cn(
+                'flex items-center gap-1.5',
+                variant === 'GLOBAL' ? 'text-emerald-600' : 'text-blue-600',
+              )}
+            >
+              <Target className="w-4 h-4 shrink-0" />
+              <h3 className="text-xs font-bold uppercase tracking-wide">
+                Meta{' '}
+                {variant === 'GLOBAL'
+                  ? 'Vendas Totais (manipulação + vendas extras)'
+                  : 'Vendas Manipulação'}{' '}
+                ({monthName})
+              </h3>
+            </div>
+            <p className="text-[9px] text-gray-500 font-medium italic mt-1 ml-[22px]">
+              * Clique no ícone de lápis para definir o valor de meta do mês.
+            </p>
           </div>
           {!isEditing &&
             profile?.role !== 'Visitante' &&
