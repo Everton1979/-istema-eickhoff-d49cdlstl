@@ -183,6 +183,54 @@ const GLOSSARY_TERMS = [
       'A farmácia faturou R$ 150.000 no mês e possui no total 10 colaboradores. O Faturamento por Colaborador (Geral) é de R$ 15.000 por colaborador. Permite avaliar se a folha está pesada.',
     reference:
       'Usado para avaliar se a equipe está dimensionada corretamente. Faturamentos maiores com menos equipe aumentam esse índice.',
+    rangesTitle: 'Classificação (Geral)',
+    ranges: [
+      { label: 'Péssimo', condition: '< R$ 8k', color: 'text-red-700 bg-red-50 border-red-200' },
+      {
+        label: 'Ruim',
+        condition: 'R$ 8k - 12k',
+        color: 'text-orange-700 bg-orange-50 border-orange-200',
+      },
+      {
+        label: 'Bom',
+        condition: 'R$ 12k - 15k',
+        color: 'text-emerald-700 bg-emerald-50 border-emerald-200',
+      },
+      {
+        label: 'Excelente',
+        condition: 'R$ 15k - 18k',
+        color: 'text-blue-700 bg-blue-50 border-blue-200',
+      },
+      {
+        label: 'Sensacional',
+        condition: '> R$ 18k',
+        color: 'text-indigo-700 bg-indigo-50 border-indigo-200',
+      },
+    ],
+    rangesTitleSecondary: 'Classificação (Vendas)',
+    rangesSecondary: [
+      { label: 'Péssimo', condition: '< R$ 40k', color: 'text-red-700 bg-red-50 border-red-200' },
+      {
+        label: 'Ruim',
+        condition: 'R$ 40k - 50k',
+        color: 'text-orange-700 bg-orange-50 border-orange-200',
+      },
+      {
+        label: 'Bom',
+        condition: 'R$ 50k - 60k',
+        color: 'text-emerald-700 bg-emerald-50 border-emerald-200',
+      },
+      {
+        label: 'Excelente',
+        condition: 'R$ 60k - 70k',
+        color: 'text-blue-700 bg-blue-50 border-blue-200',
+      },
+      {
+        label: 'Sensacional',
+        condition: '> R$ 70k',
+        color: 'text-indigo-700 bg-indigo-50 border-indigo-200',
+      },
+    ],
     category: 'Inteligência Analítica',
     trend: 'up',
   },
@@ -207,6 +255,30 @@ const GLOSSARY_TERMS = [
       'Se a farmácia gerou R$ 30.000 de lucro operacional no mês e tem 10 funcionários no total, cada colaborador gerou R$ 3.000 de lucro.',
     reference:
       'Métrica superior ao Faturamento por Colaborador, pois mede a eficiência real da equipe baseada na sobra de caixa e não apenas na venda bruta.',
+    rangesTitle: 'Classificação de Desempenho',
+    ranges: [
+      { label: 'Péssimo', condition: '< R$ 500', color: 'text-red-700 bg-red-50 border-red-200' },
+      {
+        label: 'Ruim',
+        condition: 'R$ 500 a 1k',
+        color: 'text-orange-700 bg-orange-50 border-orange-200',
+      },
+      {
+        label: 'Bom',
+        condition: 'R$ 1k a 2k',
+        color: 'text-emerald-700 bg-emerald-50 border-emerald-200',
+      },
+      {
+        label: 'Excelente',
+        condition: 'R$ 2k a 3k',
+        color: 'text-blue-700 bg-blue-50 border-blue-200',
+      },
+      {
+        label: 'Sensacional',
+        condition: '> R$ 3k',
+        color: 'text-indigo-700 bg-indigo-50 border-indigo-200',
+      },
+    ],
     category: 'Inteligência Analítica',
     trend: 'up',
   },
@@ -219,6 +291,30 @@ const GLOSSARY_TERMS = [
       'Entraram R$ 100.000 no caixa da farmácia. Após pagar fornecedores, impostos, salários e contas (despesas realizadas), sobraram livres na conta R$ 15.000. Seu Lucro Líquido Real foi de 15%.',
     reference:
       'O ideal para farmácias de manipulação saudáveis é buscar margens acima de 12 a 15%.',
+    rangesTitle: 'Classificação de Desempenho',
+    ranges: [
+      { label: 'Péssimo', condition: '< 5%', color: 'text-red-700 bg-red-50 border-red-200' },
+      {
+        label: 'Ruim',
+        condition: '5% a 15%',
+        color: 'text-orange-700 bg-orange-50 border-orange-200',
+      },
+      {
+        label: 'Bom',
+        condition: '15% a 20%',
+        color: 'text-emerald-700 bg-emerald-50 border-emerald-200',
+      },
+      {
+        label: 'Excelente',
+        condition: '20% a 25%',
+        color: 'text-blue-700 bg-blue-50 border-blue-200',
+      },
+      {
+        label: 'Sensacional',
+        condition: '> 25%',
+        color: 'text-indigo-700 bg-indigo-50 border-indigo-200',
+      },
+    ],
     category: 'Inteligência Analítica',
     trend: 'up',
   },
@@ -306,6 +402,30 @@ const GLOSSARY_TERMS = [
     example:
       'No final do mês, você faturou R$ 120.000. Olhando as notas fiscais, o gasto com frascos e matéria-prima foi de R$ 20.000. R$ 120k ÷ R$ 20k = 6,0. Seu Mark-up Praticado real foi 6x o custo.',
     reference: 'Deve ser sempre superior ao Mark-up Alvo (P.E.).',
+    rangesTitle: 'Classificação de Desempenho',
+    ranges: [
+      { label: 'Péssimo', condition: '< 4,4x', color: 'text-red-700 bg-red-50 border-red-200' },
+      {
+        label: 'Ruim',
+        condition: '4,4 a 5,0x',
+        color: 'text-orange-700 bg-orange-50 border-orange-200',
+      },
+      {
+        label: 'Bom',
+        condition: '5,0 a 5,7x',
+        color: 'text-emerald-700 bg-emerald-50 border-emerald-200',
+      },
+      {
+        label: 'Excelente',
+        condition: '5,7 a 6,7x',
+        color: 'text-blue-700 bg-blue-50 border-blue-200',
+      },
+      {
+        label: 'Sensacional',
+        condition: '> 6,7x',
+        color: 'text-indigo-700 bg-indigo-50 border-indigo-200',
+      },
+    ],
     category: 'Métricas de Performance',
     trend: 'up',
   },
@@ -407,6 +527,30 @@ const GLOSSARY_TERMS = [
       'Se suas vendas cresceram R$ 10.000 de um mês para outro, seus custos fixos não deveriam ter subido mais do que R$ 7.000 para manter a operação sustentável.',
     reference:
       'Serve como uma bússola de longevidade para evitar que a estrutura devore o crescimento comercial.',
+    rangesTitle: 'Classificação de Desempenho',
+    ranges: [
+      { label: 'Péssimo', condition: '> 90%', color: 'text-red-700 bg-red-50 border-red-200' },
+      {
+        label: 'Ruim',
+        condition: '70% a 90%',
+        color: 'text-orange-700 bg-orange-50 border-orange-200',
+      },
+      {
+        label: 'Bom',
+        condition: '60% a 70%',
+        color: 'text-emerald-700 bg-emerald-50 border-emerald-200',
+      },
+      {
+        label: 'Excelente',
+        condition: '50% a 60%',
+        color: 'text-blue-700 bg-blue-50 border-blue-200',
+      },
+      {
+        label: 'Sensacional',
+        condition: '< 50%',
+        color: 'text-indigo-700 bg-indigo-50 border-indigo-200',
+      },
+    ],
     category: 'Inteligência Analítica',
     trend: 'down',
   },
@@ -617,6 +761,53 @@ export default function Glossary() {
                           </div>
                         </div>
                       </div>
+
+                      {/* Metricas de Referência */}
+                      {(term as any).ranges && (
+                        <div className="mt-3">
+                          <strong className="text-slate-700 block text-xs uppercase mb-2">
+                            {(term as any).rangesTitle || 'Classificação de Desempenho'}
+                          </strong>
+                          <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
+                            {(term as any).ranges.map((r: any, i: number) => (
+                              <div
+                                key={i}
+                                className={`flex flex-col items-center justify-center py-1.5 px-1 rounded-md border text-center shadow-sm bg-white ${r.color}`}
+                              >
+                                <span className="text-[10px] font-bold uppercase tracking-wider mb-0.5">
+                                  {r.label}
+                                </span>
+                                <span className="text-[11px] font-semibold tracking-tight">
+                                  {r.condition}
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {(term as any).rangesSecondary && (
+                        <div className="mt-2">
+                          <strong className="text-slate-700 block text-xs uppercase mb-2">
+                            {(term as any).rangesTitleSecondary}
+                          </strong>
+                          <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
+                            {(term as any).rangesSecondary.map((r: any, i: number) => (
+                              <div
+                                key={i}
+                                className={`flex flex-col items-center justify-center py-1.5 px-1 rounded-md border text-center shadow-sm bg-white ${r.color}`}
+                              >
+                                <span className="text-[10px] font-bold uppercase tracking-wider mb-0.5">
+                                  {r.label}
+                                </span>
+                                <span className="text-[11px] font-semibold tracking-tight">
+                                  {r.condition}
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
 
                       {/* Exemplo Prático Box */}
                       {term.example && (
