@@ -239,6 +239,58 @@ export function PharmacyMetrics() {
       val,
     )
 
+  const getPerformanceStatus = (value: number, type: string) => {
+    if (type === 'fat-colab-geral') {
+      if (value < 8000) return { text: 'Péssimo', color: 'text-red-600' }
+      if (value < 12000) return { text: 'Ruim', color: 'text-orange-500' }
+      if (value < 15000) return { text: 'Bom', color: 'text-emerald-600' }
+      if (value < 18000) return { text: 'Excelente', color: 'text-blue-600' }
+      return { text: 'Sensacional', color: 'text-indigo-600' }
+    }
+    if (type === 'fat-colab-vendas') {
+      if (value < 40000) return { text: 'Péssimo', color: 'text-red-600' }
+      if (value < 50000) return { text: 'Ruim', color: 'text-orange-500' }
+      if (value < 60000) return { text: 'Bom', color: 'text-emerald-600' }
+      if (value < 70000) return { text: 'Excelente', color: 'text-blue-600' }
+      return { text: 'Sensacional', color: 'text-indigo-600' }
+    }
+    if (type === 'markup-realizado') {
+      if (value < 4.4) return { text: 'Péssimo', color: 'text-red-600' }
+      if (value < 5.0) return { text: 'Ruim', color: 'text-orange-500' }
+      if (value < 5.7) return { text: 'Bom', color: 'text-emerald-600' }
+      if (value < 6.7) return { text: 'Excelente', color: 'text-blue-600' }
+      return { text: 'Sensacional', color: 'text-indigo-600' }
+    }
+    if (type === 'lucro-liquido-pct') {
+      if (value < 5) return { text: 'Péssimo', color: 'text-red-600' }
+      if (value < 15) return { text: 'Ruim', color: 'text-orange-500' }
+      if (value < 20) return { text: 'Bom', color: 'text-emerald-600' }
+      if (value < 25) return { text: 'Excelente', color: 'text-blue-600' }
+      return { text: 'Sensacional', color: 'text-indigo-600' }
+    }
+    if (type === 'lo-colaborador') {
+      if (value < 500) return { text: 'Péssimo', color: 'text-red-600' }
+      if (value < 1000) return { text: 'Ruim', color: 'text-orange-500' }
+      if (value < 2000) return { text: 'Bom', color: 'text-emerald-600' }
+      if (value < 3000) return { text: 'Excelente', color: 'text-blue-600' }
+      return { text: 'Sensacional', color: 'text-indigo-600' }
+    }
+    if (type === 'regra-70') {
+      if (value > 90) return { text: 'Péssimo', color: 'text-red-600' }
+      if (value >= 70) return { text: 'Ruim', color: 'text-orange-500' }
+      if (value >= 60) return { text: 'Bom', color: 'text-emerald-600' }
+      if (value >= 50) return { text: 'Excelente', color: 'text-blue-600' }
+      return { text: 'Sensacional', color: 'text-indigo-600' }
+    }
+    return null
+  }
+
+  const lucroLiquidoPerf = getPerformanceStatus(metrics.lucroLiquidoPct, 'lucro-liquido-pct')
+  const markupPerf = getPerformanceStatus(metrics.mkpRealizado, 'markup-realizado')
+  const loColabPerf = getPerformanceStatus(metrics.loPorColab, 'lo-colaborador')
+  const fatColabGeralPerf = getPerformanceStatus(metrics.fatPorColabGeral, 'fat-colab-geral')
+  const fatColabVendasPerf = getPerformanceStatus(metrics.fatPorColabVendas, 'fat-colab-vendas')
+
   const items: Array<{
     id: string
     title: string
@@ -260,26 +312,24 @@ export function PharmacyMetrics() {
       title: 'Lucro Líquido Real (%)',
       tooltip: 'Percentual de lucro líquido realizado no período.',
       value: `${metrics.lucroLiquidoPct.toFixed(1)}%`,
-      color:
-        metrics.lucroLiquidoPct >= 15
-          ? 'text-emerald-600'
-          : metrics.lucroLiquidoPct > 0
-            ? 'text-yellow-600'
-            : 'text-red-500',
+      color: lucroLiquidoPerf?.color || 'text-slate-600',
+      statusText: lucroLiquidoPerf?.text,
     },
     {
       id: 'markup-realizado',
       title: 'Mark-up Praticado',
       tooltip: 'Multiplicador realizado no período (Faturamento / Custo MP/Emb).',
       value: formatDecimal(metrics.mkpRealizado),
-      color: 'text-purple-600',
+      color: markupPerf?.color || 'text-slate-600',
+      statusText: markupPerf?.text,
     },
     {
       id: 'lo-colaborador',
       title: 'LO / Colaborador',
       tooltip: 'Lucro Operacional (EBITDA) gerado por cada membro da equipe.',
       value: formatCurrency(metrics.loPorColab),
-      color: 'text-emerald-600',
+      color: loColabPerf?.color || 'text-slate-600',
+      statusText: loColabPerf?.text,
     },
     {
       id: 'valuation',
@@ -295,22 +345,22 @@ export function PharmacyMetrics() {
       value: metrics.regra70Value,
       statusText: (() => {
         if (metrics.regra70Value === 'N/A') return ''
-        if (metrics.regra70Value === 'Atenção') return 'CF Subiu'
+        if (metrics.regra70Value === 'Atenção') return 'Péssimo'
 
         const parsed = parseFloat(metrics.regra70Value.replace('%', '').replace(',', '.'))
         if (!isNaN(parsed)) {
-          return parsed <= 70 ? 'Bom' : 'Atenção'
+          return getPerformanceStatus(parsed, 'regra-70')?.text || 'Atenção'
         }
 
         return metrics.regra70Text
       })(),
       color: (() => {
         if (metrics.regra70Value === 'N/A') return 'text-slate-500'
-        if (metrics.regra70Value === 'Atenção') return 'text-red-500 font-bold'
+        if (metrics.regra70Value === 'Atenção') return 'text-red-600'
 
         const parsed = parseFloat(metrics.regra70Value.replace('%', '').replace(',', '.'))
         if (!isNaN(parsed)) {
-          return parsed <= 70 ? 'text-emerald-600 font-bold' : 'text-red-500 font-bold'
+          return getPerformanceStatus(parsed, 'regra-70')?.color || 'text-red-600'
         }
 
         return 'text-slate-500'
@@ -359,14 +409,16 @@ export function PharmacyMetrics() {
       title: 'Fat / Colab (Geral)',
       tooltip: 'Faturamento total dividido pelo número médio de colaboradores totais.',
       value: formatCurrency(metrics.fatPorColabGeral),
-      color: 'text-emerald-600',
+      color: fatColabGeralPerf?.color || 'text-slate-600',
+      statusText: fatColabGeralPerf?.text,
     },
     {
       id: 'fat-colab-vendas',
       title: 'Fat / Colab (Vendas)',
       tooltip: 'Faturamento total dividido pelo número médio de colaboradores de vendas.',
       value: formatCurrency(metrics.fatPorColabVendas),
-      color: 'text-emerald-600',
+      color: fatColabVendasPerf?.color || 'text-slate-600',
+      statusText: fatColabVendasPerf?.text,
     },
   ]
 
