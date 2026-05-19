@@ -163,7 +163,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
       setAccounts(ACCOUNTS)
       setLoadingData(false)
     }
-  }, [user])
+  }, [user, filters.years.join(','), filters.months.join(',')])
 
   const fetchData = async () => {
     if (!user) return
@@ -184,14 +184,42 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
 
     setLoadingData(true)
 
+    const activeYear = filters.years.length === 1 ? filters.years[0] : null
+    const activeMonth = filters.months.length === 1 ? filters.months[0] : null
+
+    let txQuery = supabase
+      .from('transactions')
+      .select('*')
+      .eq('user_id', user.id)
+      .eq('project_id', PROJECT_ID)
+      .order('date', { ascending: false })
+      .limit(10000)
+
+    if (activeYear && activeMonth) {
+      const yearNum = parseInt(activeYear)
+      const monthNum = parseInt(activeMonth)
+      const d = new Date(yearNum, monthNum, 0)
+      const start = `${activeYear}-${activeMonth}-01T00:00:00.000Z`
+      const end = `${activeYear}-${activeMonth}-${d.getDate().toString().padStart(2, '0')}T23:59:59.999Z`
+      txQuery = txQuery.gte('date', start).lte('date', end)
+    }
+
+    let metricQuery = supabase
+      .from('monthly_metrics')
+      .select('*')
+      .eq('user_id', user.id)
+      .eq('project_id', PROJECT_ID)
+      .limit(5000)
+
+    if (activeYear) {
+      metricQuery = metricQuery.eq('year', parseInt(activeYear))
+    }
+    if (activeMonth) {
+      metricQuery = metricQuery.eq('month', parseInt(activeMonth))
+    }
+
     const [txRes, settingsRes, metricsRes] = await Promise.all([
-      supabase
-        .from('transactions')
-        .select('*')
-        .eq('user_id', user.id)
-        .eq('project_id', PROJECT_ID)
-        .order('date', { ascending: false })
-        .limit(10000),
+      txQuery,
       supabase
         .from('user_settings')
         .select('*')
@@ -199,12 +227,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
         .eq('project_id', PROJECT_ID)
         .limit(1)
         .maybeSingle(),
-      supabase
-        .from('monthly_metrics')
-        .select('*')
-        .eq('user_id', user.id)
-        .eq('project_id', PROJECT_ID)
-        .limit(5000),
+      metricQuery,
     ])
 
     if (txRes.data) {

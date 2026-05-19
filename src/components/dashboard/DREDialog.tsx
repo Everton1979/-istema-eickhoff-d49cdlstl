@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import {
   Dialog,
   DialogContent,
@@ -16,18 +16,39 @@ import { Transaction } from '@/types/finance'
 import { ScrollArea } from '@/components/ui/scroll-area'
 
 export function DREDialog() {
-  const now = new Date()
-  const firstDay = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0]
-  const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0).toISOString().split('T')[0]
+  const { fetchTransactionsForExport, filters } = useFinanceStore()
 
-  const [startDate, setStartDate] = useState(firstDay)
-  const [endDate, setEndDate] = useState(lastDay)
+  const [startDate, setStartDate] = useState('')
+  const [endDate, setEndDate] = useState('')
   const [open, setOpen] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [data, setData] = useState<Transaction[]>([])
   const [hasSearched, setHasSearched] = useState(false)
 
-  const { fetchTransactionsForExport } = useFinanceStore()
+  // Sync DRE date range with global filters
+  useEffect(() => {
+    if (filters.years.length === 1 && filters.months.length === 1) {
+      const year = parseInt(filters.years[0])
+      const month = parseInt(filters.months[0])
+      // Handle local timezone offset to avoid timezone shift issues
+      const firstDayDate = new Date(year, month - 1, 1)
+      const lastDayDate = new Date(year, month, 0)
+
+      const formatLocal = (d: Date) => {
+        return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+      }
+
+      setStartDate(formatLocal(firstDayDate))
+      setEndDate(formatLocal(lastDayDate))
+    } else {
+      const now = new Date()
+      const formatLocal = (d: Date) => {
+        return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+      }
+      setStartDate(formatLocal(new Date(now.getFullYear(), now.getMonth(), 1)))
+      setEndDate(formatLocal(new Date(now.getFullYear(), now.getMonth() + 1, 0)))
+    }
+  }, [filters.years, filters.months])
   const { toast } = useToast()
 
   const handleSearch = async () => {
