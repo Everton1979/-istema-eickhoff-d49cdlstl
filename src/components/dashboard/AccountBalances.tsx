@@ -43,7 +43,7 @@ export function AccountBalances() {
   return (
     <div className="bg-white rounded-sm border shadow-sm flex flex-col h-full overflow-hidden">
       <div className="bg-[#1e3a8a] text-white text-xs font-bold py-2 px-3 flex justify-between items-center shrink-0">
-        <span>Contas / Origem (Entradas)</span>
+        <span>Receitas Realizadas (Entradas)</span>
         <span className="bg-blue-800/50 px-2 py-0.5 rounded text-[10px] tracking-wide">
           {formatCurrency(totalIncome)}
         </span>
