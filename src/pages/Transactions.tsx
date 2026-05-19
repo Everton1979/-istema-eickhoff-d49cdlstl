@@ -160,7 +160,12 @@ export default function Transactions() {
   }
 
   const getCategoryName = (tx: Transaction) => {
-    if (tx.type === 'INCOME' || tx.type === 'CORTESIA' || tx.type === 'PARTNER_WITHDRAWAL')
+    if (
+      tx.type === 'INCOME' ||
+      tx.type === 'CORTESIA' ||
+      tx.type === 'PARTNER_WITHDRAWAL' ||
+      tx.type === 'INVESTIMENTO'
+    )
       return '-'
     if (!tx.categoryId) return '-'
     let name = tx.categoryId === 'FIXA' ? 'Fixa' : 'Variável'
@@ -182,7 +187,9 @@ export default function Transactions() {
     const formatted = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(
       val,
     )
-    return type === 'EXPENSE' || type === 'PARTNER_WITHDRAWAL' ? `- ${formatted}` : formatted
+    return type === 'EXPENSE' || type === 'PARTNER_WITHDRAWAL' || type === 'INVESTIMENTO'
+      ? `- ${formatted}`
+      : formatted
   }
 
   const handleEdit = (tx: Transaction) => {
@@ -197,7 +204,8 @@ export default function Transactions() {
 
   const visibleBalance = filteredData.reduce((acc, tx) => {
     if (tx.type === 'INCOME') return acc + tx.amount
-    if (tx.type === 'EXPENSE') return acc - tx.amount
+    if (tx.type === 'EXPENSE' || tx.type === 'PARTNER_WITHDRAWAL' || tx.type === 'INVESTIMENTO')
+      return acc - tx.amount
     return acc
   }, 0)
 
@@ -270,6 +278,14 @@ export default function Transactions() {
             <p className="text-sm text-muted-foreground mt-1">
               Gerencie seus lançamentos financeiros
             </p>
+            {filters.months?.[0] && filters.years?.[0] && (
+              <div className="mt-2 text-sm font-medium text-slate-700 bg-slate-100 px-3 py-1.5 rounded-md inline-flex items-center gap-2">
+                Exibindo: {MONTHS_PT[parseInt(filters.months[0], 10) - 1]}/{filters.years[0]}
+                <span className="text-xs font-normal text-slate-500 italic ml-2">
+                  (Para alterar o mês, acesse o Painel Geral)
+                </span>
+              </div>
+            )}
           </div>
           <div className="flex flex-wrap sm:flex-nowrap gap-2 w-full sm:w-auto mt-2 sm:mt-0">
             <DropdownMenu>
@@ -507,7 +523,9 @@ export default function Transactions() {
                               ? 'text-red-500'
                               : tx.type === 'PARTNER_WITHDRAWAL'
                                 ? 'text-purple-600'
-                                : 'text-orange-500',
+                                : tx.type === 'INVESTIMENTO'
+                                  ? 'text-blue-600'
+                                  : 'text-orange-500',
                         )}
                       >
                         {formatCurrency(tx.amount, tx.type)}

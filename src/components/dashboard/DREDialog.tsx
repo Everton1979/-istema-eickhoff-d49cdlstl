@@ -75,12 +75,14 @@ export function DREDialog() {
     const variaveis: Record<string, number> = {}
     const fixas: Record<string, number> = {}
     const financeiras: Record<string, number> = {}
+    const investimentos: Record<string, number> = {}
 
     let totalReceitasOperacionais = 0
     let totalReceitasNaoOperacionais = 0
     let totalVariaveis = 0
     let totalFixas = 0
     let totalFinanceiras = 0
+    let totalInvestimentos = 0
 
     data.forEach((tx) => {
       const rawSub = tx.subcategoryId || 'outros'
@@ -114,12 +116,17 @@ export function DREDialog() {
             totalFixas += tx.amount
           }
         }
+      } else if (tx.type === 'INVESTIMENTO') {
+        const invName = tx.description || 'Equipamentos e Investimentos'
+        investimentos[invName] = (investimentos[invName] || 0) + tx.amount
+        totalInvestimentos += tx.amount
       }
     })
 
     const margemContribuicao = totalReceitasOperacionais - totalVariaveis
     const resultadoOperacional = margemContribuicao - totalFixas
-    const resultadoLiquido = resultadoOperacional + totalReceitasNaoOperacionais - totalFinanceiras
+    const resultadoLiquido =
+      resultadoOperacional - totalInvestimentos + totalReceitasNaoOperacionais - totalFinanceiras
 
     return {
       receitasOperacionais,
@@ -132,6 +139,8 @@ export function DREDialog() {
       totalFixas,
       financeiras,
       totalFinanceiras,
+      investimentos,
+      totalInvestimentos,
       margemContribuicao,
       resultadoOperacional,
       resultadoLiquido,
@@ -226,6 +235,12 @@ export function DREDialog() {
                 <td>(=) Resultado Operacional</td>
                 <td class="amount ${dre.resultadoOperacional >= 0 ? 'positive' : 'negative'}">${formatCurrency(dre.resultadoOperacional)}</td>
               </tr>
+              
+              <tr class="group-header">
+                <td>(-) Investimentos / Equipamentos</td>
+                <td class="amount negative">${formatCurrency(dre.totalInvestimentos)}</td>
+              </tr>
+              ${renderRows(dre.investimentos)}
               
               <tr class="group-header">
                 <td>(+) Receitas Não Operacionais</td>
@@ -391,6 +406,23 @@ export function DREDialog() {
                             {formatCurrency(dre.resultadoOperacional)}
                           </td>
                         </tr>
+
+                        <tr className="bg-slate-50 font-semibold border-y">
+                          <td className="p-3">(-) Investimentos / Equipamentos</td>
+                          <td className="p-3 text-right text-red-600">
+                            {formatCurrency(dre.totalInvestimentos)}
+                          </td>
+                        </tr>
+                        {Object.entries(dre.investimentos)
+                          .sort((a, b) => b[1] - a[1])
+                          .map(([name, val]) => (
+                            <tr key={name} className="border-b border-slate-100 last:border-0">
+                              <td className="p-3 pl-8 text-slate-600">{name}</td>
+                              <td className="p-3 text-right text-slate-700">
+                                {formatCurrency(val)}
+                              </td>
+                            </tr>
+                          ))}
 
                         <tr className="bg-slate-50 font-semibold border-y">
                           <td className="p-3">(+) Receitas Não Operacionais</td>
