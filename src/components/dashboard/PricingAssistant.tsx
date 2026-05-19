@@ -111,7 +111,7 @@ export function PricingAssistant() {
       filters.months.length === 1 ? parseInt(filters.months[0]) : new Date().getMonth() + 1
 
     const targetMonths = Array.from({ length: 3 }).map((_, i) => {
-      const d = new Date(activeYear, activeMonth - 1 - i, 1)
+      const d = new Date(activeYear, activeMonth - 2 - i, 1)
       return { month: d.getMonth() + 1, year: d.getFullYear() }
     })
 
@@ -291,10 +291,8 @@ export function PricingAssistant() {
         <div className="mb-6 text-xs bg-blue-50 border border-blue-200 text-blue-800 p-3 rounded-md flex items-start gap-2 shadow-sm">
           <Info className="w-4 h-4 text-blue-500 shrink-0 mt-0.5" />
           <p>
-            <strong className="font-bold">Observação Estratégica:</strong> Este assistente utiliza
-            como base a média do período selecionado e os dois meses anteriores. Os resultados são
-            dinamicamente ajustados para garantir a precisão mesmo se o mês atual ainda estiver em
-            preenchimento.
+            <strong className="font-bold">Observação Estratégica:</strong> Cálculos baseados na
+            média dos últimos 3 meses consolidados (excluindo o mês atual).
           </p>
         </div>
 
@@ -313,7 +311,7 @@ export function PricingAssistant() {
                   do insumo), sempre respeitando o Piso de Segurança.
                 </p>
                 <p className="text-[10px] text-slate-400">
-                  Baseado no histórico consolidado de 3 meses (incluindo o mês selecionado).
+                  Baseado no histórico consolidado dos últimos 3 meses (excluindo o mês atual).
                 </p>
               </TooltipContent>
             </Tooltip>
