@@ -1,10 +1,10 @@
 import { Link, Outlet, useLocation } from 'react-router-dom'
-import { LayoutDashboard, Receipt, Users, BookOpen, LogOut, UserCircle } from 'lucide-react'
+import { LayoutDashboard } from 'lucide-react'
 import { useAuth } from '@/hooks/use-auth'
 import { cn } from '@/lib/utils'
 
 export default function Layout() {
-  const { profile, signOut } = useAuth()
+  const { profile } = useAuth()
 
   const companyName = profile?.company_name || 'Controle Financeiro'
   const companyInitials = companyName
@@ -29,7 +29,7 @@ export default function Layout() {
             </span>
           </div>
 
-          <nav className="hidden md:flex items-center gap-1">
+          <nav className="flex items-center gap-1">
             <Link
               to="/dashboard"
               className={cn(
@@ -40,87 +40,9 @@ export default function Layout() {
               )}
             >
               <LayoutDashboard className="w-4 h-4" />
-              Painel Geral
-            </Link>
-
-            <Link
-              to="/transacoes"
-              className={cn(
-                'flex items-center gap-2 px-3 py-2 rounded-md transition-colors text-sm font-medium',
-                location.pathname === '/transacoes'
-                  ? 'bg-blue-600 text-white'
-                  : 'text-slate-300 hover:bg-white/10 hover:text-white',
-              )}
-            >
-              <Receipt className="w-4 h-4" />
-              Transações
+              <span className="hidden sm:inline">Painel Geral</span>
             </Link>
           </nav>
-        </div>
-
-        <div className="flex items-center gap-2 md:gap-4">
-          <nav className="flex items-center gap-1 md:gap-2">
-            <Link
-              to="/glossario"
-              className={cn(
-                'p-2 rounded-md transition-colors flex items-center gap-2',
-                location.pathname === '/glossario'
-                  ? 'bg-blue-600 text-white'
-                  : 'text-slate-300 hover:bg-white/10',
-              )}
-              title="Glossário"
-            >
-              <BookOpen className="w-5 h-5" />
-              <span className="text-sm font-medium hidden lg:block">Glossário</span>
-            </Link>
-
-            <Link
-              to="/usuarios"
-              className={cn(
-                'p-2 rounded-md transition-colors flex items-center gap-2',
-                location.pathname === '/usuarios'
-                  ? 'bg-blue-600 text-white'
-                  : 'text-slate-300 hover:bg-white/10',
-              )}
-              title="Usuários"
-            >
-              <Users className="w-5 h-5" />
-              <span className="text-sm font-medium hidden lg:block">Usuários</span>
-            </Link>
-
-            <Link
-              to="/perfil"
-              className={cn(
-                'p-2 rounded-md transition-colors flex items-center gap-2',
-                location.pathname === '/perfil'
-                  ? 'bg-blue-600 text-white'
-                  : 'text-slate-300 hover:bg-white/10',
-              )}
-              title="Meu Perfil"
-            >
-              <UserCircle className="w-5 h-5" />
-              <span className="text-sm font-medium hidden lg:block">Perfil</span>
-            </Link>
-
-            <button
-              onClick={() => signOut()}
-              className="p-2 text-slate-300 hover:text-red-400 hover:bg-white/10 rounded-md transition-colors flex items-center gap-2 ml-2"
-              title="Sair"
-            >
-              <LogOut className="w-5 h-5" />
-              <span className="text-sm font-medium hidden lg:block">Sair</span>
-            </button>
-          </nav>
-
-          {/* Mobile menu fallback for essential links */}
-          <div className="flex md:hidden items-center gap-2 ml-2 border-l border-white/10 pl-4">
-            <Link to="/dashboard" className="p-2 text-slate-300 hover:text-white">
-              <LayoutDashboard className="w-5 h-5" />
-            </Link>
-            <Link to="/transacoes" className="p-2 text-slate-300 hover:text-white">
-              <Receipt className="w-5 h-5" />
-            </Link>
-          </div>
         </div>
       </header>
 

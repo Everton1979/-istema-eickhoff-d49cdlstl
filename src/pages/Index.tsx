@@ -97,7 +97,7 @@ export default function Index() {
                 <div>
                   <h3 className="text-2xl font-bold text-slate-800">Dados Manipulação</h3>
                   <p className="text-slate-500 mb-6 mt-2 max-w-sm mx-auto">
-                    Insira as metas e dados mensais da farmácia para análise de performance.
+                    Insira os dados mensais da manipulação para análise de performance.
                   </p>
                   <div className="flex justify-center [&>button]:h-12 [&>button]:px-8 [&>button]:text-base">
                     <MonthlyDataDialog />
@@ -233,8 +233,7 @@ export default function Index() {
                 <div>
                   <h3 className="text-2xl font-bold text-slate-800">Demonstrativo DRE</h3>
                   <p className="text-slate-500 mb-6 mt-2 max-w-sm mx-auto">
-                    Visualize o Demonstrativo do Resultado do Exercício com a nova seção de
-                    Investimentos.
+                    Visualize o Demonstrativo do Resultado do Exercício.
                   </p>
                   <div className="flex justify-center [&>button]:h-12 [&>button]:px-8 [&>button]:text-base">
                     <DREDialog />
