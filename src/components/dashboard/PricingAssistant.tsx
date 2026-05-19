@@ -7,6 +7,8 @@ import { useState, useMemo, forwardRef, useRef, useEffect } from 'react'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { Link } from 'react-router-dom'
 import { cn } from '@/lib/utils'
+import { supabase } from '@/lib/supabase/client'
+import { useAuth } from '@/hooks/use-auth'
 
 const PricingCurrencyInput = forwardRef<HTMLInputElement, any>(
   ({ value, onChange, className, placeholder, ...props }, ref) => {
@@ -85,64 +87,110 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { Transaction } from '@/types/finance'
 
 export function PricingAssistant() {
-  const { monthlyMetrics, transactions } = useFinanceStore()
+  const { filters } = useFinanceStore()
+  const { user } = useAuth()
+
   const [cost, setCost] = useState<number | ''>('')
   const [tipoFormula, setTipoFormula] = useState<'capsulas' | 'dermato'>('capsulas')
 
-  const stats = useMemo(() => {
-    // 1. Calcula a janela de 3 meses fechados (ignorando o mês atual)
-    const now = new Date()
-    const last3Months = Array.from({ length: 3 }).map((_, i) => {
-      const d = new Date(now.getFullYear(), now.getMonth() - (i + 1), 1)
+  const [historyMetrics, setHistoryMetrics] = useState<any[]>([])
+  const [historyTx, setHistoryTx] = useState<any[]>([])
+  const [isLoadingHistory, setIsLoadingHistory] = useState(false)
+
+  const filterYears = filters.years.join(',')
+  const filterMonths = filters.months.join(',')
+
+  useEffect(() => {
+    if (!user) return
+
+    const activeYear =
+      filters.years.length === 1 ? parseInt(filters.years[0]) : new Date().getFullYear()
+    const activeMonth =
+      filters.months.length === 1 ? parseInt(filters.months[0]) : new Date().getMonth() + 1
+
+    const targetMonths = Array.from({ length: 3 }).map((_, i) => {
+      const d = new Date(activeYear, activeMonth - 1 - i, 1)
       return { month: d.getMonth() + 1, year: d.getFullYear() }
     })
 
-    const isTxInTarget = (tx: Transaction, targets: { month: number; year: number }[]) => {
-      if (!tx || !tx.date) return false
-      try {
-        const txDate = tx.date.includes('T') ? new Date(tx.date) : new Date(`${tx.date}T12:00:00Z`)
-        const m = txDate.getMonth() + 1
-        const y = txDate.getFullYear()
-        return targets.some((t) => t.month === m && t.year === y)
-      } catch (e) {
-        return false
+    const fetchHistory = async () => {
+      setIsLoadingHistory(true)
+
+      const orString = targetMonths
+        .map((t) => `and(month.eq.${t.month},year.eq.${t.year})`)
+        .join(',')
+      const metricsQuery = supabase
+        .from('monthly_metrics')
+        .select('*')
+        .eq('user_id', user.id)
+        .eq('project_id', 'farmacia')
+        .or(orString)
+
+      const oldest = targetMonths[targetMonths.length - 1]
+      const newest = targetMonths[0]
+
+      const startDate = `${oldest.year}-${oldest.month.toString().padStart(2, '0')}-01T00:00:00.000Z`
+      const lastDay = new Date(newest.year, newest.month, 0).getDate()
+      const endDate = `${newest.year}-${newest.month.toString().padStart(2, '0')}-${lastDay.toString().padStart(2, '0')}T23:59:59.999Z`
+
+      const txQuery = supabase
+        .from('transactions')
+        .select('date, amount, type, category, subcategory, status')
+        .eq('user_id', user.id)
+        .eq('project_id', 'farmacia')
+        .gte('date', startDate)
+        .lte('date', endDate)
+
+      const [metricsRes, txRes] = await Promise.all([metricsQuery, txQuery])
+
+      if (metricsRes.data) {
+        setHistoryMetrics(metricsRes.data)
+      } else {
+        setHistoryMetrics([])
       }
+
+      if (txRes.data) {
+        setHistoryTx(txRes.data)
+      } else {
+        setHistoryTx([])
+      }
+
+      setIsLoadingHistory(false)
     }
 
-    // 2. Filtra os dados históricos consolidados
-    let historyMetrics = monthlyMetrics.filter((m) =>
-      last3Months.some((t) => t.month === m.month && t.year === m.year),
-    )
-    let historyTx = transactions.filter((t) => isTxInTarget(t, last3Months))
+    fetchHistory()
+  }, [user, filterYears, filterMonths])
 
-    let isUsingFallback = false
-    // Fallback: Se não houver dados nos últimos 3 meses (ex: cliente novo), utiliza os dados atuais disponíveis
-    if (historyMetrics.length === 0 && historyTx.length === 0) {
-      historyMetrics = monthlyMetrics
-      historyTx = transactions
-      isUsingFallback = true
-    }
-
+  const stats = useMemo(() => {
     let cfaTotal = 0
     let varExpOperacional = 0
     let receitaTotalFarmacia = 0
 
     historyTx.forEach((t) => {
-      if (t.status === 'REALIZADO') {
-        if (t.type === 'INCOME') {
-          receitaTotalFarmacia += t.amount
-        } else if (t.type === 'EXPENSE') {
-          if (t.categoryId === 'FIXA') cfaTotal += t.amount
-          if (t.categoryId === 'VARIAVEL') {
+      const status = (t.status || 'REALIZADO').toUpperCase()
+      const typeStr = (t.type || '').toLowerCase().trim()
+      let type = 'EXPENSE'
+      if (typeStr === 'receita' || typeStr === 'income') type = 'INCOME'
+
+      const catStr = (t.category || '').toLowerCase().trim()
+      let categoryId = catStr.toUpperCase()
+      if (catStr === 'fixa') categoryId = 'FIXA'
+      if (catStr === 'variável' || catStr === 'variavel') categoryId = 'VARIAVEL'
+
+      if (status === 'REALIZADO') {
+        if (type === 'INCOME') {
+          receitaTotalFarmacia += Number(t.amount) || 0
+        } else if (type === 'EXPENSE') {
+          if (categoryId === 'FIXA') cfaTotal += Number(t.amount) || 0
+          if (categoryId === 'VARIAVEL') {
             if (
-              t.subcategoryId !== 'materia_prima' &&
-              t.subcategoryId !== 'embalagens' &&
-              t.subcategoryId !== 'medicamentos_drogaria'
+              t.subcategory !== 'materia_prima' &&
+              t.subcategory !== 'embalagens' &&
+              t.subcategory !== 'medicamentos_drogaria'
             ) {
-              varExpOperacional += t.amount
+              varExpOperacional += Number(t.amount) || 0
             }
           }
         }
@@ -208,9 +256,9 @@ export function PricingAssistant() {
       precoMedioIdeal,
       mkpMultiplicador,
       custoMedioInsumo,
-      isUsingFallback,
+      isUsingFallback: false,
     }
-  }, [monthlyMetrics, transactions, tipoFormula])
+  }, [historyMetrics, historyTx, tipoFormula])
 
   const numericCost = typeof cost === 'number' ? cost : 0
   const hasCost = cost !== ''
@@ -244,9 +292,9 @@ export function PricingAssistant() {
           <Info className="w-4 h-4 text-blue-500 shrink-0 mt-0.5" />
           <p>
             <strong className="font-bold">Observação Estratégica:</strong> Este assistente utiliza
-            como base a média dos últimos 3 meses fechados (excluindo o mês atual). Ele estará
-            plenamente funcional após o fechamento do seu primeiro mês de uso, pois requer este
-            histórico mínimo para configurar o cenário de markup dinâmico com precisão.
+            como base a média do período selecionado e os dois meses anteriores. Os resultados são
+            dinamicamente ajustados para garantir a precisão mesmo se o mês atual ainda estiver em
+            preenchimento.
           </p>
         </div>
 
@@ -265,8 +313,7 @@ export function PricingAssistant() {
                   do insumo), sempre respeitando o Piso de Segurança.
                 </p>
                 <p className="text-[10px] text-slate-400">
-                  Baseado no histórico consolidado{' '}
-                  {stats.isUsingFallback ? '(Dados Atuais)' : '(Últimos 3 meses fechados)'}.
+                  Baseado no histórico consolidado de 3 meses (incluindo o mês selecionado).
                 </p>
               </TooltipContent>
             </Tooltip>
@@ -451,9 +498,9 @@ export function PricingAssistant() {
         )}
 
         <div className="mt-6 pt-4 border-t border-blue-200/50 relative">
-          {stats.isUsingFallback && (
-            <div className="absolute -top-3 left-1/2 -translate-x-1/2 text-[8px] text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded-sm border border-amber-200 whitespace-nowrap z-10 opacity-90">
-              Usando dados do mês atual (Histórico em formação)
+          {isLoadingHistory && (
+            <div className="absolute -top-3 left-1/2 -translate-x-1/2 text-[8px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded-sm border border-blue-200 whitespace-nowrap z-10 opacity-90 animate-pulse">
+              Atualizando histórico...
             </div>
           )}
           <div className="text-xs text-slate-600 text-center flex flex-wrap justify-center gap-x-6 gap-y-2">
