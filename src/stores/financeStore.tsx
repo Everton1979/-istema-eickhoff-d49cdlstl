@@ -72,6 +72,7 @@ const mapTypeToDB = (type: string) => {
   if (type === 'INCOME') return 'receita'
   if (type === 'CORTESIA') return 'cortesia'
   if (type === 'PARTNER_WITHDRAWAL') return 'retirada_socios'
+  if (type === 'INVESTIMENTO') return 'investimento'
   return 'despesa'
 }
 const mapTypeFromDB = (type: string | null, category?: string | null) => {
@@ -85,6 +86,7 @@ const mapTypeFromDB = (type: string | null, category?: string | null) => {
   if (t === 'receita' || t === 'income') return 'INCOME'
   if (t === 'cortesia') return 'CORTESIA'
   if (t === 'retirada_socios') return 'PARTNER_WITHDRAWAL'
+  if (t === 'investimento') return 'INVESTIMENTO'
   return 'EXPENSE'
 }
 
@@ -548,6 +550,8 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
       query = query.eq('type', 'cortesia')
     } else if (type === 'PARTNER_WITHDRAWAL') {
       query = query.eq('type', 'retirada_socios')
+    } else if (type === 'INVESTIMENTO') {
+      query = query.eq('type', 'investimento')
     }
 
     const { data, error } = await query

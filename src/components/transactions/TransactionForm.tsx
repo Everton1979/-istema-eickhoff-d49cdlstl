@@ -34,7 +34,7 @@ const formSchema = z
       .regex(/^\d{4}-\d{2}-\d{2}$/, 'Formato inválido (YYYY-MM-DD)'),
     description: z.string().optional(),
     amount: z.coerce.number().min(0.01, 'Valor deve ser maior que zero'),
-    type: z.enum(['INCOME', 'EXPENSE', 'CORTESIA', 'PARTNER_WITHDRAWAL']),
+    type: z.enum(['INCOME', 'EXPENSE', 'CORTESIA', 'PARTNER_WITHDRAWAL', 'INVESTIMENTO']),
     categoryId: z.string().optional(),
     subcategoryId: z.string().optional(),
     paymentMethodId: z.string().optional(),
@@ -81,11 +81,18 @@ const formSchema = z
         })
       }
     }
-    if (data.type === 'CORTESIA' || data.type === 'PARTNER_WITHDRAWAL') {
+    if (
+      data.type === 'CORTESIA' ||
+      data.type === 'PARTNER_WITHDRAWAL' ||
+      data.type === 'INVESTIMENTO'
+    ) {
       if (!data.description || data.description.trim().length < 2) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
-          message: 'Destinatário/Motivo é obrigatório',
+          message:
+            data.type === 'INVESTIMENTO'
+              ? 'Descrição é obrigatória'
+              : 'Destinatário/Motivo é obrigatório',
           path: ['description'],
         })
       }
@@ -257,7 +264,7 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
         if (form.getValues('status') === 'VENCIDO') {
           form.setValue('status', 'REALIZADO')
         }
-      } else if (type === 'CORTESIA' || type === 'PARTNER_WITHDRAWAL') {
+      } else if (type === 'CORTESIA' || type === 'PARTNER_WITHDRAWAL' || type === 'INVESTIMENTO') {
         form.setValue('categoryId', '')
         form.setValue('subcategoryId', '')
         form.setValue('paymentMethodId', '')
@@ -375,8 +382,9 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
                   <SelectContent>
                     <SelectItem value="EXPENSE">Despesa</SelectItem>
                     <SelectItem value="INCOME">Receita</SelectItem>
-                    <SelectItem value="PARTNER_WITHDRAWAL">Retirada Sócios</SelectItem>
-                    <SelectItem value="CORTESIA">Cortesia</SelectItem>
+                    <SelectItem value="PARTNER_WITHDRAWAL">Retirada de sócios</SelectItem>
+                    <SelectItem value="CORTESIA">Cortesias</SelectItem>
+                    <SelectItem value="INVESTIMENTO">Investimentos</SelectItem>
                   </SelectContent>
                 </Select>
               </FormItem>
@@ -427,7 +435,10 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
           )}
         />
 
-        {(type === 'EXPENSE' || type === 'CORTESIA' || type === 'PARTNER_WITHDRAWAL') && (
+        {(type === 'EXPENSE' ||
+          type === 'CORTESIA' ||
+          type === 'PARTNER_WITHDRAWAL' ||
+          type === 'INVESTIMENTO') && (
           <FormField
             control={form.control}
             name="description"
@@ -444,7 +455,9 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
                     placeholder={
                       type === 'CORTESIA' || type === 'PARTNER_WITHDRAWAL'
                         ? 'EX: DR. JOÃO SILVA / AMOSTRA OU JOÃO (SÓCIO)'
-                        : 'EX: CONTA DE LUZ / COMPRA DE INSUMO'
+                        : type === 'INVESTIMENTO'
+                          ? 'EX: COMPRA DE EQUIPAMENTO / REFORMA'
+                          : 'EX: CONTA DE LUZ / COMPRA DE INSUMO'
                     }
                     {...field}
                     value={field.value || ''}
@@ -466,6 +479,11 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
               <FormLabel>
                 Valor (R$) <span className="text-red-500">*</span>
               </FormLabel>
+              {type === 'CORTESIA' && (
+                <p className="text-[11px] text-slate-500 font-medium mb-1.5 -mt-1 leading-tight">
+                  * Preencher com o valor do custo da matéria prima + embalagem da fórmula.
+                </p>
+              )}
               <FormControl>
                 <div className="relative">
                   <span className="absolute left-3 top-3.5 sm:top-2.5 text-sm text-slate-500 dark:text-slate-400 font-medium">

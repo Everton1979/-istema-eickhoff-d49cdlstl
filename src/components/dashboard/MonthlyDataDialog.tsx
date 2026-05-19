@@ -317,7 +317,20 @@ export function MonthlyDataDialog() {
           </DialogTitle>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-6 mt-2">
+        <div className="bg-indigo-50/50 dark:bg-indigo-950/30 border border-indigo-100 dark:border-indigo-900 rounded-md p-4 mt-4 text-sm text-indigo-800 dark:text-indigo-300">
+          <p>
+            <strong>Atenção:</strong> Preencher com dados retirados do seu sistema (ex. Fórmula
+            Certa). Lembre-se de <strong>diminuir o número de fórmulas</strong> que foram feitas
+            como cortesias, produções internas, etc. (tudo que não gerou valor para ser cobrado do
+            cliente), assim como <strong>diminuir o custo MP/Emb</strong> usados nessas fórmulas.
+          </p>
+          <p className="mt-2 text-xs opacity-80">
+            * Esses dados das cortesias podem ser consultados no menu Transações filtrando por
+            Cortesias.
+          </p>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-6 mt-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-slate-50 dark:bg-slate-900 p-4 rounded-lg border border-slate-100 dark:border-slate-800">
             <div className="space-y-2">
               <Label className="font-semibold text-slate-700 dark:text-slate-300">
