@@ -6,6 +6,7 @@ export interface UserProfile {
   id: string
   email: string
   role: 'Administrador' | string
+  app_name?: string
   company_name?: string
   cnpj?: string
   razao_social?: string

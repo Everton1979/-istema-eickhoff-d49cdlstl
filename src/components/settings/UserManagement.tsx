@@ -52,7 +52,12 @@ export function UserManagement() {
     setCreating(true)
     try {
       const { data, error } = await supabase.functions.invoke('manage-users', {
-        body: { action: 'create', email: newEmail, password: newPassword },
+        body: {
+          action: 'create',
+          email: newEmail,
+          password: newPassword,
+          app_name: currentProfile?.app_name || 'farmacia',
+        },
       })
 
       if (error) throw error
