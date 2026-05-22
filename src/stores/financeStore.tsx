@@ -208,7 +208,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
       }
 
       const start = `${startYearNum}-${startMonthNum.toString().padStart(2, '0')}-01T00:00:00.000Z`
-      const end = `${activeYear}-${activeMonth}-${endDay.toString().padStart(2, '0')}T23:59:59.999Z`
+      const end = `${activeYear}-${activeMonth.toString().padStart(2, '0')}-${endDay.toString().padStart(2, '0')}T23:59:59.999Z`
       txQuery = txQuery.gte('date', start).lte('date', end)
     } else if (activeYear) {
       txQuery = txQuery
@@ -226,17 +226,33 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
     if (activeYear && activeMonth) {
       const yearNum = parseInt(activeYear)
       const monthNum = parseInt(activeMonth)
-      let startYearNum = yearNum
-      let startMonthNum = monthNum - 11
-      if (startMonthNum <= 0) {
-        startMonthNum += 12
-        startYearNum -= 1
+
+      const orConditions = []
+      let tempMonth = monthNum
+      let tempYear = yearNum
+      for (let i = 0; i < 12; i++) {
+        orConditions.push(`and(month.eq.${tempMonth},year.eq.${tempYear})`)
+        tempMonth--
+        if (tempMonth <= 0) {
+          tempMonth = 12
+          tempYear--
+        }
       }
-      metricQuery = metricQuery.gte('year', startYearNum).lte('year', yearNum)
+      metricQuery = metricQuery.or(orConditions.join(','))
     } else if (activeYear) {
-      metricQuery = metricQuery
-        .gte('year', parseInt(activeYear) - 1)
-        .lte('year', parseInt(activeYear))
+      const yearNum = parseInt(activeYear)
+      const orConditions = []
+      let tempMonth = 12
+      let tempYear = yearNum
+      for (let i = 0; i < 24; i++) {
+        orConditions.push(`and(month.eq.${tempMonth},year.eq.${tempYear})`)
+        tempMonth--
+        if (tempMonth <= 0) {
+          tempMonth = 12
+          tempYear--
+        }
+      }
+      metricQuery = metricQuery.or(orConditions.join(','))
     }
 
     const [txRes, settingsRes, metricsRes] = await Promise.all([

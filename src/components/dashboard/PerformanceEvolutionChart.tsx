@@ -135,6 +135,7 @@ export function PerformanceEvolutionChart() {
             tickLine={false}
             tick={{ fontSize: 10, fill: '#6b7280' }}
             dy={10}
+            interval={0}
           />
           <YAxis
             yAxisId="left"
