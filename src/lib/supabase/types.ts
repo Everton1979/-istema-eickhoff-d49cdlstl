@@ -713,4 +713,5 @@ export const Constants = {
 
 // --- INDEXES ---
 // Table: monthly_metrics
+//   CREATE INDEX idx_monthly_metrics_year_month ON public.monthly_metrics USING btree (year, month)
 //   CREATE UNIQUE INDEX monthly_metrics_user_id_month_year_project_key ON public.monthly_metrics USING btree (user_id, month, year, project_id)

@@ -20,12 +20,20 @@ export function PerformanceEvolutionChart() {
     let refYear = new Date().getFullYear()
     let refMonth = new Date().getMonth() + 1
 
-    if (filters.years && filters.years.length > 0 && !isNaN(parseInt(filters.years[0], 10))) {
-      refYear = parseInt(filters.years[0], 10)
+    if (filters.years && filters.years.length > 0) {
+      const parsedYears = filters.years.map((y) => parseInt(y, 10)).filter((y) => !isNaN(y))
+      if (parsedYears.length > 0) {
+        refYear = Math.max(...parsedYears)
+      }
     }
 
     if (filters.months && filters.months.length > 0) {
-      refMonth = parseInt(filters.months[filters.months.length - 1], 10)
+      const parsedMonths = filters.months.map((m) => parseInt(m, 10)).filter((m) => !isNaN(m))
+      if (parsedMonths.length > 0) {
+        refMonth = Math.max(...parsedMonths)
+      } else {
+        refMonth = 12
+      }
     } else {
       refMonth = 12
     }
@@ -79,6 +87,7 @@ export function PerformanceEvolutionChart() {
       const orders = metric ? metric.orders_count : 0
       const rawMaterialCosts = metric ? metric.raw_material_costs : 0
       const systemSales = metric ? metric.total_system_sales : 0
+      const salesTarget = metric ? metric.sales_target : 0
 
       const ticketMedio = orders > 0 ? receitas / orders : 0
       const markup = rawMaterialCosts > 0 ? systemSales / rawMaterialCosts : 0
@@ -89,6 +98,8 @@ export function PerformanceEvolutionChart() {
         Receitas: receitas,
         Despesas: despesas,
         Lucro: receitas - despesas,
+        Vendas_Sistema: systemSales,
+        Meta_Vendas: salesTarget,
         Ticket_Medio: ticketMedio,
         Taxa_Tecnica: taxaTecnica,
         Markup: markup,
@@ -114,9 +125,11 @@ export function PerformanceEvolutionChart() {
       <ChartContainer
         config={{
           Receitas: { label: 'Receitas (R$)', color: '#10b981' },
+          Vendas_Sistema: { label: 'Vendas Sistema (R$)', color: '#0ea5e9' },
           Despesas: { label: 'Despesas/Custos (R$)', color: '#ef4444' },
           Lucro: { label: 'Lucro Líquido (R$)', color: '#3b82f6' },
-          Ticket_Medio: { label: 'Ticket Médio (R$)', color: '#f59e0b' },
+          Meta_Vendas: { label: 'Meta de Vendas (R$)', color: '#f59e0b' },
+          Ticket_Medio: { label: 'Ticket Médio (R$)', color: '#f97316' },
           Taxa_Tecnica: { label: 'Taxa Técnica Média (R$)', color: '#8b5cf6' },
           Markup: { label: 'Mark-up', color: '#ec4899' },
         }}
@@ -169,7 +182,23 @@ export function PerformanceEvolutionChart() {
             fill="var(--color-Despesas)"
             radius={[2, 2, 0, 0]}
           />
+          <Bar
+            yAxisId="left"
+            dataKey="Vendas_Sistema"
+            fill="var(--color-Vendas_Sistema)"
+            radius={[2, 2, 0, 0]}
+          />
           <Bar yAxisId="left" dataKey="Lucro" fill="var(--color-Lucro)" radius={[2, 2, 0, 0]} />
+
+          <Line
+            yAxisId="left"
+            type="monotone"
+            dataKey="Meta_Vendas"
+            stroke="var(--color-Meta_Vendas)"
+            strokeWidth={2}
+            strokeDasharray="5 5"
+            dot={{ r: 3 }}
+          />
 
           <Line
             yAxisId="right"
