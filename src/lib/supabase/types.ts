@@ -604,7 +604,7 @@ export const Constants = {
 //   Policy "Users can insert profiles" (INSERT, PERMISSIVE) roles={authenticated}
 //     WITH CHECK: ((id = auth.uid()) OR ((get_user_role() = 'Administrador'::text) AND (app_name = get_user_app_name())))
 //   Policy "Users can read profiles" (SELECT, PERMISSIVE) roles={authenticated}
-//     USING: ((id = auth.uid()) OR ((get_user_role() = 'Administrador'::text) AND (app_name IS NOT NULL) AND (app_name = get_user_app_name())))
+//     USING: ((id = auth.uid()) OR ((get_user_role() = 'Administrador'::text) AND (app_name = get_user_app_name())))
 //   Policy "Users can update profiles" (UPDATE, PERMISSIVE) roles={authenticated}
 //     USING: ((id = auth.uid()) OR ((get_user_role() = 'Administrador'::text) AND (app_name = get_user_app_name())))
 //     WITH CHECK: ((id = auth.uid()) OR ((get_user_role() = 'Administrador'::text) AND (app_name = get_user_app_name())))
@@ -715,3 +715,6 @@ export const Constants = {
 // Table: monthly_metrics
 //   CREATE INDEX idx_monthly_metrics_year_month ON public.monthly_metrics USING btree (year, month)
 //   CREATE UNIQUE INDEX monthly_metrics_user_id_month_year_project_key ON public.monthly_metrics USING btree (user_id, month, year, project_id)
+// Table: transactions
+//   CREATE INDEX idx_transactions_date_status ON public.transactions USING btree (date, status)
+//   CREATE INDEX idx_transactions_type ON public.transactions USING btree (type)

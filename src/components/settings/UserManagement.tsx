@@ -36,16 +36,24 @@ export function UserManagement() {
   const [editingUser, setEditingUser] = useState<UserProfile | null>(null)
 
   const fetchUsers = async () => {
+    if (!currentProfile) return
     setLoading(true)
-    const { data, error } = await supabase.from('profiles').select('*').order('email')
+    const targetApp = currentProfile.app_name || 'farmacia'
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('app_name', targetApp)
+      .order('email')
     if (data) setUsers(data as UserProfile[])
     if (error) toast.error('Erro ao carregar usuários')
     setLoading(false)
   }
 
   useEffect(() => {
-    fetchUsers()
-  }, [])
+    if (currentProfile) {
+      fetchUsers()
+    }
+  }, [currentProfile?.app_name])
 
   const handleCreateUser = async (e: React.FormEvent) => {
     e.preventDefault()
