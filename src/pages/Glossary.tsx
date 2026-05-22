@@ -334,15 +334,27 @@ const GLOSSARY_TERMS = [
     trend: 'up',
   },
   {
-    id: 'meta-vendas-globais',
-    title: 'Meta de Vendas Totais (manipulação + vendas extras)',
+    id: 'logica-prorrateio',
+    title: 'Lógica de Prorrateio (Distribuição Proporcional)',
     definition:
-      'Objetivo financeiro total da loja, englobando a manipulação e também todas as revendas, drogaria e serviços agregados.',
-    calculation: 'Definido manualmente mês a mês na aba "Dados do Mês".',
+      'As Receitas Realizadas são distribuídas automaticamente entre as metas de Manipulação e Extra com base no peso percentual que cada meta representa em relação à Meta Total.',
+    calculation: 'Receita Total Realizada × (Meta Específica / Meta Total).',
     example:
-      'A meta global desenhada para Novembro é R$ 200.000. Se as vendas de manipulados trouxeram R$ 150k e a perfumaria/drogaria trouxe R$ 30k, você está em R$ 180k (90% da meta global batida).',
+      'Se a Meta Total é R$ 100.000 (sendo R$ 80k Manipulação e R$ 20k Extra), a Manipulação representa 80% e a Extra 20%. Ao entrar R$ 10.000 de receita no sistema, ele distribuirá R$ 8.000 para o alcance da meta de Manipulação e R$ 2.000 para a Extra.',
     reference:
-      'Métrica principal para acompanhar a força comercial completa do seu negócio frente ao mercado.',
+      'Garante que as entradas financeiras não segregadas alimentem os medidores de meta de forma justa e proporcional ao tamanho de cada operação.',
+    category: 'Métricas de Performance',
+    trend: 'neutral',
+  },
+  {
+    id: 'meta-vendas-extra',
+    title: 'Meta de Vendas Extra',
+    definition: 'Objetivo focado em itens de drogaria, revendas e produtos de conveniência.',
+    calculation: 'Definido manualmente mês a mês.',
+    example:
+      'Sua farmácia estipulou vender R$ 20.000 em produtos de prateleira (revenda). O acompanhamento desta meta é feito para não misturar com o esforço do laboratório.',
+    reference:
+      'Ajuda a medir o desempenho de produtos prontos e serviços acessórios separadamente da manipulação.',
     category: 'Métricas de Performance',
     trend: 'up',
   },
@@ -353,9 +365,22 @@ const GLOSSARY_TERMS = [
       'Objetivo de faturamento exclusivo para a operação de manipulação (receitas operacionais principais), separando de revendas ou outras receitas.',
     calculation: 'Definido manualmente mês a mês.',
     example:
-      'Sua meta de manipulação era R$ 100.000. A farmácia faturou R$ 110.000 ao todo, mas R$ 20.000 vieram da venda de perfumaria pronta. O realizado de manipulação foi R$ 90.000, ou seja, faltaram 10k para bater a meta exclusiva do laboratório.',
+      'Sua meta de manipulação era R$ 100.000. O acompanhamento desta meta permite focar apenas no que é produzido pelo seu laboratório.',
     reference:
       'Importante para avaliar a saúde da atividade-fim da farmácia, sem distorção de outras entradas de caixa.',
+    category: 'Métricas de Performance',
+    trend: 'up',
+  },
+  {
+    id: 'meta-vendas-totais',
+    title: 'Meta de Vendas Totais',
+    definition:
+      'A consolidação automática (soma) da Meta de Vendas Manipulação e Meta de Vendas Extra.',
+    calculation: 'Soma automática das metas definidas.',
+    example:
+      'Se a meta de Manipulação é R$ 100.000 e a Extra é R$ 20.000, a Meta de Vendas Totais será de R$ 120.000.',
+    reference:
+      'Métrica principal para acompanhar a força comercial completa do seu negócio frente ao mercado.',
     category: 'Métricas de Performance',
     trend: 'up',
   },

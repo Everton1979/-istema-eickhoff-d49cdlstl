@@ -82,6 +82,8 @@ export type Database = {
           custo_mp_emb_dermato: number
           global_sales_target: number
           id: string
+          meta_vendas_extra: number
+          meta_vendas_manipulacao: number
           month: number
           num_formulas_capsulas: number
           num_formulas_dermato: number
@@ -105,6 +107,8 @@ export type Database = {
           custo_mp_emb_dermato?: number
           global_sales_target?: number
           id?: string
+          meta_vendas_extra?: number
+          meta_vendas_manipulacao?: number
           month: number
           num_formulas_capsulas?: number
           num_formulas_dermato?: number
@@ -128,6 +132,8 @@ export type Database = {
           custo_mp_emb_dermato?: number
           global_sales_target?: number
           id?: string
+          meta_vendas_extra?: number
+          meta_vendas_manipulacao?: number
           month?: number
           num_formulas_capsulas?: number
           num_formulas_dermato?: number
@@ -505,6 +511,8 @@ export const Constants = {
 //   colaboradores_capsulas: integer (not null, default: 0)
 //   colaboradores_dermato: integer (not null, default: 0)
 //   colaboradores_vendas: integer (not null, default: 0)
+//   meta_vendas_manipulacao: numeric (not null, default: 0)
+//   meta_vendas_extra: numeric (not null, default: 0)
 // Table: profiles
 //   id: uuid (not null)
 //   email: text (not null)

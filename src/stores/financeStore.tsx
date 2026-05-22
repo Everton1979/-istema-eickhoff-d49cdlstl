@@ -198,10 +198,22 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
     if (activeYear && activeMonth) {
       const yearNum = parseInt(activeYear)
       const monthNum = parseInt(activeMonth)
-      const d = new Date(yearNum, monthNum, 0)
-      const start = `${activeYear}-${activeMonth}-01T00:00:00.000Z`
-      const end = `${activeYear}-${activeMonth}-${d.getDate().toString().padStart(2, '0')}T23:59:59.999Z`
+      const endDay = new Date(yearNum, monthNum, 0).getDate()
+
+      let startYearNum = yearNum
+      let startMonthNum = monthNum - 11
+      if (startMonthNum <= 0) {
+        startMonthNum += 12
+        startYearNum -= 1
+      }
+
+      const start = `${startYearNum}-${startMonthNum.toString().padStart(2, '0')}-01T00:00:00.000Z`
+      const end = `${activeYear}-${activeMonth}-${endDay.toString().padStart(2, '0')}T23:59:59.999Z`
       txQuery = txQuery.gte('date', start).lte('date', end)
+    } else if (activeYear) {
+      txQuery = txQuery
+        .gte('date', `${parseInt(activeYear) - 1}-01-01T00:00:00.000Z`)
+        .lte('date', `${activeYear}-12-31T23:59:59.999Z`)
     }
 
     let metricQuery = supabase
@@ -211,11 +223,20 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
       .eq('project_id', PROJECT_ID)
       .limit(5000)
 
-    if (activeYear) {
-      metricQuery = metricQuery.eq('year', parseInt(activeYear))
-    }
-    if (activeMonth) {
-      metricQuery = metricQuery.eq('month', parseInt(activeMonth))
+    if (activeYear && activeMonth) {
+      const yearNum = parseInt(activeYear)
+      const monthNum = parseInt(activeMonth)
+      let startYearNum = yearNum
+      let startMonthNum = monthNum - 11
+      if (startMonthNum <= 0) {
+        startMonthNum += 12
+        startYearNum -= 1
+      }
+      metricQuery = metricQuery.gte('year', startYearNum).lte('year', yearNum)
+    } else if (activeYear) {
+      metricQuery = metricQuery
+        .gte('year', parseInt(activeYear) - 1)
+        .lte('year', parseInt(activeYear))
     }
 
     const [txRes, settingsRes, metricsRes] = await Promise.all([

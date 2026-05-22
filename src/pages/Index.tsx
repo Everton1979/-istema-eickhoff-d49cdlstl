@@ -12,7 +12,6 @@ import { PricingAssistant } from '@/components/dashboard/PricingAssistant'
 import { KumonSimulator } from '@/components/dashboard/KumonSimulator'
 import { PerformanceEvolutionChart } from '@/components/dashboard/PerformanceEvolutionChart'
 import { PrintableReport } from '@/components/dashboard/PrintableReport'
-import { StatusDetailPanel } from '@/components/dashboard/StatusDetailPanel'
 import { PendingUsersAlert } from '@/components/dashboard/PendingUsersAlert'
 import { PlanExpirationBanner } from '@/components/dashboard/PlanExpirationBanner'
 import { useState, useEffect } from 'react'
@@ -198,8 +197,6 @@ export default function Index() {
               <PharmacyMetrics />
             </div>
           </section>
-
-          <StatusDetailPanel />
 
           {/* Relatórios Section */}
           <section className="w-full bg-white p-6 rounded-xl border border-slate-200 shadow-sm mt-4">
