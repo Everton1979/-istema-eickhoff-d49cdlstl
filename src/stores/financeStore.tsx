@@ -267,6 +267,8 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
         colaboradores_capsulas: Number(m.colaboradores_capsulas || 0),
         colaboradores_dermato: Number(m.colaboradores_dermato || 0),
         colaboradores_vendas: Number(m.colaboradores_vendas || 0),
+        meta_vendas_manipulacao: Number(m.meta_vendas_manipulacao || 0),
+        meta_vendas_extra: Number(m.meta_vendas_extra || 0),
       }))
       setMonthlyMetrics(parsedMetrics)
       if (user?.id)
@@ -491,6 +493,14 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
       colaboradores_capsulas: metric.colaboradores_capsulas || 0,
       colaboradores_dermato: metric.colaboradores_dermato || 0,
       colaboradores_vendas: metric.colaboradores_vendas || 0,
+      meta_vendas_manipulacao:
+        metric.meta_vendas_manipulacao !== undefined
+          ? metric.meta_vendas_manipulacao
+          : existing?.meta_vendas_manipulacao || 0,
+      meta_vendas_extra:
+        metric.meta_vendas_extra !== undefined
+          ? metric.meta_vendas_extra
+          : existing?.meta_vendas_extra || 0,
       updated_at: new Date().toISOString(),
     }
 
@@ -535,6 +545,8 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
             colaboradores_capsulas: Number(data.colaboradores_capsulas || 0),
             colaboradores_dermato: Number(data.colaboradores_dermato || 0),
             colaboradores_vendas: Number(data.colaboradores_vendas || 0),
+            meta_vendas_manipulacao: Number(data.meta_vendas_manipulacao || 0),
+            meta_vendas_extra: Number(data.meta_vendas_extra || 0),
           },
         ]
         if (user?.id)

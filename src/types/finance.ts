@@ -56,4 +56,6 @@ export interface MonthlyMetric {
   colaboradores_capsulas?: number
   colaboradores_dermato?: number
   colaboradores_vendas?: number
+  meta_vendas_manipulacao?: number
+  meta_vendas_extra?: number
 }

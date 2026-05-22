@@ -1,0 +1,3 @@
+ALTER TABLE public.monthly_metrics 
+ADD COLUMN IF NOT EXISTS meta_vendas_manipulacao NUMERIC NOT NULL DEFAULT 0,
+ADD COLUMN IF NOT EXISTS meta_vendas_extra NUMERIC NOT NULL DEFAULT 0;

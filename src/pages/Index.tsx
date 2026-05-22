@@ -7,7 +7,7 @@ import { UpcomingCommitments } from '@/components/dashboard/UpcomingCommitments'
 import { AccountBalances } from '@/components/dashboard/AccountBalances'
 import { PharmacyMetrics } from '@/components/dashboard/PharmacyMetrics'
 import { ExpenseDistribution } from '@/components/dashboard/ExpenseDistribution'
-import { SalesTargetProgress } from '@/components/dashboard/SalesTargetProgress'
+import { SalesTargetsDashboard } from '@/components/dashboard/SalesTargetProgress'
 import { PricingAssistant } from '@/components/dashboard/PricingAssistant'
 import { KumonSimulator } from '@/components/dashboard/KumonSimulator'
 import { PerformanceEvolutionChart } from '@/components/dashboard/PerformanceEvolutionChart'
@@ -65,6 +65,11 @@ export default function Index() {
           <PlanExpirationBanner />
           <PendingUsersAlert />
 
+          {/* Top row: Operational KPIs */}
+          <section className="w-full mt-2">
+            <OperationalKpis />
+          </section>
+
           {/* Lançamentos Section */}
           <section className="w-full bg-white p-6 rounded-xl border border-slate-200 shadow-sm mt-2">
             <h2 className="text-xl font-black text-slate-800 uppercase tracking-wide flex items-center gap-3 mb-6">
@@ -105,11 +110,6 @@ export default function Index() {
                 </div>
               </div>
             </div>
-          </section>
-
-          {/* Top row: Operational KPIs */}
-          <section className="w-full">
-            <OperationalKpis />
           </section>
 
           {/* Destaque Central: Assistente de Precificação Estratégica */}
@@ -154,10 +154,7 @@ export default function Index() {
                 <div className="w-2 h-4 bg-amber-500 rounded-sm" />
                 Metas de Vendas
               </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <SalesTargetProgress variant="GLOBAL" />
-                <SalesTargetProgress variant="MANIPULACAO" />
-              </div>
+              <SalesTargetsDashboard />
             </div>
 
             <div className="bg-white p-4 rounded-lg shadow-sm border border-slate-200">
