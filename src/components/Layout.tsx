@@ -17,9 +17,9 @@ export default function Layout() {
   const location = useLocation()
 
   return (
-    <div className="flex flex-col h-screen bg-slate-50 overflow-hidden">
+    <div className="flex flex-col min-h-screen bg-slate-50">
       {/* Topbar Navigation */}
-      <header className="h-16 bg-[#0f172a] text-white flex items-center px-4 md:px-6 shrink-0 shadow-md z-20 justify-between">
+      <header className="h-16 bg-[#0f172a] text-white flex items-center px-4 md:px-6 shrink-0 shadow-md z-20 justify-between sticky top-0">
         <div className="flex items-center gap-4 md:gap-8">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 bg-blue-600 rounded-md flex items-center justify-center font-bold text-white shadow-sm uppercase">
@@ -48,7 +48,7 @@ export default function Layout() {
       </header>
 
       {/* Main Content */}
-      <main className="flex-1 overflow-hidden flex flex-col relative bg-slate-50">
+      <main className="flex-1 flex flex-col relative bg-slate-50">
         <Outlet />
       </main>
 

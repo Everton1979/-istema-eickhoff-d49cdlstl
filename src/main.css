@@ -78,7 +78,7 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground bg-[#e2e8f0] h-screen overflow-hidden;
+    @apply bg-background text-foreground bg-[#e2e8f0] min-h-screen;
   }
 }
 
