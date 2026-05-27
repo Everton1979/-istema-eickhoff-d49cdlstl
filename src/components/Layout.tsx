@@ -2,6 +2,7 @@ import { Link, Outlet, useLocation } from 'react-router-dom'
 import { LayoutDashboard } from 'lucide-react'
 import { useAuth } from '@/hooks/use-auth'
 import { cn } from '@/lib/utils'
+import { InpiSeal } from './InpiSeal'
 
 export default function Layout() {
   const { profile } = useAuth()
@@ -50,6 +51,9 @@ export default function Layout() {
       <main className="flex-1 overflow-hidden flex flex-col relative bg-slate-50">
         <Outlet />
       </main>
+
+      {/* Footer / Floating Elements */}
+      <InpiSeal />
     </div>
   )
 }
