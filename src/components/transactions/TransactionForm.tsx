@@ -23,8 +23,7 @@ import { useToast } from '@/hooks/use-toast'
 import { useDraft } from '@/hooks/use-draft'
 import { useEffect, useState, useMemo, forwardRef, useRef } from 'react'
 import { Transaction } from '@/types/finance'
-import { X, Plus, Tag as TagIcon, Lightbulb } from 'lucide-react'
-import { cn, getTagColor } from '@/lib/utils'
+import { Tag as TagIcon, Lightbulb } from 'lucide-react'
 
 const formSchema = z
   .object({
@@ -199,25 +198,6 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
     defaultEmptyValues,
   )
 
-  const [tagsList, setTagsList] = useState<string[]>(() => {
-    if (initialData?.tags) return initialData.tags.split(',').filter(Boolean)
-    if (!initialData && draft?.tags) return draft.tags.split(',').filter(Boolean)
-    return []
-  })
-  const [tagInput, setTagInput] = useState('')
-
-  const allUniqueTags = useMemo(() => {
-    const t = new Set<string>()
-    transactions.forEach((tx) => {
-      if (tx.tags) {
-        tx.tags.split(',').forEach((x) => {
-          if (x.trim()) t.add(x.trim())
-        })
-      }
-    })
-    return Array.from(t).sort()
-  }, [transactions])
-
   const defaultValues = initialData
     ? {
         date: initialData.date.includes('T')
@@ -283,22 +263,6 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
     }
   }, [categoryId, form, prevCategoryId])
 
-  const addTag = (tagToAdd?: string) => {
-    const val = (tagToAdd || tagInput).trim()
-    if (val && !tagsList.includes(val)) {
-      const newList = [...tagsList, val]
-      setTagsList(newList)
-      form.setValue('tags', newList.join(','))
-    }
-    setTagInput('')
-  }
-
-  const removeTag = (tagToRemove: string) => {
-    const newList = tagsList.filter((t) => t !== tagToRemove)
-    setTagsList(newList)
-    form.setValue('tags', newList.join(','))
-  }
-
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       setLoading(true)
@@ -339,7 +303,7 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
         subcategoryId: values.subcategoryId || '',
         accountId: 'sicredi', // Auto-assigned unified account
         paymentMethodId: values.type === 'INCOME' ? values.paymentMethodId || '' : '',
-        tags: tagsList.join(','),
+        tags: values.tags || '',
       }
 
       if (initialData) {
@@ -352,7 +316,6 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
         clearDraft()
         form.reset(defaultEmptyValues)
       }
-      setTagsList([])
       onSuccess()
     } catch (error) {
       toast({ title: 'Erro', description: 'Ocorreu um erro ao salvar.', variant: 'destructive' })
@@ -639,81 +602,29 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
                 />
               )}
 
-              <div className="space-y-2">
-                <FormLabel className="flex items-center gap-1.5">
-                  <TagIcon className="w-3.5 h-3.5" /> Observações (Opcional)
-                </FormLabel>
-                <div className="flex items-center gap-2">
-                  <Input
-                    value={tagInput}
-                    onChange={(e) => setTagInput(e.target.value)}
-                    placeholder="Adicionar observação..."
-                    className="h-12 sm:h-10 text-base sm:text-sm"
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter') {
-                        e.preventDefault()
-                        addTag()
-                      }
-                    }}
-                  />
-                  <Button
-                    type="button"
-                    size="sm"
-                    variant="secondary"
-                    onClick={() => addTag()}
-                    className="h-12 sm:h-10 px-4 shrink-0"
-                  >
-                    <Plus className="w-4 h-4" />
-                  </Button>
-                </div>
-
-                {tagsList.length > 0 && (
-                  <div className="flex flex-wrap gap-1.5 mt-2">
-                    {tagsList.map((t) => (
-                      <span
-                        key={t}
-                        className={cn(
-                          'flex items-center gap-1 pl-2 pr-1 py-1 rounded text-xs font-medium border',
-                          getTagColor(t),
-                        )}
-                      >
-                        {t}
-                        <button
-                          type="button"
-                          onClick={() => removeTag(t)}
-                          className="hover:text-red-600 rounded-full p-0.5 hover:bg-black/10 transition-colors"
-                        >
-                          <X className="w-3 h-3" />
-                        </button>
-                      </span>
-                    ))}
-                  </div>
+              <FormField
+                control={form.control}
+                name="tags"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="flex items-center gap-1.5">
+                      <TagIcon className="w-3.5 h-3.5" /> Observações (Opcional)
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Adicionar observação..."
+                        className="h-12 sm:h-10 text-base sm:text-sm"
+                        {...field}
+                        value={field.value || ''}
+                      />
+                    </FormControl>
+                    <p className="text-[11px] text-slate-500 mt-1.5 leading-tight">
+                      Ex. Número da nota fiscal, Número do boleto, Referente a [Mês]
+                    </p>
+                    <FormMessage />
+                  </FormItem>
                 )}
-
-                {allUniqueTags.length > 0 && (
-                  <div className="mt-2 pt-2 border-t">
-                    <p className="text-[10px] text-slate-500 mb-1.5">Observações Sugeridas:</p>
-                    <div className="flex flex-wrap gap-1.5">
-                      {allUniqueTags
-                        .filter((t) => !tagsList.includes(t))
-                        .slice(0, 8)
-                        .map((t) => (
-                          <button
-                            type="button"
-                            key={t}
-                            onClick={() => addTag(t)}
-                            className={cn(
-                              'text-[10px] px-2 py-0.5 rounded-full transition-colors border hover:opacity-80',
-                              getTagColor(t),
-                            )}
-                          >
-                            {t}
-                          </button>
-                        ))}
-                    </div>
-                  </div>
-                )}
-              </div>
+              />
             </div>
           )}
 
