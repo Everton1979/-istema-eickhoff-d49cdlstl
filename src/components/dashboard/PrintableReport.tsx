@@ -12,9 +12,10 @@ export function PrintableReport({ exportFilters }: { exportFilters: any }) {
     const filtered = transactions.filter((t) => {
       let txDateStr = ''
       if (t.date.includes('T')) {
-        txDateStr = t.date.split('T')[0]
+        const d = new Date(t.date)
+        txDateStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
       } else {
-        txDateStr = new Date(t.date).toISOString().split('T')[0]
+        txDateStr = t.date
       }
 
       if (exportFilters.startDate && txDateStr < exportFilters.startDate) return false
@@ -36,7 +37,15 @@ export function PrintableReport({ exportFilters }: { exportFilters: any }) {
         .filter((t) => t.type === 'EXPENSE' && t.status === 'REALIZADO')
         .reduce((acc, t) => acc + Number(t.amount), 0)
 
-      const lucro = totalEntradas - totalSaidas
+      const totalRetiradas = filtered
+        .filter((t) => t.type === 'PARTNER_WITHDRAWAL' && t.status === 'REALIZADO')
+        .reduce((acc, t) => acc + Number(t.amount), 0)
+
+      const totalInvestimentos = filtered
+        .filter((t) => t.type === 'INVESTIMENTO' && t.status === 'REALIZADO')
+        .reduce((acc, t) => acc + Number(t.amount), 0)
+
+      const lucro = totalEntradas - totalSaidas - totalRetiradas - totalInvestimentos
 
       const typeLabel =
         exportFilters.type === 'ALL'
@@ -52,8 +61,10 @@ export function PrintableReport({ exportFilters }: { exportFilters: any }) {
         ['Filtro de Tipo', typeLabel],
         [],
         ['Total Entradas', totalEntradas.toFixed(2).replace('.', ',')],
-        ['Total Despesas', totalSaidas.toFixed(2).replace('.', ',')],
-        ['Lucro (Saldo)', lucro.toFixed(2).replace('.', ',')],
+        ['Total Despesas Operacionais', totalSaidas.toFixed(2).replace('.', ',')],
+        ['Retirada de Sócios', totalRetiradas.toFixed(2).replace('.', ',')],
+        ['Investimentos', totalInvestimentos.toFixed(2).replace('.', ',')],
+        ['Saldo Final (Caixa)', lucro.toFixed(2).replace('.', ',')],
         [],
         ['Detalhamento de Transações'],
       ]
@@ -63,7 +74,13 @@ export function PrintableReport({ exportFilters }: { exportFilters: any }) {
         new Date(t.date).toLocaleDateString('pt-BR'),
         `"${(t.description || '').replace(/"/g, '""')}"`,
         `"${((t.category as any) || (t as any).categoryId || '').replace(/"/g, '""')}"`,
-        t.type === 'INCOME' ? 'ENTRADA' : 'SAIDA',
+        t.type === 'INCOME'
+          ? 'ENTRADA'
+          : t.type === 'PARTNER_WITHDRAWAL'
+            ? 'RETIRADA'
+            : t.type === 'INVESTIMENTO'
+              ? 'INVESTIMENTO'
+              : 'SAIDA',
         Number(t.amount).toFixed(2).replace('.', ','),
       ])
 
@@ -102,7 +119,15 @@ export function PrintableReport({ exportFilters }: { exportFilters: any }) {
     .filter((t) => t.type === 'EXPENSE' && t.status === 'REALIZADO')
     .reduce((acc, t) => acc + Number(t.amount), 0)
 
-  const lucro = totalEntradas - totalSaidas
+  const totalRetiradas = exportTransactions
+    .filter((t) => t.type === 'PARTNER_WITHDRAWAL' && t.status === 'REALIZADO')
+    .reduce((acc, t) => acc + Number(t.amount), 0)
+
+  const totalInvestimentos = exportTransactions
+    .filter((t) => t.type === 'INVESTIMENTO' && t.status === 'REALIZADO')
+    .reduce((acc, t) => acc + Number(t.amount), 0)
+
+  const lucro = totalEntradas - totalSaidas - totalRetiradas - totalInvestimentos
 
   const formatCurrency = (val: number) =>
     new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val)
@@ -156,18 +181,45 @@ export function PrintableReport({ exportFilters }: { exportFilters: any }) {
             <p className="text-gray-600">Filtro Aplicado: {typeLabel}</p>
           </div>
 
-          <div className="grid grid-cols-3 gap-4 mb-8">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
             <div className="p-4 border rounded-lg bg-gray-50 text-center">
-              <p className="text-sm text-gray-600 uppercase font-bold mb-1">Total Entradas</p>
-              <p className="text-xl font-bold text-green-600">{formatCurrency(totalEntradas)}</p>
+              <p className="text-xs sm:text-sm text-gray-600 uppercase font-bold mb-1">Entradas</p>
+              <p className="text-lg sm:text-xl font-bold text-green-600">
+                {formatCurrency(totalEntradas)}
+              </p>
             </div>
             <div className="p-4 border rounded-lg bg-gray-50 text-center">
-              <p className="text-sm text-gray-600 uppercase font-bold mb-1">Total Despesas</p>
-              <p className="text-xl font-bold text-red-600">{formatCurrency(totalSaidas)}</p>
+              <p className="text-xs sm:text-sm text-gray-600 uppercase font-bold mb-1">
+                Despesas Operacionais
+              </p>
+              <p className="text-lg sm:text-xl font-bold text-red-600">
+                {formatCurrency(totalSaidas)}
+              </p>
             </div>
+            {totalRetiradas > 0 || totalInvestimentos > 0 ? (
+              <div className="p-4 border rounded-lg bg-gray-50 text-center">
+                <p className="text-xs sm:text-sm text-gray-600 uppercase font-bold mb-1">
+                  Outras Saídas
+                </p>
+                <p className="text-lg sm:text-xl font-bold text-orange-600">
+                  {formatCurrency(totalRetiradas + totalInvestimentos)}
+                </p>
+              </div>
+            ) : (
+              <div className="p-4 border rounded-lg bg-gray-50 text-center opacity-50">
+                <p className="text-xs sm:text-sm text-gray-600 uppercase font-bold mb-1">
+                  Outras Saídas
+                </p>
+                <p className="text-lg sm:text-xl font-bold text-gray-500">R$ 0,00</p>
+              </div>
+            )}
             <div className="p-4 border rounded-lg bg-gray-50 text-center">
-              <p className="text-sm text-gray-600 uppercase font-bold mb-1">Lucro (Saldo)</p>
-              <p className={`text-xl font-bold ${lucro >= 0 ? 'text-blue-600' : 'text-red-600'}`}>
+              <p className="text-xs sm:text-sm text-gray-600 uppercase font-bold mb-1">
+                Saldo Final
+              </p>
+              <p
+                className={`text-lg sm:text-xl font-bold ${lucro >= 0 ? 'text-blue-600' : 'text-red-600'}`}
+              >
                 {formatCurrency(lucro)}
               </p>
             </div>

@@ -102,6 +102,7 @@ export function DREDialog() {
     const fixas: Record<string, number> = {}
     const financeiras: Record<string, number> = {}
     const investimentos: Record<string, number> = {}
+    const retiradas: Record<string, number> = {}
 
     let totalReceitasOperacionais = 0
     let totalReceitasNaoOperacionais = 0
@@ -109,6 +110,7 @@ export function DREDialog() {
     let totalFixas = 0
     let totalFinanceiras = 0
     let totalInvestimentos = 0
+    let totalRetiradas = 0
 
     data.forEach((tx) => {
       if (tx.status !== 'REALIZADO') return
@@ -118,6 +120,10 @@ export function DREDialog() {
           const invName = tx.description || 'Equipamentos e Investimentos'
           investimentos[invName] = (investimentos[invName] || 0) + tx.amount
           totalInvestimentos += tx.amount
+        } else if (tx.type === 'PARTNER_WITHDRAWAL') {
+          const retName = tx.description || 'Retirada de Sócios'
+          retiradas[retName] = (retiradas[retName] || 0) + tx.amount
+          totalRetiradas += tx.amount
         }
         return // Exclude from operational calculations
       }
@@ -160,6 +166,7 @@ export function DREDialog() {
     const resultadoOperacional = margemContribuicao - totalFixas
     // Ensure Lucro Líquido matches exactly (Total Receitas - Total Despesas)
     const resultadoLiquido = resultadoOperacional + totalReceitasNaoOperacionais - totalFinanceiras
+    const resultadoRetido = resultadoLiquido - totalRetiradas
 
     return {
       receitasOperacionais,
@@ -174,9 +181,12 @@ export function DREDialog() {
       totalFinanceiras,
       investimentos,
       totalInvestimentos,
+      retiradas,
+      totalRetiradas,
       margemContribuicao,
       resultadoOperacional,
       resultadoLiquido,
+      resultadoRetido,
     }
   }, [data])
 
@@ -290,6 +300,17 @@ export function DREDialog() {
               <tr class="total-row" style="font-size: 16px; background-color: #e2e8f0;">
                 <td>(=) Resultado Líquido</td>
                 <td class="amount ${dre.resultadoLiquido >= 0 ? 'positive' : 'negative'}">${formatCurrency(dre.resultadoLiquido)}</td>
+              </tr>
+
+              <tr class="group-header">
+                <td>(-) Retirada de Sócios (Distribuição de Lucro)</td>
+                <td class="amount negative">${formatCurrency(dre.totalRetiradas)}</td>
+              </tr>
+              ${renderRows(dre.retiradas)}
+
+              <tr class="total-row" style="font-size: 16px; background-color: #cbd5e1;">
+                <td>(=) Resultado Retido (Pós-Distribuição)</td>
+                <td class="amount ${dre.resultadoRetido >= 0 ? 'positive' : 'negative'}">${formatCurrency(dre.resultadoRetido)}</td>
               </tr>
             </tbody>
           </table>
@@ -497,6 +518,32 @@ export function DREDialog() {
                             className={`p-4 text-right ${dre.resultadoLiquido >= 0 ? 'text-green-600' : 'text-red-600'}`}
                           >
                             {formatCurrency(dre.resultadoLiquido)}
+                          </td>
+                        </tr>
+
+                        <tr className="bg-slate-50 font-semibold border-y">
+                          <td className="p-3">(-) Retirada de Sócios (Distribuição)</td>
+                          <td className="p-3 text-right text-red-600">
+                            {formatCurrency(dre.totalRetiradas)}
+                          </td>
+                        </tr>
+                        {Object.entries(dre.retiradas)
+                          .sort((a, b) => b[1] - a[1])
+                          .map(([name, val]) => (
+                            <tr key={name} className="border-b border-slate-100 last:border-0">
+                              <td className="p-3 pl-8 text-slate-600">{name}</td>
+                              <td className="p-3 text-right text-slate-700">
+                                {formatCurrency(val)}
+                              </td>
+                            </tr>
+                          ))}
+
+                        <tr className="bg-slate-300 font-bold text-base border-t">
+                          <td className="p-4">(=) Resultado Retido</td>
+                          <td
+                            className={`p-4 text-right ${dre.resultadoRetido >= 0 ? 'text-blue-600' : 'text-red-600'}`}
+                          >
+                            {formatCurrency(dre.resultadoRetido)}
                           </td>
                         </tr>
                       </tbody>

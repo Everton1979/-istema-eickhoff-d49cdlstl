@@ -207,13 +207,13 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
         startYearNum -= 1
       }
 
-      const start = `${startYearNum}-${startMonthNum.toString().padStart(2, '0')}-01T00:00:00.000Z`
-      const end = `${activeYear}-${activeMonth.toString().padStart(2, '0')}-${endDay.toString().padStart(2, '0')}T23:59:59.999Z`
+      const start = `${startYearNum}-${startMonthNum.toString().padStart(2, '0')}-01T00:00:00.000-03:00`
+      const end = `${activeYear}-${activeMonth.toString().padStart(2, '0')}-${endDay.toString().padStart(2, '0')}T23:59:59.999-03:00`
       txQuery = txQuery.gte('date', start).lte('date', end)
     } else if (activeYear) {
       txQuery = txQuery
-        .gte('date', `${parseInt(activeYear) - 1}-01-01T00:00:00.000Z`)
-        .lte('date', `${activeYear}-12-31T23:59:59.999Z`)
+        .gte('date', `${parseInt(activeYear) - 1}-01-01T00:00:00.000-03:00`)
+        .lte('date', `${activeYear}-12-31T23:59:59.999-03:00`)
     }
 
     const fetchAllTransactions = async (query: any) => {
@@ -633,8 +633,8 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
         .select('*')
         .eq('user_id', user.id)
         .eq('project_id', PROJECT_ID)
-        .gte('date', `${startDate}T00:00:00.000Z`)
-        .lte('date', `${endDate}T23:59:59.999Z`)
+        .gte('date', `${startDate}T00:00:00.000-03:00`)
+        .lte('date', `${endDate}T23:59:59.999-03:00`)
         .order('date', { ascending: true })
         .range(page * pageSize, (page + 1) * pageSize - 1)
 
@@ -721,15 +721,17 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
       if (!tx || !tx.date) return false
 
       try {
-        // Extrair ano e mês diretamente da string
-        const datePart = tx.date.split('T')[0]
-        if (!datePart || datePart.length < 10) return false
-
-        const parts = datePart.split('-')
-        if (parts.length < 3) return false
-
-        const txYear = parts[0]
-        const txMonth = parts[1]
+        let txYear, txMonth
+        if (tx.date.includes('T')) {
+          const d = new Date(tx.date)
+          txYear = d.getFullYear().toString()
+          txMonth = String(d.getMonth() + 1).padStart(2, '0')
+        } else {
+          const parts = tx.date.split('-')
+          if (parts.length < 3) return false
+          txYear = parts[0]
+          txMonth = parts[1]
+        }
 
         if (filters.years && filters.years.length > 0 && !filters.years.includes(txYear))
           return false
