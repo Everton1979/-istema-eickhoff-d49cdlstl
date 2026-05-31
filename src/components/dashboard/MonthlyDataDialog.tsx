@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo, useRef, forwardRef } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import {
   Dialog,
   DialogContent,
@@ -118,7 +119,8 @@ const CurrencyInput = forwardRef<HTMLInputElement, any>(
 export function MonthlyDataDialog() {
   const { user } = useAuth()
   const { monthlyMetrics, saveMonthlyMetric, filters } = useFinanceStore()
-  const [open, setOpen] = useState(false)
+  const [searchParams, setSearchParams] = useSearchParams()
+  const [open, setOpen] = useState(() => searchParams.get('view') === 'dados-manipulacao')
   const [loading, setLoading] = useState(false)
 
   const { draft, saveDraft, clearDraft } = useDraft('monthly-data-draft', {
@@ -141,23 +143,74 @@ export function MonthlyDataDialog() {
   const { month, year, formData, isDirty } = draft
 
   useEffect(() => {
+    if (searchParams.get('view') === 'dados-manipulacao') {
+      setOpen(true)
+    } else {
+      setOpen(false)
+    }
+  }, [searchParams])
+
+  useEffect(() => {
     const checkHash = () => {
       if (window.location.hash === '#dados-manipulacao') {
-        setOpen(true)
+        setSearchParams(
+          (prev) => {
+            prev.set('view', 'dados-manipulacao')
+            return prev
+          },
+          { replace: true },
+        )
         window.history.replaceState(null, '', window.location.pathname + window.location.search)
       }
     }
     checkHash()
     window.addEventListener('hashchange', checkHash)
 
-    const handleEvent = () => setOpen(true)
+    const handleEvent = () => {
+      setSearchParams(
+        (prev) => {
+          prev.set('view', 'dados-manipulacao')
+          return prev
+        },
+        { replace: true },
+      )
+    }
     window.addEventListener('open-dados-manipulacao', handleEvent)
 
     return () => {
       window.removeEventListener('hashchange', checkHash)
       window.removeEventListener('open-dados-manipulacao', handleEvent)
     }
-  }, [])
+  }, [setSearchParams])
+
+  const handleOpenChange = (newOpen: boolean) => {
+    if (!newOpen && isDirty) {
+      const confirmClose = window.confirm(
+        'Você tem alterações não salvas. Deseja realmente sair sem salvar?',
+      )
+      if (!confirmClose) return
+    }
+
+    setOpen(newOpen)
+
+    if (newOpen) {
+      setSearchParams(
+        (prev) => {
+          prev.set('view', 'dados-manipulacao')
+          return prev
+        },
+        { replace: true },
+      )
+    } else {
+      setSearchParams(
+        (prev) => {
+          prev.delete('view')
+          return prev
+        },
+        { replace: true },
+      )
+    }
+  }
 
   const currentExisting = useMemo(() => {
     return monthlyMetrics.find((m) => m.month === month && m.year === year)
@@ -284,7 +337,15 @@ export function MonthlyDataDialog() {
 
       toast.success('Dados mensais salvos com sucesso!')
       clearDraft()
+
       setOpen(false)
+      setSearchParams(
+        (prev) => {
+          prev.delete('view')
+          return prev
+        },
+        { replace: true },
+      )
     } catch (err: any) {
       console.error(err)
       toast.error('Erro ao salvar os dados: ' + err.message)
@@ -294,7 +355,7 @@ export function MonthlyDataDialog() {
   }
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
         <Button
           variant="outline"
@@ -310,7 +371,15 @@ export function MonthlyDataDialog() {
           </span>
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto p-4 sm:p-6 w-[95vw] sm:w-full rounded-xl">
+      <DialogContent
+        className="max-w-4xl max-h-[90vh] overflow-y-auto p-4 sm:p-6 w-[95vw] sm:w-full rounded-xl"
+        onInteractOutside={(e) => {
+          if (isDirty) e.preventDefault()
+        }}
+        onEscapeKeyDown={(e) => {
+          if (isDirty) e.preventDefault()
+        }}
+      >
         <DialogHeader>
           <DialogTitle className="text-xl font-bold flex items-center gap-2">
             Entrada de Dados Mensais (Manipulação)
@@ -623,7 +692,7 @@ export function MonthlyDataDialog() {
             <Button
               type="button"
               variant="outline"
-              onClick={() => setOpen(false)}
+              onClick={() => handleOpenChange(false)}
               className="w-full sm:w-auto h-12 sm:h-10 text-base sm:text-sm"
             >
               Cancelar
