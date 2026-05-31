@@ -15,15 +15,7 @@ import { PrintableReport } from '@/components/dashboard/PrintableReport'
 import { PendingUsersAlert } from '@/components/dashboard/PendingUsersAlert'
 import { PlanExpirationBanner } from '@/components/dashboard/PlanExpirationBanner'
 import { useState, useEffect } from 'react'
-import {
-  AlertTriangle,
-  ArrowRightLeft,
-  Database,
-  FileText,
-  BarChart3,
-  BrainCircuit,
-} from 'lucide-react'
-import { AnalyticalIntelligenceDialog } from '@/components/dashboard/AnalyticalIntelligenceDialog'
+import { AlertTriangle, ArrowRightLeft, Database, FileText, BarChart3 } from 'lucide-react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '@/hooks/use-auth'
 
@@ -210,9 +202,9 @@ export default function Index() {
           <section className="w-full bg-white p-6 rounded-xl border border-slate-200 shadow-sm mt-4">
             <h2 className="text-xl font-black text-slate-800 uppercase tracking-wide flex items-center gap-3 mb-6">
               <div className="w-3 h-8 bg-slate-700 rounded-sm" />
-              Relatórios & Inteligência
+              Relatórios
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="bg-slate-50 p-8 rounded-xl border-2 border-dashed border-slate-200 flex flex-col items-center justify-center gap-4 text-center hover:bg-slate-100 transition-colors">
                 <div className="p-4 bg-emerald-100 text-emerald-600 rounded-full shadow-inner">
                   <FileText className="w-10 h-10" />
@@ -243,23 +235,6 @@ export default function Index() {
                   </p>
                   <div className="flex justify-center [&>button]:h-12 [&>button]:px-8 [&>button]:text-base w-full">
                     <DREDialog />
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-slate-50 p-8 rounded-xl border-2 border-dashed border-slate-200 flex flex-col items-center justify-center gap-4 text-center hover:bg-slate-100 transition-colors">
-                <div className="p-4 bg-indigo-100 text-indigo-600 rounded-full shadow-inner">
-                  <BrainCircuit className="w-10 h-10" />
-                </div>
-                <div>
-                  <h3 className="text-xl lg:text-2xl font-bold text-slate-800">
-                    Inteligência Analítica
-                  </h3>
-                  <p className="text-slate-500 mb-6 mt-2 max-w-sm mx-auto text-sm">
-                    Análise avançada com indicadores estratégicos (EBITDA, CMa).
-                  </p>
-                  <div className="flex justify-center [&>button]:h-12 [&>button]:px-8 [&>button]:text-base w-full">
-                    <AnalyticalIntelligenceDialog />
                   </div>
                 </div>
               </div>
