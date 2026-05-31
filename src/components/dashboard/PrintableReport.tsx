@@ -23,6 +23,8 @@ export function PrintableReport({ exportFilters }: { exportFilters: any }) {
       if (exportFilters.type && exportFilters.type !== 'ALL' && t.type !== exportFilters.type)
         return false
 
+      if (t.type === 'PARTNER_WITHDRAWAL') return false
+
       return true
     })
 
@@ -37,15 +39,11 @@ export function PrintableReport({ exportFilters }: { exportFilters: any }) {
         .filter((t) => t.type === 'EXPENSE' && t.status === 'REALIZADO')
         .reduce((acc, t) => acc + Number(t.amount), 0)
 
-      const totalRetiradas = filtered
-        .filter((t) => t.type === 'PARTNER_WITHDRAWAL' && t.status === 'REALIZADO')
-        .reduce((acc, t) => acc + Number(t.amount), 0)
-
       const totalInvestimentos = filtered
         .filter((t) => t.type === 'INVESTIMENTO' && t.status === 'REALIZADO')
         .reduce((acc, t) => acc + Number(t.amount), 0)
 
-      const lucro = totalEntradas - totalSaidas - totalRetiradas - totalInvestimentos
+      const lucro = totalEntradas - totalSaidas - totalInvestimentos
 
       const typeLabel =
         exportFilters.type === 'ALL'
@@ -62,7 +60,6 @@ export function PrintableReport({ exportFilters }: { exportFilters: any }) {
         [],
         ['Total Entradas', totalEntradas.toFixed(2).replace('.', ',')],
         ['Total Despesas Operacionais', totalSaidas.toFixed(2).replace('.', ',')],
-        ['Retirada de Sócios', totalRetiradas.toFixed(2).replace('.', ',')],
         ['Investimentos', totalInvestimentos.toFixed(2).replace('.', ',')],
         ['Saldo Final (Caixa)', lucro.toFixed(2).replace('.', ',')],
         [],
@@ -74,13 +71,7 @@ export function PrintableReport({ exportFilters }: { exportFilters: any }) {
         new Date(t.date).toLocaleDateString('pt-BR'),
         `"${(t.description || '').replace(/"/g, '""')}"`,
         `"${((t.category as any) || (t as any).categoryId || '').replace(/"/g, '""')}"`,
-        t.type === 'INCOME'
-          ? 'ENTRADA'
-          : t.type === 'PARTNER_WITHDRAWAL'
-            ? 'RETIRADA'
-            : t.type === 'INVESTIMENTO'
-              ? 'INVESTIMENTO'
-              : 'SAIDA',
+        t.type === 'INCOME' ? 'ENTRADA' : t.type === 'INVESTIMENTO' ? 'INVESTIMENTO' : 'SAIDA',
         Number(t.amount).toFixed(2).replace('.', ','),
       ])
 
@@ -119,15 +110,11 @@ export function PrintableReport({ exportFilters }: { exportFilters: any }) {
     .filter((t) => t.type === 'EXPENSE' && t.status === 'REALIZADO')
     .reduce((acc, t) => acc + Number(t.amount), 0)
 
-  const totalRetiradas = exportTransactions
-    .filter((t) => t.type === 'PARTNER_WITHDRAWAL' && t.status === 'REALIZADO')
-    .reduce((acc, t) => acc + Number(t.amount), 0)
-
   const totalInvestimentos = exportTransactions
     .filter((t) => t.type === 'INVESTIMENTO' && t.status === 'REALIZADO')
     .reduce((acc, t) => acc + Number(t.amount), 0)
 
-  const lucro = totalEntradas - totalSaidas - totalRetiradas - totalInvestimentos
+  const lucro = totalEntradas - totalSaidas - totalInvestimentos
 
   const formatCurrency = (val: number) =>
     new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val)
@@ -196,19 +183,19 @@ export function PrintableReport({ exportFilters }: { exportFilters: any }) {
                 {formatCurrency(totalSaidas)}
               </p>
             </div>
-            {totalRetiradas > 0 || totalInvestimentos > 0 ? (
+            {totalInvestimentos > 0 ? (
               <div className="p-4 border rounded-lg bg-gray-50 text-center">
                 <p className="text-xs sm:text-sm text-gray-600 uppercase font-bold mb-1">
-                  Outras Saídas
+                  Investimentos
                 </p>
                 <p className="text-lg sm:text-xl font-bold text-orange-600">
-                  {formatCurrency(totalRetiradas + totalInvestimentos)}
+                  {formatCurrency(totalInvestimentos)}
                 </p>
               </div>
             ) : (
               <div className="p-4 border rounded-lg bg-gray-50 text-center opacity-50">
                 <p className="text-xs sm:text-sm text-gray-600 uppercase font-bold mb-1">
-                  Outras Saídas
+                  Investimentos
                 </p>
                 <p className="text-lg sm:text-xl font-bold text-gray-500">R$ 0,00</p>
               </div>

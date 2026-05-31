@@ -127,13 +127,7 @@ export function ExportReportDialog({ onExport }: { onExport?: (filters: any) => 
         dateObj.toLocaleDateString('pt-BR'),
         `"${tx.description.replace(/"/g, '""')}"`,
         tx.amount.toString().replace('.', ','),
-        tx.type === 'INCOME'
-          ? 'Receita'
-          : tx.type === 'PARTNER_WITHDRAWAL'
-            ? 'Retirada de Sócios'
-            : tx.type === 'INVESTIMENTO'
-              ? 'Investimento'
-              : 'Despesa',
+        tx.type === 'INCOME' ? 'Receita' : tx.type === 'INVESTIMENTO' ? 'Investimento' : 'Despesa',
         tx.categoryId || '',
         tx.status || '',
       ]
@@ -182,7 +176,8 @@ export function ExportReportDialog({ onExport }: { onExport?: (filters: any) => 
       const startStr = format(startDate, 'yyyy-MM-dd')
       const endStr = format(endDate, 'yyyy-MM-dd')
 
-      const data = await fetchTransactionsForExport(startStr, endStr, type)
+      const rawData = await fetchTransactionsForExport(startStr, endStr, type)
+      const data = rawData.filter((tx) => tx.type !== 'PARTNER_WITHDRAWAL')
 
       if (data.length === 0) {
         toast({
@@ -235,16 +230,12 @@ export function ExportReportDialog({ onExport }: { onExport?: (filters: any) => 
     previewData?.data
       .filter((d) => d.type === 'EXPENSE' && d.status === 'REALIZADO')
       .reduce((acc, curr) => acc + curr.amount, 0) || 0
-  const totalRetiradas =
-    previewData?.data
-      .filter((d) => d.type === 'PARTNER_WITHDRAWAL' && d.status === 'REALIZADO')
-      .reduce((acc, curr) => acc + curr.amount, 0) || 0
   const totalInvestimentos =
     previewData?.data
       .filter((d) => d.type === 'INVESTIMENTO' && d.status === 'REALIZADO')
       .reduce((acc, curr) => acc + curr.amount, 0) || 0
 
-  const totalOutrasSaidas = totalRetiradas + totalInvestimentos
+  const totalOutrasSaidas = totalInvestimentos
   const saldo = totalReceitas - totalDespesas - totalOutrasSaidas
 
   return (
@@ -345,14 +336,6 @@ export function ExportReportDialog({ onExport }: { onExport?: (filters: any) => 
                             {formatCurrency(totalDespesas)}
                           </span>
                         </p>
-                        {totalRetiradas > 0 && (
-                          <p className="text-sm text-slate-600 flex justify-between">
-                            <span>Retirada de Sócios:</span>
-                            <span className="text-orange-600 font-medium">
-                              {formatCurrency(totalRetiradas)}
-                            </span>
-                          </p>
-                        )}
                         {totalInvestimentos > 0 && (
                           <p className="text-sm text-slate-600 flex justify-between">
                             <span>Investimentos:</span>
@@ -408,20 +391,16 @@ export function ExportReportDialog({ onExport }: { onExport?: (filters: any) => 
                                   'inline-flex px-2 py-0.5 rounded text-[11px] font-medium',
                                   tx.type === 'INCOME'
                                     ? 'bg-green-100 text-green-700'
-                                    : tx.type === 'PARTNER_WITHDRAWAL'
-                                      ? 'bg-orange-100 text-orange-700'
-                                      : tx.type === 'INVESTIMENTO'
-                                        ? 'bg-indigo-100 text-indigo-700'
-                                        : 'bg-red-100 text-red-700',
+                                    : tx.type === 'INVESTIMENTO'
+                                      ? 'bg-indigo-100 text-indigo-700'
+                                      : 'bg-red-100 text-red-700',
                                 )}
                               >
                                 {tx.type === 'INCOME'
                                   ? 'Receita'
-                                  : tx.type === 'PARTNER_WITHDRAWAL'
-                                    ? 'Retirada'
-                                    : tx.type === 'INVESTIMENTO'
-                                      ? 'Investimento'
-                                      : 'Despesa'}
+                                  : tx.type === 'INVESTIMENTO'
+                                    ? 'Investimento'
+                                    : 'Despesa'}
                               </span>
                             </td>
                             <td className="py-2 px-3 text-slate-600 text-[12px]">{tx.status}</td>
