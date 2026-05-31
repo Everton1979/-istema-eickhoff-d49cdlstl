@@ -27,12 +27,17 @@ export function DREDialog() {
 
   // Sync DRE date range with global filters
   useEffect(() => {
-    if (filters.years.length === 1 && filters.months.length === 1) {
-      const year = parseInt(filters.years[0])
-      const month = parseInt(filters.months[0])
-      // Handle local timezone offset to avoid timezone shift issues
-      const firstDayDate = new Date(year, month - 1, 1)
-      const lastDayDate = new Date(year, month, 0)
+    if (filters.years.length > 0 && filters.months.length > 0) {
+      const years = filters.years.map((y) => parseInt(y, 10)).sort((a, b) => a - b)
+      const months = filters.months.map((m) => parseInt(m, 10)).sort((a, b) => a - b)
+
+      const startYear = years[0]
+      const startMonth = months[0]
+      const endYear = years[years.length - 1]
+      const endMonth = months[months.length - 1]
+
+      const firstDayDate = new Date(startYear, startMonth - 1, 1)
+      const lastDayDate = new Date(endYear, endMonth, 0)
 
       const formatLocal = (d: Date) => {
         return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`

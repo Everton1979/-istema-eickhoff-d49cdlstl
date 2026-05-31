@@ -80,6 +80,7 @@ const mapTypeFromDB = (type: string | null, category?: string | null) => {
   if (cat === 'cortesia') return 'CORTESIA'
   if (cat === 'retirada_socios' || cat === 'retirada de sócios' || cat === 'retirada')
     return 'PARTNER_WITHDRAWAL'
+  if (cat === 'investimento') return 'INVESTIMENTO'
 
   if (!type) return 'EXPENSE'
   const t = type.toLowerCase().trim()
@@ -193,7 +194,6 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
       .eq('user_id', user.id)
       .eq('project_id', PROJECT_ID)
       .order('date', { ascending: false })
-      .limit(10000)
 
     if (activeYear && activeMonth) {
       const yearNum = parseInt(activeYear)
@@ -214,6 +214,24 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
       txQuery = txQuery
         .gte('date', `${parseInt(activeYear) - 1}-01-01T00:00:00.000Z`)
         .lte('date', `${activeYear}-12-31T23:59:59.999Z`)
+    }
+
+    const fetchAllTransactions = async (query: any) => {
+      let allData: any[] = []
+      let page = 0
+      const pageSize = 1000
+      while (true) {
+        const { data, error } = await query.range(page * pageSize, (page + 1) * pageSize - 1)
+        if (error) break
+        if (data && data.length > 0) {
+          allData = [...allData, ...data]
+          if (data.length < pageSize) break
+          page++
+        } else {
+          break
+        }
+      }
+      return allData
     }
 
     let metricQuery = supabase
@@ -255,8 +273,8 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
       metricQuery = metricQuery.or(orConditions.join(','))
     }
 
-    const [txRes, settingsRes, metricsRes] = await Promise.all([
-      txQuery,
+    const [txData, settingsRes, metricsRes] = await Promise.all([
+      fetchAllTransactions(txQuery),
       supabase
         .from('user_settings')
         .select('*')
@@ -267,8 +285,8 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
       metricQuery,
     ])
 
-    if (txRes.data) {
-      const parsedTx = txRes.data.map((d: any) => ({
+    if (txData) {
+      const parsedTx = txData.map((d: any) => ({
         id: d.id,
         date: d.date || '',
         description: d.description || '',
@@ -604,48 +622,68 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
   ): Promise<Transaction[]> => {
     if (!user) return []
 
-    let query = supabase
-      .from('transactions')
-      .select('*')
-      .eq('user_id', user.id)
-      .eq('project_id', PROJECT_ID)
-      .gte('date', startDate)
-      .lte('date', `${endDate}T23:59:59.999Z`)
-      .order('date', { ascending: true })
-      .limit(100000)
+    let allData: any[] = []
+    let page = 0
+    const pageSize = 1000
+    let hasMore = true
 
-    if (type === 'INCOME') {
-      query = query.eq('type', 'receita')
-    } else if (type === 'EXPENSE') {
-      query = query.eq('type', 'despesa')
-    } else if (type === 'CORTESIA') {
-      query = query.eq('type', 'cortesia')
-    } else if (type === 'PARTNER_WITHDRAWAL') {
-      query = query.eq('type', 'retirada_socios')
-    } else if (type === 'INVESTIMENTO') {
-      query = query.eq('type', 'investimento')
+    while (hasMore) {
+      let query = supabase
+        .from('transactions')
+        .select('*')
+        .eq('user_id', user.id)
+        .eq('project_id', PROJECT_ID)
+        .gte('date', `${startDate}T00:00:00.000Z`)
+        .lte('date', `${endDate}T23:59:59.999Z`)
+        .order('date', { ascending: true })
+        .range(page * pageSize, (page + 1) * pageSize - 1)
+
+      if (type === 'INCOME') {
+        query = query.eq('type', 'receita')
+      } else if (type === 'EXPENSE') {
+        query = query.eq('type', 'despesa')
+      } else if (type === 'CORTESIA') {
+        query = query.eq('type', 'cortesia')
+      } else if (type === 'PARTNER_WITHDRAWAL') {
+        query = query.eq('type', 'retirada_socios')
+      } else if (type === 'INVESTIMENTO') {
+        query = query.eq('type', 'investimento')
+      }
+
+      const { data, error } = await query
+
+      if (error) {
+        console.error('Error fetching transactions for export:', error)
+        break
+      }
+
+      if (data && data.length > 0) {
+        allData = [...allData, ...data]
+        if (data.length < pageSize) {
+          hasMore = false
+        } else {
+          page++
+        }
+      } else {
+        hasMore = false
+      }
     }
 
-    const { data, error } = await query
-
-    if (error) {
-      console.error('Error fetching transactions for export:', error)
-      return []
-    }
-
-    return (data || []).map((d: any) => ({
-      id: d.id,
-      date: d.date || '',
-      description: d.description || '',
-      amount: Number(d.amount) || 0,
-      type: mapTypeFromDB(d.type, d.category) as any,
-      categoryId: mapCategoryFromDB(d.category),
-      subcategoryId: d.subcategory || '',
-      accountId: mapAccountFromDB(d.account),
-      paymentMethodId: mapPaymentMethodFromDB(d.payment_method),
-      status: (d.status || 'REALIZADO').toUpperCase() as any,
-      tags: d.tags || '',
-    }))
+    return allData
+      .filter((d: any) => (d.status || 'REALIZADO').toUpperCase() === 'REALIZADO')
+      .map((d: any) => ({
+        id: d.id,
+        date: d.date || '',
+        description: d.description || '',
+        amount: Number(d.amount) || 0,
+        type: mapTypeFromDB(d.type, d.category) as any,
+        categoryId: mapCategoryFromDB(d.category),
+        subcategoryId: d.subcategory || '',
+        accountId: mapAccountFromDB(d.account),
+        paymentMethodId: mapPaymentMethodFromDB(d.payment_method),
+        status: (d.status || 'REALIZADO').toUpperCase() as any,
+        tags: d.tags || '',
+      }))
   }
 
   const updateAccountInitialBalances = async (balances: Record<string, number>) => {
