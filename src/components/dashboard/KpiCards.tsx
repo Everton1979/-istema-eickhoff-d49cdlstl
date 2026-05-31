@@ -10,10 +10,11 @@ export function useKpiMetrics() {
   const { transactions, filteredMonthlyMetrics, categories, filters } = useFinanceStore()
 
   return useMemo(() => {
-    const totalRawMaterial = filteredMonthlyMetrics.reduce(
-      (sum, m) => sum + m.raw_material_costs,
-      0,
-    )
+    let totalOrders = 0
+    const totalRawMaterial = filteredMonthlyMetrics.reduce((sum, m) => {
+      totalOrders += m.orders_count || 0
+      return sum + m.raw_material_costs
+    }, 0)
 
     let receitas = 0
     let despesasFluxo = 0
@@ -59,6 +60,7 @@ export function useKpiMetrics() {
     const ebitda = margem - custosFixos
     const indiceMargem = receitas > 0 ? margem / receitas : 0
     const pontoEquilibrio = indiceMargem > 0 ? custosFixos / indiceMargem : 0
+    const cma = totalOrders > 0 ? margem / totalOrders : 0
 
     return {
       receitas,
@@ -69,7 +71,7 @@ export function useKpiMetrics() {
       ebitda,
       pontoEquilibrio,
       cmv: totalRawMaterial,
-      cma: totalRawMaterial,
+      cma,
     }
   }, [transactions, filteredMonthlyMetrics, categories, filters])
 }
@@ -179,7 +181,7 @@ export function StrategicKpis() {
     {
       id: 'cma',
       title: 'CMA',
-      tooltip: 'Custo da Mercadoria Aplicada na produção.',
+      tooltip: 'Contribuição média por fórmula/pedido (Margem / Qtde Pedidos).',
       value: formatCurrency(metrics.cma),
       color: 'text-orange-600',
       border: 'border-t-orange-500',

@@ -223,11 +223,11 @@ export function ExportReportDialog({ onExport }: { onExport?: (filters: any) => 
 
   const totalReceitas =
     previewData?.data
-      .filter((d) => d.type === 'INCOME')
+      .filter((d) => d.type === 'INCOME' && d.status === 'REALIZADO')
       .reduce((acc, curr) => acc + curr.amount, 0) || 0
   const totalDespesas =
     previewData?.data
-      .filter((d) => d.type === 'EXPENSE')
+      .filter((d) => d.type === 'EXPENSE' && d.status === 'REALIZADO')
       .reduce((acc, curr) => acc + curr.amount, 0) || 0
   const saldo = totalReceitas - totalDespesas
 
@@ -260,10 +260,10 @@ export function ExportReportDialog({ onExport }: { onExport?: (filters: any) => 
           <Button
             variant="outline"
             size="sm"
-            className="h-11 px-4 text-sm bg-sky-50 dark:bg-sky-950 hover:bg-sky-100 dark:hover:bg-sky-900 text-sky-700 dark:text-sky-300 border-sky-200 dark:border-sky-800 flex gap-2 shadow-sm font-bold"
+            className="h-11 px-4 text-sm bg-sky-50 dark:bg-sky-950 hover:bg-sky-100 dark:hover:bg-sky-900 text-sky-700 dark:text-sky-300 border-sky-200 dark:border-sky-800 flex gap-2 shadow-sm font-bold w-full"
           >
             <Download className="w-4 h-4 text-sky-600 dark:text-sky-400" />
-            Exportar Relatório
+            Relatório Entradas/Saídas
           </Button>
         </DialogTrigger>
         <DialogContent
@@ -402,7 +402,7 @@ export function ExportReportDialog({ onExport }: { onExport?: (filters: any) => 
           ) : (
             <>
               <DialogHeader>
-                <DialogTitle>Exportar Relatório Financeiro</DialogTitle>
+                <DialogTitle>Relatório Entradas/Saídas</DialogTitle>
               </DialogHeader>
               <div className="grid gap-4 py-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

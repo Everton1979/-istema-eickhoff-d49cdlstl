@@ -106,6 +106,17 @@ export function DREDialog() {
     let totalInvestimentos = 0
 
     data.forEach((tx) => {
+      if (tx.status !== 'REALIZADO') return
+
+      if (tx.type !== 'INCOME' && tx.type !== 'EXPENSE') {
+        if (tx.type === 'INVESTIMENTO') {
+          const invName = tx.description || 'Equipamentos e Investimentos'
+          investimentos[invName] = (investimentos[invName] || 0) + tx.amount
+          totalInvestimentos += tx.amount
+        }
+        return // Exclude from operational calculations
+      }
+
       const rawSub = tx.subcategoryId || 'outros'
       const sub = SUBCATEGORY_LABELS[rawSub] || rawSub
 
@@ -137,17 +148,13 @@ export function DREDialog() {
             totalFixas += tx.amount
           }
         }
-      } else if (tx.type === 'INVESTIMENTO') {
-        const invName = tx.description || 'Equipamentos e Investimentos'
-        investimentos[invName] = (investimentos[invName] || 0) + tx.amount
-        totalInvestimentos += tx.amount
       }
     })
 
     const margemContribuicao = totalReceitasOperacionais - totalVariaveis
     const resultadoOperacional = margemContribuicao - totalFixas
-    const resultadoLiquido =
-      resultadoOperacional - totalInvestimentos + totalReceitasNaoOperacionais - totalFinanceiras
+    // Ensure Lucro Líquido matches exactly (Total Receitas - Total Despesas)
+    const resultadoLiquido = resultadoOperacional + totalReceitasNaoOperacionais - totalFinanceiras
 
     return {
       receitasOperacionais,
@@ -303,7 +310,7 @@ export function DREDialog() {
         <Button
           variant="outline"
           size="sm"
-          className="h-11 px-4 text-sm bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border-emerald-200 flex gap-2 shadow-sm font-bold"
+          className="h-11 px-4 text-sm bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border-emerald-200 flex gap-2 shadow-sm font-bold w-full"
         >
           <PieChartIcon className="w-4 h-4 text-emerald-600" />
           DRE

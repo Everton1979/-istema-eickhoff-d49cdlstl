@@ -29,11 +29,11 @@ export function PrintableReport({ exportFilters }: { exportFilters: any }) {
 
     if (exportFilters.format === 'excel') {
       const totalEntradas = filtered
-        .filter((t) => t.type === 'INCOME')
+        .filter((t) => t.type === 'INCOME' && t.status === 'REALIZADO')
         .reduce((acc, t) => acc + Number(t.amount), 0)
 
       const totalSaidas = filtered
-        .filter((t) => t.type === 'EXPENSE')
+        .filter((t) => t.type === 'EXPENSE' && t.status === 'REALIZADO')
         .reduce((acc, t) => acc + Number(t.amount), 0)
 
       const lucro = totalEntradas - totalSaidas
@@ -95,11 +95,11 @@ export function PrintableReport({ exportFilters }: { exportFilters: any }) {
   if (!shouldPrint || !exportFilters || exportFilters.format !== 'pdf') return null
 
   const totalEntradas = exportTransactions
-    .filter((t) => t.type === 'INCOME')
+    .filter((t) => t.type === 'INCOME' && t.status === 'REALIZADO')
     .reduce((acc, t) => acc + Number(t.amount), 0)
 
   const totalSaidas = exportTransactions
-    .filter((t) => t.type === 'EXPENSE')
+    .filter((t) => t.type === 'EXPENSE' && t.status === 'REALIZADO')
     .reduce((acc, t) => acc + Number(t.amount), 0)
 
   const lucro = totalEntradas - totalSaidas
