@@ -152,14 +152,17 @@ function HighlightedMetricCard({
   value,
   type,
   indicatorType,
+  customDisplay,
 }: {
   title: string
   value: number
   type: 'currency' | 'percent' | 'number'
   indicatorType: 'valuation' | 'entradas' | 'despesas' | 'lucro' | 'markup' | 'ticket'
+  customDisplay?: string
 }) {
-  const formattedValue =
-    type === 'currency'
+  const formattedValue = customDisplay
+    ? customDisplay
+    : type === 'currency'
       ? new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value)
       : type === 'percent'
         ? `${(value * 100).toFixed(2)}%`
@@ -269,61 +272,79 @@ export function StrategicPerformanceReportDialog() {
     return formatted.charAt(0).toUpperCase() + formatted.slice(1).replace(' de ', '/')
   }
 
-  const { totalRevenue, totalExpenses, netProfitRatio, markup, avgTicket, valuation } =
-    useMemo(() => {
-      const selectedTx = transactions.filter((t) => {
-        const p = getPeriodStr(t.date)
-        return selectedPeriods.includes(p) && t.status === 'REALIZADO'
-      })
+  const {
+    totalRevenue,
+    totalExpenses,
+    netProfitRatio,
+    netProfitDisplay,
+    markup,
+    avgTicket,
+    valuation,
+  } = useMemo(() => {
+    const selectedTx = transactions.filter((t) => {
+      const p = getPeriodStr(t.date)
+      return selectedPeriods.includes(p) && t.status === 'REALIZADO'
+    })
 
-      const selectedMetrics = monthlyMetrics.filter((m) => {
-        const p = `${m.year}-${String(m.month).padStart(2, '0')}`
-        return selectedPeriods.includes(p)
-      })
+    const selectedMetrics = monthlyMetrics.filter((m) => {
+      const p = `${m.year}-${String(m.month).padStart(2, '0')}`
+      return selectedPeriods.includes(p)
+    })
 
-      const totalRevenue = selectedTx
-        .filter((t) => t.type === 'INCOME')
-        .reduce((acc, t) => acc + Number(t.amount), 0)
+    const totalRevenue = selectedTx
+      .filter((t) => t.type === 'INCOME')
+      .reduce((acc, t) => acc + Number(t.amount), 0)
 
-      const totalExpenses = selectedTx
-        .filter((t) => t.type === 'EXPENSE')
-        .reduce((acc, t) => acc + Number(t.amount), 0)
+    const totalExpenses = selectedTx
+      .filter((t) => t.type === 'EXPENSE')
+      .reduce((acc, t) => acc + Number(t.amount), 0)
 
-      const totalVarCosts = selectedTx
-        .filter((t) => t.type === 'EXPENSE' && t.categoryId === 'VARIAVEL')
-        .reduce((acc, t) => acc + Number(t.amount), 0)
+    const totalVarCosts = selectedTx
+      .filter((t) => t.type === 'EXPENSE' && t.categoryId === 'VARIAVEL')
+      .reduce((acc, t) => acc + Number(t.amount), 0)
 
-      const fixedExpenses = selectedTx
-        .filter((t) => t.type === 'EXPENSE' && t.categoryId === 'FIXA')
-        .reduce((acc, t) => acc + Number(t.amount), 0)
+    const fixedExpenses = selectedTx
+      .filter((t) => t.type === 'EXPENSE' && t.categoryId === 'FIXA')
+      .reduce((acc, t) => acc + Number(t.amount), 0)
 
-      const ebitda = totalRevenue - totalVarCosts - fixedExpenses
-      const netProfitRatio = totalRevenue > 0 ? ebitda / totalRevenue : 0
+    const ebitda = totalRevenue - totalVarCosts - fixedExpenses
+    const netProfitValue = totalRevenue - totalExpenses
+    const netProfitRatio = totalRevenue > 0 ? netProfitValue / totalRevenue : 0
 
-      const sumVendasCapsulasDermato = selectedMetrics.reduce(
-        (acc, m) => acc + (Number(m.vendas_capsulas) || 0) + (Number(m.vendas_dermato) || 0),
-        0,
-      )
-      const sumCustoMpCapsulasDermato = selectedMetrics.reduce(
-        (acc, m) =>
-          acc + (Number(m.custo_mp_emb_capsulas) || 0) + (Number(m.custo_mp_emb_dermato) || 0),
-        0,
-      )
-      const markup =
-        sumCustoMpCapsulasDermato > 0 ? sumVendasCapsulasDermato / sumCustoMpCapsulasDermato : 0
+    const sumVendasCapsulasDermato = selectedMetrics.reduce(
+      (acc, m) => acc + (Number(m.vendas_capsulas) || 0) + (Number(m.vendas_dermato) || 0),
+      0,
+    )
+    const sumCustoMpCapsulasDermato = selectedMetrics.reduce(
+      (acc, m) =>
+        acc + (Number(m.custo_mp_emb_capsulas) || 0) + (Number(m.custo_mp_emb_dermato) || 0),
+      0,
+    )
+    const markup =
+      sumCustoMpCapsulasDermato > 0 ? sumVendasCapsulasDermato / sumCustoMpCapsulasDermato : 0
 
-      const formulasCount = selectedMetrics.reduce(
-        (acc, m) =>
-          acc + (Number(m.num_formulas_capsulas) || 0) + (Number(m.num_formulas_dermato) || 0),
-        0,
-      )
-      const avgTicket = formulasCount > 0 ? sumVendasCapsulasDermato / formulasCount : 0
+    const formulasCount = selectedMetrics.reduce(
+      (acc, m) =>
+        acc + (Number(m.num_formulas_capsulas) || 0) + (Number(m.num_formulas_dermato) || 0),
+      0,
+    )
+    const avgTicket = formulasCount > 0 ? sumVendasCapsulasDermato / formulasCount : 0
 
-      const avgMonthlyEbitda = selectedPeriods.length > 0 ? ebitda / selectedPeriods.length : 0
-      const valuation = avgMonthlyEbitda * 12 * 4
+    const avgMonthlyEbitda = selectedPeriods.length > 0 ? ebitda / selectedPeriods.length : 0
+    const valuation = avgMonthlyEbitda * 12 * 4
 
-      return { totalRevenue, totalExpenses, netProfitRatio, markup, avgTicket, valuation }
-    }, [selectedPeriods, transactions, monthlyMetrics])
+    const netProfitDisplay = `${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(netProfitValue)} (${(netProfitRatio * 100).toFixed(2)}%)`
+
+    return {
+      totalRevenue,
+      totalExpenses,
+      netProfitRatio,
+      netProfitDisplay,
+      markup,
+      avgTicket,
+      valuation,
+    }
+  }, [selectedPeriods, transactions, monthlyMetrics])
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -447,6 +468,7 @@ export function StrategicPerformanceReportDialog() {
                     value={netProfitRatio}
                     type="percent"
                     indicatorType="lucro"
+                    customDisplay={netProfitDisplay}
                   />
                   <HighlightedMetricCard
                     title="Mark-up Praticado"

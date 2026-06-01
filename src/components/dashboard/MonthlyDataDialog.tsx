@@ -7,6 +7,7 @@ import {
   DialogTitle,
   DialogTrigger,
   DialogFooter,
+  DialogDescription,
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -134,6 +135,7 @@ export function MonthlyDataDialog() {
       num_formulas_dermato: '',
       vendas_dermato: '',
       custo_mp_emb_dermato: '',
+      vendas_revenda: '',
       colaboradores_capsulas: '',
       colaboradores_dermato: '',
       colaboradores_vendas: '',
@@ -249,6 +251,7 @@ export function MonthlyDataDialog() {
               : '',
           vendas_dermato: currentExisting.vendas_dermato ?? '',
           custo_mp_emb_dermato: currentExisting.custo_mp_emb_dermato ?? '',
+          vendas_revenda: currentExisting.vendas_revenda ?? '',
           colaboradores_capsulas:
             currentExisting.colaboradores_capsulas != null
               ? String(currentExisting.colaboradores_capsulas)
@@ -269,6 +272,7 @@ export function MonthlyDataDialog() {
           num_formulas_dermato: '',
           vendas_dermato: '',
           custo_mp_emb_dermato: '',
+          vendas_revenda: '',
           colaboradores_capsulas: '',
           colaboradores_dermato: '',
           colaboradores_vendas: '',
@@ -285,11 +289,16 @@ export function MonthlyDataDialog() {
     }
   }, [open, currentExisting, isDirty, formData, saveDraft])
 
+  const vendas_capsulas_num = parseCurrency(formData.vendas_capsulas as string | number)
+  const vendas_dermato_num = parseCurrency(formData.vendas_dermato as string | number)
+  const vendas_revenda_num = parseCurrency(formData.vendas_revenda as string | number)
+
   const orders_count =
     (Number(formData.num_formulas_capsulas) || 0) + (Number(formData.num_formulas_dermato) || 0)
-  const total_system_sales =
-    parseCurrency(formData.vendas_capsulas as string | number) +
-    parseCurrency(formData.vendas_dermato as string | number)
+
+  const vendas_total_manipulacao = vendas_capsulas_num + vendas_dermato_num
+  const total_system_sales = vendas_total_manipulacao + vendas_revenda_num
+
   const raw_material_costs =
     parseCurrency(formData.custo_mp_emb_capsulas as string | number) +
     parseCurrency(formData.custo_mp_emb_dermato as string | number)
@@ -326,8 +335,9 @@ export function MonthlyDataDialog() {
         vendas_capsulas: parseCurrency(formData.vendas_capsulas as string | number),
         custo_mp_emb_capsulas: parseCurrency(formData.custo_mp_emb_capsulas as string | number),
         num_formulas_dermato: Number(formData.num_formulas_dermato) || 0,
-        vendas_dermato: parseCurrency(formData.vendas_dermato as string | number),
+        vendas_dermato: vendas_dermato_num,
         custo_mp_emb_dermato: parseCurrency(formData.custo_mp_emb_dermato as string | number),
+        vendas_revenda: vendas_revenda_num,
         colaboradores_capsulas: Number(formData.colaboradores_capsulas) || 0,
         colaboradores_dermato: Number(formData.colaboradores_dermato) || 0,
         colaboradores_vendas: Number(formData.colaboradores_vendas) || 0,
@@ -364,7 +374,7 @@ export function MonthlyDataDialog() {
         >
           <span className="flex items-center gap-1.5 font-bold text-sm leading-none">
             <Database className="w-4 h-4 text-indigo-600 dark:text-indigo-400 shrink-0" />
-            Dados Manipulação
+            Dados do Sistema
           </span>
           <span className="text-[10px] font-medium opacity-80 leading-none">
             Preencher no fechamento do mês
@@ -382,8 +392,11 @@ export function MonthlyDataDialog() {
       >
         <DialogHeader>
           <DialogTitle className="text-xl font-bold flex items-center gap-2">
-            Entrada de Dados Mensais (Manipulação)
+            Dados do Sistema
           </DialogTitle>
+          <DialogDescription className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+            Insira os dados do seu sistema (ex: Fórmula Certa, etc.) para análise de performance.
+          </DialogDescription>
         </DialogHeader>
 
         <div className="bg-indigo-50/50 dark:bg-indigo-950/30 border border-indigo-100 dark:border-indigo-900 rounded-md p-4 mt-4 text-sm text-indigo-800 dark:text-indigo-300">
@@ -600,9 +613,32 @@ export function MonthlyDataDialog() {
           </div>
 
           <div className="space-y-4">
-            <h3 className="font-bold text-slate-800 dark:text-slate-100 border-b border-slate-200 dark:border-slate-800 pb-2 flex items-center gap-2">
+            <h3 className="font-bold text-slate-800 dark:text-slate-100 border-b border-slate-200 dark:border-slate-800 pb-2 flex items-center gap-2 flex-wrap">
+              <div className="w-1.5 h-4 bg-amber-500 rounded-sm shrink-0" />
+              Setor Revenda
+              <span className="text-sm font-normal text-slate-500 dark:text-slate-400 ml-1">
+                (Dados extraídos do seu sistema classificados como revenda)
+              </span>
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="space-y-2">
+                <Label>Vendas (R$)</Label>
+                <CurrencyInput
+                  value={formData.vendas_revenda}
+                  onChange={(val: any) => handleChange('vendas_revenda', val)}
+                  placeholder="0,00"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            <h3 className="font-bold text-slate-800 dark:text-slate-100 border-b border-slate-200 dark:border-slate-800 pb-2 flex items-center gap-2 flex-wrap">
               <div className="w-1.5 h-4 bg-blue-500 rounded-sm shrink-0" />
               Dados Gerais do Sistema
+              <span className="text-sm font-normal text-slate-500 dark:text-slate-400 ml-1">
+                (Dados extraídos do seu sistema que não foram manipulados.)
+              </span>
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               <div className="space-y-2">
@@ -613,6 +649,23 @@ export function MonthlyDataDialog() {
                   disabled
                   className="bg-slate-50 dark:bg-slate-900 text-slate-500 dark:text-slate-400 font-medium h-12 sm:h-10 text-base sm:text-sm"
                   placeholder="0"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Vendas Total Manipulação (R$)</Label>
+                <Input
+                  type="text"
+                  value={
+                    vendas_total_manipulacao !== undefined
+                      ? vendas_total_manipulacao.toLocaleString('pt-BR', {
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2,
+                        })
+                      : ''
+                  }
+                  disabled
+                  className="bg-slate-50 dark:bg-slate-900 text-slate-500 dark:text-slate-400 font-medium h-12 sm:h-10 text-base sm:text-sm"
+                  placeholder="0,00"
                 />
               </div>
               <div className="space-y-2">
