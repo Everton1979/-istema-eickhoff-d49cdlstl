@@ -255,7 +255,7 @@ export default function Index() {
                 </div>
                 <div>
                   <h3 className="text-xl lg:text-2xl font-bold text-slate-800">
-                    Relatório Estratégico
+                    Relatório Estratégico Consolidado
                   </h3>
                   <p className="text-slate-500 mb-6 mt-2 max-w-sm mx-auto text-sm">
                     Analise a performance consolidada em múltiplos meses fechados.
