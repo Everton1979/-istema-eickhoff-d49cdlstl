@@ -121,7 +121,7 @@ export function MonthlyDataDialog() {
   const { user } = useAuth()
   const { monthlyMetrics, saveMonthlyMetric, filters } = useFinanceStore()
   const [searchParams, setSearchParams] = useSearchParams()
-  const [open, setOpen] = useState(() => searchParams.get('view') === 'dados-manipulacao')
+  const [open, setOpen] = useState(() => searchParams.get('view') === 'dados-sistema')
   const [loading, setLoading] = useState(false)
 
   const { draft, saveDraft, clearDraft } = useDraft('monthly-data-draft', {
@@ -145,7 +145,7 @@ export function MonthlyDataDialog() {
   const { month, year, formData, isDirty } = draft
 
   useEffect(() => {
-    if (searchParams.get('view') === 'dados-manipulacao') {
+    if (searchParams.get('view') === 'dados-sistema') {
       setOpen(true)
     } else {
       setOpen(false)
@@ -154,10 +154,13 @@ export function MonthlyDataDialog() {
 
   useEffect(() => {
     const checkHash = () => {
-      if (window.location.hash === '#dados-manipulacao') {
+      if (
+        window.location.hash === '#dados-sistema' ||
+        window.location.hash === '#dados-manipulacao'
+      ) {
         setSearchParams(
           (prev) => {
-            prev.set('view', 'dados-manipulacao')
+            prev.set('view', 'dados-sistema')
             return prev
           },
           { replace: true },
@@ -171,16 +174,18 @@ export function MonthlyDataDialog() {
     const handleEvent = () => {
       setSearchParams(
         (prev) => {
-          prev.set('view', 'dados-manipulacao')
+          prev.set('view', 'dados-sistema')
           return prev
         },
         { replace: true },
       )
     }
+    window.addEventListener('open-dados-sistema', handleEvent)
     window.addEventListener('open-dados-manipulacao', handleEvent)
 
     return () => {
       window.removeEventListener('hashchange', checkHash)
+      window.removeEventListener('open-dados-sistema', handleEvent)
       window.removeEventListener('open-dados-manipulacao', handleEvent)
     }
   }, [setSearchParams])
@@ -198,7 +203,7 @@ export function MonthlyDataDialog() {
     if (newOpen) {
       setSearchParams(
         (prev) => {
-          prev.set('view', 'dados-manipulacao')
+          prev.set('view', 'dados-sistema')
           return prev
         },
         { replace: true },
@@ -369,7 +374,7 @@ export function MonthlyDataDialog() {
       <DialogTrigger asChild>
         <Button
           variant="outline"
-          id="btn-dados-manipulacao"
+          id="btn-dados-sistema"
           className="h-11 py-1 px-3 gap-1 bg-indigo-50 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-indigo-900 border-indigo-200 dark:border-indigo-800 shadow-sm flex flex-col items-center justify-center"
         >
           <span className="flex items-center gap-1.5 font-bold text-sm leading-none">
@@ -395,7 +400,7 @@ export function MonthlyDataDialog() {
             Dados do Sistema
           </DialogTitle>
           <DialogDescription className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-            Insira os dados do seu sistema (ex: Fórmula Certa, etc.) para análise de performance.
+            Insira os dados mensais do sistema (ex: Fórmula Certa) para análise de performance.
           </DialogDescription>
         </DialogHeader>
 

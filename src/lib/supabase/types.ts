@@ -96,6 +96,7 @@ export type Database = {
           user_id: string
           vendas_capsulas: number
           vendas_dermato: number
+          vendas_revenda: number
           year: number
         }
         Insert: {
@@ -121,6 +122,7 @@ export type Database = {
           user_id: string
           vendas_capsulas?: number
           vendas_dermato?: number
+          vendas_revenda?: number
           year: number
         }
         Update: {
@@ -146,6 +148,7 @@ export type Database = {
           user_id?: string
           vendas_capsulas?: number
           vendas_dermato?: number
+          vendas_revenda?: number
           year?: number
         }
         Relationships: []
@@ -513,6 +516,7 @@ export const Constants = {
 //   colaboradores_vendas: integer (not null, default: 0)
 //   meta_vendas_manipulacao: numeric (not null, default: 0)
 //   meta_vendas_extra: numeric (not null, default: 0)
+//   vendas_revenda: numeric (not null, default: 0)
 // Table: profiles
 //   id: uuid (not null)
 //   email: text (not null)

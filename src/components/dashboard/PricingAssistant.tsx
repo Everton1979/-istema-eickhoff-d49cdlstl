@@ -166,7 +166,6 @@ export function PricingAssistant() {
   const stats = useMemo(() => {
     let cfaTotal = 0
     let varExpOperacional = 0
-    let receitaTotalFarmacia = 0
 
     historyTx.forEach((t) => {
       const status = (t.status || 'REALIZADO').toUpperCase()
@@ -180,9 +179,7 @@ export function PricingAssistant() {
       if (catStr === 'variável' || catStr === 'variavel') categoryId = 'VARIAVEL'
 
       if (status === 'REALIZADO') {
-        if (type === 'INCOME') {
-          receitaTotalFarmacia += Number(t.amount) || 0
-        } else if (type === 'EXPENSE') {
+        if (type === 'EXPENSE') {
           if (categoryId === 'FIXA') cfaTotal += Number(t.amount) || 0
           if (categoryId === 'VARIAVEL') {
             if (
@@ -203,15 +200,17 @@ export function PricingAssistant() {
     const n_derm = historyMetrics.reduce((sum, m) => sum + (m.num_formulas_dermato || 0), 0)
     const mpemb_caps = historyMetrics.reduce((sum, m) => sum + (m.custo_mp_emb_capsulas || 0), 0)
     const mpemb_derm = historyMetrics.reduce((sum, m) => sum + (m.custo_mp_emb_dermato || 0), 0)
+    const vendas_revenda = historyMetrics.reduce((sum, m) => sum + (m.vendas_revenda || 0), 0)
 
     const vendas_manipulacao = vendas_caps + vendas_derm
+    const vendas_totais_sistema = vendas_manipulacao + vendas_revenda
     const formulasTotais = n_caps + n_derm
     const custoOperacionalTotal = cfaTotal + varExpOperacional
 
     let participacaoManipulacao = 1
-    if (receitaTotalFarmacia > 0 && vendas_manipulacao > 0) {
-      participacaoManipulacao = Math.min(1, vendas_manipulacao / receitaTotalFarmacia)
-    } else if (receitaTotalFarmacia === 0 && vendas_manipulacao > 0) {
+    if (vendas_totais_sistema > 0) {
+      participacaoManipulacao = Math.min(1, vendas_manipulacao / vendas_totais_sistema)
+    } else if (vendas_manipulacao > 0) {
       participacaoManipulacao = 1
     }
 
