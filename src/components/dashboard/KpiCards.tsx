@@ -11,10 +11,8 @@ export function useKpiMetrics() {
 
   return useMemo(() => {
     let totalOrders = 0
-    let totalSystemSales = 0
     const totalRawMaterial = filteredMonthlyMetrics.reduce((sum, m) => {
       totalOrders += m.orders_count || 0
-      totalSystemSales += m.total_system_sales || 0
       return sum + m.raw_material_costs
     }, 0)
 
@@ -22,6 +20,7 @@ export function useKpiMetrics() {
     let despesasPrevistas = 0
     let custoVariavelTotal = 0
     let custosFixos = 0
+    let receitasRealizadas = 0
 
     transactions.forEach((tx) => {
       let txDateStr = ''
@@ -46,6 +45,8 @@ export function useKpiMetrics() {
           } else {
             custosFixos += tx.amount
           }
+        } else if (tx.type === 'INCOME') {
+          receitasRealizadas += tx.amount
         }
       } else if (tx.status === 'PREVISTO' || tx.status === 'VENCIDO') {
         if (tx.type === 'EXPENSE') {
@@ -54,7 +55,7 @@ export function useKpiMetrics() {
       }
     })
 
-    const receitas = totalSystemSales > 0 ? totalSystemSales : 0
+    const receitas = receitasRealizadas
     const margem = receitas - custoVariavelTotal
     const lucro = receitas - despesasFluxo
     const ebitda = margem - custosFixos
