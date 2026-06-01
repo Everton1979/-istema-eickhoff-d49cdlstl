@@ -198,34 +198,40 @@ export function StrategicPerformanceReportDialog() {
           </ResponsiveContainer>
         </ChartContainer>
       </div>
-      <div className="overflow-x-auto">
-        <Table>
-          <TableHeader className="bg-slate-50/50">
-            <TableRow>
-              <TableHead className="w-[150px] font-semibold text-slate-600 bg-slate-50 sticky left-0 z-20 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]">
+      <div className="overflow-x-auto relative">
+        <Table className="border-separate border-spacing-0 w-full">
+          <TableHeader>
+            <TableRow className="border-none hover:bg-transparent">
+              <TableHead className="w-[150px] font-semibold text-slate-600 bg-slate-50 sticky left-0 z-20 border-b border-slate-200 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]">
                 Período
               </TableHead>
               {periodsData.map((p) => (
-                <TableHead key={p.rawPeriod} className="text-right whitespace-nowrap min-w-[100px]">
+                <TableHead
+                  key={p.rawPeriod}
+                  className="text-right whitespace-nowrap min-w-[100px] border-b border-slate-200 bg-slate-50/50"
+                >
                   {p.period}
                 </TableHead>
               ))}
-              <TableHead className="text-right font-bold text-slate-800 bg-slate-100 whitespace-nowrap sticky right-0 z-20 shadow-[-2px_0_5px_-2px_rgba(0,0,0,0.1)]">
+              <TableHead className="text-right font-bold text-slate-800 bg-slate-100 whitespace-nowrap sticky right-0 z-20 border-b border-slate-200 shadow-[-2px_0_5px_-2px_rgba(0,0,0,0.1)]">
                 Média
               </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            <TableRow>
-              <TableCell className="font-medium text-slate-700 bg-white sticky left-0 z-20 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]">
+            <TableRow className="border-none hover:bg-transparent">
+              <TableCell className="font-medium text-slate-700 bg-white sticky left-0 z-20 border-b border-slate-100 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]">
                 {title}
               </TableCell>
               {periodsData.map((p) => (
-                <TableCell key={p.rawPeriod} className="text-right whitespace-nowrap min-w-[100px]">
+                <TableCell
+                  key={p.rawPeriod}
+                  className="text-right whitespace-nowrap min-w-[100px] border-b border-slate-100 bg-white"
+                >
                   {fmt(p[key] as number)}
                 </TableCell>
               ))}
-              <TableCell className="text-right font-bold bg-slate-50 whitespace-nowrap text-slate-800 sticky right-0 z-20 shadow-[-2px_0_5px_-2px_rgba(0,0,0,0.1)]">
+              <TableCell className="text-right font-bold bg-slate-50 whitespace-nowrap text-slate-800 sticky right-0 z-20 border-b border-slate-100 shadow-[-2px_0_5px_-2px_rgba(0,0,0,0.1)]">
                 {averages ? fmt(averages[key]) : fmt(0)}
               </TableCell>
             </TableRow>
