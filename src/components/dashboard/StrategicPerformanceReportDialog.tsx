@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useState, useEffect } from 'react'
 import {
   Dialog,
   DialogContent,
@@ -10,7 +10,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { useFinanceStore } from '@/stores/financeStore'
-import { Presentation, Table as TableIcon } from 'lucide-react'
+import { Presentation, Filter, BarChart3 } from 'lucide-react'
 import {
   Table,
   TableBody,
@@ -19,207 +19,319 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  ResponsiveContainer,
+  Tooltip as RechartsTooltip,
+} from 'recharts'
+import { ChartContainer, ChartTooltipContent } from '@/components/ui/chart'
+import { ScrollArea } from '@/components/ui/scroll-area'
 
 export function StrategicPerformanceReportDialog() {
   const { transactions, monthlyMetrics, filters } = useFinanceStore()
+  const [open, setOpen] = useState(false)
+  const [localYears, setLocalYears] = useState<string[]>([])
+  const [localMonths, setLocalMonths] = useState<string[]>([])
 
-  const sortedSelectedPeriods = useMemo(() => {
-    const periods: string[] = []
-    if (filters.years.length > 0 && filters.months.length > 0) {
-      filters.years.forEach((y) => {
-        filters.months.forEach((m) => {
-          periods.push(`${y}-${String(m).padStart(2, '0')}`)
-        })
-      })
+  useEffect(() => {
+    if (open) {
+      setLocalYears(
+        filters.years.length > 0 ? filters.years : [new Date().getFullYear().toString()],
+      )
+      setLocalMonths(
+        filters.months.length > 0
+          ? filters.months
+          : [(new Date().getMonth() + 1).toString().padStart(2, '0')],
+      )
     }
-    return periods.sort()
-  }, [filters.years, filters.months])
+  }, [open, filters.years, filters.months])
 
-  const formatPeriod = (p: string) => {
-    const [year, month] = p.split('-')
-    const date = new Date(parseInt(year), parseInt(month) - 1, 1)
-    const formatted = new Intl.DateTimeFormat('pt-BR', { month: 'short', year: 'numeric' }).format(
-      date,
-    )
-    return formatted.charAt(0).toUpperCase() + formatted.slice(1).replace('. de ', '/')
-  }
+  const availableYears = useMemo(() => {
+    const years = new Set<string>([new Date().getFullYear().toString()])
+    monthlyMetrics.forEach((m) => years.add(m.year.toString()))
+    transactions.forEach((t) => {
+      const y = t.date.split('-')[0]
+      if (y) years.add(y)
+    })
+    return Array.from(years).sort()
+  }, [monthlyMetrics, transactions])
 
+  const monthNames = [
+    'Jan',
+    'Fev',
+    'Mar',
+    'Abr',
+    'Mai',
+    'Jun',
+    'Jul',
+    'Ago',
+    'Set',
+    'Out',
+    'Nov',
+    'Dez',
+  ]
   const formatCurrency = (val: number) =>
     new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val || 0)
 
-  const getPeriodStr = (dateStr: string) => {
-    if (!dateStr) return ''
-    const parts = dateStr.split('T')[0].split('-')
-    if (parts.length >= 2) return `${parts[0]}-${parts[1]}`
-    return ''
-  }
-
   const periodsData = useMemo(() => {
-    return sortedSelectedPeriods.map((p) => {
-      let totalRevenue = 0,
-        totalExpenses = 0,
-        fixedExpenses = 0,
-        totalVarCosts = 0
+    const periods = localYears
+      .flatMap((y) => localMonths.map((m) => `${y}-${String(m).padStart(2, '0')}`))
+      .sort()
+
+    return periods.map((p) => {
+      let totalRev = 0,
+        totalExp = 0
       transactions.forEach((t) => {
-        if (getPeriodStr(t.date) === p && t.status === 'REALIZADO') {
-          if (t.type === 'INCOME') totalRevenue += Number(t.amount)
-          if (t.type === 'EXPENSE') {
-            totalExpenses += Number(t.amount)
-            if (t.categoryId === 'VARIAVEL') totalVarCosts += Number(t.amount)
-            if (t.categoryId === 'FIXA') fixedExpenses += Number(t.amount)
-          }
+        if (t.date.startsWith(p) && t.status === 'REALIZADO') {
+          if (t.type === 'INCOME') totalRev += Number(t.amount)
+          if (t.type === 'EXPENSE') totalExp += Number(t.amount)
         }
       })
-      const metrics = monthlyMetrics.find(
-        (m) => `${m.year}-${String(m.month).padStart(2, '0')}` === p,
+      const m = monthlyMetrics.find(
+        (metric) => `${metric.year}-${String(metric.month).padStart(2, '0')}` === p,
       )
-      const vendasManipulacao = metrics
-        ? (Number(metrics.vendas_capsulas) || 0) + (Number(metrics.vendas_dermato) || 0)
-        : 0
-      const formulasCount = metrics
-        ? (Number(metrics.num_formulas_capsulas) || 0) + (Number(metrics.num_formulas_dermato) || 0)
-        : 0
-      const custoMpEmb = metrics
-        ? (Number(metrics.custo_mp_emb_capsulas) || 0) + (Number(metrics.custo_mp_emb_dermato) || 0)
-        : 0
 
-      const netProfit = totalRevenue - totalExpenses
-      const markup = custoMpEmb > 0 ? vendasManipulacao / custoMpEmb : 0
-      const ticket = formulasCount > 0 ? vendasManipulacao / formulasCount : 0
-      const valuation = netProfit * 12 * 4
+      const mEntradas = m
+        ? m.total_system_sales > 0
+          ? m.total_system_sales
+          : m.vendas_capsulas + m.vendas_dermato + (m.vendas_revenda || 0)
+        : 0
+      const entradas = mEntradas > 0 ? mEntradas : totalRev
+
+      const mDespesas = m
+        ? m.raw_material_costs > 0
+          ? m.raw_material_costs
+          : m.custo_mp_emb_capsulas + m.custo_mp_emb_dermato
+        : 0
+      const despesas = totalExp > 0 ? totalExp : mDespesas
+      const lucroLiquido = entradas - despesas
+
+      const vManip = m ? m.vendas_capsulas + m.vendas_dermato : 0
+      const cMpEmb = m ? m.custo_mp_emb_capsulas + m.custo_mp_emb_dermato : 0
+      const markup = cMpEmb > 0 ? vManip / cMpEmb : 0
+
+      const ordCnt = m
+        ? m.orders_count > 0
+          ? m.orders_count
+          : m.num_formulas_capsulas + m.num_formulas_dermato
+        : 0
+      const ticket = ordCnt > 0 ? entradas / ordCnt : 0
 
       return {
-        period: formatPeriod(p),
+        period: `${monthNames[parseInt(p.split('-')[1]) - 1]}/${p.split('-')[0].slice(2)}`,
         rawPeriod: p,
-        entradas: totalRevenue,
-        despesas: totalExpenses,
-        lucroLiquido: netProfit,
+        entradas,
+        despesas,
+        lucroLiquido,
         markup,
         ticket,
-        valuation,
+        valuation: lucroLiquido * 12 * 4,
       }
     })
-  }, [sortedSelectedPeriods, transactions, monthlyMetrics])
+  }, [localYears, localMonths, transactions, monthlyMetrics])
 
   const averages = useMemo(() => {
     if (!periodsData.length) return null
-    const c = periodsData.length
     const sum = periodsData.reduce(
-      (acc, p) => ({
-        entradas: acc.entradas + p.entradas,
-        despesas: acc.despesas + p.despesas,
-        lucroLiquido: acc.lucroLiquido + p.lucroLiquido,
-        markup: acc.markup + p.markup,
-        ticket: acc.ticket + p.ticket,
-        valuation: acc.valuation + p.valuation,
-      }),
-      {
-        entradas: 0,
-        despesas: 0,
-        lucroLiquido: 0,
-        markup: 0,
-        ticket: 0,
-        valuation: 0,
+      (acc, p) => {
+        Object.keys(acc).forEach(
+          (k) => (acc[k as keyof typeof acc] += p[k as keyof typeof p] as number),
+        )
+        return acc
       },
+      { entradas: 0, despesas: 0, lucroLiquido: 0, markup: 0, ticket: 0, valuation: 0 },
     )
-
-    return {
-      entradas: sum.entradas / c,
-      despesas: sum.despesas / c,
-      lucroLiquido: sum.lucroLiquido / c,
-      markup: sum.markup / c,
-      ticket: sum.ticket / c,
-      valuation: sum.valuation / c,
-    }
+    Object.keys(sum).forEach((k) => (sum[k as keyof typeof sum] /= periodsData.length))
+    return sum
   }, [periodsData])
 
-  const renderTable = (
+  const renderSection = (
     title: string,
-    dataKey: keyof typeof averages,
-    formatFn: (val: number) => string,
-  ) => {
-    return (
-      <Card className="shadow-sm border-slate-200 overflow-hidden">
-        <div className="bg-slate-50 border-b border-slate-200 px-4 py-3 flex items-center gap-2">
-          <TableIcon className="w-4 h-4 text-slate-500" />
+    key: keyof typeof averages,
+    fmt: (v: number) => string,
+    color: string,
+  ) => (
+    <Card className="shadow-sm border-slate-200 overflow-hidden mb-8" key={title}>
+      <div className="bg-slate-50 border-b border-slate-200 px-4 py-3 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <BarChart3 className="w-4 h-4 text-slate-500" />
           <h3 className="font-bold text-slate-800 uppercase tracking-wide text-sm">{title}</h3>
         </div>
-        <div className="overflow-x-auto">
-          <Table>
-            <TableHeader className="bg-slate-50/50">
-              <TableRow>
-                <TableHead className="w-[200px] font-semibold text-slate-600">Métrica</TableHead>
-                {periodsData.map((p) => (
-                  <TableHead
-                    key={p.rawPeriod}
-                    className="text-right font-semibold text-slate-600 whitespace-nowrap"
-                  >
-                    {p.period}
-                  </TableHead>
-                ))}
-                <TableHead className="text-right font-bold text-slate-800 bg-slate-100/50 whitespace-nowrap">
-                  Média
-                </TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              <TableRow>
-                <TableCell className="font-medium text-slate-700">{title}</TableCell>
-                {periodsData.map((p) => (
-                  <TableCell key={p.rawPeriod} className="text-right whitespace-nowrap">
-                    {formatFn(p[dataKey as keyof typeof p] as number)}
-                  </TableCell>
-                ))}
-                <TableCell className="text-right font-bold bg-slate-50/50 whitespace-nowrap text-slate-800">
-                  {averages ? formatFn(averages[dataKey]) : formatFn(0)}
-                </TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
+        <div className="text-sm font-semibold text-slate-500">
+          Média: <span className="text-slate-800">{averages ? fmt(averages[key]) : fmt(0)}</span>
         </div>
-      </Card>
-    )
-  }
+      </div>
+      <div className="p-4 bg-white border-b border-slate-100">
+        <ChartContainer config={{ [key]: { label: title, color } }} className="h-[250px] w-full">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={periodsData} margin={{ top: 10, right: 10, left: 10, bottom: 0 }}>
+              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+              <XAxis
+                dataKey="period"
+                stroke="#94a3b8"
+                fontSize={12}
+                tickLine={false}
+                axisLine={false}
+                dy={10}
+              />
+              <YAxis
+                stroke="#94a3b8"
+                fontSize={12}
+                tickLine={false}
+                axisLine={false}
+                tickFormatter={(v) =>
+                  key === 'markup'
+                    ? `${v}x`
+                    : new Intl.NumberFormat('pt-BR', { notation: 'compact' }).format(v)
+                }
+              />
+              <RechartsTooltip
+                content={<ChartTooltipContent formatter={(v) => fmt(v as number)} />}
+                cursor={{ fill: '#f8fafc' }}
+              />
+              <Bar
+                dataKey={key}
+                fill={`var(--color-${key})`}
+                radius={[4, 4, 0, 0]}
+                maxBarSize={60}
+              />
+            </BarChart>
+          </ResponsiveContainer>
+        </ChartContainer>
+      </div>
+      <div className="overflow-x-auto">
+        <Table>
+          <TableHeader className="bg-slate-50/50">
+            <TableRow>
+              <TableHead className="w-[150px] font-semibold text-slate-600">Período</TableHead>
+              {periodsData.map((p) => (
+                <TableHead key={p.rawPeriod} className="text-right whitespace-nowrap">
+                  {p.period}
+                </TableHead>
+              ))}
+              <TableHead className="text-right font-bold text-slate-800 bg-slate-100/50 whitespace-nowrap">
+                Média
+              </TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            <TableRow>
+              <TableCell className="font-medium text-slate-700">{title}</TableCell>
+              {periodsData.map((p) => (
+                <TableCell key={p.rawPeriod} className="text-right whitespace-nowrap">
+                  {fmt(p[key] as number)}
+                </TableCell>
+              ))}
+              <TableCell className="text-right font-bold bg-slate-50/50 whitespace-nowrap text-slate-800">
+                {averages ? fmt(averages[key]) : fmt(0)}
+              </TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
+      </div>
+    </Card>
+  )
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button className="bg-slate-800 hover:bg-slate-700 text-white shadow-md gap-2 w-full">
-          <Presentation className="w-4 h-4" />
-          Relatório Estratégico Consolidado
+          <Presentation className="w-4 h-4" /> Relatório Estratégico Consolidado
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-[95vw] md:max-w-[95vw] w-full h-[90vh] md:h-[85vh] flex flex-col p-0 overflow-hidden bg-slate-50/50">
-        <DialogHeader className="px-6 py-4 border-b bg-white shrink-0">
+      <DialogContent className="max-w-[95vw] w-full h-[90vh] flex flex-col p-0 overflow-hidden bg-slate-50">
+        <DialogHeader className="px-6 py-4 border-b bg-white shrink-0 shadow-sm z-10">
           <DialogTitle className="text-xl md:text-2xl font-black text-slate-800 flex items-center gap-2">
-            <Presentation className="w-6 h-6 text-blue-600" />
-            Relatório Estratégico Consolidado
+            <Presentation className="w-6 h-6 text-blue-600" /> Relatório Estratégico Consolidado
           </DialogTitle>
           <DialogDescription>
-            Análise refinada baseada no período selecionado no filtro global do dashboard.
+            Visualize tendências e tabelas comparativas. Selecione os períodos no filtro local
+            abaixo.
           </DialogDescription>
         </DialogHeader>
+        <ScrollArea className="flex-1 w-full p-4 md:p-6">
+          <div className="max-w-7xl mx-auto pb-8">
+            <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-5 mb-8">
+              <div className="flex items-center gap-2 mb-4 text-slate-800">
+                <Filter className="w-4 h-4" />
+                <h3 className="font-semibold text-sm uppercase tracking-wide">
+                  Filtro de Período Local
+                </h3>
+              </div>
+              <div className="flex flex-col md:flex-row gap-6">
+                <div className="flex-1">
+                  <span className="text-xs font-semibold text-slate-500 mb-2 block uppercase tracking-wider">
+                    Anos
+                  </span>
+                  <ToggleGroup
+                    type="multiple"
+                    value={localYears}
+                    onValueChange={(v) => v.length && setLocalYears(v)}
+                    className="justify-start flex-wrap"
+                  >
+                    {availableYears.map((y) => (
+                      <ToggleGroupItem
+                        key={y}
+                        value={y}
+                        className="data-[state=on]:bg-slate-800 data-[state=on]:text-white border border-slate-200"
+                      >
+                        {y}
+                      </ToggleGroupItem>
+                    ))}
+                  </ToggleGroup>
+                </div>
+                <div className="flex-[3]">
+                  <span className="text-xs font-semibold text-slate-500 mb-2 block uppercase tracking-wider">
+                    Meses
+                  </span>
+                  <ToggleGroup
+                    type="multiple"
+                    value={localMonths}
+                    onValueChange={(v) => v.length && setLocalMonths(v)}
+                    className="justify-start flex-wrap"
+                  >
+                    {monthNames.map((m, i) => (
+                      <ToggleGroupItem
+                        key={m}
+                        value={String(i + 1).padStart(2, '0')}
+                        className="data-[state=on]:bg-blue-600 data-[state=on]:text-white border border-slate-200"
+                      >
+                        {m}
+                      </ToggleGroupItem>
+                    ))}
+                  </ToggleGroup>
+                </div>
+              </div>
+            </div>
 
-        <div className="flex-1 overflow-auto p-4 md:p-6 w-full">
-          {periodsData.length === 0 ? (
-            <div className="flex flex-col items-center justify-center h-full text-slate-400 animate-fade-in duration-300">
-              <TableIcon className="w-16 h-16 mb-4 opacity-20" />
-              <p className="text-lg font-medium text-slate-500">Nenhum período selecionado</p>
-              <p className="text-sm mt-1 max-w-sm text-center">
-                Selecione um ou mais meses no filtro do dashboard para visualizar as tabelas.
-              </p>
-            </div>
-          ) : (
-            <div className="space-y-6 animate-fade-in duration-500 w-full mx-auto pb-8">
-              {renderTable('Entradas', 'entradas', formatCurrency)}
-              {renderTable('Despesas', 'despesas', formatCurrency)}
-              {renderTable('Lucro Líquido Real', 'lucroLiquido', formatCurrency)}
-              {renderTable('Mark-up Manip.', 'markup', (val) => `${val.toFixed(2)}x`)}
-              {renderTable('Ticket Médio', 'ticket', formatCurrency)}
-              {renderTable('Valuation', 'valuation', formatCurrency)}
-            </div>
-          )}
-        </div>
+            {periodsData.length === 0 ? (
+              <div className="flex flex-col items-center justify-center h-64 text-slate-400">
+                <BarChart3 className="w-16 h-16 mb-4 opacity-20" />
+                <p className="font-medium">Nenhum período selecionado</p>
+                <p className="text-sm mt-1">Selecione pelo menos um ano e mês no filtro acima.</p>
+              </div>
+            ) : (
+              <div className="space-y-6 animate-fade-in">
+                {renderSection('Entradas', 'entradas', formatCurrency, '#10b981')}
+                {renderSection('Despesas', 'despesas', formatCurrency, '#ef4444')}
+                {renderSection('Lucro Líquido Real', 'lucroLiquido', formatCurrency, '#3b82f6')}
+                {renderSection(
+                  'Mark-up Manip.',
+                  'markup',
+                  (val) => `${val.toFixed(2)}x`,
+                  '#8b5cf6',
+                )}
+                {renderSection('Ticket Médio', 'ticket', formatCurrency, '#f59e0b')}
+                {renderSection('Valuation', 'valuation', formatCurrency, '#0f172a')}
+              </div>
+            )}
+          </div>
+        </ScrollArea>
       </DialogContent>
     </Dialog>
   )
