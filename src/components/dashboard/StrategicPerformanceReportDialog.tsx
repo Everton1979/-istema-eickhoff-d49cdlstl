@@ -42,8 +42,7 @@ export function StrategicPerformanceReportDialog() {
   useEffect(() => {
     if (open) {
       const currentYear = new Date().getFullYear().toString()
-      const defaultYear = currentYear === '2024' ? '2025' : currentYear
-      setLocalYears([defaultYear])
+      setLocalYears([currentYear])
       setLocalMonths(
         filters.months.length > 0
           ? filters.months
@@ -57,7 +56,7 @@ export function StrategicPerformanceReportDialog() {
   const availableYears = useMemo(() => {
     const currentYear = new Date().getFullYear()
     const prevYear = currentYear - 1
-    return [currentYear.toString(), prevYear.toString()].filter((y) => y !== '2024').sort()
+    return [currentYear.toString(), prevYear.toString()].sort()
   }, [])
 
   const monthNames = [
@@ -83,9 +82,11 @@ export function StrategicPerformanceReportDialog() {
       .sort()
 
     return periods.map((p) => {
+      let totalInc = 0
       let totalExp = 0
       transactions.forEach((t) => {
         if (t.date.startsWith(p) && t.status === 'REALIZADO') {
+          if (t.type === 'INCOME') totalInc += Number(t.amount)
           if (t.type === 'EXPENSE') totalExp += Number(t.amount)
         }
       })
@@ -94,7 +95,7 @@ export function StrategicPerformanceReportDialog() {
         (metric) => `${metric.year}-${String(metric.month).padStart(2, '0')}` === p,
       )
 
-      const entradas = m?.total_system_sales || 0
+      const entradas = totalInc
       const despesas = totalExp
       const lucroLiquido = entradas - despesas
 
@@ -148,6 +149,7 @@ export function StrategicPerformanceReportDialog() {
       return { entradas: 0, despesas: 0, lucroLiquido: 0, markup: 0, ticket: 0, valuation: 0 }
 
     Object.keys(sum).forEach((k) => (sum[k as keyof typeof sum] /= dataMonthsCount))
+    sum.valuation = sum.lucroLiquido * 12 * 4
     return sum
   }, [periodsData])
 
@@ -217,7 +219,7 @@ export function StrategicPerformanceReportDialog() {
                   {p.period}
                 </TableHead>
               ))}
-              <TableHead className="text-right font-bold text-slate-800 bg-slate-100 sticky right-0 z-20 shadow-[-2px_0_5px_-2px_rgba(0,0,0,0.1)] whitespace-nowrap">
+              <TableHead className="text-right font-bold text-slate-800 bg-slate-100 whitespace-nowrap">
                 Média
               </TableHead>
             </TableRow>
@@ -232,7 +234,7 @@ export function StrategicPerformanceReportDialog() {
                   {fmt(p[key] as number)}
                 </TableCell>
               ))}
-              <TableCell className="text-right font-bold bg-slate-50 whitespace-nowrap text-slate-800 sticky right-0 z-20 shadow-[-2px_0_5px_-2px_rgba(0,0,0,0.1)]">
+              <TableCell className="text-right font-bold bg-slate-50 whitespace-nowrap text-slate-800">
                 {averages ? fmt(averages[key]) : fmt(0)}
               </TableCell>
             </TableRow>
