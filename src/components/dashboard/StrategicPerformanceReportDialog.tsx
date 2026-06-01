@@ -110,7 +110,6 @@ export function StrategicPerformanceReportDialog() {
   const {
     totalRevenue,
     totalExpenses,
-    cma,
     contributionMargin,
     contributionMarginRatio,
     ebitda,
@@ -137,20 +136,13 @@ export function StrategicPerformanceReportDialog() {
       return selectedPeriods.includes(p)
     })
 
-    const totalSystemSales = selectedMetrics.reduce(
-      (acc, m) => acc + (Number(m.total_system_sales) || 0),
-      0,
-    )
-    const txIncome = selectedTx
+    const totalRevenue = selectedTx
       .filter((t) => t.type === 'INCOME')
       .reduce((acc, t) => acc + Number(t.amount), 0)
-    const totalRevenue = totalSystemSales + txIncome
 
-    const cma = selectedMetrics.reduce((acc, m) => acc + (Number(m.raw_material_costs) || 0), 0)
-    const varExpenses = selectedTx
+    const totalVarCosts = selectedTx
       .filter((t) => t.type === 'EXPENSE' && t.categoryId === 'VARIAVEL')
       .reduce((acc, t) => acc + Number(t.amount), 0)
-    const totalVarCosts = cma + varExpenses
 
     const fixedExpenses = selectedTx
       .filter((t) => t.type === 'EXPENSE' && t.categoryId === 'FIXA')
@@ -180,7 +172,18 @@ export function StrategicPerformanceReportDialog() {
     const fixedRatio = totalRevenue > 0 ? fixedExpenses / totalRevenue : 0
     const varRatio = totalRevenue > 0 ? totalVarCosts / totalRevenue : 0
 
-    const markup = cma > 0 ? totalRevenue / cma : 0
+    const sumVendasCapsulasDermato = selectedMetrics.reduce(
+      (acc, m) => acc + (Number(m.vendas_capsulas) || 0) + (Number(m.vendas_dermato) || 0),
+      0,
+    )
+    const sumCustoMpCapsulasDermato = selectedMetrics.reduce(
+      (acc, m) =>
+        acc + (Number(m.custo_mp_emb_capsulas) || 0) + (Number(m.custo_mp_emb_dermato) || 0),
+      0,
+    )
+
+    const markup =
+      sumCustoMpCapsulasDermato > 0 ? sumVendasCapsulasDermato / sumCustoMpCapsulasDermato : 0
 
     const valuation = avgMonthlyEbitda * 12 * 4
 
@@ -189,16 +192,11 @@ export function StrategicPerformanceReportDialog() {
         acc + (Number(m.num_formulas_capsulas) || 0) + (Number(m.num_formulas_dermato) || 0),
       0,
     )
-    const manipulationSales = selectedMetrics.reduce(
-      (acc, m) => acc + (Number(m.vendas_capsulas) || 0) + (Number(m.vendas_dermato) || 0),
-      0,
-    )
-    const avgTicket = formulasCount > 0 ? manipulationSales / formulasCount : 0
+    const avgTicket = formulasCount > 0 ? sumVendasCapsulasDermato / formulasCount : 0
 
     return {
       totalRevenue,
       totalExpenses,
-      cma,
       contributionMargin,
       contributionMarginRatio,
       ebitda,
@@ -220,9 +218,9 @@ export function StrategicPerformanceReportDialog() {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button className="bg-slate-800 hover:bg-slate-700 text-white shadow-md gap-2 w-full md:w-auto">
+        <Button className="bg-slate-800 hover:bg-slate-700 text-white shadow-md gap-2 w-full">
           <Presentation className="w-4 h-4" />
-          Relatório Estratégico Consolidado
+          Relatório Estratégico
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-6xl w-[95vw] h-[90vh] md:h-[85vh] flex flex-col p-0 overflow-hidden bg-slate-50/50">
@@ -233,7 +231,7 @@ export function StrategicPerformanceReportDialog() {
           </DialogTitle>
           <DialogDescription>
             Selecione múltiplos meses (excluindo o mês atual) para visualizar as métricas
-            consolidadas.
+            consolidadas do período.
           </DialogDescription>
         </DialogHeader>
 
@@ -349,7 +347,6 @@ export function StrategicPerformanceReportDialog() {
                   <MetricCard title="Mark-up Praticado" value={markup} type="number" />
                   <MetricCard title="Ticket Méd. Manipulação" value={avgTicket} type="currency" />
 
-                  <MetricCard title="CMA (Custo Mat. Prima)" value={cma} type="currency" />
                   <MetricCard
                     title="Despesas Variáveis"
                     value={varRatio}
@@ -362,7 +359,6 @@ export function StrategicPerformanceReportDialog() {
                     type="percent"
                     subValue={fixedExpenses}
                   />
-
                   <MetricCard title="Investimentos" value={investments} type="currency" />
                 </div>
 

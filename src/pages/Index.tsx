@@ -16,7 +16,14 @@ import { PrintableReport } from '@/components/dashboard/PrintableReport'
 import { PendingUsersAlert } from '@/components/dashboard/PendingUsersAlert'
 import { PlanExpirationBanner } from '@/components/dashboard/PlanExpirationBanner'
 import { useState, useEffect } from 'react'
-import { AlertTriangle, ArrowRightLeft, Database, FileText, BarChart3 } from 'lucide-react'
+import {
+  AlertTriangle,
+  ArrowRightLeft,
+  Database,
+  FileText,
+  BarChart3,
+  Presentation,
+} from 'lucide-react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '@/hooks/use-auth'
 
@@ -188,9 +195,6 @@ export default function Index() {
                   (transações e dados manipulação) forem lançados.
                 </p>
               </div>
-              <div className="ml-9 md:ml-0 shrink-0">
-                <StrategicPerformanceReportDialog />
-              </div>
             </div>
 
             <StrategicKpis />
@@ -210,7 +214,7 @@ export default function Index() {
               <div className="w-3 h-8 bg-slate-700 rounded-sm" />
               Relatórios
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="bg-slate-50 p-8 rounded-xl border-2 border-dashed border-slate-200 flex flex-col items-center justify-center gap-4 text-center hover:bg-slate-100 transition-colors">
                 <div className="p-4 bg-emerald-100 text-emerald-600 rounded-full shadow-inner">
                   <FileText className="w-10 h-10" />
@@ -241,6 +245,23 @@ export default function Index() {
                   </p>
                   <div className="flex justify-center [&>button]:h-12 [&>button]:px-8 [&>button]:text-base w-full">
                     <DREDialog />
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-slate-50 p-8 rounded-xl border-2 border-dashed border-slate-200 flex flex-col items-center justify-center gap-4 text-center hover:bg-slate-100 transition-colors">
+                <div className="p-4 bg-blue-100 text-blue-600 rounded-full shadow-inner">
+                  <Presentation className="w-10 h-10" />
+                </div>
+                <div>
+                  <h3 className="text-xl lg:text-2xl font-bold text-slate-800">
+                    Relatório Estratégico
+                  </h3>
+                  <p className="text-slate-500 mb-6 mt-2 max-w-sm mx-auto text-sm">
+                    Analise a performance consolidada em múltiplos meses fechados.
+                  </p>
+                  <div className="flex justify-center [&>button]:h-12 [&>button]:px-8 [&>button]:text-base w-full">
+                    <StrategicPerformanceReportDialog />
                   </div>
                 </div>
               </div>
