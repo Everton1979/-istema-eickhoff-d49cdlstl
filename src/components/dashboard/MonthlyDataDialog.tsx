@@ -224,21 +224,6 @@ export function MonthlyDataDialog() {
   }, [monthlyMetrics, month, year])
 
   useEffect(() => {
-    if (open && !isDirty) {
-      const targetMonth =
-        filters.months.length > 0
-          ? parseInt(filters.months[filters.months.length - 1], 10)
-          : new Date().getMonth() + 1
-      const targetYear =
-        filters.years.length === 1 ? parseInt(filters.years[0], 10) : new Date().getFullYear()
-
-      if (targetMonth !== month || targetYear !== year) {
-        saveDraft((prev) => ({ ...prev, month: targetMonth, year: targetYear }))
-      }
-    }
-  }, [open, filters.months, filters.years, isDirty, month, year, saveDraft])
-
-  useEffect(() => {
     if (!open) return
     if (isDirty) return
 
@@ -327,6 +312,15 @@ export function MonthlyDataDialog() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!user) return
+
+    if (
+      formData.vendas_revenda === '' ||
+      formData.vendas_revenda === undefined ||
+      formData.vendas_revenda === null
+    ) {
+      toast.error('O campo Vendas (R$) do setor Revenda é obrigatório.')
+      return
+    }
 
     setLoading(true)
     try {
@@ -635,6 +629,13 @@ export function MonthlyDataDialog() {
                   value={formData.vendas_revenda}
                   onChange={(val: any) => handleChange('vendas_revenda', val)}
                   placeholder="0,00"
+                  className={cn(
+                    formData.vendas_revenda === '' ||
+                      formData.vendas_revenda === null ||
+                      formData.vendas_revenda === undefined
+                      ? 'border-red-400 dark:border-red-500/50'
+                      : '',
+                  )}
                 />
               </div>
             </div>
