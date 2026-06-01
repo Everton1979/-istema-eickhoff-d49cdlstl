@@ -119,7 +119,7 @@ const CurrencyInput = forwardRef<HTMLInputElement, any>(
 
 export function MonthlyDataDialog() {
   const { user } = useAuth()
-  const { monthlyMetrics, saveMonthlyMetric, filters } = useFinanceStore()
+  const { monthlyMetrics, saveMonthlyMetric } = useFinanceStore()
   const [searchParams, setSearchParams] = useSearchParams()
   const [open, setOpen] = useState(() => searchParams.get('view') === 'dados-sistema')
   const [loading, setLoading] = useState(false)

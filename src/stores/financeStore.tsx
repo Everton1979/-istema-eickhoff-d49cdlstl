@@ -164,7 +164,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
       setAccounts(ACCOUNTS)
       setLoadingData(false)
     }
-  }, [user, filters.years.join(','), filters.months.join(',')])
+  }, [user])
 
   const fetchData = async () => {
     if (!user) return
@@ -185,36 +185,12 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
 
     setLoadingData(true)
 
-    const activeYear = filters.years.length === 1 ? filters.years[0] : null
-    const activeMonth = filters.months.length === 1 ? filters.months[0] : null
-
-    let txQuery = supabase
+    const txQuery = supabase
       .from('transactions')
       .select('*')
       .eq('user_id', user.id)
       .eq('project_id', PROJECT_ID)
       .order('date', { ascending: false })
-
-    if (activeYear && activeMonth) {
-      const yearNum = parseInt(activeYear)
-      const monthNum = parseInt(activeMonth)
-      const endDay = new Date(yearNum, monthNum, 0).getDate()
-
-      let startYearNum = yearNum
-      let startMonthNum = monthNum - 11
-      if (startMonthNum <= 0) {
-        startMonthNum += 12
-        startYearNum -= 1
-      }
-
-      const start = `${startYearNum}-${startMonthNum.toString().padStart(2, '0')}-01T00:00:00.000-03:00`
-      const end = `${activeYear}-${activeMonth.toString().padStart(2, '0')}-${endDay.toString().padStart(2, '0')}T23:59:59.999-03:00`
-      txQuery = txQuery.gte('date', start).lte('date', end)
-    } else if (activeYear) {
-      txQuery = txQuery
-        .gte('date', `${parseInt(activeYear) - 1}-01-01T00:00:00.000-03:00`)
-        .lte('date', `${activeYear}-12-31T23:59:59.999-03:00`)
-    }
 
     const fetchAllTransactions = async (query: any) => {
       let allData: any[] = []
@@ -234,44 +210,12 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
       return allData
     }
 
-    let metricQuery = supabase
+    const metricQuery = supabase
       .from('monthly_metrics')
       .select('*')
       .eq('user_id', user.id)
       .eq('project_id', PROJECT_ID)
       .limit(5000)
-
-    if (activeYear && activeMonth) {
-      const yearNum = parseInt(activeYear)
-      const monthNum = parseInt(activeMonth)
-
-      const orConditions = []
-      let tempMonth = monthNum
-      let tempYear = yearNum
-      for (let i = 0; i < 12; i++) {
-        orConditions.push(`and(month.eq.${tempMonth},year.eq.${tempYear})`)
-        tempMonth--
-        if (tempMonth <= 0) {
-          tempMonth = 12
-          tempYear--
-        }
-      }
-      metricQuery = metricQuery.or(orConditions.join(','))
-    } else if (activeYear) {
-      const yearNum = parseInt(activeYear)
-      const orConditions = []
-      let tempMonth = 12
-      let tempYear = yearNum
-      for (let i = 0; i < 24; i++) {
-        orConditions.push(`and(month.eq.${tempMonth},year.eq.${tempYear})`)
-        tempMonth--
-        if (tempMonth <= 0) {
-          tempMonth = 12
-          tempYear--
-        }
-      }
-      metricQuery = metricQuery.or(orConditions.join(','))
-    }
 
     const [txData, settingsRes, metricsRes] = await Promise.all([
       fetchAllTransactions(txQuery),

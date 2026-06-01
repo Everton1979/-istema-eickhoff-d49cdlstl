@@ -84,10 +84,9 @@ export function StrategicPerformanceReportDialog() {
         : 0
 
       const netProfit = totalRevenue - totalExpenses
-      const ebitda = totalRevenue - totalVarCosts - fixedExpenses
       const markup = custoMpEmb > 0 ? vendasManipulacao / custoMpEmb : 0
       const ticket = formulasCount > 0 ? vendasManipulacao / formulasCount : 0
-      const valuation = ebitda * 12 * 4
+      const valuation = netProfit * 12 * 4
 
       return {
         period: formatPeriod(p),
