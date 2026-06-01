@@ -61,9 +61,7 @@ export function StrategicPerformanceReportDialog() {
       const y = t.date.split('-')[0]
       if (y) years.add(y)
     })
-    return Array.from(years)
-      .filter((y) => y !== '2024')
-      .sort()
+    return Array.from(years).sort()
   }, [monthlyMetrics, transactions])
 
   const monthNames = [
@@ -102,9 +100,10 @@ export function StrategicPerformanceReportDialog() {
         (metric) => `${metric.year}-${String(metric.month).padStart(2, '0')}` === p,
       )
 
-      let entradas = totalRev
-      let despesas = totalExp
-      let lucroLiquido = entradas - despesas
+      const totalSystemSales = m && m.total_system_sales > 0 ? m.total_system_sales : totalRev
+      const entradas = totalSystemSales
+      const despesas = totalExp
+      const lucroLiquido = entradas - despesas
 
       const rawMaterialCosts = m
         ? m.raw_material_costs > 0
@@ -112,38 +111,16 @@ export function StrategicPerformanceReportDialog() {
           : m.custo_mp_emb_capsulas + m.custo_mp_emb_dermato
         : 0
 
-      let markup = rawMaterialCosts > 0 ? entradas / rawMaterialCosts : 0
+      const markup = rawMaterialCosts > 0 ? entradas / rawMaterialCosts : 0
 
       const ordCnt = m
         ? m.orders_count > 0
           ? m.orders_count
           : m.num_formulas_capsulas + m.num_formulas_dermato
         : 0
-      let ticket = ordCnt > 0 ? entradas / ordCnt : 0
-      let valuation = lucroLiquido * 12 * 4
 
-      if (p === '2024-03') {
-        entradas = 145747
-        lucroLiquido = 48347
-        despesas = entradas - lucroLiquido
-        markup = 6.75
-        valuation = 2320639
-        ticket = ordCnt > 0 ? entradas / ordCnt : 0
-      } else if (p === '2024-04') {
-        entradas = 139991
-        lucroLiquido = 35556
-        despesas = entradas - lucroLiquido
-        markup = 6.62
-        valuation = 1706678
-        ticket = ordCnt > 0 ? entradas / ordCnt : 0
-      } else if (p === '2024-05') {
-        entradas = 135510
-        lucroLiquido = 27164
-        despesas = entradas - lucroLiquido
-        markup = 7.11
-        valuation = 1303850
-        ticket = ordCnt > 0 ? entradas / ordCnt : 0
-      }
+      const ticket = ordCnt > 0 ? entradas / ordCnt : 0
+      const valuation = lucroLiquido * 12 * 4
 
       return {
         period: `${monthNames[parseInt(p.split('-')[1]) - 1]}/${p.split('-')[0].slice(2)}`,
@@ -160,16 +137,25 @@ export function StrategicPerformanceReportDialog() {
 
   const averages = useMemo(() => {
     if (!periodsData.length) return null
-    const sum = periodsData.reduce(
-      (acc, p) => {
-        Object.keys(acc).forEach(
-          (k) => (acc[k as keyof typeof acc] += p[k as keyof typeof p] as number),
-        )
-        return acc
-      },
-      { entradas: 0, despesas: 0, lucroLiquido: 0, markup: 0, ticket: 0, valuation: 0 },
-    )
-    Object.keys(sum).forEach((k) => (sum[k as keyof typeof sum] /= periodsData.length))
+    let dataMonthsCount = 0
+    const sum = { entradas: 0, despesas: 0, lucroLiquido: 0, markup: 0, ticket: 0, valuation: 0 }
+
+    periodsData.forEach((p) => {
+      if (p.entradas > 0 || p.despesas > 0 || p.markup > 0 || p.ticket > 0) {
+        dataMonthsCount++
+        sum.entradas += p.entradas
+        sum.despesas += p.despesas
+        sum.lucroLiquido += p.lucroLiquido
+        sum.markup += p.markup
+        sum.ticket += p.ticket
+        sum.valuation += p.valuation
+      }
+    })
+
+    if (dataMonthsCount === 0)
+      return { entradas: 0, despesas: 0, lucroLiquido: 0, markup: 0, ticket: 0, valuation: 0 }
+
+    Object.keys(sum).forEach((k) => (sum[k as keyof typeof sum] /= dataMonthsCount))
     return sum
   }, [periodsData])
 
