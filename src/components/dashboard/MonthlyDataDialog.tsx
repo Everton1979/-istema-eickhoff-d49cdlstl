@@ -627,8 +627,11 @@ export function MonthlyDataDialog() {
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
               <div className="space-y-2">
-                <Label>Vendas (R$)</Label>
+                <Label>
+                  Vendas (R$) <span className="text-red-500">*</span>
+                </Label>
                 <CurrencyInput
+                  required
                   value={formData.vendas_revenda}
                   onChange={(val: any) => handleChange('vendas_revenda', val)}
                   placeholder="0,00"

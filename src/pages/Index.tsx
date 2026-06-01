@@ -107,9 +107,10 @@ export default function Index() {
                   <Database className="w-10 h-10" />
                 </div>
                 <div>
-                  <h3 className="text-2xl font-bold text-slate-800">Dados Manipulação</h3>
+                  <h3 className="text-2xl font-bold text-slate-800">Dados do Sistema</h3>
                   <p className="text-slate-500 mb-6 mt-2 max-w-sm mx-auto">
-                    Insira os dados mensais da manipulação para análise de performance.
+                    Insira os dados mensais do sistema (ex: Fórmula Certa) para análise de
+                    performance.
                   </p>
                   <div className="flex justify-center [&>button]:h-12 [&>button]:px-8 [&>button]:text-base">
                     <MonthlyDataDialog />
