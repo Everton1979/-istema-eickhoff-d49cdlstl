@@ -144,11 +144,12 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
     const now = new Date()
     const firstDay = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0]
     const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0).toISOString().split('T')[0]
+    const currentYear = now.getFullYear().toString()
     return {
       startDate: firstDay,
       endDate: lastDay,
       type: 'ALL',
-      years: [now.getFullYear().toString()],
+      years: [currentYear === '2024' ? '2025' : currentYear],
       months: [(now.getMonth() + 1).toString().padStart(2, '0')],
       dayFilter: 'ALL',
       statuses: ['REALIZADO'],

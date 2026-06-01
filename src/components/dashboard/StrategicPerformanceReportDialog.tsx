@@ -42,7 +42,9 @@ export function StrategicPerformanceReportDialog() {
   useEffect(() => {
     if (open) {
       setLocalYears(
-        filters.years.length > 0 ? filters.years : [new Date().getFullYear().toString()],
+        filters.years.length > 0
+          ? filters.years.filter((y) => y !== '2024')
+          : [new Date().getFullYear().toString()].filter((y) => y !== '2024'),
       )
       setLocalMonths(
         filters.months.length > 0
@@ -61,7 +63,9 @@ export function StrategicPerformanceReportDialog() {
       const y = t.date.split('-')[0]
       if (y) years.add(y)
     })
-    return Array.from(years).sort()
+    return Array.from(years)
+      .filter((y) => y !== '2024')
+      .sort()
   }, [monthlyMetrics, transactions])
 
   const monthNames = [
@@ -100,8 +104,7 @@ export function StrategicPerformanceReportDialog() {
         (metric) => `${metric.year}-${String(metric.month).padStart(2, '0')}` === p,
       )
 
-      const totalSystemSales = m && m.total_system_sales > 0 ? m.total_system_sales : totalRev
-      const entradas = totalSystemSales
+      const entradas = m?.total_system_sales || 0
       const despesas = totalExp
       const lucroLiquido = entradas - despesas
 
@@ -120,7 +123,9 @@ export function StrategicPerformanceReportDialog() {
         : 0
 
       const ticket = ordCnt > 0 ? entradas / ordCnt : 0
-      const valuation = lucroLiquido * 12 * 4
+
+      const ebitda = lucroLiquido
+      const valuation = ebitda * 12 * 4
 
       return {
         period: `${monthNames[parseInt(p.split('-')[1]) - 1]}/${p.split('-')[0].slice(2)}`,
@@ -137,19 +142,16 @@ export function StrategicPerformanceReportDialog() {
 
   const averages = useMemo(() => {
     if (!periodsData.length) return null
-    let dataMonthsCount = 0
+    const dataMonthsCount = periodsData.length
     const sum = { entradas: 0, despesas: 0, lucroLiquido: 0, markup: 0, ticket: 0, valuation: 0 }
 
     periodsData.forEach((p) => {
-      if (p.entradas > 0 || p.despesas > 0 || p.markup > 0 || p.ticket > 0) {
-        dataMonthsCount++
-        sum.entradas += p.entradas
-        sum.despesas += p.despesas
-        sum.lucroLiquido += p.lucroLiquido
-        sum.markup += p.markup
-        sum.ticket += p.ticket
-        sum.valuation += p.valuation
-      }
+      sum.entradas += p.entradas
+      sum.despesas += p.despesas
+      sum.lucroLiquido += p.lucroLiquido
+      sum.markup += p.markup
+      sum.ticket += p.ticket
+      sum.valuation += p.valuation
     })
 
     if (dataMonthsCount === 0)

@@ -6,7 +6,7 @@ import { ListFilter, Wallet, CalendarDays } from 'lucide-react'
 import { useMemo } from 'react'
 
 export function SidebarFilters() {
-  const { filters, setFilter, filteredTransactions } = useFinanceStore()
+  const { filters, setFilter, filteredTransactions, filteredMonthlyMetrics } = useFinanceStore()
 
   const toggleMonth = (m: string) => {
     setFilter('months', filters.months.includes(m) ? [] : [m])
@@ -21,15 +21,18 @@ export function SidebarFilters() {
     let entradas = 0
     let saidas = 0
 
+    filteredMonthlyMetrics.forEach((m) => {
+      entradas += m.total_system_sales || 0
+    })
+
     filteredTransactions.forEach((tx) => {
       if (tx.status === 'REALIZADO') {
-        if (tx.type === 'INCOME') entradas += tx.amount
-        else if (tx.type === 'EXPENSE') saidas += tx.amount
+        if (tx.type === 'EXPENSE') saidas += tx.amount
       }
     })
 
     return { entradas, saidas, saldo: entradas - saidas }
-  }, [filteredTransactions])
+  }, [filteredTransactions, filteredMonthlyMetrics])
 
   const formatCurrency = (val: number) =>
     new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val)
