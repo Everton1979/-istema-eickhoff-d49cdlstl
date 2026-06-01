@@ -41,32 +41,24 @@ export function StrategicPerformanceReportDialog() {
 
   useEffect(() => {
     if (open) {
-      setLocalYears(
-        filters.years.length > 0
-          ? filters.years.filter((y) => y !== '2024')
-          : [new Date().getFullYear().toString()].filter((y) => y !== '2024'),
-      )
+      const currentYear = new Date().getFullYear().toString()
+      const defaultYear = currentYear === '2024' ? '2025' : currentYear
+      setLocalYears([defaultYear])
       setLocalMonths(
         filters.months.length > 0
           ? filters.months
           : [(new Date().getMonth() + 1).toString().padStart(2, '0')],
       )
     }
-  }, [open, filters.years, filters.months])
+  }, [open, filters.months])
 
   const navigate = useNavigate()
 
   const availableYears = useMemo(() => {
-    const years = new Set<string>([new Date().getFullYear().toString()])
-    monthlyMetrics.forEach((m) => years.add(m.year.toString()))
-    transactions.forEach((t) => {
-      const y = t.date.split('-')[0]
-      if (y) years.add(y)
-    })
-    return Array.from(years)
-      .filter((y) => y !== '2024')
-      .sort()
-  }, [monthlyMetrics, transactions])
+    const currentYear = new Date().getFullYear()
+    const prevYear = currentYear - 1
+    return [currentYear.toString(), prevYear.toString()].filter((y) => y !== '2024').sort()
+  }, [])
 
   const monthNames = [
     'Jan',
@@ -91,11 +83,9 @@ export function StrategicPerformanceReportDialog() {
       .sort()
 
     return periods.map((p) => {
-      let totalRev = 0,
-        totalExp = 0
+      let totalExp = 0
       transactions.forEach((t) => {
         if (t.date.startsWith(p) && t.status === 'REALIZADO') {
-          if (t.type === 'INCOME') totalRev += Number(t.amount)
           if (t.type === 'EXPENSE') totalExp += Number(t.amount)
         }
       })
@@ -219,26 +209,30 @@ export function StrategicPerformanceReportDialog() {
         <Table>
           <TableHeader className="bg-slate-50/50">
             <TableRow>
-              <TableHead className="w-[150px] font-semibold text-slate-600">Período</TableHead>
+              <TableHead className="w-[150px] font-semibold text-slate-600 bg-slate-50 sticky left-0 z-20 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]">
+                Período
+              </TableHead>
               {periodsData.map((p) => (
-                <TableHead key={p.rawPeriod} className="text-right whitespace-nowrap">
+                <TableHead key={p.rawPeriod} className="text-right whitespace-nowrap min-w-[100px]">
                   {p.period}
                 </TableHead>
               ))}
-              <TableHead className="text-right font-bold text-slate-800 bg-slate-100/50 whitespace-nowrap">
+              <TableHead className="text-right font-bold text-slate-800 bg-slate-100 sticky right-0 z-20 shadow-[-2px_0_5px_-2px_rgba(0,0,0,0.1)] whitespace-nowrap">
                 Média
               </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             <TableRow>
-              <TableCell className="font-medium text-slate-700">{title}</TableCell>
+              <TableCell className="font-medium text-slate-700 bg-white sticky left-0 z-20 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]">
+                {title}
+              </TableCell>
               {periodsData.map((p) => (
-                <TableCell key={p.rawPeriod} className="text-right whitespace-nowrap">
+                <TableCell key={p.rawPeriod} className="text-right whitespace-nowrap min-w-[100px]">
                   {fmt(p[key] as number)}
                 </TableCell>
               ))}
-              <TableCell className="text-right font-bold bg-slate-50/50 whitespace-nowrap text-slate-800">
+              <TableCell className="text-right font-bold bg-slate-50 whitespace-nowrap text-slate-800 sticky right-0 z-20 shadow-[-2px_0_5px_-2px_rgba(0,0,0,0.1)]">
                 {averages ? fmt(averages[key]) : fmt(0)}
               </TableCell>
             </TableRow>
