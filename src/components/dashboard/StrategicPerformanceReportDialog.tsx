@@ -118,6 +118,9 @@ export function StrategicPerformanceReportDialog() {
         markup,
         ticket,
         valuation,
+        totalSystemSales,
+        rawMaterialCosts,
+        ordersCount,
       }
     })
   }, [localYears, localMonths, transactions, monthlyMetrics])
@@ -125,22 +128,37 @@ export function StrategicPerformanceReportDialog() {
   const averages = useMemo(() => {
     if (!periodsData.length) return null
     const dataMonthsCount = periodsData.length
-    const sum = { entradas: 0, despesas: 0, lucroLiquido: 0, markup: 0, ticket: 0, valuation: 0 }
+    const sum = {
+      entradas: 0,
+      despesas: 0,
+      lucroLiquido: 0,
+      markup: 0,
+      ticket: 0,
+      valuation: 0,
+      totalSystemSales: 0,
+      rawMaterialCosts: 0,
+      ordersCount: 0,
+    }
 
     periodsData.forEach((p) => {
       sum.entradas += p.entradas
       sum.despesas += p.despesas
       sum.lucroLiquido += p.lucroLiquido
-      sum.markup += p.markup
-      sum.ticket += p.ticket
-      sum.valuation += p.valuation
+      sum.totalSystemSales += p.totalSystemSales
+      sum.rawMaterialCosts += p.rawMaterialCosts
+      sum.ordersCount += p.ordersCount
     })
 
     if (dataMonthsCount === 0)
       return { entradas: 0, despesas: 0, lucroLiquido: 0, markup: 0, ticket: 0, valuation: 0 }
 
-    Object.keys(sum).forEach((k) => (sum[k as keyof typeof sum] /= dataMonthsCount))
+    sum.entradas /= dataMonthsCount
+    sum.despesas /= dataMonthsCount
+    sum.lucroLiquido /= dataMonthsCount
+    sum.markup = sum.rawMaterialCosts > 0 ? sum.totalSystemSales / sum.rawMaterialCosts : 0
+    sum.ticket = sum.ordersCount > 0 ? sum.totalSystemSales / sum.ordersCount : 0
     sum.valuation = sum.lucroLiquido * 12 * 4
+
     return sum
   }, [periodsData])
 
@@ -198,46 +216,44 @@ export function StrategicPerformanceReportDialog() {
           </ResponsiveContainer>
         </ChartContainer>
       </div>
-      <div className="overflow-x-auto relative">
-        <Table className="border-separate border-spacing-0 w-full">
-          <TableHeader>
-            <TableRow className="border-none hover:bg-transparent">
-              <TableHead className="w-[150px] font-semibold text-slate-600 bg-slate-50 sticky left-0 z-20 border-b border-slate-200 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]">
-                Período
+      <Table className="border-separate border-spacing-0 w-full">
+        <TableHeader>
+          <TableRow className="border-none hover:bg-transparent">
+            <TableHead className="w-[150px] font-semibold text-slate-600 bg-slate-50 sticky left-0 z-20 border-b border-slate-200 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]">
+              Período
+            </TableHead>
+            {periodsData.map((p) => (
+              <TableHead
+                key={p.rawPeriod}
+                className="text-right whitespace-nowrap min-w-[100px] border-b border-slate-200 bg-slate-50/50"
+              >
+                {p.period}
               </TableHead>
-              {periodsData.map((p) => (
-                <TableHead
-                  key={p.rawPeriod}
-                  className="text-right whitespace-nowrap min-w-[100px] border-b border-slate-200 bg-slate-50/50"
-                >
-                  {p.period}
-                </TableHead>
-              ))}
-              <TableHead className="text-right font-bold text-slate-800 bg-slate-100 whitespace-nowrap sticky right-0 z-20 border-b border-slate-200 shadow-[-2px_0_5px_-2px_rgba(0,0,0,0.1)]">
-                Média
-              </TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            <TableRow className="border-none hover:bg-transparent">
-              <TableCell className="font-medium text-slate-700 bg-white sticky left-0 z-20 border-b border-slate-100 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]">
-                {title}
+            ))}
+            <TableHead className="text-right font-bold text-slate-800 bg-slate-100 whitespace-nowrap sticky right-0 z-30 border-b border-slate-200 shadow-[-2px_0_5px_-2px_rgba(0,0,0,0.1)]">
+              Média
+            </TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          <TableRow className="border-none hover:bg-transparent">
+            <TableCell className="font-medium text-slate-700 bg-white sticky left-0 z-20 border-b border-slate-100 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]">
+              {title}
+            </TableCell>
+            {periodsData.map((p) => (
+              <TableCell
+                key={p.rawPeriod}
+                className="text-right whitespace-nowrap min-w-[100px] border-b border-slate-100 bg-white"
+              >
+                {fmt(p[key] as number)}
               </TableCell>
-              {periodsData.map((p) => (
-                <TableCell
-                  key={p.rawPeriod}
-                  className="text-right whitespace-nowrap min-w-[100px] border-b border-slate-100 bg-white"
-                >
-                  {fmt(p[key] as number)}
-                </TableCell>
-              ))}
-              <TableCell className="text-right font-bold bg-slate-50 whitespace-nowrap text-slate-800 sticky right-0 z-20 border-b border-slate-100 shadow-[-2px_0_5px_-2px_rgba(0,0,0,0.1)]">
-                {averages ? fmt(averages[key]) : fmt(0)}
-              </TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
-      </div>
+            ))}
+            <TableCell className="text-right font-bold bg-slate-50 whitespace-nowrap text-slate-800 sticky right-0 z-30 border-b border-slate-100 shadow-[-2px_0_5px_-2px_rgba(0,0,0,0.1)]">
+              {averages ? fmt(averages[key]) : fmt(0)}
+            </TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
     </Card>
   )
 
