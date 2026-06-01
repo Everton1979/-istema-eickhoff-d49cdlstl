@@ -1,5 +1,6 @@
 import { DashboardHeader } from '@/components/dashboard/DashboardHeader'
 import { MonthlyDataDialog } from '@/components/dashboard/MonthlyDataDialog'
+import { StrategicPerformanceReportDialog } from '@/components/dashboard/StrategicPerformanceReportDialog'
 import { ExportReportDialog } from '@/components/dashboard/ExportReportDialog'
 import { DREDialog } from '@/components/dashboard/DREDialog'
 import { OperationalKpis, StrategicKpis } from '@/components/dashboard/KpiCards'
@@ -175,16 +176,21 @@ export default function Index() {
 
           {/* Seção Estratégica (Fechamento) */}
           <section className="w-full bg-slate-200/50 p-6 rounded-xl border border-slate-300 shadow-sm mt-4">
-            <div className="mb-6">
-              <h2 className="text-lg font-bold text-slate-800 uppercase tracking-wide flex items-center gap-3">
-                <div className="w-3 h-6 bg-slate-700 rounded-sm" />
-                Análise Estratégica
-              </h2>
-              <p className="text-sm text-slate-600 mt-2 ml-9 border-l-2 border-amber-400 pl-3 bg-amber-50/70 py-1.5 rounded-r-md">
-                <strong className="text-amber-700">Observação:</strong> Esta análise somente terá
-                validade e poderá ser analisada depois que <strong>todos os dados do mês</strong>{' '}
-                (transações e dados manipulação) forem lançados.
-              </p>
+            <div className="mb-6 flex flex-col md:flex-row md:items-start justify-between gap-4">
+              <div className="flex-1">
+                <h2 className="text-lg font-bold text-slate-800 uppercase tracking-wide flex items-center gap-3">
+                  <div className="w-3 h-6 bg-slate-700 rounded-sm" />
+                  Análise Estratégica
+                </h2>
+                <p className="text-sm text-slate-600 mt-2 ml-9 border-l-2 border-amber-400 pl-3 bg-amber-50/70 py-1.5 rounded-r-md max-w-3xl">
+                  <strong className="text-amber-700">Observação:</strong> Esta análise somente terá
+                  validade e poderá ser analisada depois que <strong>todos os dados do mês</strong>{' '}
+                  (transações e dados manipulação) forem lançados.
+                </p>
+              </div>
+              <div className="ml-9 md:ml-0 shrink-0">
+                <StrategicPerformanceReportDialog />
+              </div>
             </div>
 
             <StrategicKpis />
