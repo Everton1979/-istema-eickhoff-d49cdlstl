@@ -99,21 +99,12 @@ export function StrategicPerformanceReportDialog() {
       const despesas = totalExp
       const lucroLiquido = entradas - despesas
 
-      const rawMaterialCosts = m
-        ? m.raw_material_costs > 0
-          ? m.raw_material_costs
-          : m.custo_mp_emb_capsulas + m.custo_mp_emb_dermato
-        : 0
+      const totalSystemSales = m?.total_system_sales || 0
+      const rawMaterialCosts = m?.raw_material_costs || 0
+      const ordersCount = m?.orders_count || 0
 
-      const markup = rawMaterialCosts > 0 ? entradas / rawMaterialCosts : 0
-
-      const ordCnt = m
-        ? m.orders_count > 0
-          ? m.orders_count
-          : m.num_formulas_capsulas + m.num_formulas_dermato
-        : 0
-
-      const ticket = ordCnt > 0 ? entradas / ordCnt : 0
+      const markup = rawMaterialCosts > 0 ? totalSystemSales / rawMaterialCosts : 0
+      const ticket = ordersCount > 0 ? totalSystemSales / ordersCount : 0
 
       const ebitda = lucroLiquido
       const valuation = ebitda * 12 * 4
@@ -219,7 +210,7 @@ export function StrategicPerformanceReportDialog() {
                   {p.period}
                 </TableHead>
               ))}
-              <TableHead className="text-right font-bold text-slate-800 bg-slate-100 whitespace-nowrap">
+              <TableHead className="text-right font-bold text-slate-800 bg-slate-100 whitespace-nowrap sticky right-0 z-20 shadow-[-2px_0_5px_-2px_rgba(0,0,0,0.1)]">
                 Média
               </TableHead>
             </TableRow>
@@ -234,7 +225,7 @@ export function StrategicPerformanceReportDialog() {
                   {fmt(p[key] as number)}
                 </TableCell>
               ))}
-              <TableCell className="text-right font-bold bg-slate-50 whitespace-nowrap text-slate-800">
+              <TableCell className="text-right font-bold bg-slate-50 whitespace-nowrap text-slate-800 sticky right-0 z-20 shadow-[-2px_0_5px_-2px_rgba(0,0,0,0.1)]">
                 {averages ? fmt(averages[key]) : fmt(0)}
               </TableCell>
             </TableRow>
