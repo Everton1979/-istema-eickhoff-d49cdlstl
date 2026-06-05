@@ -342,6 +342,30 @@ export type Database = {
         }
         Relationships: []
       }
+      users: {
+        Row: {
+          created_at: string | null
+          id: string
+          project_id: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          project_id: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          project_id?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -587,6 +611,12 @@ export const Constants = {
 //   initial_balance_banricompras: numeric (nullable, default: 0)
 //   initial_balance_sicredi: numeric (nullable, default: 0)
 //   project_id: text (not null, default: 'farmacia_eickhoff'::text)
+// Table: users
+//   id: uuid (not null, default: gen_random_uuid())
+//   user_id: uuid (not null)
+//   project_id: text (not null)
+//   created_at: timestamp with time zone (nullable, default: now())
+//   updated_at: timestamp with time zone (nullable, default: now())
 
 // --- CONSTRAINTS ---
 // Table: appointments
@@ -609,6 +639,9 @@ export const Constants = {
 // Table: user_settings
 //   PRIMARY KEY user_settings_pkey: PRIMARY KEY (user_id, project_id)
 //   FOREIGN KEY user_settings_user_id_fkey: FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE
+// Table: users
+//   PRIMARY KEY users_pkey: PRIMARY KEY (id)
+//   UNIQUE users_user_id_key: UNIQUE (user_id)
 
 // --- ROW LEVEL SECURITY POLICIES ---
 // Table: appointments
@@ -619,6 +652,16 @@ export const Constants = {
 //   Policy "Users can manage audit logs" (ALL, PERMISSIVE) roles={authenticated}
 //     USING: (project_id = get_user_app_name())
 //     WITH CHECK: (project_id = get_user_app_name())
+// Table: marcelaourique@yahoo.com.br
+//   Policy "authenticated_delete" (DELETE, PERMISSIVE) roles={authenticated}
+//     USING: true
+//   Policy "authenticated_insert" (INSERT, PERMISSIVE) roles={authenticated}
+//     WITH CHECK: true
+//   Policy "authenticated_select" (SELECT, PERMISSIVE) roles={authenticated}
+//     USING: true
+//   Policy "authenticated_update" (UPDATE, PERMISSIVE) roles={authenticated}
+//     USING: true
+//     WITH CHECK: true
 // Table: monthly_metrics
 //   Policy "Users can manage monthly metrics" (ALL, PERMISSIVE) roles={authenticated}
 //     USING: (user_id = auth.uid())
@@ -647,7 +690,7 @@ export const Constants = {
 // This means ALL queries (SELECT, INSERT, UPDATE, DELETE) will return ZERO rows
 // for non-superuser roles (including the anon and authenticated roles used by the app).
 // You MUST create RLS policies for these tables to allow data access.
-//   - marcelaourique@yahoo.com.br
+//   - users
 
 // --- DATABASE FUNCTIONS ---
 // FUNCTION get_user_app_name()
@@ -778,3 +821,5 @@ export const Constants = {
 //   CREATE INDEX idx_transactions_project_date ON public.transactions USING btree (project_id, date)
 //   CREATE INDEX idx_transactions_type ON public.transactions USING btree (type)
 //   CREATE INDEX idx_transactions_user_project_date ON public.transactions USING btree (user_id, project_id, date)
+// Table: users
+//   CREATE UNIQUE INDEX users_user_id_key ON public.users USING btree (user_id)
