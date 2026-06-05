@@ -36,6 +36,7 @@ Deno.serve(async (req: Request) => {
                    <li><strong>Razão Social:</strong> ${data.razao_social || 'Não informado'}</li>
                    <li><strong>Responsável:</strong> ${data.responsavel || 'Não informado'}</li>
                    <li><strong>Telefone:</strong> ${data.telefone || 'Não informado'}</li>
+                   <li><strong>Sistema:</strong> ${data.app_name || 'farmacia_eickhoff'}</li>
                  </ul>
                  <p>Acesse o painel administrativo para aprovar ou rejeitar o acesso.</p>`,
         }),

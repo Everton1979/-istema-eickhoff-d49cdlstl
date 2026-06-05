@@ -1,6 +1,12 @@
 import 'jsr:@supabase/functions-js/edge-runtime.d.ts'
-import { createClient } from 'npm:@supabase/supabase-js@2'
-import { corsHeaders } from '../_shared/cors.ts'
+import { createClient } from 'jsr:@supabase/supabase-js@2'
+
+export const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+  'Access-Control-Allow-Headers':
+    'authorization, x-client-info, x-supabase-client-platform, apikey, content-type',
+}
 
 Deno.serve(async (req: Request) => {
   if (req.method === 'OPTIONS') {
@@ -31,10 +37,29 @@ Deno.serve(async (req: Request) => {
     // Create admin client to bypass RLS and use auth.admin methods
     const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey)
 
-    const { action, email, password, userId, company_name, app_name } = await req.json()
+    const { action, email, password, userId, company_name, app_name, role } = await req.json()
+
+    // Get current user's profile to enforce permissions
+    const { data: currentUserProfile, error: profileError } = await supabaseAdmin
+      .from('profiles')
+      .select('role, app_name')
+      .eq('id', user.id)
+      .single()
+
+    if (profileError || !currentUserProfile) {
+      throw new Error('User profile not found')
+    }
+
+    const isSuperAdmin = currentUserProfile.role === 'Administrador'
 
     if (action === 'create') {
-      const targetAppName = app_name || 'farmacia'
+      let targetAppName = app_name || currentUserProfile.app_name || 'farmacia_eickhoff'
+
+      // Master users can only create users for their own app_name
+      if (!isSuperAdmin) {
+        targetAppName = currentUserProfile.app_name || 'farmacia_eickhoff'
+      }
+
       const { data, error } = await supabaseAdmin.auth.admin.createUser({
         email,
         password,
@@ -43,11 +68,18 @@ Deno.serve(async (req: Request) => {
       })
       if (error) throw error
 
+      let targetRole = role || 'Atendente'
+
+      // Prevent Master from creating another Administrador
+      if (!isSuperAdmin && targetRole === 'Administrador') {
+        targetRole = 'Atendente'
+      }
+
       // Update the profile role and company_name
       await supabaseAdmin
         .from('profiles')
         .update({
-          role: 'Usuário',
+          role: targetRole,
           company_name: company_name || null,
           status: 'Ativo',
           app_name: targetAppName,
@@ -65,6 +97,27 @@ Deno.serve(async (req: Request) => {
       if (userId === user.id) {
         throw new Error('Não é permitido excluir o próprio usuário')
       }
+
+      // Check target user
+      const { data: targetUser, error: targetError } = await supabaseAdmin
+        .from('profiles')
+        .select('app_name, role')
+        .eq('id', userId)
+        .single()
+
+      if (targetError || !targetUser) {
+        throw new Error('Usuário alvo não encontrado.')
+      }
+
+      if (!isSuperAdmin) {
+        if (targetUser.app_name !== currentUserProfile.app_name) {
+          throw new Error('Acesso negado: Você não tem permissão para excluir este usuário.')
+        }
+        if (targetUser.role === 'Administrador') {
+          throw new Error('Acesso negado: Não é possível excluir um Administrador.')
+        }
+      }
+
       const { error } = await supabaseAdmin.auth.admin.deleteUser(userId)
       if (error) throw new Error(`Erro ao excluir usuário: ${error.message}`)
 

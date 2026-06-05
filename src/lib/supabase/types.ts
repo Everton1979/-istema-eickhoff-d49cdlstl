@@ -580,7 +580,6 @@ export const Constants = {
 // Table: monthly_metrics
 //   PRIMARY KEY monthly_metrics_pkey: PRIMARY KEY (id)
 //   FOREIGN KEY monthly_metrics_user_id_fkey: FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE
-//   UNIQUE monthly_metrics_user_id_month_year_project_key: UNIQUE (user_id, month, year, project_id)
 // Table: profiles
 //   FOREIGN KEY profiles_id_fkey: FOREIGN KEY (id) REFERENCES auth.users(id) ON DELETE CASCADE
 //   PRIMARY KEY profiles_pkey: PRIMARY KEY (id)
@@ -593,33 +592,35 @@ export const Constants = {
 
 // --- ROW LEVEL SECURITY POLICIES ---
 // Table: appointments
-//   Policy "Users can manage own appointments" (ALL, PERMISSIVE) roles={authenticated}
-//     USING: (user_id = auth.uid())
-//     WITH CHECK: (user_id = auth.uid())
+//   Policy "Users can manage appointments" (ALL, PERMISSIVE) roles={authenticated}
+//     USING: (project_id = get_user_app_name())
+//     WITH CHECK: (project_id = get_user_app_name())
 // Table: audit_logs
-//   Policy "Users can manage own audit logs" (ALL, PERMISSIVE) roles={authenticated}
-//     USING: (user_id = auth.uid())
-//     WITH CHECK: (user_id = auth.uid())
+//   Policy "Users can manage audit logs" (ALL, PERMISSIVE) roles={authenticated}
+//     USING: (project_id = get_user_app_name())
+//     WITH CHECK: (project_id = get_user_app_name())
 // Table: monthly_metrics
-//   Policy "Users can manage own monthly metrics" (ALL, PERMISSIVE) roles={authenticated}
-//     USING: (user_id = auth.uid())
-//     WITH CHECK: (user_id = auth.uid())
+//   Policy "Users can manage monthly metrics" (ALL, PERMISSIVE) roles={authenticated}
+//     USING: (project_id = get_user_app_name())
+//     WITH CHECK: (project_id = get_user_app_name())
 // Table: profiles
+//   Policy "Users can delete profiles" (DELETE, PERMISSIVE) roles={authenticated}
+//     USING: ((get_user_role() = ANY (ARRAY['Administrador'::text, 'Master'::text])) AND (app_name = get_user_app_name()))
 //   Policy "Users can insert profiles" (INSERT, PERMISSIVE) roles={authenticated}
-//     WITH CHECK: ((id = auth.uid()) OR ((get_user_role() = 'Administrador'::text) AND (app_name = get_user_app_name())))
+//     WITH CHECK: ((id = auth.uid()) OR ((get_user_role() = ANY (ARRAY['Administrador'::text, 'Master'::text])) AND (app_name = get_user_app_name())))
 //   Policy "Users can read profiles" (SELECT, PERMISSIVE) roles={authenticated}
-//     USING: ((id = auth.uid()) OR ((get_user_role() = 'Administrador'::text) AND (app_name = get_user_app_name())))
+//     USING: ((id = auth.uid()) OR ((get_user_role() = ANY (ARRAY['Administrador'::text, 'Master'::text])) AND (app_name = get_user_app_name())))
 //   Policy "Users can update profiles" (UPDATE, PERMISSIVE) roles={authenticated}
-//     USING: ((id = auth.uid()) OR ((get_user_role() = 'Administrador'::text) AND (app_name = get_user_app_name())))
-//     WITH CHECK: ((id = auth.uid()) OR ((get_user_role() = 'Administrador'::text) AND (app_name = get_user_app_name())))
+//     USING: ((id = auth.uid()) OR ((get_user_role() = ANY (ARRAY['Administrador'::text, 'Master'::text])) AND (app_name = get_user_app_name())))
+//     WITH CHECK: ((id = auth.uid()) OR ((get_user_role() = ANY (ARRAY['Administrador'::text, 'Master'::text])) AND (app_name = get_user_app_name())))
 // Table: transactions
-//   Policy "Users can manage own transactions" (ALL, PERMISSIVE) roles={authenticated}
-//     USING: (user_id = auth.uid())
-//     WITH CHECK: (user_id = auth.uid())
+//   Policy "Users can manage transactions" (ALL, PERMISSIVE) roles={authenticated}
+//     USING: (project_id = get_user_app_name())
+//     WITH CHECK: (project_id = get_user_app_name())
 // Table: user_settings
-//   Policy "Users can manage own user settings" (ALL, PERMISSIVE) roles={authenticated}
-//     USING: (user_id = auth.uid())
-//     WITH CHECK: (user_id = auth.uid())
+//   Policy "Users can manage user settings" (ALL, PERMISSIVE) roles={authenticated}
+//     USING: (project_id = get_user_app_name())
+//     WITH CHECK: (project_id = get_user_app_name())
 
 // --- DATABASE FUNCTIONS ---
 // FUNCTION get_user_app_name()
@@ -629,7 +630,7 @@ export const Constants = {
 //    STABLE SECURITY DEFINER
 //    SET search_path TO 'public'
 //   AS $function$
-//     SELECT COALESCE(app_name, 'farmacia') FROM profiles WHERE id = auth.uid();
+//     SELECT COALESCE((SELECT app_name FROM profiles WHERE id = auth.uid()), 'farmacia_eickhoff');
 //   $function$
 //
 // FUNCTION get_user_role()
@@ -656,9 +657,8 @@ export const Constants = {
 //     VALUES (
 //       NEW.id,
 //       NEW.email,
-//       CASE WHEN NEW.email = 'farmaciaeickhoff@terra.com.br' THEN 'Administrador' ELSE 'Usuário' END,
-//       -- Garante que todo novo usuário receba status Pendente como padrão absoluto
-//       'Pendente',
+//       CASE WHEN NEW.email = 'farmaciaeickhoff@terra.com.br' THEN 'Administrador' ELSE 'Master' END,
+//       CASE WHEN NEW.email = 'farmaciaeickhoff@terra.com.br' THEN 'Ativo' ELSE 'Pendente' END,
 //       NEW.raw_user_meta_data->>'cnpj',
 //       NEW.raw_user_meta_data->>'razao_social',
 //       NEW.raw_user_meta_data->>'nome_fantasia',
@@ -671,7 +671,7 @@ export const Constants = {
 //       NEW.raw_user_meta_data->>'complemento',
 //       NEW.raw_user_meta_data->>'bairro',
 //       NEW.raw_user_meta_data->>'cidade_estado',
-//       COALESCE(NEW.raw_user_meta_data->>'app_name', 'farmacia')
+//       COALESCE(NEW.raw_user_meta_data->>'app_name', 'farmacia_eickhoff')
 //     );
 //     RETURN NEW;
 //   END;
@@ -693,7 +693,8 @@ export const Constants = {
 //       'email', NEW.email,
 //       'razao_social', NEW.razao_social,
 //       'responsavel', NEW.responsavel,
-//       'telefone', NEW.telefone
+//       'telefone', NEW.telefone,
+//       'app_name', NEW.app_name
 //     );
 //
 //     -- Invoke the Edge Function using pg_net
@@ -710,17 +711,43 @@ export const Constants = {
 //   END;
 //   $function$
 //
+// FUNCTION set_project_id()
+//   CREATE OR REPLACE FUNCTION public.set_project_id()
+//    RETURNS trigger
+//    LANGUAGE plpgsql
+//    SECURITY DEFINER
+//   AS $function$
+//   BEGIN
+//     NEW.project_id := COALESCE(public.get_user_app_name(), 'farmacia_eickhoff');
+//     RETURN NEW;
+//   END;
+//   $function$
+//
 
 // --- TRIGGERS ---
+// Table: appointments
+//   set_appointments_project_id: CREATE TRIGGER set_appointments_project_id BEFORE INSERT ON public.appointments FOR EACH ROW EXECUTE FUNCTION set_project_id()
+// Table: audit_logs
+//   set_audit_logs_project_id: CREATE TRIGGER set_audit_logs_project_id BEFORE INSERT ON public.audit_logs FOR EACH ROW EXECUTE FUNCTION set_project_id()
+// Table: monthly_metrics
+//   set_monthly_metrics_project_id: CREATE TRIGGER set_monthly_metrics_project_id BEFORE INSERT ON public.monthly_metrics FOR EACH ROW EXECUTE FUNCTION set_project_id()
 // Table: profiles
 //   on_profile_created_notify_admin: CREATE TRIGGER on_profile_created_notify_admin AFTER INSERT ON public.profiles FOR EACH ROW WHEN ((new.email <> 'farmaciaeickhoff@terra.com.br'::text)) EXECUTE FUNCTION notify_admin_new_user()
+// Table: transactions
+//   set_transactions_project_id: CREATE TRIGGER set_transactions_project_id BEFORE INSERT ON public.transactions FOR EACH ROW EXECUTE FUNCTION set_project_id()
+// Table: user_settings
+//   set_user_settings_project_id: CREATE TRIGGER set_user_settings_project_id BEFORE INSERT ON public.user_settings FOR EACH ROW EXECUTE FUNCTION set_project_id()
 
 // --- INDEXES ---
+// Table: appointments
+//   CREATE INDEX idx_appointments_project_date ON public.appointments USING btree (project_id, date)
 // Table: monthly_metrics
+//   CREATE INDEX idx_monthly_metrics_project_year ON public.monthly_metrics USING btree (project_id, year)
 //   CREATE INDEX idx_monthly_metrics_user_project_year ON public.monthly_metrics USING btree (user_id, project_id, year)
 //   CREATE INDEX idx_monthly_metrics_year_month ON public.monthly_metrics USING btree (year, month)
-//   CREATE UNIQUE INDEX monthly_metrics_user_id_month_year_project_key ON public.monthly_metrics USING btree (user_id, month, year, project_id)
+//   CREATE UNIQUE INDEX monthly_metrics_user_project_year_month_idx ON public.monthly_metrics USING btree (user_id, project_id, year, month)
 // Table: transactions
 //   CREATE INDEX idx_transactions_date_status ON public.transactions USING btree (date, status)
+//   CREATE INDEX idx_transactions_project_date ON public.transactions USING btree (project_id, date)
 //   CREATE INDEX idx_transactions_type ON public.transactions USING btree (type)
 //   CREATE INDEX idx_transactions_user_project_date ON public.transactions USING btree (user_id, project_id, date)
