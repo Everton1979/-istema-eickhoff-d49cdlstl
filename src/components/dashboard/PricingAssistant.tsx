@@ -90,7 +90,7 @@ import {
 
 export function PricingAssistant() {
   const { filters } = useFinanceStore()
-  const { user } = useAuth()
+  const { user, profile } = useAuth()
 
   const [cost, setCost] = useState<number | ''>('')
   const [tipoFormula, setTipoFormula] = useState<'capsulas' | 'dermato'>('capsulas')
@@ -121,11 +121,13 @@ export function PricingAssistant() {
       const orString = targetMonths
         .map((t) => `and(month.eq.${t.month},year.eq.${t.year})`)
         .join(',')
+      const projectId = profile?.app_name || 'farmacia_eickhoff'
+
       const metricsQuery = supabase
         .from('monthly_metrics')
         .select('*')
         .eq('user_id', user.id)
-        .eq('project_id', 'farmacia')
+        .eq('project_id', projectId)
         .or(orString)
 
       const oldest = targetMonths[targetMonths.length - 1]
@@ -139,7 +141,7 @@ export function PricingAssistant() {
         .from('transactions')
         .select('date, amount, type, category, subcategory, status')
         .eq('user_id', user.id)
-        .eq('project_id', 'farmacia')
+        .eq('project_id', projectId)
         .gte('date', startDate)
         .lte('date', endDate)
 
@@ -161,7 +163,7 @@ export function PricingAssistant() {
     }
 
     fetchHistory()
-  }, [user, filterYears, filterMonths])
+  }, [user, profile, filterYears, filterMonths])
 
   const stats = useMemo(() => {
     let cfaTotal = 0
