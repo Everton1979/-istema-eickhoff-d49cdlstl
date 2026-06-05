@@ -126,7 +126,6 @@ export function PricingAssistant() {
       const metricsQuery = supabase
         .from('monthly_metrics')
         .select('*')
-        .eq('user_id', user.id)
         .eq('project_id', projectId)
         .or(orString)
 
@@ -140,7 +139,6 @@ export function PricingAssistant() {
       const txQuery = supabase
         .from('transactions')
         .select('date, amount, type, category, subcategory, status')
-        .eq('user_id', user.id)
         .eq('project_id', projectId)
         .gte('date', startDate)
         .lte('date', endDate)
@@ -271,8 +269,8 @@ export function PricingAssistant() {
     const custoMedioHistorico = stats.custoMedioInsumo > 0 ? stats.custoMedioInsumo : numericCost
     mkpDinamico = mkpAlvo * Math.pow(custoMedioHistorico / numericCost, 0.5)
 
-    const maxMarkup = 15.0
-    const minMarkup = tipoFormula === 'dermato' ? 3.0 : 2.5
+    const maxMarkup = 18.0
+    const minMarkup = tipoFormula === 'dermato' ? 3.5 : 3.0
 
     mkpDinamico = Math.max(minMarkup, Math.min(maxMarkup, mkpDinamico))
   }
