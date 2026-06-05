@@ -66,8 +66,6 @@ interface FinanceContextType {
 
 const FinanceContext = createContext<FinanceContextType | undefined>(undefined)
 
-const PROJECT_ID = 'farmacia_eickhoff'
-
 const mapTypeToDB = (type: string) => {
   if (type === 'INCOME') return 'receita'
   if (type === 'CORTESIA') return 'cortesia'
@@ -132,7 +130,7 @@ const ensureUtcNoon = (dateStr: string) => {
 }
 
 export function FinanceProvider({ children }: { children: React.ReactNode }) {
-  const { user } = useAuth()
+  const { user, profile } = useAuth()
   const [transactions, setTransactions] = useState<Transaction[]>([])
   const [accounts, setAccounts] = useState<Account[]>(ACCOUNTS)
   const [monthlyMetrics, setMonthlyMetrics] = useState<MonthlyMetric[]>([])
@@ -156,19 +154,21 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
     }
   })
 
+  const projectId = profile?.app_name || 'farmacia_eickhoff'
+
   useEffect(() => {
-    if (user) {
+    if (user && profile) {
       fetchData()
-    } else {
+    } else if (!user) {
       setTransactions([])
       setMonthlyMetrics([])
       setAccounts(ACCOUNTS)
       setLoadingData(false)
     }
-  }, [user])
+  }, [user, profile?.app_name])
 
   const fetchData = async () => {
-    if (!user) return
+    if (!user || !profile) return
 
     // Load from cache first for instant UI response (Performance Optimization)
     try {
@@ -189,8 +189,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
     const txQuery = supabase
       .from('transactions')
       .select('*')
-      .eq('user_id', user.id)
-      .eq('project_id', PROJECT_ID)
+      .eq('project_id', projectId)
       .order('date', { ascending: false })
 
     const fetchAllTransactions = async (query: any) => {
@@ -214,8 +213,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
     const metricQuery = supabase
       .from('monthly_metrics')
       .select('*')
-      .eq('user_id', user.id)
-      .eq('project_id', PROJECT_ID)
+      .eq('project_id', projectId)
       .limit(5000)
 
     const [txData, settingsRes, metricsRes] = await Promise.all([
@@ -223,8 +221,8 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
       supabase
         .from('user_settings')
         .select('*')
-        .eq('user_id', user.id)
-        .eq('project_id', PROJECT_ID)
+        .eq('project_id', projectId)
+        .order('updated_at', { ascending: false })
         .limit(1)
         .maybeSingle(),
       metricQuery,
@@ -307,11 +305,11 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
   }
 
   const logAction = async (action: string, entity: string, entity_id?: string, details?: any) => {
-    if (!user) return
+    if (!user || !profile) return
     try {
       await supabase.from('audit_logs').insert({
         user_id: user.id,
-        project_id: PROJECT_ID,
+        project_id: projectId,
         action,
         entity,
         entity_id,
@@ -323,13 +321,13 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
   }
 
   const addTransaction = async (tx: Omit<Transaction, 'id'>) => {
-    if (!user) return
+    if (!user || !profile) return
     const dbType = mapTypeToDB(tx.type)
     const formattedDate = ensureUtcNoon(tx.date)
 
     const payload: any = {
       user_id: user.id,
-      project_id: PROJECT_ID,
+      project_id: projectId,
       description: tx.description,
       amount: tx.amount,
       type: dbType,
@@ -371,7 +369,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
   }
 
   const updateTransaction = async (id: string, tx: Partial<Omit<Transaction, 'id'>>) => {
-    if (!user) return
+    if (!user || !profile) return
     const original = transactions.find((t) => t.id === id)
     const updateData: any = {}
     if (tx.description !== undefined) updateData.description = tx.description
@@ -437,7 +435,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
   }
 
   const deleteTransaction = async (id: string) => {
-    if (!user) return
+    if (!user || !profile) return
     const original = transactions.find((t) => t.id === id)
     const { error } = await supabase.from('transactions').delete().eq('id', id)
     if (!error) {
@@ -461,7 +459,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
   }
 
   const saveMonthlyMetric = async (metric: Omit<MonthlyMetric, 'id'>) => {
-    if (!user) return
+    if (!user || !profile) return
 
     const existing = monthlyMetrics.find((m) => m.month === metric.month && m.year === metric.year)
 
@@ -471,7 +469,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
       (metric.custo_mp_emb_capsulas || 0) + (metric.custo_mp_emb_dermato || 0)
 
     const payload = {
-      project_id: PROJECT_ID,
+      project_id: projectId,
       month: metric.month,
       year: metric.year,
       orders_count: metric.orders_count !== undefined ? metric.orders_count : orders_count,
@@ -568,7 +566,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
     endDate: string,
     type: string,
   ): Promise<Transaction[]> => {
-    if (!user) return []
+    if (!user || !profile) return []
 
     let allData: any[] = []
     let page = 0
@@ -579,8 +577,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
       let query = supabase
         .from('transactions')
         .select('*')
-        .eq('user_id', user.id)
-        .eq('project_id', PROJECT_ID)
+        .eq('project_id', projectId)
         .gte('date', `${startDate}T00:00:00.000-03:00`)
         .lte('date', `${endDate}T23:59:59.999-03:00`)
         .order('date', { ascending: true })
@@ -635,19 +632,18 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
   }
 
   const updateAccountInitialBalances = async (balances: Record<string, number>) => {
-    if (!user) return { error: 'Not authenticated' }
+    if (!user || !profile) return { error: 'Not authenticated' }
 
     const { data: existing } = await supabase
       .from('user_settings')
       .select('user_id')
-      .eq('user_id', user.id)
-      .eq('project_id', PROJECT_ID)
+      .eq('project_id', projectId)
       .limit(1)
       .maybeSingle()
 
     const payload: any = {
       user_id: existing?.user_id || user.id,
-      project_id: PROJECT_ID,
+      project_id: projectId,
       initial_balance_sicredi: balances.sicredi ?? 0,
       updated_at: new Date().toISOString(),
     }
