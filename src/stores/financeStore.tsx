@@ -190,6 +190,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
       .from('transactions')
       .select('*')
       .eq('project_id', projectId)
+      .eq('user_id', user.id)
       .order('date', { ascending: false })
 
     const fetchAllTransactions = async (query: any) => {
@@ -214,6 +215,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
       .from('monthly_metrics')
       .select('*')
       .eq('project_id', projectId)
+      .eq('user_id', user.id)
       .limit(5000)
 
     const [txData, settingsRes, metricsRes] = await Promise.all([
@@ -222,6 +224,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
         .from('user_settings')
         .select('*')
         .eq('project_id', projectId)
+        .eq('user_id', user.id)
         .order('updated_at', { ascending: false })
         .limit(1)
         .maybeSingle(),
@@ -578,6 +581,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
         .from('transactions')
         .select('*')
         .eq('project_id', projectId)
+        .eq('user_id', user.id)
         .gte('date', `${startDate}T00:00:00.000-03:00`)
         .lte('date', `${endDate}T23:59:59.999-03:00`)
         .order('date', { ascending: true })
@@ -638,6 +642,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
       .from('user_settings')
       .select('user_id')
       .eq('project_id', projectId)
+      .eq('user_id', user.id)
       .limit(1)
       .maybeSingle()
 
