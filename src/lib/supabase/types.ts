@@ -72,6 +72,21 @@ export type Database = {
         }
         Relationships: []
       }
+      'marcelaourique@yahoo.com.br': {
+        Row: {
+          created_at: string
+          id: number
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+        }
+        Update: {
+          created_at?: string
+          id?: number
+        }
+        Relationships: []
+      }
       monthly_metrics: {
         Row: {
           colaboradores_capsulas: number
@@ -492,6 +507,9 @@ export const Constants = {
 //   details: jsonb (nullable)
 //   created_at: timestamp with time zone (not null, default: now())
 //   project_id: text (not null, default: 'farmacia_eickhoff'::text)
+// Table: marcelaourique@yahoo.com.br
+//   id: bigint (not null)
+//   created_at: timestamp with time zone (not null, default: now())
 // Table: monthly_metrics
 //   id: uuid (not null, default: gen_random_uuid())
 //   user_id: uuid (not null)
@@ -577,6 +595,8 @@ export const Constants = {
 // Table: audit_logs
 //   PRIMARY KEY audit_logs_pkey: PRIMARY KEY (id)
 //   FOREIGN KEY audit_logs_user_id_fkey: FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE
+// Table: marcelaourique@yahoo.com.br
+//   PRIMARY KEY marcelaourique@yahoo.com.br_pkey: PRIMARY KEY (id)
 // Table: monthly_metrics
 //   PRIMARY KEY monthly_metrics_pkey: PRIMARY KEY (id)
 //   FOREIGN KEY monthly_metrics_user_id_fkey: FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE
@@ -621,6 +641,13 @@ export const Constants = {
 //   Policy "Users can manage user settings" (ALL, PERMISSIVE) roles={authenticated}
 //     USING: (user_id = auth.uid())
 //     WITH CHECK: (user_id = auth.uid())
+
+// --- WARNING: TABLES WITH RLS ENABLED BUT NO POLICIES ---
+// These tables have Row Level Security enabled but NO policies defined.
+// This means ALL queries (SELECT, INSERT, UPDATE, DELETE) will return ZERO rows
+// for non-superuser roles (including the anon and authenticated roles used by the app).
+// You MUST create RLS policies for these tables to allow data access.
+//   - marcelaourique@yahoo.com.br
 
 // --- DATABASE FUNCTIONS ---
 // FUNCTION get_user_app_name()
