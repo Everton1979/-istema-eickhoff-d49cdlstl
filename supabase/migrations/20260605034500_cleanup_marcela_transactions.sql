@@ -55,7 +55,7 @@ CREATE OR REPLACE FUNCTION public.get_user_app_name()
  SET search_path TO 'public'
 AS $$
   SELECT COALESCE((SELECT app_name FROM profiles WHERE id = auth.uid()), 'farmacia_eickhoff');
-$;
+$$;
 
 -- Update the RLS policy for transactions
 DROP POLICY IF EXISTS "Users can manage transactions" ON public.transactions;
