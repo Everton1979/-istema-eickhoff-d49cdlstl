@@ -733,7 +733,7 @@ export const Constants = {
 //    STABLE SECURITY DEFINER
 //    SET search_path TO 'public'
 //   AS $function$
-//     SELECT COALESCE((SELECT app_name FROM profiles WHERE id = auth.uid()), 'farmacia_eickhoff');
+//     SELECT app_name FROM public.profiles WHERE id = auth.uid();
 //   $function$
 //
 // FUNCTION get_user_role()
@@ -757,18 +757,21 @@ export const Constants = {
 //     v_role text;
 //     v_status text;
 //     v_count int;
+//     v_cnpj text;
 //   BEGIN
-//     v_app_name := COALESCE(NEW.raw_user_meta_data->>'app_name', 'farmacia_eickhoff');
+//     v_cnpj := NEW.raw_user_meta_data->>'cnpj';
+//     v_app_name := COALESCE(NEW.raw_user_meta_data->>'app_name', regexp_replace(v_cnpj, '\D', '', 'g'));
 //
-//     -- Check if any profile already exists for this app_name
+//     IF v_app_name IS NULL OR v_app_name = '' THEN
+//       v_app_name := NEW.id::text;
+//     END IF;
+//
 //     SELECT count(*) INTO v_count FROM public.profiles WHERE app_name = v_app_name;
 //
 //     IF v_count = 0 THEN
-//       -- First user of the company gets administrative privileges automatically
 //       v_role := 'Administrador';
 //       v_status := 'Ativo';
 //     ELSE
-//       -- Subsequent users
 //       IF NEW.email = 'farmaciaeickhoff@terra.com.br' THEN
 //         v_role := 'Administrador';
 //         v_status := 'Ativo';
@@ -787,7 +790,7 @@ export const Constants = {
 //       NEW.email,
 //       v_role,
 //       v_status,
-//       NEW.raw_user_meta_data->>'cnpj',
+//       v_cnpj,
 //       NEW.raw_user_meta_data->>'razao_social',
 //       NEW.raw_user_meta_data->>'nome_fantasia',
 //       NEW.raw_user_meta_data->>'endereco',
@@ -846,7 +849,8 @@ export const Constants = {
 //    SECURITY DEFINER
 //   AS $function$
 //   BEGIN
-//     NEW.project_id := COALESCE(public.get_user_app_name(), 'farmacia_eickhoff');
+//     -- Use get_user_app_name() and fall back to NEW.project_id
+//     NEW.project_id := COALESCE(public.get_user_app_name(), NEW.project_id);
 //     RETURN NEW;
 //   END;
 //   $function$

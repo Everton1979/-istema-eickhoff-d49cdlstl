@@ -154,7 +154,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
     }
   })
 
-  const projectId = profile?.app_name
+  const projectId = profile?.app_name || user?.id
 
   useEffect(() => {
     if (user && profile && projectId) {
