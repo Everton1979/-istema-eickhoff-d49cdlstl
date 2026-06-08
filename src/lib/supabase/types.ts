@@ -664,8 +664,8 @@ export const Constants = {
 //     WITH CHECK: true
 // Table: monthly_metrics
 //   Policy "Users can manage monthly metrics" (ALL, PERMISSIVE) roles={authenticated}
-//     USING: (user_id = auth.uid())
-//     WITH CHECK: (user_id = auth.uid())
+//     USING: (project_id = get_user_app_name())
+//     WITH CHECK: (project_id = get_user_app_name())
 // Table: profiles
 //   Policy "Users can delete profiles" (DELETE, PERMISSIVE) roles={authenticated}
 //     USING: ((get_user_role() = ANY (ARRAY['Administrador'::text, 'Master'::text])) AND (app_name = get_user_app_name()))
@@ -678,12 +678,12 @@ export const Constants = {
 //     WITH CHECK: ((id = auth.uid()) OR ((get_user_role() = ANY (ARRAY['Administrador'::text, 'Master'::text])) AND (app_name = get_user_app_name())))
 // Table: transactions
 //   Policy "Users can manage transactions" (ALL, PERMISSIVE) roles={authenticated}
-//     USING: (user_id = auth.uid())
-//     WITH CHECK: (user_id = auth.uid())
+//     USING: (project_id = get_user_app_name())
+//     WITH CHECK: (project_id = get_user_app_name())
 // Table: user_settings
 //   Policy "Users can manage user settings" (ALL, PERMISSIVE) roles={authenticated}
-//     USING: (user_id = auth.uid())
-//     WITH CHECK: (user_id = auth.uid())
+//     USING: (project_id = get_user_app_name())
+//     WITH CHECK: (project_id = get_user_app_name())
 
 // --- WARNING: TABLES WITH RLS ENABLED BUT NO POLICIES ---
 // These tables have Row Level Security enabled but NO policies defined.
