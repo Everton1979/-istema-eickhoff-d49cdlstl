@@ -72,21 +72,6 @@ export type Database = {
         }
         Relationships: []
       }
-      'marcelaourique@yahoo.com.br': {
-        Row: {
-          created_at: string
-          id: number
-        }
-        Insert: {
-          created_at?: string
-          id?: number
-        }
-        Update: {
-          created_at?: string
-          id?: number
-        }
-        Relationships: []
-      }
       monthly_metrics: {
         Row: {
           colaboradores_capsulas: number
@@ -534,9 +519,6 @@ export const Constants = {
 //   details: jsonb (nullable)
 //   created_at: timestamp with time zone (not null, default: now())
 //   project_id: text (not null)
-// Table: marcelaourique@yahoo.com.br
-//   id: bigint (not null)
-//   created_at: timestamp with time zone (not null, default: now())
 // Table: monthly_metrics
 //   id: uuid (not null, default: gen_random_uuid())
 //   user_id: uuid (not null)
@@ -629,8 +611,6 @@ export const Constants = {
 // Table: audit_logs
 //   PRIMARY KEY audit_logs_pkey: PRIMARY KEY (id)
 //   FOREIGN KEY audit_logs_user_id_fkey: FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE
-// Table: marcelaourique@yahoo.com.br
-//   PRIMARY KEY marcelaourique@yahoo.com.br_pkey: PRIMARY KEY (id)
 // Table: monthly_metrics
 //   PRIMARY KEY monthly_metrics_pkey: PRIMARY KEY (id)
 //   FOREIGN KEY monthly_metrics_user_id_fkey: FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE
@@ -668,16 +648,6 @@ export const Constants = {
 //   Policy "audit_logs_update" (UPDATE, PERMISSIVE) roles={authenticated}
 //     USING: (project_id = get_user_app_name())
 //     WITH CHECK: (project_id = get_user_app_name())
-// Table: marcelaourique@yahoo.com.br
-//   Policy "authenticated_delete" (DELETE, PERMISSIVE) roles={authenticated}
-//     USING: true
-//   Policy "authenticated_insert" (INSERT, PERMISSIVE) roles={authenticated}
-//     WITH CHECK: true
-//   Policy "authenticated_select" (SELECT, PERMISSIVE) roles={authenticated}
-//     USING: true
-//   Policy "authenticated_update" (UPDATE, PERMISSIVE) roles={authenticated}
-//     USING: true
-//     WITH CHECK: true
 // Table: monthly_metrics
 //   Policy "monthly_metrics_delete" (DELETE, PERMISSIVE) roles={authenticated}
 //     USING: (project_id = get_user_app_name())
