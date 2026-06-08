@@ -182,19 +182,21 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
             key.startsWith('finance_tx_cache_') ||
             key.startsWith('finance_metrics_cache_') ||
             key.startsWith('v2_finance_tx_cache_') ||
-            key.startsWith('v2_finance_metrics_cache_')
+            key.startsWith('v2_finance_metrics_cache_') ||
+            key.startsWith('v3_finance_tx_cache_') ||
+            key.startsWith('v3_finance_metrics_cache_')
           ) {
             localStorage.removeItem(key)
           }
         })
         sessionStorage.clear() // Force clear session storage to remove stale queries if any
 
-        const cachedTx = localStorage.getItem(`v3_finance_tx_cache_${user.id}_${projectId}`)
+        const cachedTx = localStorage.getItem(`v4_finance_tx_cache_${user.id}_${projectId}`)
         if (cachedTx && transactions.length === 0) {
           setTransactions(JSON.parse(cachedTx))
         }
         const cachedMetrics = localStorage.getItem(
-          `v3_finance_metrics_cache_${user.id}_${projectId}`,
+          `v4_finance_metrics_cache_${user.id}_${projectId}`,
         )
         if (cachedMetrics && monthlyMetrics.length === 0) {
           setMonthlyMetrics(JSON.parse(cachedMetrics))
@@ -210,6 +212,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
       .from('transactions')
       .select('*')
       .eq('project_id', projectId)
+      .eq('user_id', user.id)
       .order('date', { ascending: false })
 
     const fetchAllTransactions = async (query: any) => {
@@ -234,6 +237,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
       .from('monthly_metrics')
       .select('*')
       .eq('project_id', projectId)
+      .eq('user_id', user.id)
       .limit(5000)
 
     const [txData, settingsRes, metricsRes] = await Promise.all([
@@ -242,6 +246,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
         .from('user_settings')
         .select('*')
         .eq('project_id', projectId)
+        .eq('user_id', user.id)
         .order('updated_at', { ascending: false })
         .limit(1)
         .maybeSingle(),
@@ -265,7 +270,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
       setTransactions(parsedTx)
       if (user?.id)
         localStorage.setItem(
-          `v3_finance_tx_cache_${user.id}_${projectId}`,
+          `v4_finance_tx_cache_${user.id}_${projectId}`,
           JSON.stringify(parsedTx),
         )
     }
@@ -296,7 +301,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
       setMonthlyMetrics(parsedMetrics)
       if (user?.id)
         localStorage.setItem(
-          `v3_finance_metrics_cache_${user.id}_${projectId}`,
+          `v4_finance_metrics_cache_${user.id}_${projectId}`,
           JSON.stringify(parsedMetrics),
         )
     }
@@ -386,7 +391,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
         const updated = [newTx, ...prev]
         if (user?.id)
           localStorage.setItem(
-            `v3_finance_tx_cache_${user.id}_${projectId}`,
+            `v4_finance_tx_cache_${user.id}_${projectId}`,
             JSON.stringify(updated),
           )
         return updated
@@ -443,7 +448,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
         )
         if (user?.id)
           localStorage.setItem(
-            `v3_finance_tx_cache_${user.id}_${projectId}`,
+            `v4_finance_tx_cache_${user.id}_${projectId}`,
             JSON.stringify(updated),
           )
         return updated
@@ -478,7 +483,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
         const updated = prev.filter((t) => t.id !== id)
         if (user?.id)
           localStorage.setItem(
-            `v3_finance_tx_cache_${user.id}_${projectId}`,
+            `v4_finance_tx_cache_${user.id}_${projectId}`,
             JSON.stringify(updated),
           )
         return updated
@@ -591,7 +596,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
         ]
         if (user?.id)
           localStorage.setItem(
-            `v3_finance_metrics_cache_${user.id}_${projectId}`,
+            `v4_finance_metrics_cache_${user.id}_${projectId}`,
             JSON.stringify(updated),
           )
         return updated
@@ -620,6 +625,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
         .from('transactions')
         .select('*')
         .eq('project_id', projectId)
+        .eq('user_id', user.id)
         .gte('date', `${startDate}T00:00:00.000-03:00`)
         .lte('date', `${endDate}T23:59:59.999-03:00`)
         .order('date', { ascending: true })
@@ -676,15 +682,8 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
   const updateAccountInitialBalances = async (balances: Record<string, number>) => {
     if (!user || !profile) return { error: 'Not authenticated' }
 
-    const { data: existing } = await supabase
-      .from('user_settings')
-      .select('user_id')
-      .eq('project_id', projectId)
-      .limit(1)
-      .maybeSingle()
-
     const payload: any = {
-      user_id: existing?.user_id || user.id,
+      user_id: user.id,
       project_id: projectId,
       initial_balance_sicredi: balances.sicredi ?? 0,
       updated_at: new Date().toISOString(),
