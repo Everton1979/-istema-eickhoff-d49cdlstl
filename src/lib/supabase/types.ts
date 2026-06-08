@@ -646,8 +646,8 @@ export const Constants = {
 // --- ROW LEVEL SECURITY POLICIES ---
 // Table: appointments
 //   Policy "Users can manage appointments" (ALL, PERMISSIVE) roles={authenticated}
-//     USING: (user_id = auth.uid())
-//     WITH CHECK: (user_id = auth.uid())
+//     USING: (project_id = get_user_app_name())
+//     WITH CHECK: (project_id = get_user_app_name())
 // Table: audit_logs
 //   Policy "Users can manage audit logs" (ALL, PERMISSIVE) roles={authenticated}
 //     USING: (project_id = get_user_app_name())
