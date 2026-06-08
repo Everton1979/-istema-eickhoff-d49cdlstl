@@ -6,7 +6,7 @@ CREATE OR REPLACE FUNCTION public.get_user_app_name()
  SET search_path TO 'public'
 AS $$
   SELECT COALESCE(NULLIF(app_name, ''), id::text) FROM public.profiles WHERE id = auth.uid();
-$;
+$$;
 
 DO $$
 BEGIN
