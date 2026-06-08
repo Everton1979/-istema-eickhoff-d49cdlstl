@@ -715,13 +715,13 @@ export const Constants = {
 //     USING: (project_id = get_user_app_name())
 //     WITH CHECK: (project_id = get_user_app_name())
 // Table: users
-//   Policy "Users can delete their own project users" (DELETE, PERMISSIVE) roles={authenticated}
+//   Policy "users_delete" (DELETE, PERMISSIVE) roles={authenticated}
 //     USING: (project_id = get_user_app_name())
-//   Policy "Users can insert into their own project" (INSERT, PERMISSIVE) roles={authenticated}
+//   Policy "users_insert" (INSERT, PERMISSIVE) roles={authenticated}
 //     WITH CHECK: (project_id = get_user_app_name())
-//   Policy "Users can read their own project users" (SELECT, PERMISSIVE) roles={authenticated}
+//   Policy "users_select" (SELECT, PERMISSIVE) roles={authenticated}
 //     USING: (project_id = get_user_app_name())
-//   Policy "Users can update their own project users" (UPDATE, PERMISSIVE) roles={authenticated}
+//   Policy "users_update" (UPDATE, PERMISSIVE) roles={authenticated}
 //     USING: (project_id = get_user_app_name())
 //     WITH CHECK: (project_id = get_user_app_name())
 

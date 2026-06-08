@@ -53,11 +53,11 @@ Deno.serve(async (req: Request) => {
     const isSuperAdmin = currentUserProfile.role === 'Administrador'
 
     if (action === 'create') {
-      let targetAppName = app_name || currentUserProfile.app_name || 'farmacia_eickhoff'
+      let targetAppName = app_name || currentUserProfile.app_name
 
       // Master users can only create users for their own app_name
       if (!isSuperAdmin) {
-        targetAppName = currentUserProfile.app_name || 'farmacia_eickhoff'
+        targetAppName = currentUserProfile.app_name
       }
 
       const { data, error } = await supabaseAdmin.auth.admin.createUser({

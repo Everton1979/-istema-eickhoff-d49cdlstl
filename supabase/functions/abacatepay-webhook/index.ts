@@ -150,7 +150,7 @@ Deno.serve(async (req: Request) => {
           entity: 'Assinatura',
           entity_id: eventId || event,
           details: { payload: payload, updates_applied: updates },
-          project_id: profile?.app_name || 'farmacia_eickhoff',
+          project_id: profile?.app_name,
         })
       }
     }
