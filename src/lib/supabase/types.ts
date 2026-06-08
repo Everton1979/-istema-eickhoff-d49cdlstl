@@ -760,12 +760,18 @@ export const Constants = {
 //     v_cnpj text;
 //   BEGIN
 //     v_cnpj := NEW.raw_user_meta_data->>'cnpj';
-//     v_app_name := COALESCE(NEW.raw_user_meta_data->>'app_name', regexp_replace(v_cnpj, '\D', '', 'g'));
 //
+//     -- Prioritize app_name from metadata, fallback to sanitized CNPJ, fallback to new user ID
+//     v_app_name := NEW.raw_user_meta_data->>'app_name';
 //     IF v_app_name IS NULL OR v_app_name = '' THEN
-//       v_app_name := NEW.id::text;
+//       IF v_cnpj IS NOT NULL AND v_cnpj <> '' THEN
+//         v_app_name := regexp_replace(v_cnpj, '\D', '', 'g');
+//       ELSE
+//         v_app_name := NEW.id::text;
+//       END IF;
 //     END IF;
 //
+//     -- Check if any profile already exists for this app_name
 //     SELECT count(*) INTO v_count FROM public.profiles WHERE app_name = v_app_name;
 //
 //     IF v_count = 0 THEN

@@ -680,7 +680,6 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
       .from('user_settings')
       .select('user_id')
       .eq('project_id', projectId)
-      .eq('user_id', user.id)
       .limit(1)
       .maybeSingle()
 
