@@ -14,6 +14,18 @@ BEGIN
     SET project_id = r.app_name
     WHERE user_id = r.id AND project_id != r.app_name;
 
+    -- Fix monthly_metrics if there's a mismatch.
+    -- We must avoid unique constraint violation on (user_id, project_id, year, month).
+    DELETE FROM public.monthly_metrics mm1
+    WHERE user_id = r.id AND project_id != r.app_name 
+      AND EXISTS (
+        SELECT 1 FROM public.monthly_metrics mm2 
+        WHERE mm2.user_id = r.id 
+          AND mm2.project_id = r.app_name 
+          AND mm2.year = mm1.year 
+          AND mm2.month = mm1.month
+      );
+
     -- Update monthly_metrics
     UPDATE public.monthly_metrics
     SET project_id = r.app_name
