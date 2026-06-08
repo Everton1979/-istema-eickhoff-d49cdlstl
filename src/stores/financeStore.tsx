@@ -56,7 +56,7 @@ interface FinanceContextType {
   filteredMonthlyMetrics: MonthlyMetric[]
   updateAccountInitialBalances: (balances: Record<string, number>) => Promise<{ error: any }>
   loadingData: boolean
-  fetchData: () => Promise<void>
+  fetchData: (force?: boolean) => Promise<void>
   fetchTransactionsForExport: (
     startDate: string,
     endDate: string,
@@ -167,21 +167,26 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
     }
   }, [user, profile?.app_name])
 
-  const fetchData = async () => {
+  const fetchData = async (force: boolean = false) => {
     if (!user || !profile) return
 
-    // Load from cache first for instant UI response (Performance Optimization)
-    try {
-      const cachedTx = localStorage.getItem(`finance_tx_cache_${user.id}`)
-      if (cachedTx && transactions.length === 0) {
-        setTransactions(JSON.parse(cachedTx))
+    if (force) {
+      setTransactions([])
+      setMonthlyMetrics([])
+    } else {
+      // Load from cache first for instant UI response (Performance Optimization)
+      try {
+        const cachedTx = localStorage.getItem(`finance_tx_cache_${user.id}_${projectId}`)
+        if (cachedTx && transactions.length === 0) {
+          setTransactions(JSON.parse(cachedTx))
+        }
+        const cachedMetrics = localStorage.getItem(`finance_metrics_cache_${user.id}_${projectId}`)
+        if (cachedMetrics && monthlyMetrics.length === 0) {
+          setMonthlyMetrics(JSON.parse(cachedMetrics))
+        }
+      } catch (e) {
+        console.warn('Cache loading failed', e)
       }
-      const cachedMetrics = localStorage.getItem(`finance_metrics_cache_${user.id}`)
-      if (cachedMetrics && monthlyMetrics.length === 0) {
-        setMonthlyMetrics(JSON.parse(cachedMetrics))
-      }
-    } catch (e) {
-      console.warn('Cache loading failed', e)
     }
 
     setLoadingData(true)
@@ -243,7 +248,8 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
         tags: d.tags || '',
       }))
       setTransactions(parsedTx)
-      if (user?.id) localStorage.setItem(`finance_tx_cache_${user.id}`, JSON.stringify(parsedTx))
+      if (user?.id)
+        localStorage.setItem(`finance_tx_cache_${user.id}_${projectId}`, JSON.stringify(parsedTx))
     }
 
     if (metricsRes.data) {
@@ -271,7 +277,10 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
       }))
       setMonthlyMetrics(parsedMetrics)
       if (user?.id)
-        localStorage.setItem(`finance_metrics_cache_${user.id}`, JSON.stringify(parsedMetrics))
+        localStorage.setItem(
+          `finance_metrics_cache_${user.id}_${projectId}`,
+          JSON.stringify(parsedMetrics),
+        )
     }
 
     let accBalances = { sicredi: 0 }
@@ -357,7 +366,8 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
       }
       setTransactions((prev) => {
         const updated = [newTx, ...prev]
-        if (user?.id) localStorage.setItem(`finance_tx_cache_${user.id}`, JSON.stringify(updated))
+        if (user?.id)
+          localStorage.setItem(`finance_tx_cache_${user.id}_${projectId}`, JSON.stringify(updated))
         return updated
       })
       await logAction('CRIAR', 'Transação', data.id, {
@@ -410,7 +420,8 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
               }
             : t,
         )
-        if (user?.id) localStorage.setItem(`finance_tx_cache_${user.id}`, JSON.stringify(updated))
+        if (user?.id)
+          localStorage.setItem(`finance_tx_cache_${user.id}_${projectId}`, JSON.stringify(updated))
         return updated
       })
       await logAction('ATUALIZAR', 'Transação', id, {
@@ -441,7 +452,8 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
     if (!error) {
       setTransactions((prev) => {
         const updated = prev.filter((t) => t.id !== id)
-        if (user?.id) localStorage.setItem(`finance_tx_cache_${user.id}`, JSON.stringify(updated))
+        if (user?.id)
+          localStorage.setItem(`finance_tx_cache_${user.id}_${projectId}`, JSON.stringify(updated))
         return updated
       })
       await logAction('EXCLUIR', 'Transação', id, {
@@ -551,7 +563,10 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
           },
         ]
         if (user?.id)
-          localStorage.setItem(`finance_metrics_cache_${user.id}`, JSON.stringify(updated))
+          localStorage.setItem(
+            `finance_metrics_cache_${user.id}_${projectId}`,
+            JSON.stringify(updated),
+          )
         return updated
       })
       await logAction(existing ? 'ATUALIZAR' : 'CRIAR', 'Métrica Mensal', data.id, {

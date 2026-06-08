@@ -684,13 +684,16 @@ export const Constants = {
 //   Policy "Users can manage user settings" (ALL, PERMISSIVE) roles={authenticated}
 //     USING: (project_id = get_user_app_name())
 //     WITH CHECK: (project_id = get_user_app_name())
-
-// --- WARNING: TABLES WITH RLS ENABLED BUT NO POLICIES ---
-// These tables have Row Level Security enabled but NO policies defined.
-// This means ALL queries (SELECT, INSERT, UPDATE, DELETE) will return ZERO rows
-// for non-superuser roles (including the anon and authenticated roles used by the app).
-// You MUST create RLS policies for these tables to allow data access.
-//   - users
+// Table: users
+//   Policy "Users can delete their own project users" (DELETE, PERMISSIVE) roles={authenticated}
+//     USING: (project_id = get_user_app_name())
+//   Policy "Users can insert into their own project" (INSERT, PERMISSIVE) roles={authenticated}
+//     WITH CHECK: (project_id = get_user_app_name())
+//   Policy "Users can read their own project users" (SELECT, PERMISSIVE) roles={authenticated}
+//     USING: (project_id = get_user_app_name())
+//   Policy "Users can update their own project users" (UPDATE, PERMISSIVE) roles={authenticated}
+//     USING: (project_id = get_user_app_name())
+//     WITH CHECK: (project_id = get_user_app_name())
 
 // --- DATABASE FUNCTIONS ---
 // FUNCTION get_user_app_name()

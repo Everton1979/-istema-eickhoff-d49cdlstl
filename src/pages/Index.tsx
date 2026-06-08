@@ -26,18 +26,23 @@ import {
 } from 'lucide-react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '@/hooks/use-auth'
+import { useFinanceStore } from '@/stores/financeStore'
 
 export default function Index() {
   const [exportFilters, setExportFilters] = useState<any>(null)
   const { profile, loading } = useAuth()
   const navigate = useNavigate()
+  const { fetchData } = useFinanceStore()
 
   useEffect(() => {
     // Checagem de segurança em tempo real para barrar acessos não aprovados
     if (!loading && profile && profile.status === 'Pendente' && profile.role !== 'Administrador') {
       navigate('/pendente', { replace: true })
+    } else if (profile) {
+      // Ao entrar no dashboard ou mudar de empresa, força fetch ignorando cache stale
+      fetchData(true)
     }
-  }, [profile, loading, navigate])
+  }, [profile, loading, navigate]) // fetchData is intentionally omitted to avoid loops
 
   if (!loading && profile && profile.status === 'Pendente' && profile.role !== 'Administrador') {
     return (
