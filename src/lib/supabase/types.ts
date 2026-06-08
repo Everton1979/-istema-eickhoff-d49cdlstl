@@ -183,6 +183,7 @@ export type Database = {
           email: string
           endereco: string | null
           id: string
+          is_super_admin: boolean | null
           logradouro: string | null
           nome_fantasia: string | null
           numero: string | null
@@ -210,6 +211,7 @@ export type Database = {
           email: string
           endereco?: string | null
           id: string
+          is_super_admin?: boolean | null
           logradouro?: string | null
           nome_fantasia?: string | null
           numero?: string | null
@@ -237,6 +239,7 @@ export type Database = {
           email?: string
           endereco?: string | null
           id?: string
+          is_super_admin?: boolean | null
           logradouro?: string | null
           nome_fantasia?: string | null
           numero?: string | null
@@ -585,6 +588,7 @@ export const Constants = {
 //   plan_start_date: timestamp with time zone (nullable)
 //   plan_end_date: timestamp with time zone (nullable)
 //   admin_notes: text (nullable)
+//   is_super_admin: boolean (nullable, default: false)
 // Table: transactions
 //   id: uuid (not null, default: gen_random_uuid())
 //   user_id: uuid (not null)

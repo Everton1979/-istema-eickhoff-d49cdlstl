@@ -38,7 +38,7 @@ export function UserManagement() {
   const fetchUsers = async () => {
     if (!currentProfile) return
     setLoading(true)
-    const targetApp = currentProfile.app_name || 'farmacia_eickhoff'
+    const targetApp = currentProfile.app_name || currentProfile.id
     const { data, error } = await supabase
       .from('profiles')
       .select('*')
@@ -64,7 +64,7 @@ export function UserManagement() {
           action: 'create',
           email: newEmail,
           password: newPassword,
-          app_name: currentProfile?.app_name || 'farmacia_eickhoff',
+          app_name: currentProfile?.app_name || currentProfile?.id,
         },
       })
 

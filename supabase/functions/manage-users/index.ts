@@ -53,11 +53,12 @@ Deno.serve(async (req: Request) => {
     const isSuperAdmin = currentUserProfile.role === 'Administrador'
 
     if (action === 'create') {
-      let targetAppName = app_name || currentUserProfile.app_name
+      const fallbackAppName = currentUserProfile.app_name || user.id
+      let targetAppName = app_name || fallbackAppName
 
       // Master users can only create users for their own app_name
       if (!isSuperAdmin) {
-        targetAppName = currentUserProfile.app_name
+        targetAppName = fallbackAppName
       }
 
       const { data, error } = await supabaseAdmin.auth.admin.createUser({
@@ -110,7 +111,8 @@ Deno.serve(async (req: Request) => {
       }
 
       if (!isSuperAdmin) {
-        if (targetUser.app_name !== currentUserProfile.app_name) {
+        const fallbackAppName = currentUserProfile.app_name || user.id
+        if (targetUser.app_name !== fallbackAppName) {
           throw new Error('Acesso negado: Você não tem permissão para excluir este usuário.')
         }
         if (targetUser.role === 'Administrador') {
