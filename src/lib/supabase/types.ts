@@ -733,7 +733,7 @@ export const Constants = {
 //    STABLE SECURITY DEFINER
 //    SET search_path TO 'public'
 //   AS $function$
-//     SELECT app_name FROM public.profiles WHERE id = auth.uid();
+//     SELECT COALESCE(NULLIF(app_name, ''), id::text) FROM public.profiles WHERE id = auth.uid();
 //   $function$
 //
 // FUNCTION get_user_role()
@@ -877,6 +877,7 @@ export const Constants = {
 //   CREATE INDEX idx_monthly_metrics_project_year ON public.monthly_metrics USING btree (project_id, year)
 //   CREATE INDEX idx_monthly_metrics_user_project_year ON public.monthly_metrics USING btree (user_id, project_id, year)
 //   CREATE INDEX idx_monthly_metrics_year_month ON public.monthly_metrics USING btree (year, month)
+//   CREATE UNIQUE INDEX monthly_metrics_project_year_month_idx ON public.monthly_metrics USING btree (project_id, year, month)
 //   CREATE UNIQUE INDEX monthly_metrics_user_project_year_month_idx ON public.monthly_metrics USING btree (user_id, project_id, year, month)
 // Table: transactions
 //   CREATE INDEX idx_transactions_date_status ON public.transactions USING btree (date, status)
