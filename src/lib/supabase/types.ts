@@ -719,7 +719,32 @@ export const Constants = {
 //    LANGUAGE plpgsql
 //    SECURITY DEFINER
 //   AS $function$
+//   DECLARE
+//     v_app_name text;
+//     v_role text;
+//     v_status text;
+//     v_count int;
 //   BEGIN
+//     v_app_name := COALESCE(NEW.raw_user_meta_data->>'app_name', 'farmacia_eickhoff');
+//
+//     -- Check if any profile already exists for this app_name
+//     SELECT count(*) INTO v_count FROM public.profiles WHERE app_name = v_app_name;
+//
+//     IF v_count = 0 THEN
+//       -- First user of the company gets administrative privileges automatically
+//       v_role := 'Administrador';
+//       v_status := 'Ativo';
+//     ELSE
+//       -- Subsequent users
+//       IF NEW.email = 'farmaciaeickhoff@terra.com.br' THEN
+//         v_role := 'Administrador';
+//         v_status := 'Ativo';
+//       ELSE
+//         v_role := 'Master';
+//         v_status := 'Pendente';
+//       END IF;
+//     END IF;
+//
 //     INSERT INTO public.profiles (
 //       id, email, role, status, cnpj, razao_social, nome_fantasia,
 //       endereco, telefone, responsavel, cep, logradouro, numero, complemento, bairro, cidade_estado, app_name
@@ -727,8 +752,8 @@ export const Constants = {
 //     VALUES (
 //       NEW.id,
 //       NEW.email,
-//       CASE WHEN NEW.email = 'farmaciaeickhoff@terra.com.br' THEN 'Administrador' ELSE 'Master' END,
-//       CASE WHEN NEW.email = 'farmaciaeickhoff@terra.com.br' THEN 'Ativo' ELSE 'Pendente' END,
+//       v_role,
+//       v_status,
 //       NEW.raw_user_meta_data->>'cnpj',
 //       NEW.raw_user_meta_data->>'razao_social',
 //       NEW.raw_user_meta_data->>'nome_fantasia',
@@ -741,7 +766,7 @@ export const Constants = {
 //       NEW.raw_user_meta_data->>'complemento',
 //       NEW.raw_user_meta_data->>'bairro',
 //       NEW.raw_user_meta_data->>'cidade_estado',
-//       COALESCE(NEW.raw_user_meta_data->>'app_name', 'farmacia_eickhoff')
+//       v_app_name
 //     );
 //     RETURN NEW;
 //   END;
