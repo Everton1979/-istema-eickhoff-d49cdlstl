@@ -79,10 +79,9 @@ export default function Register() {
     setLoading(true)
 
     const cnpjDigits = formData.cnpj.replace(/\D/g, '')
-    const generatedAppName = cnpjDigits ? `tenant_${cnpjDigits}` : 'farmacia_eickhoff'
 
     const metadata = {
-      app_name: generatedAppName,
+      app_name: cnpjDigits,
       cnpj: formData.cnpj,
       razao_social: formData.razaoSocial,
       nome_fantasia: formData.nomeFantasia,

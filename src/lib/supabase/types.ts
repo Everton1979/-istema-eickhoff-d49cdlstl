@@ -24,7 +24,7 @@ export type Database = {
           created_at?: string
           date: string
           id?: string
-          project_id?: string
+          project_id: string
           type: string
           user_id: string
         }
@@ -57,7 +57,7 @@ export type Database = {
           entity: string
           entity_id?: string | null
           id?: string
-          project_id?: string
+          project_id: string
           user_id: string
         }
         Update: {
@@ -129,7 +129,7 @@ export type Database = {
           num_formulas_capsulas?: number
           num_formulas_dermato?: number
           orders_count?: number
-          project_id?: string
+          project_id: string
           raw_material_costs?: number
           sales_target?: number
           total_system_sales?: number
@@ -278,7 +278,7 @@ export type Database = {
           description: string
           id?: string
           payment_method?: string | null
-          project_id?: string
+          project_id: string
           status?: string
           subcategory?: string | null
           tags?: string | null
@@ -324,7 +324,7 @@ export type Database = {
           initial_balance_pix?: number | null
           initial_balance_sicredi?: number | null
           initial_balance_stone?: number | null
-          project_id?: string
+          project_id: string
           updated_at?: string
           user_id: string
         }
@@ -521,7 +521,7 @@ export const Constants = {
 //   type: text (not null)
 //   count: integer (not null, default: 1)
 //   created_at: timestamp with time zone (not null, default: now())
-//   project_id: text (not null, default: '30765609000112'::text)
+//   project_id: text (not null)
 // Table: audit_logs
 //   id: uuid (not null, default: gen_random_uuid())
 //   user_id: uuid (not null)
@@ -530,7 +530,7 @@ export const Constants = {
 //   entity_id: text (nullable)
 //   details: jsonb (nullable)
 //   created_at: timestamp with time zone (not null, default: now())
-//   project_id: text (not null, default: '30765609000112'::text)
+//   project_id: text (not null)
 // Table: marcelaourique@yahoo.com.br
 //   id: bigint (not null)
 //   created_at: timestamp with time zone (not null, default: now())
@@ -552,7 +552,7 @@ export const Constants = {
 //   vendas_dermato: numeric (not null, default: 0)
 //   custo_mp_emb_dermato: numeric (not null, default: 0)
 //   global_sales_target: numeric (not null, default: 0)
-//   project_id: text (not null, default: '30765609000112'::text)
+//   project_id: text (not null)
 //   colaboradores_capsulas: integer (not null, default: 0)
 //   colaboradores_dermato: integer (not null, default: 0)
 //   colaboradores_vendas: integer (not null, default: 0)
@@ -579,7 +579,7 @@ export const Constants = {
 //   bairro: text (nullable)
 //   cidade_estado: text (nullable)
 //   created_at: timestamp with time zone (not null, default: now())
-//   app_name: text (nullable, default: '30765609000112'::text)
+//   app_name: text (nullable)
 //   approved_at: timestamp with time zone (nullable)
 //   plan_type: text (nullable, default: 'free'::text)
 //   plan_start_date: timestamp with time zone (nullable)
@@ -599,7 +599,7 @@ export const Constants = {
 //   tags: text (nullable, default: ''::text)
 //   payment_method: text (nullable)
 //   subcategory: text (nullable)
-//   project_id: text (not null, default: '30765609000112'::text)
+//   project_id: text (not null)
 // Table: user_settings
 //   user_id: uuid (not null)
 //   initial_balance_dinheiro: numeric (nullable, default: 0)
@@ -610,7 +610,7 @@ export const Constants = {
 //   updated_at: timestamp with time zone (not null, default: now())
 //   initial_balance_banricompras: numeric (nullable, default: 0)
 //   initial_balance_sicredi: numeric (nullable, default: 0)
-//   project_id: text (not null, default: '30765609000112'::text)
+//   project_id: text (not null)
 // Table: users
 //   id: uuid (not null, default: gen_random_uuid())
 //   user_id: uuid (not null)
