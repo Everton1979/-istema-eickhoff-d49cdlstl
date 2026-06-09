@@ -28,10 +28,9 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { TransactionForm } from '@/components/transactions/TransactionForm'
 import { DeleteTransactionDialog } from '@/components/transactions/DeleteTransactionDialog'
-import { Plus, Search, Pencil, Trash2, Info, Download, Activity } from 'lucide-react'
+import { Plus, Search, Pencil, Trash2, Info, Activity } from 'lucide-react'
 import { cn, getTagColor } from '@/lib/utils'
 import { Transaction } from '@/types/finance'
-import { PrintableReport } from '@/components/dashboard/PrintableReport'
 const MONTHS_PT = [
   'Janeiro',
   'Fevereiro',
@@ -209,66 +208,9 @@ export default function Transactions() {
     return acc
   }, 0)
 
-  const handleExportExcel = () => {
-    let receitas = 0
-    let despesas = 0
-
-    filteredData.forEach((tx) => {
-      if (tx.status === 'REALIZADO') {
-        if (tx.type === 'INCOME') receitas += tx.amount
-        else if (tx.type === 'EXPENSE') despesas += tx.amount
-      }
-    })
-    const lucro = receitas - despesas
-
-    const summaryRows = [
-      ['RESUMO OPERACIONAL'],
-      ['Receitas (Realizadas)', receitas.toFixed(2).replace('.', ',')],
-      ['Despesas Totais (Caixa)', despesas.toFixed(2).replace('.', ',')],
-      ['Lucro Operacional (Caixa)', lucro.toFixed(2).replace('.', ',')],
-      [],
-      ['EXTRATO DE DESPESAS'],
-    ]
-
-    const headers = ['Data', 'Descrição', 'Categoria', 'Conta', 'Status', 'Valor', 'Observações']
-
-    const exportData = filteredData
-      .filter((tx) => tx.type === 'EXPENSE')
-      .sort((a, b) => {
-        const dateA = a.date.split('T')[0]
-        const dateB = b.date.split('T')[0]
-        return dateA.localeCompare(dateB) // crescente
-      })
-
-    const rows = exportData.map((tx) => [
-      tx.date.split('T')[0].split('-').reverse().join('/'),
-      `"${tx.description.replace(/"/g, '""')}"`,
-      `"${getCategoryName(tx)}"`,
-      `"${getAccountName(tx.accountId, tx.type)}"`,
-      tx.status,
-      `-${tx.amount.toFixed(2).replace('.', ',')}`,
-      `"${tx.tags || ''}"`,
-    ])
-
-    const csvContent =
-      '\uFEFF' +
-      summaryRows.map((r) => r.join(';')).join('\n') +
-      '\n' +
-      [headers.join(';'), ...rows.map((r) => r.join(';'))].join('\n')
-
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
-    const url = URL.createObjectURL(blob)
-    const link = document.createElement('a')
-    link.href = url
-    link.setAttribute('download', `extrato_despesas_${new Date().getTime()}.csv`)
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-  }
-
   return (
     <div className="flex-1 overflow-y-auto p-3 sm:p-6 flex flex-col custom-scrollbar">
-      <PrintableReport />
+      {/* PrintableReport removed as unused in Transactions */}
       <div className="flex flex-col bg-white rounded-md shadow-md border p-4 sm:p-6 animate-fade-in-up mb-8 w-full print:hidden shrink-0">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
           <div>
@@ -288,18 +230,6 @@ export default function Transactions() {
             )}
           </div>
           <div className="flex flex-wrap sm:flex-nowrap gap-2 w-full sm:w-auto mt-2 sm:mt-0">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" className="gap-2 text-slate-600 flex-1 sm:flex-none">
-                  <Download className="h-4 w-4" /> Exportar
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={handleExportExcel}>Exportar para Excel</DropdownMenuItem>
-                <DropdownMenuItem onClick={() => window.print()}>Salvar como PDF</DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-
             <Sheet open={isTransactionSheetOpen} onOpenChange={handleSheetChange}>
               <SheetTrigger asChild>
                 <Button

@@ -120,12 +120,13 @@ export function ExportReportDialog({ onExport }: { onExport?: (filters: any) => 
   const { toast } = useToast()
 
   const generateCSV = (data: Transaction[], startStr: string, endStr: string) => {
-    const headers = ['Data', 'Descrição', 'Valor', 'Tipo', 'Categoria', 'Status']
+    const headers = ['Data', 'Descrição', 'Observações', 'Valor', 'Tipo', 'Categoria', 'Status']
     const rows = data.map((tx) => {
       const dateObj = tx.date.includes('T') ? new Date(tx.date) : new Date(tx.date + 'T12:00:00Z')
       return [
         dateObj.toLocaleDateString('pt-BR'),
         `"${tx.description.replace(/"/g, '""')}"`,
+        `"${(tx.tags || '').replace(/"/g, '""')}"`,
         tx.amount.toString().replace('.', ','),
         tx.type === 'INCOME' ? 'Receita' : tx.type === 'INVESTIMENTO' ? 'Investimento' : 'Despesa',
         tx.categoryId || '',
@@ -366,6 +367,9 @@ export function ExportReportDialog({ onExport }: { onExport?: (filters: any) => 
                             Descrição
                           </th>
                           <th className="py-2 px-3 text-left font-bold text-slate-700">
+                            Observações
+                          </th>
+                          <th className="py-2 px-3 text-left font-bold text-slate-700">
                             Categoria
                           </th>
                           <th className="py-2 px-3 text-left font-bold text-slate-700">Tipo</th>
@@ -382,6 +386,7 @@ export function ExportReportDialog({ onExport }: { onExport?: (filters: any) => 
                               {formatDate(tx.date)}
                             </td>
                             <td className="py-2 px-3 text-slate-800">{tx.description}</td>
+                            <td className="py-2 px-3 text-slate-600">{tx.tags || '-'}</td>
                             <td className="py-2 px-3 text-slate-600">
                               {(tx.category as any) || (tx as any).categoryId || '-'}
                             </td>

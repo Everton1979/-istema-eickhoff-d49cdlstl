@@ -66,10 +66,11 @@ export function PrintableReport({ exportFilters }: { exportFilters: any }) {
         ['Detalhamento de Transações'],
       ]
 
-      const headers = ['Data', 'Descrição', 'Categoria', 'Tipo', 'Valor']
+      const headers = ['Data', 'Descrição', 'Observações', 'Categoria', 'Tipo', 'Valor']
       const rows = filtered.map((t) => [
         new Date(t.date).toLocaleDateString('pt-BR'),
         `"${(t.description || '').replace(/"/g, '""')}"`,
+        `"${(t.tags || '').replace(/"/g, '""')}"`,
         `"${((t.category as any) || (t as any).categoryId || '').replace(/"/g, '""')}"`,
         t.type === 'INCOME' ? 'ENTRADA' : t.type === 'INVESTIMENTO' ? 'INVESTIMENTO' : 'SAIDA',
         Number(t.amount).toFixed(2).replace('.', ','),
@@ -221,6 +222,7 @@ export function PrintableReport({ exportFilters }: { exportFilters: any }) {
                 <tr className="border-b bg-gray-50">
                   <th className="text-left py-2 px-2">Data</th>
                   <th className="text-left py-2 px-2">Descrição</th>
+                  <th className="text-left py-2 px-2">Observações</th>
                   <th className="text-left py-2 px-2">Categoria</th>
                   <th className="text-right py-2 px-2">Valor</th>
                 </tr>
@@ -230,6 +232,7 @@ export function PrintableReport({ exportFilters }: { exportFilters: any }) {
                   <tr key={t.id} className="border-b">
                     <td className="py-2 px-2">{new Date(t.date).toLocaleDateString('pt-BR')}</td>
                     <td className="py-2 px-2">{t.description}</td>
+                    <td className="py-2 px-2">{t.tags || '-'}</td>
                     <td className="py-2 px-2">{(t.category as any) || (t as any).categoryId}</td>
                     <td
                       className={`py-2 px-2 text-right ${t.type === 'INCOME' ? 'text-green-600' : 'text-red-600'}`}
@@ -241,7 +244,7 @@ export function PrintableReport({ exportFilters }: { exportFilters: any }) {
                 ))}
                 {exportTransactions.length === 0 && (
                   <tr>
-                    <td colSpan={4} className="py-4 text-center text-gray-500">
+                    <td colSpan={5} className="py-4 text-center text-gray-500">
                       Nenhuma transação encontrada no período selecionado.
                     </td>
                   </tr>
