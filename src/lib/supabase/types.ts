@@ -630,34 +630,34 @@ export const Constants = {
 // --- ROW LEVEL SECURITY POLICIES ---
 // Table: appointments
 //   Policy "appointments_delete" (DELETE, PERMISSIVE) roles={authenticated}
-//     USING: (project_id = get_user_app_name())
+//     USING: (user_id = auth.uid())
 //   Policy "appointments_insert" (INSERT, PERMISSIVE) roles={authenticated}
-//     WITH CHECK: (project_id = get_user_app_name())
+//     WITH CHECK: (user_id = auth.uid())
 //   Policy "appointments_select" (SELECT, PERMISSIVE) roles={authenticated}
-//     USING: (project_id = get_user_app_name())
+//     USING: (user_id = auth.uid())
 //   Policy "appointments_update" (UPDATE, PERMISSIVE) roles={authenticated}
-//     USING: (project_id = get_user_app_name())
-//     WITH CHECK: (project_id = get_user_app_name())
+//     USING: (user_id = auth.uid())
+//     WITH CHECK: (user_id = auth.uid())
 // Table: audit_logs
 //   Policy "audit_logs_delete" (DELETE, PERMISSIVE) roles={authenticated}
-//     USING: (project_id = get_user_app_name())
+//     USING: (user_id = auth.uid())
 //   Policy "audit_logs_insert" (INSERT, PERMISSIVE) roles={authenticated}
-//     WITH CHECK: (project_id = get_user_app_name())
+//     WITH CHECK: (user_id = auth.uid())
 //   Policy "audit_logs_select" (SELECT, PERMISSIVE) roles={authenticated}
-//     USING: (project_id = get_user_app_name())
+//     USING: (user_id = auth.uid())
 //   Policy "audit_logs_update" (UPDATE, PERMISSIVE) roles={authenticated}
-//     USING: (project_id = get_user_app_name())
-//     WITH CHECK: (project_id = get_user_app_name())
+//     USING: (user_id = auth.uid())
+//     WITH CHECK: (user_id = auth.uid())
 // Table: monthly_metrics
 //   Policy "monthly_metrics_delete" (DELETE, PERMISSIVE) roles={authenticated}
-//     USING: (project_id = get_user_app_name())
+//     USING: (user_id = auth.uid())
 //   Policy "monthly_metrics_insert" (INSERT, PERMISSIVE) roles={authenticated}
-//     WITH CHECK: (project_id = get_user_app_name())
+//     WITH CHECK: (user_id = auth.uid())
 //   Policy "monthly_metrics_select" (SELECT, PERMISSIVE) roles={authenticated}
-//     USING: (project_id = get_user_app_name())
+//     USING: (user_id = auth.uid())
 //   Policy "monthly_metrics_update" (UPDATE, PERMISSIVE) roles={authenticated}
-//     USING: (project_id = get_user_app_name())
-//     WITH CHECK: (project_id = get_user_app_name())
+//     USING: (user_id = auth.uid())
+//     WITH CHECK: (user_id = auth.uid())
 // Table: profiles
 //   Policy "Users can delete profiles" (DELETE, PERMISSIVE) roles={authenticated}
 //     USING: ((get_user_role() = ANY (ARRAY['Administrador'::text, 'Master'::text])) AND (app_name = get_user_app_name()))
@@ -670,24 +670,24 @@ export const Constants = {
 //     WITH CHECK: ((id = auth.uid()) OR ((get_user_role() = ANY (ARRAY['Administrador'::text, 'Master'::text])) AND (app_name = get_user_app_name())))
 // Table: transactions
 //   Policy "transactions_delete" (DELETE, PERMISSIVE) roles={authenticated}
-//     USING: (project_id = get_user_app_name())
+//     USING: (user_id = auth.uid())
 //   Policy "transactions_insert" (INSERT, PERMISSIVE) roles={authenticated}
-//     WITH CHECK: (project_id = get_user_app_name())
+//     WITH CHECK: (user_id = auth.uid())
 //   Policy "transactions_select" (SELECT, PERMISSIVE) roles={authenticated}
-//     USING: (project_id = get_user_app_name())
+//     USING: (user_id = auth.uid())
 //   Policy "transactions_update" (UPDATE, PERMISSIVE) roles={authenticated}
-//     USING: (project_id = get_user_app_name())
-//     WITH CHECK: (project_id = get_user_app_name())
+//     USING: (user_id = auth.uid())
+//     WITH CHECK: (user_id = auth.uid())
 // Table: user_settings
 //   Policy "user_settings_delete" (DELETE, PERMISSIVE) roles={authenticated}
-//     USING: (project_id = get_user_app_name())
+//     USING: (user_id = auth.uid())
 //   Policy "user_settings_insert" (INSERT, PERMISSIVE) roles={authenticated}
-//     WITH CHECK: (project_id = get_user_app_name())
+//     WITH CHECK: (user_id = auth.uid())
 //   Policy "user_settings_select" (SELECT, PERMISSIVE) roles={authenticated}
-//     USING: (project_id = get_user_app_name())
+//     USING: (user_id = auth.uid())
 //   Policy "user_settings_update" (UPDATE, PERMISSIVE) roles={authenticated}
-//     USING: (project_id = get_user_app_name())
-//     WITH CHECK: (project_id = get_user_app_name())
+//     USING: (user_id = auth.uid())
+//     WITH CHECK: (user_id = auth.uid())
 // Table: users
 //   Policy "users_delete" (DELETE, PERMISSIVE) roles={authenticated}
 //     USING: (project_id = get_user_app_name())
@@ -829,8 +829,16 @@ export const Constants = {
 //    SECURITY DEFINER
 //   AS $function$
 //   BEGIN
-//     -- Use get_user_app_name() and fall back to NEW.project_id
-//     NEW.project_id := COALESCE(public.get_user_app_name(), NEW.project_id);
+//     -- Force project_id to match the user's app_name based on their user_id
+//     SELECT COALESCE(NULLIF(app_name, ''), id::text)
+//     INTO NEW.project_id
+//     FROM public.profiles
+//     WHERE id = NEW.user_id;
+//
+//     IF NEW.project_id IS NULL THEN
+//       NEW.project_id := NEW.user_id::text;
+//     END IF;
+//
 //     RETURN NEW;
 //   END;
 //   $function$

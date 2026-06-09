@@ -184,19 +184,21 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
             key.startsWith('v2_finance_tx_cache_') ||
             key.startsWith('v2_finance_metrics_cache_') ||
             key.startsWith('v3_finance_tx_cache_') ||
-            key.startsWith('v3_finance_metrics_cache_')
+            key.startsWith('v3_finance_metrics_cache_') ||
+            key.startsWith('v4_finance_tx_cache_') ||
+            key.startsWith('v4_finance_metrics_cache_')
           ) {
             localStorage.removeItem(key)
           }
         })
         sessionStorage.clear() // Force clear session storage to remove stale queries if any
 
-        const cachedTx = localStorage.getItem(`v4_finance_tx_cache_${user.id}_${projectId}`)
+        const cachedTx = localStorage.getItem(`v5_finance_tx_cache_${user.id}_${projectId}`)
         if (cachedTx && transactions.length === 0) {
           setTransactions(JSON.parse(cachedTx))
         }
         const cachedMetrics = localStorage.getItem(
-          `v4_finance_metrics_cache_${user.id}_${projectId}`,
+          `v5_finance_metrics_cache_${user.id}_${projectId}`,
         )
         if (cachedMetrics && monthlyMetrics.length === 0) {
           setMonthlyMetrics(JSON.parse(cachedMetrics))
@@ -270,7 +272,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
       setTransactions(parsedTx)
       if (user?.id)
         localStorage.setItem(
-          `v4_finance_tx_cache_${user.id}_${projectId}`,
+          `v5_finance_tx_cache_${user.id}_${projectId}`,
           JSON.stringify(parsedTx),
         )
     }
@@ -301,7 +303,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
       setMonthlyMetrics(parsedMetrics)
       if (user?.id)
         localStorage.setItem(
-          `v4_finance_metrics_cache_${user.id}_${projectId}`,
+          `v5_finance_metrics_cache_${user.id}_${projectId}`,
           JSON.stringify(parsedMetrics),
         )
     }
@@ -391,7 +393,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
         const updated = [newTx, ...prev]
         if (user?.id)
           localStorage.setItem(
-            `v4_finance_tx_cache_${user.id}_${projectId}`,
+            `v5_finance_tx_cache_${user.id}_${projectId}`,
             JSON.stringify(updated),
           )
         return updated
@@ -448,7 +450,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
         )
         if (user?.id)
           localStorage.setItem(
-            `v4_finance_tx_cache_${user.id}_${projectId}`,
+            `v5_finance_tx_cache_${user.id}_${projectId}`,
             JSON.stringify(updated),
           )
         return updated
@@ -483,7 +485,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
         const updated = prev.filter((t) => t.id !== id)
         if (user?.id)
           localStorage.setItem(
-            `v4_finance_tx_cache_${user.id}_${projectId}`,
+            `v5_finance_tx_cache_${user.id}_${projectId}`,
             JSON.stringify(updated),
           )
         return updated
@@ -596,7 +598,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
         ]
         if (user?.id)
           localStorage.setItem(
-            `v4_finance_metrics_cache_${user.id}_${projectId}`,
+            `v5_finance_metrics_cache_${user.id}_${projectId}`,
             JSON.stringify(updated),
           )
         return updated
