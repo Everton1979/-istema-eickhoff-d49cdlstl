@@ -5,7 +5,6 @@ import { Input } from '@/components/ui/input'
 import { toast } from 'sonner'
 import { useNavigate, Navigate, Link } from 'react-router-dom'
 import { Building2, Eye, EyeOff } from 'lucide-react'
-import { Label } from '@/components/ui/label'
 import {
   Select,
   SelectContent,
@@ -13,28 +12,68 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { z } from 'zod'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form'
+
+const registerSchema = z.object({
+  razaoSocial: z.string().min(1, 'Este campo é obrigatório'),
+  nomeFantasia: z.string().min(1, 'Este campo é obrigatório'),
+  cnpj: z
+    .string()
+    .min(1, 'Este campo é obrigatório')
+    .refine(
+      (val) => val.replace(/\D/g, '').length === 14,
+      'O CNPJ deve conter exatamente 14 números',
+    ),
+  telefone: z.string().min(1, 'Este campo é obrigatório'),
+  cep: z.string().min(1, 'Este campo é obrigatório'),
+  logradouro: z.string().min(1, 'Este campo é obrigatório'),
+  numero: z.string().min(1, 'Este campo é obrigatório'),
+  complemento: z.string().optional(),
+  bairro: z.string().min(1, 'Este campo é obrigatório'),
+  cidade: z.string().min(1, 'Este campo é obrigatório'),
+  estado: z.string().min(1, 'Este campo é obrigatório'),
+  responsavel: z.string().min(1, 'Este campo é obrigatório'),
+  email: z.string().min(1, 'Este campo é obrigatório').email('E-mail inválido'),
+  password: z.string().min(6, 'A senha deve ter no mínimo 6 caracteres'),
+})
+
+type RegisterFormValues = z.infer<typeof registerSchema>
 
 export default function Register() {
   const [showPassword, setShowPassword] = useState(false)
-  const [formData, setFormData] = useState({
-    cnpj: '',
-    razaoSocial: '',
-    nomeFantasia: '',
-    cep: '',
-    logradouro: '',
-    numero: '',
-    complemento: '',
-    bairro: '',
-    cidade: '',
-    estado: '',
-    telefone: '',
-    responsavel: '',
-    email: '',
-    password: '',
-  })
   const [loading, setLoading] = useState(false)
   const { signUp, user, profile, loading: authLoading } = useAuth()
   const navigate = useNavigate()
+
+  const form = useForm<RegisterFormValues>({
+    resolver: zodResolver(registerSchema),
+    defaultValues: {
+      cnpj: '',
+      razaoSocial: '',
+      nomeFantasia: '',
+      cep: '',
+      logradouro: '',
+      numero: '',
+      complemento: '',
+      bairro: '',
+      cidade: '',
+      estado: '',
+      telefone: '',
+      responsavel: '',
+      email: '',
+      password: '',
+    },
+  })
 
   if (authLoading) {
     return (
@@ -51,51 +90,27 @@ export default function Register() {
     }
   }
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }))
-  }
-
-  const handleCnpjChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let value = e.target.value.replace(/\D/g, '')
-    if (value.length > 14) value = value.slice(0, 14)
-
-    // Apply mask 00.000.000/0000-00
-    value = value.replace(/^(\d{2})(\d)/, '$1.$2')
-    value = value.replace(/^(\d{2})\.(\d{3})(\d)/, '$1.$2.$3')
-    value = value.replace(/\.(\d{3})(\d)/, '.$1/$2')
-    value = value.replace(/(\d{4})(\d)/, '$1-$2')
-
-    setFormData((prev) => ({ ...prev, cnpj: value }))
-  }
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-
-    if (!formData.estado) {
-      toast.error('Por favor, selecione um estado.')
-      return
-    }
-
+  const onSubmit = async (data: RegisterFormValues) => {
     setLoading(true)
 
-    const cnpjDigits = formData.cnpj.replace(/\D/g, '')
+    const cnpjDigits = data.cnpj.replace(/\D/g, '')
 
     const metadata = {
       app_name: cnpjDigits,
-      cnpj: formData.cnpj,
-      razao_social: formData.razaoSocial,
-      nome_fantasia: formData.nomeFantasia,
-      cep: formData.cep,
-      logradouro: formData.logradouro,
-      numero: formData.numero,
-      complemento: formData.complemento,
-      bairro: formData.bairro,
-      cidade_estado: `${formData.cidade} - ${formData.estado}`,
-      telefone: formData.telefone,
-      responsavel: formData.responsavel,
+      cnpj: data.cnpj,
+      razao_social: data.razaoSocial,
+      nome_fantasia: data.nomeFantasia,
+      cep: data.cep,
+      logradouro: data.logradouro,
+      numero: data.numero,
+      complemento: data.complemento,
+      bairro: data.bairro,
+      cidade_estado: `${data.cidade} - ${data.estado}`,
+      telefone: data.telefone,
+      responsavel: data.responsavel,
     }
 
-    const { error } = await signUp(formData.email, formData.password, metadata)
+    const { error } = await signUp(data.email, data.password, metadata)
 
     setLoading(false)
     if (error) {
@@ -105,7 +120,7 @@ export default function Register() {
         'Cadastro realizado com sucesso! Siga as instruções na tela para concluir seu acesso.',
         { duration: 10000 },
       )
-      navigate('/pendente', { state: { email: formData.email } })
+      navigate('/pendente', { state: { email: data.email } })
     }
   }
 
@@ -122,207 +137,284 @@ export default function Register() {
           Preencha os dados abaixo para solicitar acesso ao sistema.
         </p>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-1">
-              <Label>Razão Social</Label>
-              <Input
-                required
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
                 name="razaoSocial"
-                value={formData.razaoSocial}
-                onChange={handleChange}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Razão Social</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </div>
-            <div className="space-y-1">
-              <Label>Nome Fantasia</Label>
-              <Input
-                required
+              <FormField
+                control={form.control}
                 name="nomeFantasia"
-                value={formData.nomeFantasia}
-                onChange={handleChange}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Nome Fantasia</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </div>
-            <div className="space-y-1">
-              <Label>CNPJ (somente números)</Label>
-              <Input
-                required
+              <FormField
+                control={form.control}
                 name="cnpj"
-                value={formData.cnpj}
-                onChange={handleCnpjChange}
-                placeholder="00.000.000/0000-00"
-                maxLength={18}
-              />
-            </div>
-            <div className="space-y-1">
-              <Label>Telefone / WhatsApp</Label>
-              <Input required name="telefone" value={formData.telefone} onChange={handleChange} />
-            </div>
-            <div className="space-y-1">
-              <Label>CEP</Label>
-              <Input
-                required
-                name="cep"
-                value={formData.cep}
-                onChange={handleChange}
-                autoComplete="postal-code"
-                maxLength={9}
-                placeholder="00000-000"
-              />
-            </div>
-            <div className="space-y-1">
-              <Label>Logradouro (Rua/Av)</Label>
-              <Input
-                required
-                name="logradouro"
-                value={formData.logradouro}
-                onChange={handleChange}
-                autoComplete="street-address"
-                placeholder="Rua Exemplo"
-              />
-            </div>
-            <div className="space-y-1">
-              <Label>Número</Label>
-              <Input
-                required
-                name="numero"
-                value={formData.numero}
-                onChange={handleChange}
-                autoComplete="address-line1"
-                placeholder="123"
-              />
-            </div>
-            <div className="space-y-1">
-              <Label>Complemento</Label>
-              <Input
-                name="complemento"
-                value={formData.complemento}
-                onChange={handleChange}
-                autoComplete="address-line2"
-                placeholder="(opcional)"
-              />
-            </div>
-            <div className="space-y-1">
-              <Label>Bairro</Label>
-              <Input
-                required
-                name="bairro"
-                value={formData.bairro}
-                onChange={handleChange}
-                autoComplete="address-level3"
-                placeholder="Centro"
-              />
-            </div>
-            <div className="space-y-1">
-              <Label>Cidade</Label>
-              <Input
-                required
-                name="cidade"
-                value={formData.cidade}
-                onChange={handleChange}
-                autoComplete="address-level2"
-                placeholder="Ex: São Paulo"
-              />
-            </div>
-            <div className="space-y-1">
-              <Label>Estado</Label>
-              <Select
-                value={formData.estado}
-                onValueChange={(value) => setFormData((prev) => ({ ...prev, estado: value }))}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Selecione o estado" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="AC">Acre</SelectItem>
-                  <SelectItem value="AL">Alagoas</SelectItem>
-                  <SelectItem value="AP">Amapá</SelectItem>
-                  <SelectItem value="AM">Amazonas</SelectItem>
-                  <SelectItem value="BA">Bahia</SelectItem>
-                  <SelectItem value="CE">Ceará</SelectItem>
-                  <SelectItem value="DF">Distrito Federal</SelectItem>
-                  <SelectItem value="ES">Espírito Santo</SelectItem>
-                  <SelectItem value="GO">Goiás</SelectItem>
-                  <SelectItem value="MA">Maranhão</SelectItem>
-                  <SelectItem value="MT">Mato Grosso</SelectItem>
-                  <SelectItem value="MS">Mato Grosso do Sul</SelectItem>
-                  <SelectItem value="MG">Minas Gerais</SelectItem>
-                  <SelectItem value="PA">Pará</SelectItem>
-                  <SelectItem value="PB">Paraíba</SelectItem>
-                  <SelectItem value="PR">Paraná</SelectItem>
-                  <SelectItem value="PE">Pernambuco</SelectItem>
-                  <SelectItem value="PI">Piauí</SelectItem>
-                  <SelectItem value="RJ">Rio de Janeiro</SelectItem>
-                  <SelectItem value="RN">Rio Grande do Norte</SelectItem>
-                  <SelectItem value="RS">Rio Grande do Sul</SelectItem>
-                  <SelectItem value="RO">Rondônia</SelectItem>
-                  <SelectItem value="RR">Roraima</SelectItem>
-                  <SelectItem value="SC">Santa Catarina</SelectItem>
-                  <SelectItem value="SP">São Paulo</SelectItem>
-                  <SelectItem value="SE">Sergipe</SelectItem>
-                  <SelectItem value="TO">Tocantins</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-1 md:col-span-2 border-t pt-4 mt-2">
-              <Label>Nome do Responsável</Label>
-              <Input
-                required
-                name="responsavel"
-                value={formData.responsavel}
-                onChange={handleChange}
-              />
-            </div>
-          </div>
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>CNPJ (somente números)</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="00.000.000/0000-00"
+                        maxLength={18}
+                        {...field}
+                        onChange={(e) => {
+                          let value = e.target.value.replace(/\D/g, '')
+                          if (value.length > 14) value = value.slice(0, 14)
 
-          <div className="border-t pt-4 mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-1">
-              <Label>Email de Acesso</Label>
-              <Input
-                type="email"
-                required
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
+                          value = value.replace(/^(\d{2})(\d)/, '$1.$2')
+                          value = value.replace(/^(\d{2})\.(\d{3})(\d)/, '$1.$2.$3')
+                          value = value.replace(/\.(\d{3})(\d)/, '.$1/$2')
+                          value = value.replace(/(\d{4})(\d)/, '$1-$2')
+
+                          field.onChange(value)
+                        }}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </div>
-            <div className="space-y-1">
-              <Label>Senha</Label>
-              <div className="relative">
-                <Input
-                  type={showPassword ? 'text' : 'password'}
-                  required
-                  minLength={6}
-                  name="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  className="pr-10"
+              <FormField
+                control={form.control}
+                name="telefone"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Telefone / WhatsApp</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="cep"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>CEP</FormLabel>
+                    <FormControl>
+                      <Input
+                        autoComplete="postal-code"
+                        maxLength={9}
+                        placeholder="00000-000"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="logradouro"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Logradouro (Rua/Av)</FormLabel>
+                    <FormControl>
+                      <Input autoComplete="street-address" placeholder="Rua Exemplo" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="numero"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Número</FormLabel>
+                    <FormControl>
+                      <Input autoComplete="address-line1" placeholder="123" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="complemento"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Complemento</FormLabel>
+                    <FormControl>
+                      <Input autoComplete="address-line2" placeholder="(opcional)" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="bairro"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Bairro</FormLabel>
+                    <FormControl>
+                      <Input autoComplete="address-level3" placeholder="Centro" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="cidade"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Cidade</FormLabel>
+                    <FormControl>
+                      <Input autoComplete="address-level2" placeholder="Ex: São Paulo" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="estado"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Estado</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Selecione o estado" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="AC">Acre</SelectItem>
+                        <SelectItem value="AL">Alagoas</SelectItem>
+                        <SelectItem value="AP">Amapá</SelectItem>
+                        <SelectItem value="AM">Amazonas</SelectItem>
+                        <SelectItem value="BA">Bahia</SelectItem>
+                        <SelectItem value="CE">Ceará</SelectItem>
+                        <SelectItem value="DF">Distrito Federal</SelectItem>
+                        <SelectItem value="ES">Espírito Santo</SelectItem>
+                        <SelectItem value="GO">Goiás</SelectItem>
+                        <SelectItem value="MA">Maranhão</SelectItem>
+                        <SelectItem value="MT">Mato Grosso</SelectItem>
+                        <SelectItem value="MS">Mato Grosso do Sul</SelectItem>
+                        <SelectItem value="MG">Minas Gerais</SelectItem>
+                        <SelectItem value="PA">Pará</SelectItem>
+                        <SelectItem value="PB">Paraíba</SelectItem>
+                        <SelectItem value="PR">Paraná</SelectItem>
+                        <SelectItem value="PE">Pernambuco</SelectItem>
+                        <SelectItem value="PI">Piauí</SelectItem>
+                        <SelectItem value="RJ">Rio de Janeiro</SelectItem>
+                        <SelectItem value="RN">Rio Grande do Norte</SelectItem>
+                        <SelectItem value="RS">Rio Grande do Sul</SelectItem>
+                        <SelectItem value="RO">Rondônia</SelectItem>
+                        <SelectItem value="RR">Roraima</SelectItem>
+                        <SelectItem value="SC">Santa Catarina</SelectItem>
+                        <SelectItem value="SP">São Paulo</SelectItem>
+                        <SelectItem value="SE">Sergipe</SelectItem>
+                        <SelectItem value="TO">Tocantins</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <div className="md:col-span-2 border-t pt-4 mt-2">
+                <FormField
+                  control={form.control}
+                  name="responsavel"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Nome do Responsável</FormLabel>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
-                >
-                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                </button>
               </div>
             </div>
-          </div>
 
-          <Button
-            type="submit"
-            className="w-full bg-[#1e3a8a] hover:bg-[#1e3a8a]/90 mt-6"
-            disabled={loading}
-          >
-            {loading ? 'Aguarde...' : 'Solicitar Acesso'}
-          </Button>
+            <div className="border-t pt-4 mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email de Acesso</FormLabel>
+                    <FormControl>
+                      <Input type="email" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Senha</FormLabel>
+                    <div className="relative">
+                      <FormControl>
+                        <Input
+                          type={showPassword ? 'text' : 'password'}
+                          className="pr-10"
+                          {...field}
+                        />
+                      </FormControl>
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                      >
+                        {showPassword ? (
+                          <EyeOff className="w-4 h-4" />
+                        ) : (
+                          <Eye className="w-4 h-4" />
+                        )}
+                      </button>
+                    </div>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
 
-          <div className="text-center mt-4">
-            <span className="text-sm text-gray-600">Já possui uma conta? </span>
-            <Link to="/login" className="text-sm font-semibold text-[#1e3a8a] hover:underline">
-              Fazer Login
-            </Link>
-          </div>
-        </form>
+            <Button
+              type="submit"
+              className="w-full bg-[#1e3a8a] hover:bg-[#1e3a8a]/90 mt-6"
+              disabled={loading}
+            >
+              {loading ? 'Aguarde...' : 'Solicitar Acesso'}
+            </Button>
+
+            <div className="text-center mt-4">
+              <span className="text-sm text-gray-600">Já possui uma conta? </span>
+              <Link to="/login" className="text-sm font-semibold text-[#1e3a8a] hover:underline">
+                Fazer Login
+              </Link>
+            </div>
+          </form>
+        </Form>
       </div>
     </div>
   )
