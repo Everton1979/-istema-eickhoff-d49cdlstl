@@ -670,14 +670,14 @@ export const Constants = {
 //     WITH CHECK: ((id = auth.uid()) OR ((get_user_role() = ANY (ARRAY['Administrador'::text, 'Master'::text])) AND (app_name = get_user_app_name())))
 // Table: transactions
 //   Policy "transactions_delete" (DELETE, PERMISSIVE) roles={authenticated}
-//     USING: ((user_id = auth.uid()) AND (project_id = get_user_app_name()))
+//     USING: (project_id = get_user_app_name())
 //   Policy "transactions_insert" (INSERT, PERMISSIVE) roles={authenticated}
-//     WITH CHECK: ((user_id = auth.uid()) AND (project_id = get_user_app_name()))
+//     WITH CHECK: (project_id = get_user_app_name())
 //   Policy "transactions_select" (SELECT, PERMISSIVE) roles={authenticated}
-//     USING: ((user_id = auth.uid()) AND (project_id = get_user_app_name()))
+//     USING: (project_id = get_user_app_name())
 //   Policy "transactions_update" (UPDATE, PERMISSIVE) roles={authenticated}
-//     USING: ((user_id = auth.uid()) AND (project_id = get_user_app_name()))
-//     WITH CHECK: ((user_id = auth.uid()) AND (project_id = get_user_app_name()))
+//     USING: (project_id = get_user_app_name())
+//     WITH CHECK: (project_id = get_user_app_name())
 // Table: user_settings
 //   Policy "user_settings_delete" (DELETE, PERMISSIVE) roles={authenticated}
 //     USING: ((user_id = auth.uid()) AND (project_id = get_user_app_name()))
