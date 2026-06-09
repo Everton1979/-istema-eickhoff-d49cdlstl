@@ -604,37 +604,6 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
             </div>
           )}
 
-          {(type === 'EXPENSE' ||
-            type === 'CORTESIA' ||
-            type === 'PARTNER_WITHDRAWAL' ||
-            type === 'INVESTIMENTO') && (
-            <div className="animate-in fade-in slide-in-from-top-2 duration-300">
-              <FormField
-                control={form.control}
-                name="tags"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="flex items-center gap-1.5">
-                      <TagIcon className="w-3.5 h-3.5" /> Observações (Opcional)
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="Adicionar observação..."
-                        className="h-12 sm:h-10 text-base sm:text-sm"
-                        {...field}
-                        value={field.value || ''}
-                      />
-                    </FormControl>
-                    <p className="text-[11px] text-slate-500 mt-1.5 leading-tight">
-                      Ex. Número da nota fiscal, Número do boleto, Referente a [Mês]
-                    </p>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-          )}
-
           {type === 'INCOME' && (
             <div className="animate-in fade-in slide-in-from-top-2 duration-300 space-y-4">
               <FormField
@@ -697,6 +666,32 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
               />
             </div>
           )}
+
+          <div className="animate-in fade-in slide-in-from-top-2 duration-300">
+            <FormField
+              control={form.control}
+              name="tags"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="flex items-center gap-1.5">
+                    <TagIcon className="w-3.5 h-3.5" /> Observações (Opcional)
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Adicionar observação..."
+                      className="h-12 sm:h-10 text-base sm:text-sm"
+                      {...field}
+                      value={field.value || ''}
+                    />
+                  </FormControl>
+                  <p className="text-[11px] text-slate-500 mt-1.5 leading-tight">
+                    Ex. Número da nota fiscal, Número do boleto, Referente a [Mês]
+                  </p>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
         </div>
 
         <Button
