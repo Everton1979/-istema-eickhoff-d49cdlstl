@@ -601,7 +601,14 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
                   )}
                 />
               )}
+            </div>
+          )}
 
+          {(type === 'EXPENSE' ||
+            type === 'CORTESIA' ||
+            type === 'PARTNER_WITHDRAWAL' ||
+            type === 'INVESTIMENTO') && (
+            <div className="animate-in fade-in slide-in-from-top-2 duration-300">
               <FormField
                 control={form.control}
                 name="tags"
