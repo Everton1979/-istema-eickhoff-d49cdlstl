@@ -362,6 +362,7 @@ export type Database = {
       get_user_app_name: { Args: never; Returns: string }
       get_user_role: { Args: never; Returns: string }
       get_user_status: { Args: never; Returns: string }
+      is_super_admin: { Args: never; Returns: boolean }
     }
     Enums: {
       [_ in never]: never
@@ -661,14 +662,14 @@ export const Constants = {
 //     WITH CHECK: ((user_id = auth.uid()) AND (project_id = get_user_app_name()))
 // Table: profiles
 //   Policy "Users can delete profiles" (DELETE, PERMISSIVE) roles={authenticated}
-//     USING: ((get_user_role() = ANY (ARRAY['Administrador'::text, 'Master'::text])) AND (app_name = get_user_app_name()))
+//     USING: (((get_user_role() = ANY (ARRAY['Administrador'::text, 'Master'::text])) AND (app_name = get_user_app_name())) OR is_super_admin())
 //   Policy "Users can insert profiles" (INSERT, PERMISSIVE) roles={authenticated}
-//     WITH CHECK: ((id = auth.uid()) OR ((get_user_role() = ANY (ARRAY['Administrador'::text, 'Master'::text])) AND (app_name = get_user_app_name())))
+//     WITH CHECK: ((id = auth.uid()) OR ((get_user_role() = ANY (ARRAY['Administrador'::text, 'Master'::text])) AND (app_name = get_user_app_name())) OR is_super_admin())
 //   Policy "Users can read profiles" (SELECT, PERMISSIVE) roles={authenticated}
-//     USING: ((id = auth.uid()) OR ((get_user_role() = ANY (ARRAY['Administrador'::text, 'Master'::text])) AND (app_name = get_user_app_name())))
+//     USING: ((id = auth.uid()) OR ((get_user_role() = ANY (ARRAY['Administrador'::text, 'Master'::text])) AND (app_name = get_user_app_name())) OR is_super_admin())
 //   Policy "Users can update profiles" (UPDATE, PERMISSIVE) roles={authenticated}
-//     USING: ((id = auth.uid()) OR ((get_user_role() = ANY (ARRAY['Administrador'::text, 'Master'::text])) AND (app_name = get_user_app_name())))
-//     WITH CHECK: ((id = auth.uid()) OR ((get_user_role() = ANY (ARRAY['Administrador'::text, 'Master'::text])) AND (app_name = get_user_app_name())))
+//     USING: ((id = auth.uid()) OR ((get_user_role() = ANY (ARRAY['Administrador'::text, 'Master'::text])) AND (app_name = get_user_app_name())) OR is_super_admin())
+//     WITH CHECK: ((id = auth.uid()) OR ((get_user_role() = ANY (ARRAY['Administrador'::text, 'Master'::text])) AND (app_name = get_user_app_name())) OR is_super_admin())
 // Table: transactions
 //   Policy "transactions_delete" (DELETE, PERMISSIVE) roles={authenticated}
 //     USING: ((project_id = get_user_app_name()) AND ((user_id = auth.uid()) OR (get_user_role() = ANY (ARRAY['Administrador'::text, 'Master'::text]))) AND ((get_user_status() = 'Ativo'::text) OR (get_user_role() = 'Administrador'::text)))
@@ -797,6 +798,16 @@ export const Constants = {
 //     );
 //     RETURN NEW;
 //   END;
+//   $function$
+//
+// FUNCTION is_super_admin()
+//   CREATE OR REPLACE FUNCTION public.is_super_admin()
+//    RETURNS boolean
+//    LANGUAGE sql
+//    STABLE SECURITY DEFINER
+//    SET search_path TO 'public'
+//   AS $function$
+//     SELECT COALESCE(is_super_admin, false) FROM public.profiles WHERE id = auth.uid();
 //   $function$
 //
 // FUNCTION notify_admin_new_user()
