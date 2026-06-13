@@ -11,7 +11,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
-import { Trash2, UserPlus, Edit } from 'lucide-react'
+import { Trash2, UserPlus, Edit, Mail } from 'lucide-react'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
 import { UserProfile, useAuth } from '@/hooks/use-auth'
@@ -39,14 +39,29 @@ export function UserManagement() {
     if (!currentProfile) return
     setLoading(true)
     const targetApp = currentProfile.app_name || currentProfile.id
-    const { data, error } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('app_name', targetApp)
-      .order('email')
+    let query = supabase.from('profiles').select('*').order('email')
+
+    if (!currentProfile.is_super_admin) {
+      query = query.eq('app_name', targetApp)
+    }
+
+    const { data, error } = await query
     if (data) setUsers(data as UserProfile[])
     if (error) toast.error('Erro ao carregar usuários')
     setLoading(false)
+  }
+
+  const handleResendEmail = async (email: string) => {
+    try {
+      const { error } = await supabase.auth.resend({
+        type: 'signup',
+        email,
+      })
+      if (error) throw error
+      toast.success(`E-mail de confirmação reenviado para ${email}`)
+    } catch (err: any) {
+      toast.error(err.message || 'Erro ao reenviar e-mail')
+    }
   }
 
   useEffect(() => {
@@ -336,6 +351,17 @@ export function UserManagement() {
                 </TableCell>
                 <TableCell className="text-center">
                   <div className="flex items-center justify-center gap-1">
+                    {u.status === 'Pendente' && (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        title="Reenviar e-mail de confirmação"
+                        className="h-8 w-8 text-amber-600 hover:bg-amber-50"
+                        onClick={() => handleResendEmail(u.email)}
+                      >
+                        <Mail className="h-4 w-4" />
+                      </Button>
+                    )}
                     <Button
                       variant="ghost"
                       size="icon"
