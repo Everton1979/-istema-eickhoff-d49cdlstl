@@ -49,8 +49,8 @@ const ProtectedRoute = ({
     if (!allowedRoles.includes(profile.role)) return <Navigate to="/" replace />
   }
 
-  // Administrador tem acesso total
-  if (profile?.role === 'Administrador') {
+  // Master / Super Admin tem acesso total
+  if (profile?.role === 'Master' || profile?.is_super_admin) {
     return <>{children}</>
   }
 
