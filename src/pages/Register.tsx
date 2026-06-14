@@ -1,10 +1,10 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useAuth } from '@/hooks/use-auth'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { toast } from 'sonner'
 import { useNavigate, Navigate, Link } from 'react-router-dom'
-import { Building2, Eye, EyeOff } from 'lucide-react'
+import { Building2, Eye, EyeOff, Loader2 } from 'lucide-react'
 import {
   Select,
   SelectContent,
@@ -24,47 +24,49 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 
+const isValidCnpj = (val: string) => {
+  const cnpj = val.replace(/\D/g, '')
+  if (cnpj.length !== 14) return false
+
+  if (/^(\d)\1+$/.test(cnpj)) return false
+
+  let size = cnpj.length - 2
+  let numbers = cnpj.substring(0, size)
+  const digits = cnpj.substring(size)
+  let sum = 0
+  let pos = size - 7
+
+  for (let i = size; i >= 1; i--) {
+    sum += parseInt(numbers.charAt(size - i)) * pos--
+    if (pos < 2) pos = 9
+  }
+
+  let result = sum % 11 < 2 ? 0 : 11 - (sum % 11)
+  if (result !== parseInt(digits.charAt(0))) return false
+
+  size = size + 1
+  numbers = cnpj.substring(0, size)
+  sum = 0
+  pos = size - 7
+
+  for (let i = size; i >= 1; i--) {
+    sum += parseInt(numbers.charAt(size - i)) * pos--
+    if (pos < 2) pos = 9
+  }
+
+  result = sum % 11 < 2 ? 0 : 11 - (sum % 11)
+  if (result !== parseInt(digits.charAt(1))) return false
+
+  return true
+}
+
 const registerSchema = z.object({
   razaoSocial: z.string().min(1, 'Este campo é obrigatório'),
   nomeFantasia: z.string().min(1, 'Este campo é obrigatório'),
   cnpj: z
     .string()
     .min(1, 'Este campo é obrigatório')
-    .refine((val) => {
-      const cnpj = val.replace(/\D/g, '')
-      if (cnpj.length !== 14) return false
-
-      if (/^(\d)\1+$/.test(cnpj)) return false
-
-      let size = cnpj.length - 2
-      let numbers = cnpj.substring(0, size)
-      const digits = cnpj.substring(size)
-      let sum = 0
-      let pos = size - 7
-
-      for (let i = size; i >= 1; i--) {
-        sum += parseInt(numbers.charAt(size - i)) * pos--
-        if (pos < 2) pos = 9
-      }
-
-      let result = sum % 11 < 2 ? 0 : 11 - (sum % 11)
-      if (result !== parseInt(digits.charAt(0))) return false
-
-      size = size + 1
-      numbers = cnpj.substring(0, size)
-      sum = 0
-      pos = size - 7
-
-      for (let i = size; i >= 1; i--) {
-        sum += parseInt(numbers.charAt(size - i)) * pos--
-        if (pos < 2) pos = 9
-      }
-
-      result = sum % 11 < 2 ? 0 : 11 - (sum % 11)
-      if (result !== parseInt(digits.charAt(1))) return false
-
-      return true
-    }, 'CNPJ inválido'),
+    .refine((val) => isValidCnpj(val), 'CNPJ inválido'),
   telefone: z.string().min(1, 'Este campo é obrigatório'),
   cep: z.string().min(1, 'Este campo é obrigatório'),
   logradouro: z.string().min(1, 'Este campo é obrigatório'),
@@ -74,7 +76,10 @@ const registerSchema = z.object({
   cidade: z.string().min(1, 'Este campo é obrigatório'),
   estado: z.string().min(1, 'Este campo é obrigatório'),
   responsavel: z.string().min(1, 'Este campo é obrigatório'),
-  email: z.string().min(1, 'Este campo é obrigatório').email('E-mail inválido'),
+  email: z
+    .string()
+    .min(1, 'Este campo é obrigatório')
+    .regex(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, 'E-mail em formato inválido'),
   password: z.string().min(6, 'A senha deve ter no mínimo 6 caracteres'),
 })
 
@@ -83,6 +88,9 @@ type RegisterFormValues = z.infer<typeof registerSchema>
 export default function Register() {
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [isFetchingCnpj, setIsFetchingCnpj] = useState(false)
+  const [lastFetchedCnpj, setLastFetchedCnpj] = useState('')
+
   const { signUp, user, profile, loading: authLoading } = useAuth()
   const navigate = useNavigate()
 
@@ -105,6 +113,53 @@ export default function Register() {
       password: '',
     },
   })
+
+  const cnpjValue = form.watch('cnpj')
+
+  useEffect(() => {
+    const fetchCnpjData = async (digits: string) => {
+      setIsFetchingCnpj(true)
+      try {
+        const response = await fetch(`https://brasilapi.com.br/api/cnpj/v1/${digits}`)
+        if (!response.ok) {
+          throw new Error('CNPJ não encontrado')
+        }
+        const data = await response.json()
+
+        form.setValue('razaoSocial', data.razao_social || '', { shouldValidate: true })
+        form.setValue('nomeFantasia', data.nome_fantasia || data.razao_social || '', {
+          shouldValidate: true,
+        })
+        form.setValue('cep', data.cep ? data.cep.replace(/^(\d{5})(\d{3})$/, '$1-$2') : '', {
+          shouldValidate: true,
+        })
+        form.setValue('logradouro', data.logradouro || '', { shouldValidate: true })
+        form.setValue('numero', data.numero || '', { shouldValidate: true })
+        form.setValue('complemento', data.complemento || '', { shouldValidate: true })
+        form.setValue('bairro', data.bairro || '', { shouldValidate: true })
+        form.setValue('cidade', data.municipio || '', { shouldValidate: true })
+        form.setValue('estado', data.uf || '', { shouldValidate: true })
+
+        if (data.ddd_telefone_1) {
+          form.setValue('telefone', data.ddd_telefone_1, { shouldValidate: true })
+        }
+
+        toast.success('Dados da empresa carregados com sucesso!')
+      } catch (error) {
+        toast.error('Não foi possível buscar os dados do CNPJ. Preencha manualmente.')
+      } finally {
+        setIsFetchingCnpj(false)
+      }
+    }
+
+    const digits = cnpjValue.replace(/\D/g, '')
+    if (digits.length === 14 && digits !== lastFetchedCnpj) {
+      if (isValidCnpj(digits)) {
+        setLastFetchedCnpj(digits)
+        fetchCnpjData(digits)
+      }
+    }
+  }, [cnpjValue, lastFetchedCnpj, form])
 
   if (authLoading) {
     return (
@@ -173,36 +228,17 @@ export default function Register() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormField
                 control={form.control}
-                name="razaoSocial"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Razão Social</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="nomeFantasia"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Nome Fantasia</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
                 name="cnpj"
                 render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>CNPJ (somente números)</FormLabel>
+                  <FormItem className="md:col-span-2">
+                    <FormLabel className="flex items-center gap-2">
+                      CNPJ (somente números)
+                      {isFetchingCnpj && (
+                        <span className="text-xs text-blue-600 flex items-center gap-1 font-medium">
+                          <Loader2 className="w-3 h-3 animate-spin" /> Buscando dados...
+                        </span>
+                      )}
+                    </FormLabel>
                     <FormControl>
                       <Input
                         placeholder="00.000.000/0000-00"
@@ -232,10 +268,23 @@ export default function Register() {
               />
               <FormField
                 control={form.control}
-                name="telefone"
+                name="razaoSocial"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Telefone / WhatsApp</FormLabel>
+                    <FormLabel>Razão Social</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="nomeFantasia"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Nome Fantasia</FormLabel>
                     <FormControl>
                       <Input {...field} />
                     </FormControl>
@@ -255,6 +304,12 @@ export default function Register() {
                         maxLength={9}
                         placeholder="00000-000"
                         {...field}
+                        onChange={(e) => {
+                          let value = e.target.value.replace(/\D/g, '')
+                          if (value.length > 8) value = value.slice(0, 8)
+                          value = value.replace(/^(\d{5})(\d)/, '$1-$2')
+                          field.onChange(value)
+                        }}
                       />
                     </FormControl>
                     <FormMessage />
@@ -332,7 +387,11 @@ export default function Register() {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Estado</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <Select
+                      onValueChange={field.onChange}
+                      value={field.value}
+                      defaultValue={field.value}
+                    >
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Selecione o estado" />
@@ -372,6 +431,30 @@ export default function Register() {
                   </FormItem>
                 )}
               />
+              <FormField
+                control={form.control}
+                name="telefone"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Telefone / WhatsApp</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="(00) 00000-0000"
+                        {...field}
+                        onChange={(e) => {
+                          let value = e.target.value.replace(/\D/g, '')
+                          if (value.length > 11) value = value.slice(0, 11)
+                          if (value.length > 2) value = value.replace(/^(\d{2})(\d)/, '($1) $2')
+                          if (value.length > 9) value = value.replace(/(\d{5})(\d)/, '$1-$2')
+                          else if (value.length > 8) value = value.replace(/(\d{4})(\d)/, '$1-$2')
+                          field.onChange(value)
+                        }}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
               <div className="md:col-span-2 border-t pt-4 mt-2">
                 <FormField
                   control={form.control}
@@ -397,7 +480,7 @@ export default function Register() {
                   <FormItem>
                     <FormLabel>Email de Acesso</FormLabel>
                     <FormControl>
-                      <Input type="email" {...field} />
+                      <Input type="email" placeholder="seu@email.com" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -438,7 +521,7 @@ export default function Register() {
             <Button
               type="submit"
               className="w-full bg-[#1e3a8a] hover:bg-[#1e3a8a]/90 mt-6"
-              disabled={loading}
+              disabled={loading || isFetchingCnpj}
             >
               {loading ? 'Aguarde...' : 'Solicitar Acesso'}
             </Button>
