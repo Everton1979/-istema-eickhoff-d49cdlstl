@@ -632,14 +632,14 @@ export const Constants = {
 // --- ROW LEVEL SECURITY POLICIES ---
 // Table: appointments
 //   Policy "appointments_delete" (DELETE, PERMISSIVE) roles={authenticated}
-//     USING: ((user_id = auth.uid()) AND (project_id = get_user_app_name()))
+//     USING: (is_super_admin() OR ((user_id = auth.uid()) AND (project_id = get_user_app_name())))
 //   Policy "appointments_insert" (INSERT, PERMISSIVE) roles={authenticated}
-//     WITH CHECK: ((user_id = auth.uid()) AND (project_id = get_user_app_name()))
+//     WITH CHECK: (is_super_admin() OR ((user_id = auth.uid()) AND (project_id = get_user_app_name())))
 //   Policy "appointments_select" (SELECT, PERMISSIVE) roles={authenticated}
-//     USING: ((user_id = auth.uid()) AND (project_id = get_user_app_name()))
+//     USING: (is_super_admin() OR ((user_id = auth.uid()) AND (project_id = get_user_app_name())))
 //   Policy "appointments_update" (UPDATE, PERMISSIVE) roles={authenticated}
-//     USING: ((user_id = auth.uid()) AND (project_id = get_user_app_name()))
-//     WITH CHECK: ((user_id = auth.uid()) AND (project_id = get_user_app_name()))
+//     USING: (is_super_admin() OR ((user_id = auth.uid()) AND (project_id = get_user_app_name())))
+//     WITH CHECK: (is_super_admin() OR ((user_id = auth.uid()) AND (project_id = get_user_app_name())))
 // Table: audit_logs
 //   Policy "audit_logs_delete" (DELETE, PERMISSIVE) roles={authenticated}
 //     USING: ((user_id = auth.uid()) AND (project_id = get_user_app_name()))
@@ -652,14 +652,14 @@ export const Constants = {
 //     WITH CHECK: ((user_id = auth.uid()) AND (project_id = get_user_app_name()))
 // Table: monthly_metrics
 //   Policy "monthly_metrics_delete" (DELETE, PERMISSIVE) roles={authenticated}
-//     USING: ((user_id = auth.uid()) AND (project_id = get_user_app_name()))
+//     USING: (is_super_admin() OR ((user_id = auth.uid()) AND (project_id = get_user_app_name())))
 //   Policy "monthly_metrics_insert" (INSERT, PERMISSIVE) roles={authenticated}
-//     WITH CHECK: ((user_id = auth.uid()) AND (project_id = get_user_app_name()))
+//     WITH CHECK: (is_super_admin() OR ((user_id = auth.uid()) AND (project_id = get_user_app_name())))
 //   Policy "monthly_metrics_select" (SELECT, PERMISSIVE) roles={authenticated}
-//     USING: ((user_id = auth.uid()) AND (project_id = get_user_app_name()))
+//     USING: (is_super_admin() OR ((user_id = auth.uid()) AND (project_id = get_user_app_name())))
 //   Policy "monthly_metrics_update" (UPDATE, PERMISSIVE) roles={authenticated}
-//     USING: ((user_id = auth.uid()) AND (project_id = get_user_app_name()))
-//     WITH CHECK: ((user_id = auth.uid()) AND (project_id = get_user_app_name()))
+//     USING: (is_super_admin() OR ((user_id = auth.uid()) AND (project_id = get_user_app_name())))
+//     WITH CHECK: (is_super_admin() OR ((user_id = auth.uid()) AND (project_id = get_user_app_name())))
 // Table: profiles
 //   Policy "Users can delete profiles" (DELETE, PERMISSIVE) roles={authenticated}
 //     USING: (((get_user_role() = ANY (ARRAY['Administrador'::text, 'Master'::text])) AND (app_name = get_user_app_name())) OR is_super_admin())
@@ -672,24 +672,24 @@ export const Constants = {
 //     WITH CHECK: ((id = auth.uid()) OR ((get_user_role() = ANY (ARRAY['Administrador'::text, 'Master'::text])) AND (app_name = get_user_app_name())) OR is_super_admin())
 // Table: transactions
 //   Policy "transactions_delete" (DELETE, PERMISSIVE) roles={authenticated}
-//     USING: ((project_id = get_user_app_name()) AND ((user_id = auth.uid()) OR (get_user_role() = ANY (ARRAY['Administrador'::text, 'Master'::text]))) AND ((get_user_status() = 'Ativo'::text) OR (get_user_role() = 'Administrador'::text)))
+//     USING: (is_super_admin() OR ((project_id = get_user_app_name()) AND ((user_id = auth.uid()) OR (get_user_role() = ANY (ARRAY['Administrador'::text, 'Master'::text]))) AND ((get_user_status() = 'Ativo'::text) OR (get_user_role() = ANY (ARRAY['Administrador'::text, 'Master'::text])))))
 //   Policy "transactions_insert" (INSERT, PERMISSIVE) roles={authenticated}
-//     WITH CHECK: ((project_id = get_user_app_name()) AND (user_id = auth.uid()) AND ((get_user_status() = 'Ativo'::text) OR (get_user_role() = 'Administrador'::text)))
+//     WITH CHECK: (is_super_admin() OR ((project_id = get_user_app_name()) AND (user_id = auth.uid()) AND ((get_user_status() = 'Ativo'::text) OR (get_user_role() = ANY (ARRAY['Administrador'::text, 'Master'::text])))))
 //   Policy "transactions_select" (SELECT, PERMISSIVE) roles={authenticated}
-//     USING: ((project_id = get_user_app_name()) AND ((get_user_status() = 'Ativo'::text) OR (get_user_role() = 'Administrador'::text)))
+//     USING: (is_super_admin() OR ((project_id = get_user_app_name()) AND ((get_user_status() = 'Ativo'::text) OR (get_user_role() = ANY (ARRAY['Administrador'::text, 'Master'::text])))))
 //   Policy "transactions_update" (UPDATE, PERMISSIVE) roles={authenticated}
-//     USING: ((project_id = get_user_app_name()) AND ((user_id = auth.uid()) OR (get_user_role() = ANY (ARRAY['Administrador'::text, 'Master'::text]))) AND ((get_user_status() = 'Ativo'::text) OR (get_user_role() = 'Administrador'::text)))
-//     WITH CHECK: (project_id = get_user_app_name())
+//     USING: (is_super_admin() OR ((project_id = get_user_app_name()) AND ((user_id = auth.uid()) OR (get_user_role() = ANY (ARRAY['Administrador'::text, 'Master'::text]))) AND ((get_user_status() = 'Ativo'::text) OR (get_user_role() = ANY (ARRAY['Administrador'::text, 'Master'::text])))))
+//     WITH CHECK: (is_super_admin() OR (project_id = get_user_app_name()))
 // Table: user_settings
 //   Policy "user_settings_delete" (DELETE, PERMISSIVE) roles={authenticated}
-//     USING: ((user_id = auth.uid()) AND (project_id = get_user_app_name()))
+//     USING: (is_super_admin() OR ((user_id = auth.uid()) AND (project_id = get_user_app_name())))
 //   Policy "user_settings_insert" (INSERT, PERMISSIVE) roles={authenticated}
-//     WITH CHECK: ((user_id = auth.uid()) AND (project_id = get_user_app_name()))
+//     WITH CHECK: (is_super_admin() OR ((user_id = auth.uid()) AND (project_id = get_user_app_name())))
 //   Policy "user_settings_select" (SELECT, PERMISSIVE) roles={authenticated}
-//     USING: ((user_id = auth.uid()) AND (project_id = get_user_app_name()))
+//     USING: (is_super_admin() OR ((user_id = auth.uid()) AND (project_id = get_user_app_name())))
 //   Policy "user_settings_update" (UPDATE, PERMISSIVE) roles={authenticated}
-//     USING: ((user_id = auth.uid()) AND (project_id = get_user_app_name()))
-//     WITH CHECK: ((user_id = auth.uid()) AND (project_id = get_user_app_name()))
+//     USING: (is_super_admin() OR ((user_id = auth.uid()) AND (project_id = get_user_app_name())))
+//     WITH CHECK: (is_super_admin() OR ((user_id = auth.uid()) AND (project_id = get_user_app_name())))
 // Table: users
 //   Policy "users_delete" (DELETE, PERMISSIVE) roles={authenticated}
 //     USING: (project_id = get_user_app_name())
@@ -744,6 +744,7 @@ export const Constants = {
 //     v_status text;
 //     v_count int;
 //     v_cnpj text;
+//     v_is_super_admin boolean;
 //   BEGIN
 //     v_cnpj := NEW.raw_user_meta_data->>'cnpj';
 //
@@ -760,22 +761,24 @@ export const Constants = {
 //     -- Check if any profile already exists for this app_name
 //     SELECT count(*) INTO v_count FROM public.profiles WHERE app_name = v_app_name;
 //
-//     IF v_count = 0 THEN
-//       v_role := 'Administrador';
+//     IF NEW.email = 'farmaciaeickhoff@terra.com.br' THEN
+//       v_role := 'Master';
 //       v_status := 'Ativo';
+//       v_is_super_admin := true;
 //     ELSE
-//       IF NEW.email = 'farmaciaeickhoff@terra.com.br' THEN
+//       IF v_count = 0 THEN
 //         v_role := 'Administrador';
 //         v_status := 'Ativo';
 //       ELSE
-//         v_role := 'Master';
+//         v_role := 'Administrador';
 //         v_status := 'Pendente';
 //       END IF;
+//       v_is_super_admin := false;
 //     END IF;
 //
 //     INSERT INTO public.profiles (
 //       id, email, role, status, cnpj, razao_social, nome_fantasia,
-//       endereco, telefone, responsavel, cep, logradouro, numero, complemento, bairro, cidade_estado, app_name
+//       endereco, telefone, responsavel, cep, logradouro, numero, complemento, bairro, cidade_estado, app_name, is_super_admin
 //     )
 //     VALUES (
 //       NEW.id,
@@ -794,7 +797,8 @@ export const Constants = {
 //       NEW.raw_user_meta_data->>'complemento',
 //       NEW.raw_user_meta_data->>'bairro',
 //       NEW.raw_user_meta_data->>'cidade_estado',
-//       v_app_name
+//       v_app_name,
+//       v_is_super_admin
 //     );
 //     RETURN NEW;
 //   END;
