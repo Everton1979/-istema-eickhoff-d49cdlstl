@@ -90,6 +90,8 @@ export default function Register() {
   const [loading, setLoading] = useState(false)
   const [isFetchingCnpj, setIsFetchingCnpj] = useState(false)
   const [lastFetchedCnpj, setLastFetchedCnpj] = useState('')
+  const [isFetchingCep, setIsFetchingCep] = useState(false)
+  const [lastFetchedCep, setLastFetchedCep] = useState('')
 
   const { signUp, user, profile, loading: authLoading } = useAuth()
   const navigate = useNavigate()
@@ -115,6 +117,37 @@ export default function Register() {
   })
 
   const cnpjValue = form.watch('cnpj')
+  const cepValue = form.watch('cep')
+
+  useEffect(() => {
+    const fetchCepData = async (digits: string) => {
+      setIsFetchingCep(true)
+      try {
+        const response = await fetch(`https://brasilapi.com.br/api/cep/v1/${digits}`)
+        if (!response.ok) {
+          throw new Error('CEP não encontrado')
+        }
+        const data = await response.json()
+
+        form.setValue('logradouro', data.street || '', { shouldValidate: true })
+        form.setValue('bairro', data.neighborhood || '', { shouldValidate: true })
+        form.setValue('cidade', data.city || '', { shouldValidate: true })
+        form.setValue('estado', data.state || '', { shouldValidate: true })
+
+        toast.success('Endereço carregado com sucesso!')
+      } catch (error) {
+        toast.error('Não foi possível buscar os dados do CEP. Preencha manualmente.')
+      } finally {
+        setIsFetchingCep(false)
+      }
+    }
+
+    const digits = cepValue.replace(/\D/g, '')
+    if (digits.length === 8 && digits !== lastFetchedCep) {
+      setLastFetchedCep(digits)
+      fetchCepData(digits)
+    }
+  }, [cepValue, lastFetchedCep, form])
 
   useEffect(() => {
     const fetchCnpjData = async (digits: string) => {
@@ -297,7 +330,14 @@ export default function Register() {
                 name="cep"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>CEP</FormLabel>
+                    <FormLabel className="flex items-center gap-2">
+                      CEP
+                      {isFetchingCep && (
+                        <span className="text-xs text-blue-600 flex items-center gap-1 font-medium">
+                          <Loader2 className="w-3 h-3 animate-spin" /> Buscando...
+                        </span>
+                      )}
+                    </FormLabel>
                     <FormControl>
                       <Input
                         autoComplete="postal-code"
@@ -444,9 +484,13 @@ export default function Register() {
                         onChange={(e) => {
                           let value = e.target.value.replace(/\D/g, '')
                           if (value.length > 11) value = value.slice(0, 11)
-                          if (value.length > 2) value = value.replace(/^(\d{2})(\d)/, '($1) $2')
-                          if (value.length > 9) value = value.replace(/(\d{5})(\d)/, '$1-$2')
-                          else if (value.length > 8) value = value.replace(/(\d{4})(\d)/, '$1-$2')
+                          if (value.length > 10) {
+                            value = value.replace(/^(\d{2})(\d{5})(\d{4})$/, '($1) $2-$3')
+                          } else if (value.length > 6) {
+                            value = value.replace(/^(\d{2})(\d{4})(\d{0,4})$/, '($1) $2-$3')
+                          } else if (value.length > 2) {
+                            value = value.replace(/^(\d{2})(\d{0,5})$/, '($1) $2')
+                          }
                           field.onChange(value)
                         }}
                       />
@@ -521,7 +565,7 @@ export default function Register() {
             <Button
               type="submit"
               className="w-full bg-[#1e3a8a] hover:bg-[#1e3a8a]/90 mt-6"
-              disabled={loading || isFetchingCnpj}
+              disabled={loading || isFetchingCnpj || isFetchingCep}
             >
               {loading ? 'Aguarde...' : 'Solicitar Acesso'}
             </Button>
