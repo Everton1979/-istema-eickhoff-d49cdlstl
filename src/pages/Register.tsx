@@ -30,10 +30,41 @@ const registerSchema = z.object({
   cnpj: z
     .string()
     .min(1, 'Este campo é obrigatório')
-    .refine(
-      (val) => val.replace(/\D/g, '').length === 14,
-      'O CNPJ deve conter exatamente 14 números',
-    ),
+    .refine((val) => {
+      const cnpj = val.replace(/\D/g, '')
+      if (cnpj.length !== 14) return false
+
+      if (/^(\d)\1+$/.test(cnpj)) return false
+
+      let size = cnpj.length - 2
+      let numbers = cnpj.substring(0, size)
+      const digits = cnpj.substring(size)
+      let sum = 0
+      let pos = size - 7
+
+      for (let i = size; i >= 1; i--) {
+        sum += parseInt(numbers.charAt(size - i)) * pos--
+        if (pos < 2) pos = 9
+      }
+
+      let result = sum % 11 < 2 ? 0 : 11 - (sum % 11)
+      if (result !== parseInt(digits.charAt(0))) return false
+
+      size = size + 1
+      numbers = cnpj.substring(0, size)
+      sum = 0
+      pos = size - 7
+
+      for (let i = size; i >= 1; i--) {
+        sum += parseInt(numbers.charAt(size - i)) * pos--
+        if (pos < 2) pos = 9
+      }
+
+      result = sum % 11 < 2 ? 0 : 11 - (sum % 11)
+      if (result !== parseInt(digits.charAt(1))) return false
+
+      return true
+    }, 'CNPJ inválido'),
   telefone: z.string().min(1, 'Este campo é obrigatório'),
   cep: z.string().min(1, 'Este campo é obrigatório'),
   logradouro: z.string().min(1, 'Este campo é obrigatório'),
@@ -177,6 +208,11 @@ export default function Register() {
                         placeholder="00.000.000/0000-00"
                         maxLength={18}
                         {...field}
+                        className={
+                          form.formState.errors.cnpj
+                            ? 'border-destructive focus-visible:ring-destructive'
+                            : ''
+                        }
                         onChange={(e) => {
                           let value = e.target.value.replace(/\D/g, '')
                           if (value.length > 14) value = value.slice(0, 14)
