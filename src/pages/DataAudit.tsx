@@ -31,6 +31,21 @@ export default function DataAudit() {
       setLoading(true)
       setError(null)
 
+      const { data: profileData, error: profileError } = await supabase
+        .from('profiles')
+        .select('id')
+        .ilike('email', 'marcelaourique@yahoo.com.br')
+        .single()
+
+      if (profileError) {
+        if (profileError.code === 'PGRST116') {
+          throw new Error('Usuário marcelaourique@yahoo.com.br não encontrado.')
+        }
+        throw profileError
+      }
+
+      const targetUserId = profileData.id
+
       const d1Start = new Date('2026-04-01T00:00:00-03:00').toISOString()
       const d1End = new Date('2026-04-12T23:59:59.999-03:00').toISOString()
       const d2Start = new Date('2026-06-01T00:00:00-03:00').toISOString()
@@ -39,6 +54,7 @@ export default function DataAudit() {
       const { data: txData, error: txError } = await supabase
         .from('transactions')
         .select('user_id, project_id, amount')
+        .eq('user_id', targetUserId)
         .or(`and(date.gte.${d1Start},date.lte.${d1End}),and(date.gte.${d2Start},date.lte.${d2End})`)
 
       if (txError) throw txError
@@ -94,7 +110,8 @@ export default function DataAudit() {
         <div>
           <h1 className="text-3xl font-bold tracking-tight text-slate-900">Auditoria de Dados</h1>
           <p className="text-muted-foreground mt-2">
-            Diagnóstico de lançamentos (01 a 12 de Abril, 01 a 30 de Junho de 2026)
+            Diagnóstico de lançamentos de marcelaourique@yahoo.com.br (01 a 12 de Abril, 01 a 30 de
+            Junho de 2026)
           </p>
         </div>
         <div>
