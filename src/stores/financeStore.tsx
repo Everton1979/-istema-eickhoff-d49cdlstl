@@ -711,16 +711,11 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
 
       try {
         let txYear, txMonth
-        if (tx.date.includes('T')) {
-          const d = new Date(tx.date)
-          txYear = d.getFullYear().toString()
-          txMonth = String(d.getMonth() + 1).padStart(2, '0')
-        } else {
-          const parts = tx.date.split('-')
-          if (parts.length < 3) return false
-          txYear = parts[0]
-          txMonth = parts[1]
-        }
+        const datePart = tx.date.split('T')[0]
+        const parts = datePart.split('-')
+        if (parts.length < 3) return false
+        txYear = parts[0]
+        txMonth = parts[1]
 
         if (filters.years && filters.years.length > 0 && !filters.years.includes(txYear))
           return false

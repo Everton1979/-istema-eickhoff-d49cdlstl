@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useFinanceStore } from '@/stores/financeStore'
 import { useAuth } from '@/hooks/use-auth'
 import {
@@ -67,6 +67,16 @@ export default function Transactions() {
   const dayFilter = filters.dayFilter || 'ALL'
 
   const setDayFilter = (val: string) => setFilter('dayFilter', val)
+
+  useEffect(() => {
+    const now = new Date()
+    const currentMonth = (now.getMonth() + 1).toString().padStart(2, '0')
+    const currentYear = now.getFullYear().toString()
+
+    setFilter('months', [currentMonth])
+    setFilter('years', [currentYear])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const filteredData = filteredTransactions
     .filter((t) => {
@@ -217,17 +227,45 @@ export default function Transactions() {
             <div className="flex items-center gap-3">
               <h1 className="text-2xl font-bold text-primary">Transações</h1>
             </div>
-            <p className="text-sm text-muted-foreground mt-1">
+            <p className="text-sm text-muted-foreground mt-1 mb-3">
               Gerencie seus lançamentos financeiros
             </p>
-            {filters.months?.[0] && filters.years?.[0] && (
-              <div className="mt-2 text-sm font-medium text-slate-700 bg-slate-100 px-3 py-1.5 rounded-md inline-flex items-center gap-2">
-                Exibindo: {MONTHS_PT[parseInt(filters.months[0], 10) - 1]}/{filters.years[0]}
-                <span className="text-xs font-normal text-slate-500 italic ml-2">
-                  (Para alterar o mês, acesse o Painel Geral)
-                </span>
-              </div>
-            )}
+            <div className="flex items-center gap-2">
+              <Select
+                value={filters.months?.[0] || String(new Date().getMonth() + 1).padStart(2, '0')}
+                onValueChange={(val) => setFilter('months', [val])}
+              >
+                <SelectTrigger className="w-[140px] h-9 bg-white">
+                  <SelectValue placeholder="Mês" />
+                </SelectTrigger>
+                <SelectContent>
+                  {MONTHS_PT.map((m, i) => (
+                    <SelectItem key={i} value={(i + 1).toString().padStart(2, '0')}>
+                      {m}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
+              <Select
+                value={filters.years?.[0] || new Date().getFullYear().toString()}
+                onValueChange={(val) => setFilter('years', [val])}
+              >
+                <SelectTrigger className="w-[100px] h-9 bg-white">
+                  <SelectValue placeholder="Ano" />
+                </SelectTrigger>
+                <SelectContent>
+                  {Array.from({ length: 11 }, (_, i) => {
+                    const year = new Date().getFullYear() - 5 + i
+                    return (
+                      <SelectItem key={year} value={year.toString()}>
+                        {year}
+                      </SelectItem>
+                    )
+                  })}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
           <div className="flex flex-wrap sm:flex-nowrap gap-2 w-full sm:w-auto mt-2 sm:mt-0">
             <Sheet open={isTransactionSheetOpen} onOpenChange={handleSheetChange}>
