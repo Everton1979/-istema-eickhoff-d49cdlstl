@@ -86,10 +86,10 @@ export default function DataAudit() {
 
   const calcSummary = (txs: Transaction[]) => {
     const income = txs
-      .filter((t) => t.type === 'RECEITA')
+      .filter((t) => t.type?.toUpperCase() === 'RECEITA')
       .reduce((acc, t) => acc + Number(t.amount), 0)
     const expense = txs
-      .filter((t) => t.type === 'DESPESA')
+      .filter((t) => t.type?.toUpperCase() !== 'RECEITA')
       .reduce((acc, t) => acc + Number(t.amount), 0)
     return { income, expense, net: income - expense }
   }
@@ -315,19 +315,21 @@ export default function DataAudit() {
                             <Badge
                               variant="outline"
                               className={cn(
-                                t.type === 'RECEITA'
+                                t.type?.toUpperCase() === 'RECEITA'
                                   ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
                                   : 'bg-rose-50 text-rose-700 border-rose-200',
                                 'print:border-none print:px-0 print:bg-transparent',
                               )}
                             >
-                              {t.type === 'RECEITA' ? 'Receita' : 'Despesa'}
+                              {t.type?.toUpperCase() === 'RECEITA' ? 'Receita' : 'Despesa'}
                             </Badge>
                           </TableCell>
                           <TableCell
                             className={cn(
                               'text-right font-medium',
-                              t.type === 'RECEITA' ? 'text-emerald-600' : 'text-rose-600',
+                              t.type?.toUpperCase() === 'RECEITA'
+                                ? 'text-emerald-600'
+                                : 'text-rose-600',
                             )}
                           >
                             {formatCurrency(t.amount)}
