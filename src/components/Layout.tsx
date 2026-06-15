@@ -1,5 +1,5 @@
 import { Link, Outlet, useLocation } from 'react-router-dom'
-import { LayoutDashboard } from 'lucide-react'
+import { LayoutDashboard, Search } from 'lucide-react'
 import { useAuth } from '@/hooks/use-auth'
 import { cn } from '@/lib/utils'
 import { InpiSeal } from './InpiSeal'
@@ -42,6 +42,18 @@ export default function Layout() {
             >
               <LayoutDashboard className="w-4 h-4" />
               <span className="hidden sm:inline">Painel Geral</span>
+            </Link>
+            <Link
+              to="/auditoria-dados"
+              className={cn(
+                'flex items-center gap-2 px-3 py-2 rounded-md transition-colors text-sm font-medium',
+                location.pathname === '/auditoria-dados'
+                  ? 'bg-blue-600 text-white'
+                  : 'text-slate-300 hover:bg-white/10 hover:text-white',
+              )}
+            >
+              <Search className="w-4 h-4" />
+              <span className="hidden sm:inline">Auditoria</span>
             </Link>
           </nav>
         </div>

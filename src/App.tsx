@@ -9,6 +9,7 @@ import Index from './pages/Index'
 import Transactions from './pages/Transactions'
 import Users from './pages/Users'
 import Glossary from './pages/Glossary'
+import DataAudit from './pages/DataAudit'
 import NotFound from './pages/NotFound'
 import Login from './pages/Login'
 import Register from './pages/Register'
@@ -109,6 +110,7 @@ const App = () => (
                 <Route path="/glossario" element={<Glossary />} />
                 <Route path="/perfil" element={<Profile />} />
                 <Route path="/configuracoes" element={<Navigate to="/usuarios" replace />} />
+                <Route path="/auditoria-dados" element={<DataAudit />} />
                 <Route
                   path="/usuarios"
                   element={
