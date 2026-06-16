@@ -280,16 +280,25 @@ export function PharmacyMetrics() {
       return { text: 'Sensacional', color: 'text-indigo-600' }
     }
     if (type === 'lucro-liquido-pct') {
-      if (value <= 15) return { text: 'Atenção', color: 'text-red-600' }
-      return { text: 'Ideal', color: 'text-emerald-600' }
+      if (value < 5) return { text: 'Péssimo', color: 'text-red-600' }
+      if (value < 15) return { text: 'Ruim', color: 'text-orange-500' }
+      if (value < 20) return { text: 'Bom', color: 'text-emerald-600' }
+      if (value < 25) return { text: 'Excelente', color: 'text-blue-600' }
+      return { text: 'Sensacional', color: 'text-indigo-600' }
     }
     if (type === 'despesas-fixas-pct') {
-      if (value >= 40) return { text: 'Atenção', color: 'text-red-600' }
-      return { text: 'Ideal', color: 'text-emerald-600' }
+      if (value > 45) return { text: 'Péssimo', color: 'text-red-600' }
+      if (value > 40) return { text: 'Ruim', color: 'text-orange-500' }
+      if (value > 35) return { text: 'Bom', color: 'text-emerald-600' }
+      if (value > 30) return { text: 'Excelente', color: 'text-blue-600' }
+      return { text: 'Sensacional', color: 'text-indigo-600' }
     }
     if (type === 'despesas-variaveis-pct') {
-      if (value >= 45) return { text: 'Atenção', color: 'text-red-600' }
-      return { text: 'Ideal', color: 'text-emerald-600' }
+      if (value > 50) return { text: 'Péssimo', color: 'text-red-600' }
+      if (value > 45) return { text: 'Ruim', color: 'text-orange-500' }
+      if (value > 40) return { text: 'Bom', color: 'text-emerald-600' }
+      if (value > 35) return { text: 'Excelente', color: 'text-blue-600' }
+      return { text: 'Sensacional', color: 'text-indigo-600' }
     }
     if (type === 'lo-colaborador') {
       if (value < 500) return { text: 'Péssimo', color: 'text-red-600' }
@@ -333,7 +342,7 @@ export function PharmacyMetrics() {
     {
       id: 'lucro-liquido-pct',
       title: 'Lucro Líquido Real (%)',
-      tooltip: 'Percentual de lucro líquido em relação ao valor de referência. Meta: > 15%.',
+      tooltip: 'Percentual de lucro líquido em relação ao valor de referência total. Meta: > 15%.',
       value: `${metrics.lucroLiquidoPct.toFixed(1)}%`,
       color: lucroLiquidoPerf?.color || 'text-slate-600',
       statusText: lucroLiquidoPerf?.text,
@@ -341,7 +350,7 @@ export function PharmacyMetrics() {
     {
       id: 'despesas-fixas-pct',
       title: 'Despesas Fixas (%)',
-      tooltip: 'Despesas Fixas em relação ao valor de referência. Meta: < 40%.',
+      tooltip: 'Despesas Fixas em relação ao valor de referência total. Meta: < 35%.',
       value: `${metrics.despesasFixasPct.toFixed(1)}%`,
       color:
         getPerformanceStatus(metrics.despesasFixasPct, 'despesas-fixas-pct')?.color ||
@@ -351,7 +360,7 @@ export function PharmacyMetrics() {
     {
       id: 'despesas-variaveis-pct',
       title: 'Despesas Variáveis (%)',
-      tooltip: 'Despesas Variáveis em relação ao valor de referência. Meta: < 45%.',
+      tooltip: 'Despesas Variáveis em relação ao valor de referência total. Meta: < 40%.',
       value: `${metrics.despesasVariaveisPct.toFixed(1)}%`,
       color:
         getPerformanceStatus(metrics.despesasVariaveisPct, 'despesas-variaveis-pct')?.color ||

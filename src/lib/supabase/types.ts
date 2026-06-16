@@ -493,3 +493,415 @@ export const Constants = {
     Enums: {},
   },
 } as const
+
+// ====== DATABASE EXTENDED CONTEXT (auto-generated) ======
+// This section contains actual PostgreSQL column types, constraints, RLS policies,
+// functions, triggers, indexes and materialized views not present in the type definitions above.
+// IMPORTANT: The TypeScript types above map UUID, TEXT, VARCHAR all to "string".
+// Use the COLUMN TYPES section below to know the real PostgreSQL type for each column.
+// Always use the correct PostgreSQL type when writing SQL migrations.
+
+// --- COLUMN TYPES (actual PostgreSQL types) ---
+// Use this to know the real database type when writing migrations.
+// "string" in TypeScript types above may be uuid, text, varchar, timestamptz, etc.
+// Table: appointments
+//   id: uuid (not null, default: gen_random_uuid())
+//   user_id: uuid (not null)
+//   date: date (not null)
+//   type: text (not null)
+//   count: integer (not null, default: 1)
+//   created_at: timestamp with time zone (not null, default: now())
+//   project_id: text (not null)
+// Table: audit_logs
+//   id: uuid (not null, default: gen_random_uuid())
+//   user_id: uuid (not null)
+//   action: text (not null)
+//   entity: text (not null)
+//   entity_id: text (nullable)
+//   details: jsonb (nullable)
+//   created_at: timestamp with time zone (not null, default: now())
+//   project_id: text (not null)
+// Table: monthly_metrics
+//   id: uuid (not null, default: gen_random_uuid())
+//   user_id: uuid (not null)
+//   month: integer (not null)
+//   year: integer (not null)
+//   orders_count: integer (not null, default: 0)
+//   total_system_sales: numeric (not null, default: 0)
+//   raw_material_costs: numeric (not null, default: 0)
+//   created_at: timestamp with time zone (not null, default: now())
+//   updated_at: timestamp with time zone (not null, default: now())
+//   sales_target: numeric (not null, default: 0)
+//   num_formulas_capsulas: integer (not null, default: 0)
+//   vendas_capsulas: numeric (not null, default: 0)
+//   custo_mp_emb_capsulas: numeric (not null, default: 0)
+//   num_formulas_dermato: integer (not null, default: 0)
+//   vendas_dermato: numeric (not null, default: 0)
+//   custo_mp_emb_dermato: numeric (not null, default: 0)
+//   global_sales_target: numeric (not null, default: 0)
+//   project_id: text (not null)
+//   colaboradores_capsulas: integer (not null, default: 0)
+//   colaboradores_dermato: integer (not null, default: 0)
+//   colaboradores_vendas: integer (not null, default: 0)
+//   meta_vendas_manipulacao: numeric (not null, default: 0)
+//   meta_vendas_extra: numeric (not null, default: 0)
+//   vendas_revenda: numeric (not null, default: 0)
+// Table: profiles
+//   id: uuid (not null)
+//   email: text (not null)
+//   role: text (not null, default: 'Visitante'::text)
+//   updated_at: timestamp with time zone (nullable, default: now())
+//   company_name: text (nullable)
+//   cnpj: text (nullable)
+//   razao_social: text (nullable)
+//   nome_fantasia: text (nullable)
+//   endereco: text (nullable)
+//   telefone: text (nullable)
+//   responsavel: text (nullable)
+//   status: text (nullable, default: 'Pendente'::text)
+//   cep: text (nullable)
+//   logradouro: text (nullable)
+//   numero: text (nullable)
+//   complemento: text (nullable)
+//   bairro: text (nullable)
+//   cidade_estado: text (nullable)
+//   created_at: timestamp with time zone (not null, default: now())
+//   app_name: text (nullable)
+//   approved_at: timestamp with time zone (nullable)
+//   plan_type: text (nullable, default: 'free'::text)
+//   plan_start_date: timestamp with time zone (nullable)
+//   plan_end_date: timestamp with time zone (nullable)
+//   admin_notes: text (nullable)
+//   is_super_admin: boolean (nullable, default: false)
+// Table: transactions
+//   id: uuid (not null, default: gen_random_uuid())
+//   user_id: uuid (not null)
+//   description: text (not null)
+//   amount: numeric (not null)
+//   type: text (not null)
+//   category: text (nullable)
+//   account: text (nullable)
+//   status: text (not null, default: 'REALIZADO'::text)
+//   date: timestamp with time zone (not null)
+//   created_at: timestamp with time zone (not null, default: now())
+//   tags: text (nullable, default: ''::text)
+//   payment_method: text (nullable)
+//   subcategory: text (nullable)
+//   project_id: text (not null)
+// Table: user_settings
+//   user_id: uuid (not null)
+//   initial_balance_dinheiro: numeric (nullable, default: 0)
+//   initial_balance_stone: numeric (nullable, default: 0)
+//   initial_balance_pagbank: numeric (nullable, default: 0)
+//   initial_balance_pix: numeric (nullable, default: 0)
+//   created_at: timestamp with time zone (not null, default: now())
+//   updated_at: timestamp with time zone (not null, default: now())
+//   initial_balance_banricompras: numeric (nullable, default: 0)
+//   initial_balance_sicredi: numeric (nullable, default: 0)
+//   project_id: text (not null)
+// Table: users
+//   id: uuid (not null, default: gen_random_uuid())
+//   user_id: uuid (not null)
+//   project_id: text (not null)
+//   created_at: timestamp with time zone (nullable, default: now())
+//   updated_at: timestamp with time zone (nullable, default: now())
+
+// --- CONSTRAINTS ---
+// Table: appointments
+//   PRIMARY KEY appointments_pkey: PRIMARY KEY (id)
+//   FOREIGN KEY appointments_user_id_fkey: FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE
+// Table: audit_logs
+//   PRIMARY KEY audit_logs_pkey: PRIMARY KEY (id)
+//   FOREIGN KEY audit_logs_user_id_fkey: FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE
+// Table: monthly_metrics
+//   PRIMARY KEY monthly_metrics_pkey: PRIMARY KEY (id)
+//   FOREIGN KEY monthly_metrics_user_id_fkey: FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE
+// Table: profiles
+//   FOREIGN KEY profiles_id_fkey: FOREIGN KEY (id) REFERENCES auth.users(id) ON DELETE CASCADE
+//   PRIMARY KEY profiles_pkey: PRIMARY KEY (id)
+// Table: transactions
+//   PRIMARY KEY transactions_pkey: PRIMARY KEY (id)
+//   FOREIGN KEY transactions_user_id_fkey: FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE
+// Table: user_settings
+//   PRIMARY KEY user_settings_pkey: PRIMARY KEY (user_id, project_id)
+//   FOREIGN KEY user_settings_user_id_fkey: FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE
+// Table: users
+//   PRIMARY KEY users_pkey: PRIMARY KEY (id)
+//   UNIQUE users_user_id_key: UNIQUE (user_id)
+
+// --- ROW LEVEL SECURITY POLICIES ---
+// Table: appointments
+//   Policy "appointments_delete" (DELETE, PERMISSIVE) roles={authenticated}
+//     USING: (is_super_admin() OR ((user_id = auth.uid()) AND (project_id = get_user_app_name())))
+//   Policy "appointments_insert" (INSERT, PERMISSIVE) roles={authenticated}
+//     WITH CHECK: (is_super_admin() OR ((user_id = auth.uid()) AND (project_id = get_user_app_name())))
+//   Policy "appointments_select" (SELECT, PERMISSIVE) roles={authenticated}
+//     USING: (is_super_admin() OR ((user_id = auth.uid()) AND (project_id = get_user_app_name())))
+//   Policy "appointments_update" (UPDATE, PERMISSIVE) roles={authenticated}
+//     USING: (is_super_admin() OR ((user_id = auth.uid()) AND (project_id = get_user_app_name())))
+//     WITH CHECK: (is_super_admin() OR ((user_id = auth.uid()) AND (project_id = get_user_app_name())))
+// Table: audit_logs
+//   Policy "audit_logs_delete" (DELETE, PERMISSIVE) roles={authenticated}
+//     USING: ((user_id = auth.uid()) AND (project_id = get_user_app_name()))
+//   Policy "audit_logs_insert" (INSERT, PERMISSIVE) roles={authenticated}
+//     WITH CHECK: ((user_id = auth.uid()) AND (project_id = get_user_app_name()))
+//   Policy "audit_logs_select" (SELECT, PERMISSIVE) roles={authenticated}
+//     USING: ((user_id = auth.uid()) AND (project_id = get_user_app_name()))
+//   Policy "audit_logs_update" (UPDATE, PERMISSIVE) roles={authenticated}
+//     USING: ((user_id = auth.uid()) AND (project_id = get_user_app_name()))
+//     WITH CHECK: ((user_id = auth.uid()) AND (project_id = get_user_app_name()))
+// Table: monthly_metrics
+//   Policy "monthly_metrics_delete" (DELETE, PERMISSIVE) roles={authenticated}
+//     USING: (is_super_admin() OR ((user_id = auth.uid()) AND (project_id = get_user_app_name())))
+//   Policy "monthly_metrics_insert" (INSERT, PERMISSIVE) roles={authenticated}
+//     WITH CHECK: (is_super_admin() OR ((user_id = auth.uid()) AND (project_id = get_user_app_name())))
+//   Policy "monthly_metrics_select" (SELECT, PERMISSIVE) roles={authenticated}
+//     USING: (is_super_admin() OR ((user_id = auth.uid()) AND (project_id = get_user_app_name())))
+//   Policy "monthly_metrics_update" (UPDATE, PERMISSIVE) roles={authenticated}
+//     USING: (is_super_admin() OR ((user_id = auth.uid()) AND (project_id = get_user_app_name())))
+//     WITH CHECK: (is_super_admin() OR ((user_id = auth.uid()) AND (project_id = get_user_app_name())))
+// Table: profiles
+//   Policy "Users can delete profiles" (DELETE, PERMISSIVE) roles={authenticated}
+//     USING: (((get_user_role() = ANY (ARRAY['Administrador'::text, 'Master'::text])) AND (app_name = get_user_app_name())) OR is_super_admin())
+//   Policy "Users can insert profiles" (INSERT, PERMISSIVE) roles={authenticated}
+//     WITH CHECK: ((id = auth.uid()) OR ((get_user_role() = ANY (ARRAY['Administrador'::text, 'Master'::text])) AND (app_name = get_user_app_name())) OR is_super_admin())
+//   Policy "Users can read profiles" (SELECT, PERMISSIVE) roles={authenticated}
+//     USING: ((id = auth.uid()) OR ((get_user_role() = ANY (ARRAY['Administrador'::text, 'Master'::text])) AND (app_name = get_user_app_name())) OR is_super_admin())
+//   Policy "Users can update profiles" (UPDATE, PERMISSIVE) roles={authenticated}
+//     USING: ((id = auth.uid()) OR ((get_user_role() = ANY (ARRAY['Administrador'::text, 'Master'::text])) AND (app_name = get_user_app_name())) OR is_super_admin())
+//     WITH CHECK: ((id = auth.uid()) OR ((get_user_role() = ANY (ARRAY['Administrador'::text, 'Master'::text])) AND (app_name = get_user_app_name())) OR is_super_admin())
+// Table: transactions
+//   Policy "transactions_delete" (DELETE, PERMISSIVE) roles={authenticated}
+//     USING: (is_super_admin() OR ((project_id = get_user_app_name()) AND ((user_id = auth.uid()) OR (get_user_role() = ANY (ARRAY['Administrador'::text, 'Master'::text]))) AND ((get_user_status() = 'Ativo'::text) OR (get_user_role() = ANY (ARRAY['Administrador'::text, 'Master'::text])))))
+//   Policy "transactions_insert" (INSERT, PERMISSIVE) roles={authenticated}
+//     WITH CHECK: (is_super_admin() OR ((project_id = get_user_app_name()) AND (user_id = auth.uid()) AND ((get_user_status() = 'Ativo'::text) OR (get_user_role() = ANY (ARRAY['Administrador'::text, 'Master'::text])))))
+//   Policy "transactions_select" (SELECT, PERMISSIVE) roles={authenticated}
+//     USING: (is_super_admin() OR ((project_id = get_user_app_name()) AND ((get_user_status() = 'Ativo'::text) OR (get_user_role() = ANY (ARRAY['Administrador'::text, 'Master'::text])))))
+//   Policy "transactions_update" (UPDATE, PERMISSIVE) roles={authenticated}
+//     USING: (is_super_admin() OR ((project_id = get_user_app_name()) AND ((user_id = auth.uid()) OR (get_user_role() = ANY (ARRAY['Administrador'::text, 'Master'::text]))) AND ((get_user_status() = 'Ativo'::text) OR (get_user_role() = ANY (ARRAY['Administrador'::text, 'Master'::text])))))
+//     WITH CHECK: (is_super_admin() OR (project_id = get_user_app_name()))
+// Table: user_settings
+//   Policy "user_settings_delete" (DELETE, PERMISSIVE) roles={authenticated}
+//     USING: (is_super_admin() OR ((user_id = auth.uid()) AND (project_id = get_user_app_name())))
+//   Policy "user_settings_insert" (INSERT, PERMISSIVE) roles={authenticated}
+//     WITH CHECK: (is_super_admin() OR ((user_id = auth.uid()) AND (project_id = get_user_app_name())))
+//   Policy "user_settings_select" (SELECT, PERMISSIVE) roles={authenticated}
+//     USING: (is_super_admin() OR ((user_id = auth.uid()) AND (project_id = get_user_app_name())))
+//   Policy "user_settings_update" (UPDATE, PERMISSIVE) roles={authenticated}
+//     USING: (is_super_admin() OR ((user_id = auth.uid()) AND (project_id = get_user_app_name())))
+//     WITH CHECK: (is_super_admin() OR ((user_id = auth.uid()) AND (project_id = get_user_app_name())))
+// Table: users
+//   Policy "users_delete" (DELETE, PERMISSIVE) roles={authenticated}
+//     USING: (project_id = get_user_app_name())
+//   Policy "users_insert" (INSERT, PERMISSIVE) roles={authenticated}
+//     WITH CHECK: (project_id = get_user_app_name())
+//   Policy "users_select" (SELECT, PERMISSIVE) roles={authenticated}
+//     USING: (project_id = get_user_app_name())
+//   Policy "users_update" (UPDATE, PERMISSIVE) roles={authenticated}
+//     USING: (project_id = get_user_app_name())
+//     WITH CHECK: (project_id = get_user_app_name())
+
+// --- DATABASE FUNCTIONS ---
+// FUNCTION get_user_app_name()
+//   CREATE OR REPLACE FUNCTION public.get_user_app_name()
+//    RETURNS text
+//    LANGUAGE sql
+//    STABLE SECURITY DEFINER
+//    SET search_path TO 'public'
+//   AS $function$
+//     SELECT COALESCE(NULLIF(app_name, ''), id::text) FROM public.profiles WHERE id = auth.uid();
+//   $function$
+//
+// FUNCTION get_user_role()
+//   CREATE OR REPLACE FUNCTION public.get_user_role()
+//    RETURNS text
+//    LANGUAGE sql
+//    STABLE SECURITY DEFINER
+//    SET search_path TO 'public'
+//   AS $function$
+//     SELECT role FROM profiles WHERE id = auth.uid();
+//   $function$
+//
+// FUNCTION get_user_status()
+//   CREATE OR REPLACE FUNCTION public.get_user_status()
+//    RETURNS text
+//    LANGUAGE sql
+//    STABLE SECURITY DEFINER
+//    SET search_path TO 'public'
+//   AS $function$
+//     SELECT status FROM profiles WHERE id = auth.uid();
+//   $function$
+//
+// FUNCTION handle_new_user()
+//   CREATE OR REPLACE FUNCTION public.handle_new_user()
+//    RETURNS trigger
+//    LANGUAGE plpgsql
+//    SECURITY DEFINER
+//   AS $function$
+//   DECLARE
+//     v_app_name text;
+//     v_role text;
+//     v_status text;
+//     v_count int;
+//     v_cnpj text;
+//     v_is_super_admin boolean;
+//   BEGIN
+//     v_cnpj := NEW.raw_user_meta_data->>'cnpj';
+//
+//     -- Prioritize app_name from metadata, fallback to sanitized CNPJ, fallback to new user ID
+//     v_app_name := NEW.raw_user_meta_data->>'app_name';
+//     IF v_app_name IS NULL OR v_app_name = '' THEN
+//       IF v_cnpj IS NOT NULL AND v_cnpj <> '' THEN
+//         v_app_name := regexp_replace(v_cnpj, '\D', '', 'g');
+//       ELSE
+//         v_app_name := NEW.id::text;
+//       END IF;
+//     END IF;
+//
+//     -- Check if any profile already exists for this app_name
+//     SELECT count(*) INTO v_count FROM public.profiles WHERE app_name = v_app_name;
+//
+//     IF NEW.email = 'farmaciaeickhoff@terra.com.br' THEN
+//       v_role := 'Master';
+//       v_status := 'Ativo';
+//       v_is_super_admin := true;
+//     ELSE
+//       IF v_count = 0 THEN
+//         v_role := 'Administrador';
+//         v_status := 'Ativo';
+//       ELSE
+//         v_role := 'Administrador';
+//         v_status := 'Pendente';
+//       END IF;
+//       v_is_super_admin := false;
+//     END IF;
+//
+//     INSERT INTO public.profiles (
+//       id, email, role, status, cnpj, razao_social, nome_fantasia,
+//       endereco, telefone, responsavel, cep, logradouro, numero, complemento, bairro, cidade_estado, app_name, is_super_admin
+//     )
+//     VALUES (
+//       NEW.id,
+//       NEW.email,
+//       v_role,
+//       v_status,
+//       v_cnpj,
+//       NEW.raw_user_meta_data->>'razao_social',
+//       NEW.raw_user_meta_data->>'nome_fantasia',
+//       NEW.raw_user_meta_data->>'endereco',
+//       NEW.raw_user_meta_data->>'telefone',
+//       NEW.raw_user_meta_data->>'responsavel',
+//       NEW.raw_user_meta_data->>'cep',
+//       NEW.raw_user_meta_data->>'logradouro',
+//       NEW.raw_user_meta_data->>'numero',
+//       NEW.raw_user_meta_data->>'complemento',
+//       NEW.raw_user_meta_data->>'bairro',
+//       NEW.raw_user_meta_data->>'cidade_estado',
+//       v_app_name,
+//       v_is_super_admin
+//     );
+//     RETURN NEW;
+//   END;
+//   $function$
+//
+// FUNCTION is_super_admin()
+//   CREATE OR REPLACE FUNCTION public.is_super_admin()
+//    RETURNS boolean
+//    LANGUAGE sql
+//    STABLE SECURITY DEFINER
+//    SET search_path TO 'public'
+//   AS $function$
+//     SELECT COALESCE(is_super_admin, false) FROM public.profiles WHERE id = auth.uid();
+//   $function$
+//
+// FUNCTION notify_admin_new_user()
+//   CREATE OR REPLACE FUNCTION public.notify_admin_new_user()
+//    RETURNS trigger
+//    LANGUAGE plpgsql
+//    SECURITY DEFINER
+//   AS $function$
+//   DECLARE
+//     request_id bigint;
+//     payload jsonb;
+//   BEGIN
+//     -- Build the JSON payload with new user details
+//     payload := jsonb_build_object(
+//       'user_id', NEW.id,
+//       'email', NEW.email,
+//       'razao_social', NEW.razao_social,
+//       'responsavel', NEW.responsavel,
+//       'telefone', NEW.telefone,
+//       'app_name', NEW.app_name
+//     );
+//
+//     -- Invoke the Edge Function using pg_net
+//     -- Errors here will be silently ignored so they don't block user registration
+//     SELECT
+//       net.http_post(
+//         url := 'https://sxdqmcrildogtprkglnr.supabase.co/functions/v1/notify-new-user',
+//         headers := '{"Content-Type": "application/json"}'::jsonb,
+//         body := payload
+//       )
+//     INTO request_id;
+//
+//     RETURN NEW;
+//   END;
+//   $function$
+//
+// FUNCTION set_project_id()
+//   CREATE OR REPLACE FUNCTION public.set_project_id()
+//    RETURNS trigger
+//    LANGUAGE plpgsql
+//    SECURITY DEFINER
+//   AS $function$
+//   BEGIN
+//     -- Prevent insertion if user_id doesn't match auth.uid(), strictly enforcing isolation
+//     IF auth.uid() IS NOT NULL AND NEW.user_id <> auth.uid() THEN
+//       RAISE EXCEPTION 'user_id must match authenticated user';
+//     END IF;
+//
+//     -- Force project_id to match the user's app_name based on their user_id
+//     SELECT COALESCE(NULLIF(app_name, ''), id::text)
+//     INTO NEW.project_id
+//     FROM public.profiles
+//     WHERE id = NEW.user_id;
+//
+//     IF NEW.project_id IS NULL THEN
+//       NEW.project_id := NEW.user_id::text;
+//     END IF;
+//
+//     RETURN NEW;
+//   END;
+//   $function$
+//
+
+// --- TRIGGERS ---
+// Table: appointments
+//   set_appointments_project_id: CREATE TRIGGER set_appointments_project_id BEFORE INSERT ON public.appointments FOR EACH ROW EXECUTE FUNCTION set_project_id()
+// Table: audit_logs
+//   set_audit_logs_project_id: CREATE TRIGGER set_audit_logs_project_id BEFORE INSERT ON public.audit_logs FOR EACH ROW EXECUTE FUNCTION set_project_id()
+// Table: monthly_metrics
+//   set_monthly_metrics_project_id: CREATE TRIGGER set_monthly_metrics_project_id BEFORE INSERT ON public.monthly_metrics FOR EACH ROW EXECUTE FUNCTION set_project_id()
+// Table: profiles
+//   on_profile_created_notify_admin: CREATE TRIGGER on_profile_created_notify_admin AFTER INSERT ON public.profiles FOR EACH ROW WHEN ((new.email <> 'farmaciaeickhoff@terra.com.br'::text)) EXECUTE FUNCTION notify_admin_new_user()
+// Table: transactions
+//   set_transactions_project_id: CREATE TRIGGER set_transactions_project_id BEFORE INSERT ON public.transactions FOR EACH ROW EXECUTE FUNCTION set_project_id()
+// Table: user_settings
+//   set_user_settings_project_id: CREATE TRIGGER set_user_settings_project_id BEFORE INSERT ON public.user_settings FOR EACH ROW EXECUTE FUNCTION set_project_id()
+
+// --- INDEXES ---
+// Table: appointments
+//   CREATE INDEX idx_appointments_project_date ON public.appointments USING btree (project_id, date)
+// Table: monthly_metrics
+//   CREATE INDEX idx_monthly_metrics_project_year ON public.monthly_metrics USING btree (project_id, year)
+//   CREATE INDEX idx_monthly_metrics_user_project_year ON public.monthly_metrics USING btree (user_id, project_id, year)
+//   CREATE INDEX idx_monthly_metrics_year_month ON public.monthly_metrics USING btree (year, month)
+//   CREATE UNIQUE INDEX monthly_metrics_project_year_month_idx ON public.monthly_metrics USING btree (project_id, year, month)
+//   CREATE UNIQUE INDEX monthly_metrics_user_project_year_month_idx ON public.monthly_metrics USING btree (user_id, project_id, year, month)
+// Table: transactions
+//   CREATE INDEX idx_transactions_date_status ON public.transactions USING btree (date, status)
+//   CREATE INDEX idx_transactions_project_date ON public.transactions USING btree (project_id, date)
+//   CREATE INDEX idx_transactions_type ON public.transactions USING btree (type)
+//   CREATE INDEX idx_transactions_user_project_date ON public.transactions USING btree (user_id, project_id, date)
+// Table: users
+//   CREATE UNIQUE INDEX users_user_id_key ON public.users USING btree (user_id)

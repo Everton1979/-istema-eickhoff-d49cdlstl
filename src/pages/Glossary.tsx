@@ -98,18 +98,42 @@ const GLOSSARY_TERMS = [
     trend: 'down',
   },
   {
-    id: 'despesas-fixas',
-    title: 'Despesas Fixas',
+    id: 'despesas-fixas-pct',
+    title: 'Despesas Fixas (%)',
     definition:
       'São os gastos que a empresa possui independentemente de realizar vendas ou não. Eles se mantêm (ou variam muito pouco) todo mês. Exemplos: Aluguel, IPTU, salários da equipe administrativa, honorários contábeis, sistemas e softwares.',
     calculation:
-      'Soma dos lançamentos categorizados como "Fixa". Percentual calculado sobre as Receitas Realizadas: (Despesas Fixas / Receitas Realizadas) * 100.',
+      'Percentual em relação à soma de (Despesas Fixas + Despesas Variáveis + Lucro Líquido Real).',
     example:
       'No meio da pandemia a farmácia ficou fechada por 15 dias, mas o aluguel de R$ 4.000 teve que ser pago normalmente. O aluguel é uma despesa fixa clássica.',
     reference:
-      'Meta: Menor ou igual a 35% (≤ 35%). Essenciais para o cálculo do Ponto de Equilíbrio. Devem ser monitoradas de perto, pois não dependem do faturamento. O cálculo percentual é realizado estritamente sobre as Receitas Realizadas.',
-    category: 'Tipos e Classificações',
-    trend: 'neutral',
+      'Meta: Menor que 35% (< 35%). Essenciais para o cálculo do Ponto de Equilíbrio. Devem ser monitoradas de perto, pois não dependem do faturamento.',
+    rangesTitle: 'Classificação de Desempenho',
+    ranges: [
+      { label: 'Péssimo', condition: '> 45%', color: 'text-red-700 bg-red-50 border-red-200' },
+      {
+        label: 'Ruim',
+        condition: '40% a 45%',
+        color: 'text-orange-700 bg-orange-50 border-orange-200',
+      },
+      {
+        label: 'Bom',
+        condition: '35% a 40%',
+        color: 'text-emerald-700 bg-emerald-50 border-emerald-200',
+      },
+      {
+        label: 'Excelente',
+        condition: '30% a 35%',
+        color: 'text-blue-700 bg-blue-50 border-blue-200',
+      },
+      {
+        label: 'Sensacional',
+        condition: '< 30%',
+        color: 'text-indigo-700 bg-indigo-50 border-indigo-200',
+      },
+    ],
+    category: 'Inteligência Analítica',
+    trend: 'down',
   },
   {
     id: 'despesas-previstas',
@@ -137,18 +161,42 @@ const GLOSSARY_TERMS = [
     trend: 'down',
   },
   {
-    id: 'despesas-variaveis',
-    title: 'Despesas Variáveis',
+    id: 'despesas-variaveis-pct',
+    title: 'Despesas Variáveis (%)',
     definition:
       'São os gastos que ocorrem apenas quando há venda ou produção, crescendo proporcionalmente ao faturamento. Exemplos: Impostos sobre venda (Simples Nacional), taxas de cartão de crédito, comissões, fretes de entrega, embalagens e matérias-primas.',
     calculation:
-      'Soma dos lançamentos categorizados como "Variável". Percentual calculado sobre as Receitas Realizadas: (Despesas Variáveis / Receitas Realizadas) * 100.',
+      'Percentual em relação à soma de (Despesas Fixas + Despesas Variáveis + Lucro Líquido Real).',
     example:
       'Se você vende 1 pote, usa 1 embalagem. Se vender 1.000 potes, usará 1.000 embalagens. O gasto com embalagens oscila diretamente com as vendas, logo é uma despesa variável.',
     reference:
-      'Meta: Menor ou igual a 40% (≤ 40%). Impactam diretamente a Margem de Contribuição. Precisam estar embutidas no preço de venda para não gerar prejuízo. O cálculo percentual é realizado estritamente sobre as Receitas Realizadas.',
-    category: 'Tipos e Classificações',
-    trend: 'neutral',
+      'Meta: Menor que 40% (< 40%). Impactam diretamente a Margem de Contribuição. Precisam estar embutidas no preço de venda para não gerar prejuízo.',
+    rangesTitle: 'Classificação de Desempenho',
+    ranges: [
+      { label: 'Péssimo', condition: '> 50%', color: 'text-red-700 bg-red-50 border-red-200' },
+      {
+        label: 'Ruim',
+        condition: '45% a 50%',
+        color: 'text-orange-700 bg-orange-50 border-orange-200',
+      },
+      {
+        label: 'Bom',
+        condition: '40% a 45%',
+        color: 'text-emerald-700 bg-emerald-50 border-emerald-200',
+      },
+      {
+        label: 'Excelente',
+        condition: '35% a 40%',
+        color: 'text-blue-700 bg-blue-50 border-blue-200',
+      },
+      {
+        label: 'Sensacional',
+        condition: '< 35%',
+        color: 'text-indigo-700 bg-indigo-50 border-indigo-200',
+      },
+    ],
+    category: 'Inteligência Analítica',
+    trend: 'down',
   },
   {
     id: 'dividendos-lucros',
@@ -288,12 +336,12 @@ const GLOSSARY_TERMS = [
     id: 'lucro-liquido-pct',
     title: 'Lucro Líquido Real (%)',
     definition:
-      'Percentual que o lucro líquido final representa em relação às receitas realizadas.',
-    calculation: '(Lucro Líquido / Receitas Realizadas) * 100.',
+      'Percentual que o lucro líquido final representa em relação à soma das Despesas Fixas, Variáveis e o próprio Lucro Líquido.',
+    calculation: '(Lucro Líquido / (Despesas Fixas + Despesas Variáveis + Lucro Líquido)) * 100.',
     example:
-      'Entraram R$ 100.000 no caixa da farmácia (Receitas Realizadas). Após pagar fornecedores, impostos, salários e contas (despesas realizadas), sobraram livres na conta R$ 15.000. Seu Lucro Líquido Real foi de 15%.',
+      'Sua operação gerou R$ 15.000 de lucro. Somando as despesas fixas (R$ 35.000) e variáveis (R$ 50.000), o total referencial foi de R$ 100.000. Seu Lucro Líquido Real foi de 15% sobre a base total da operação.',
     reference:
-      'Meta: Maior ou igual a 15% (≥ 15%). O cálculo é realizado estritamente sobre o valor total das Receitas Realizadas. Junto com Despesas Fixas (≤ 35%) e Variáveis (≤ 40%), forma o modelo de referência ideal.',
+      'Meta: Maior ou igual a 15% (≥ 15%). O cálculo fornece uma visão clara do peso do lucro dentro do volume total de movimentação da empresa.',
     rangesTitle: 'Classificação de Desempenho',
     ranges: [
       { label: 'Péssimo', condition: '< 5%', color: 'text-red-700 bg-red-50 border-red-200' },
