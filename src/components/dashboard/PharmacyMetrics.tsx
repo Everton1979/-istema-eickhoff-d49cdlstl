@@ -100,13 +100,15 @@ export function PharmacyMetrics() {
 
     const mkpRealizado = totalRawMaterial > 0 ? totalSales / totalRawMaterial : 0
 
-    const lucroLiquidoPct =
-      kpiMetrics.receitas > 0 ? (kpiMetrics.lucro / kpiMetrics.receitas) * 100 : 0
+    const totalReferenceValue = cfaTotal + varExpenses + kpiMetrics.lucro
 
-    const despesasFixasPct = kpiMetrics.receitas > 0 ? (cfaTotal / kpiMetrics.receitas) * 100 : 0
+    const lucroLiquidoPct =
+      totalReferenceValue > 0 ? (kpiMetrics.lucro / totalReferenceValue) * 100 : 0
+
+    const despesasFixasPct = totalReferenceValue > 0 ? (cfaTotal / totalReferenceValue) * 100 : 0
 
     const despesasVariaveisPct =
-      kpiMetrics.receitas > 0 ? (varExpenses / kpiMetrics.receitas) * 100 : 0
+      totalReferenceValue > 0 ? (varExpenses / totalReferenceValue) * 100 : 0
 
     const countMonths = safeFilteredMonthlyMetrics.length || 1
     const avgColabCaps = totalColaboradoresCapsulas / countMonths
@@ -278,25 +280,16 @@ export function PharmacyMetrics() {
       return { text: 'Sensacional', color: 'text-indigo-600' }
     }
     if (type === 'lucro-liquido-pct') {
-      if (value < 5) return { text: 'Péssimo', color: 'text-red-600' }
-      if (value < 15) return { text: 'Ruim', color: 'text-orange-500' }
-      if (value < 20) return { text: 'Bom', color: 'text-emerald-600' }
-      if (value < 25) return { text: 'Excelente', color: 'text-blue-600' }
-      return { text: 'Sensacional', color: 'text-indigo-600' }
+      if (value <= 15) return { text: 'Atenção', color: 'text-red-600' }
+      return { text: 'Ideal', color: 'text-emerald-600' }
     }
     if (type === 'despesas-fixas-pct') {
-      if (value > 45) return { text: 'Péssimo', color: 'text-red-600' }
-      if (value > 40) return { text: 'Ruim', color: 'text-orange-500' }
-      if (value > 35) return { text: 'Atenção', color: 'text-amber-500' }
-      if (value > 30) return { text: 'Bom', color: 'text-emerald-600' }
-      return { text: 'Sensacional', color: 'text-indigo-600' }
+      if (value >= 40) return { text: 'Atenção', color: 'text-red-600' }
+      return { text: 'Ideal', color: 'text-emerald-600' }
     }
     if (type === 'despesas-variaveis-pct') {
-      if (value > 50) return { text: 'Péssimo', color: 'text-red-600' }
-      if (value > 45) return { text: 'Ruim', color: 'text-orange-500' }
-      if (value > 40) return { text: 'Atenção', color: 'text-amber-500' }
-      if (value > 35) return { text: 'Bom', color: 'text-emerald-600' }
-      return { text: 'Sensacional', color: 'text-indigo-600' }
+      if (value >= 45) return { text: 'Atenção', color: 'text-red-600' }
+      return { text: 'Ideal', color: 'text-emerald-600' }
     }
     if (type === 'lo-colaborador') {
       if (value < 500) return { text: 'Péssimo', color: 'text-red-600' }
@@ -340,7 +333,7 @@ export function PharmacyMetrics() {
     {
       id: 'lucro-liquido-pct',
       title: 'Lucro Líquido Real (%)',
-      tooltip: 'Percentual de lucro líquido realizado no período. Meta: ≥ 15%.',
+      tooltip: 'Percentual de lucro líquido em relação ao valor de referência. Meta: > 15%.',
       value: `${metrics.lucroLiquidoPct.toFixed(1)}%`,
       color: lucroLiquidoPerf?.color || 'text-slate-600',
       statusText: lucroLiquidoPerf?.text,
@@ -348,7 +341,7 @@ export function PharmacyMetrics() {
     {
       id: 'despesas-fixas-pct',
       title: 'Despesas Fixas (%)',
-      tooltip: 'Despesas Fixas em relação às Receitas Realizadas. Meta: ≤ 35%.',
+      tooltip: 'Despesas Fixas em relação ao valor de referência. Meta: < 40%.',
       value: `${metrics.despesasFixasPct.toFixed(1)}%`,
       color:
         getPerformanceStatus(metrics.despesasFixasPct, 'despesas-fixas-pct')?.color ||
@@ -358,7 +351,7 @@ export function PharmacyMetrics() {
     {
       id: 'despesas-variaveis-pct',
       title: 'Despesas Variáveis (%)',
-      tooltip: 'Despesas Variáveis em relação às Receitas Realizadas. Meta: ≤ 40%.',
+      tooltip: 'Despesas Variáveis em relação ao valor de referência. Meta: < 45%.',
       value: `${metrics.despesasVariaveisPct.toFixed(1)}%`,
       color:
         getPerformanceStatus(metrics.despesasVariaveisPct, 'despesas-variaveis-pct')?.color ||
