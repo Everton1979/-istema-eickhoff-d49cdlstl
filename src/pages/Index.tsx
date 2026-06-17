@@ -36,7 +36,14 @@ export default function Index() {
 
   useEffect(() => {
     // Checagem de segurança em tempo real para barrar acessos não aprovados
-    if (!loading && profile && profile.status === 'Pendente' && profile.role !== 'Administrador') {
+    if (
+      !loading &&
+      profile &&
+      profile.status === 'Pendente' &&
+      profile.role !== 'Administrador' &&
+      profile.role !== 'Master' &&
+      !profile.is_super_admin
+    ) {
       navigate('/pendente', { replace: true })
     } else if (profile) {
       // Ao entrar no dashboard ou mudar de empresa, força fetch ignorando cache stale
@@ -44,7 +51,14 @@ export default function Index() {
     }
   }, [profile, loading, navigate]) // fetchData is intentionally omitted to avoid loops
 
-  if (!loading && profile && profile.status === 'Pendente' && profile.role !== 'Administrador') {
+  if (
+    !loading &&
+    profile &&
+    profile.status === 'Pendente' &&
+    profile.role !== 'Administrador' &&
+    profile.role !== 'Master' &&
+    !profile.is_super_admin
+  ) {
     return (
       <div className="flex items-center justify-center h-full w-full bg-[#f8fafc] animate-fade-in">
         <div className="flex flex-col items-center gap-4 mt-20">

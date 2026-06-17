@@ -662,14 +662,14 @@ export const Constants = {
 //     WITH CHECK: (is_super_admin() OR ((user_id = auth.uid()) AND (project_id = get_user_app_name())))
 // Table: profiles
 //   Policy "Users can delete profiles" (DELETE, PERMISSIVE) roles={authenticated}
-//     USING: (((get_user_role() = ANY (ARRAY['Administrador'::text, 'Master'::text])) AND (app_name = get_user_app_name())) OR is_super_admin())
+//     USING: (((( SELECT profiles_1.role    FROM profiles profiles_1   WHERE (profiles_1.id = auth.uid())) = ANY (ARRAY['Administrador'::text, 'Master'::text])) AND (app_name = ( SELECT profiles_1.app_name    FROM profiles profiles_1   WHERE (profiles_1.id = auth.uid())))) OR (( SELECT profiles_1.is_super_admin    FROM profiles profiles_1   WHERE (profiles_1.id = auth.uid())) = true))
 //   Policy "Users can insert profiles" (INSERT, PERMISSIVE) roles={authenticated}
-//     WITH CHECK: ((id = auth.uid()) OR ((get_user_role() = ANY (ARRAY['Administrador'::text, 'Master'::text])) AND (app_name = get_user_app_name())) OR is_super_admin())
+//     WITH CHECK: ((id = auth.uid()) OR ((( SELECT profiles_1.role    FROM profiles profiles_1   WHERE (profiles_1.id = auth.uid())) = ANY (ARRAY['Administrador'::text, 'Master'::text])) AND (app_name = ( SELECT profiles_1.app_name    FROM profiles profiles_1   WHERE (profiles_1.id = auth.uid())))) OR (( SELECT profiles_1.is_super_admin    FROM profiles profiles_1   WHERE (profiles_1.id = auth.uid())) = true))
 //   Policy "Users can read profiles" (SELECT, PERMISSIVE) roles={authenticated}
-//     USING: ((id = auth.uid()) OR ((get_user_role() = ANY (ARRAY['Administrador'::text, 'Master'::text])) AND (app_name = get_user_app_name())) OR is_super_admin())
+//     USING: ((id = auth.uid()) OR ((( SELECT profiles_1.role    FROM profiles profiles_1   WHERE (profiles_1.id = auth.uid())) = ANY (ARRAY['Administrador'::text, 'Master'::text])) AND (app_name = ( SELECT profiles_1.app_name    FROM profiles profiles_1   WHERE (profiles_1.id = auth.uid())))) OR (( SELECT profiles_1.is_super_admin    FROM profiles profiles_1   WHERE (profiles_1.id = auth.uid())) = true) OR ((( SELECT profiles_1.role    FROM profiles profiles_1   WHERE (profiles_1.id = auth.uid())) = 'Master'::text) AND (status = 'Pendente'::text)))
 //   Policy "Users can update profiles" (UPDATE, PERMISSIVE) roles={authenticated}
-//     USING: ((id = auth.uid()) OR ((get_user_role() = ANY (ARRAY['Administrador'::text, 'Master'::text])) AND (app_name = get_user_app_name())) OR is_super_admin())
-//     WITH CHECK: ((id = auth.uid()) OR ((get_user_role() = ANY (ARRAY['Administrador'::text, 'Master'::text])) AND (app_name = get_user_app_name())) OR is_super_admin())
+//     USING: ((id = auth.uid()) OR ((( SELECT profiles_1.role    FROM profiles profiles_1   WHERE (profiles_1.id = auth.uid())) = ANY (ARRAY['Administrador'::text, 'Master'::text])) AND (app_name = ( SELECT profiles_1.app_name    FROM profiles profiles_1   WHERE (profiles_1.id = auth.uid())))) OR (( SELECT profiles_1.is_super_admin    FROM profiles profiles_1   WHERE (profiles_1.id = auth.uid())) = true) OR ((( SELECT profiles_1.role    FROM profiles profiles_1   WHERE (profiles_1.id = auth.uid())) = 'Master'::text) AND (status = 'Pendente'::text)))
+//     WITH CHECK: ((id = auth.uid()) OR ((( SELECT profiles_1.role    FROM profiles profiles_1   WHERE (profiles_1.id = auth.uid())) = ANY (ARRAY['Administrador'::text, 'Master'::text])) AND (app_name = ( SELECT profiles_1.app_name    FROM profiles profiles_1   WHERE (profiles_1.id = auth.uid())))) OR (( SELECT profiles_1.is_super_admin    FROM profiles profiles_1   WHERE (profiles_1.id = auth.uid())) = true) OR (( SELECT profiles_1.role    FROM profiles profiles_1   WHERE (profiles_1.id = auth.uid())) = 'Master'::text))
 // Table: transactions
 //   Policy "transactions_delete" (DELETE, PERMISSIVE) roles={authenticated}
 //     USING: (is_super_admin() OR ((project_id = get_user_app_name()) AND ((user_id = auth.uid()) OR (get_user_role() = ANY (ARRAY['Administrador'::text, 'Master'::text]))) AND ((get_user_status() = 'Ativo'::text) OR (get_user_role() = ANY (ARRAY['Administrador'::text, 'Master'::text])))))
@@ -742,7 +742,6 @@ export const Constants = {
 //     v_app_name text;
 //     v_role text;
 //     v_status text;
-//     v_count int;
 //     v_cnpj text;
 //     v_is_super_admin boolean;
 //   BEGIN
@@ -758,21 +757,14 @@ export const Constants = {
 //       END IF;
 //     END IF;
 //
-//     -- Check if any profile already exists for this app_name
-//     SELECT count(*) INTO v_count FROM public.profiles WHERE app_name = v_app_name;
-//
 //     IF NEW.email = 'farmaciaeickhoff@terra.com.br' THEN
 //       v_role := 'Master';
 //       v_status := 'Ativo';
 //       v_is_super_admin := true;
 //     ELSE
-//       IF v_count = 0 THEN
-//         v_role := 'Administrador';
-//         v_status := 'Ativo';
-//       ELSE
-//         v_role := 'Administrador';
-//         v_status := 'Pendente';
-//       END IF;
+//       -- Any user other than the Master is initially Pendente
+//       v_role := 'Administrador';
+//       v_status := 'Pendente';
 //       v_is_super_admin := false;
 //     END IF;
 //
