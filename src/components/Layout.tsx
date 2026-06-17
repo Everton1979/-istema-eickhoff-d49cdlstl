@@ -3,6 +3,7 @@ import { LayoutDashboard } from 'lucide-react'
 import { useAuth } from '@/hooks/use-auth'
 import { cn } from '@/lib/utils'
 import { InpiSeal } from './InpiSeal'
+import { AdminNotificationBadge } from './AdminNotificationBadge'
 
 export default function Layout() {
   const { profile } = useAuth()
@@ -43,6 +44,7 @@ export default function Layout() {
               <LayoutDashboard className="w-4 h-4" />
               <span className="hidden sm:inline">Painel Geral</span>
             </Link>
+            <AdminNotificationBadge />
           </nav>
         </div>
       </header>

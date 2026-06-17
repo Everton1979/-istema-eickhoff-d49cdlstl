@@ -1,59 +1,23 @@
 import { useAuth } from '@/hooks/use-auth'
 import { Button } from '@/components/ui/button'
-import {
-  LogOut,
-  Clock,
-  Mail,
-  CheckCircle2,
-  ShieldCheck,
-  ArrowRight,
-  ArrowLeft,
-  RefreshCw,
-} from 'lucide-react'
-import { useNavigate, useLocation, Link } from 'react-router-dom'
-import { useEffect, useState } from 'react'
+import { LogOut, Clock, ShieldCheck, ArrowLeft } from 'lucide-react'
+import { useNavigate, Link } from 'react-router-dom'
+import { useEffect } from 'react'
 import { Card, CardContent } from '@/components/ui/card'
-import { supabase } from '@/lib/supabase/client'
-import { toast } from 'sonner'
 
 export default function PendingApproval() {
   const { signOut, profile, user, loading } = useAuth()
-  const [resending, setResending] = useState(false)
   const navigate = useNavigate()
-  const location = useLocation()
-
-  const displayEmail = location.state?.email || user?.email || 'seu e-mail'
 
   useEffect(() => {
-    if (!loading && profile && (profile.status === 'Ativo' || profile.role === 'Administrador')) {
+    if (
+      !loading &&
+      profile &&
+      (profile.status === 'Ativo' || profile.role === 'Administrador' || profile.role === 'Master')
+    ) {
       navigate('/dashboard', { replace: true })
     }
   }, [profile, loading, navigate])
-
-  const handleResendEmail = async () => {
-    if (!displayEmail || displayEmail === 'seu e-mail') {
-      toast.error('Não foi possível identificar seu e-mail para reenvio.')
-      return
-    }
-
-    setResending(true)
-    const { error } = await supabase.auth.resend({
-      type: 'signup',
-      email: displayEmail,
-      options: {
-        emailRedirectTo: `${window.location.origin}/dashboard`,
-      },
-    })
-    setResending(false)
-
-    if (error) {
-      toast.error('Erro ao reenviar e-mail: ' + error.message)
-    } else {
-      toast.success(
-        'E-mail de confirmação reenviado! Verifique sua caixa de entrada e também a pasta de spam/lixo eletrônico.',
-      )
-    }
-  }
 
   if (loading) {
     return (
@@ -101,104 +65,39 @@ export default function PendingApproval() {
               Conta em Análise
             </h1>
             <p className="text-lg md:text-xl text-slate-600 max-w-2xl mx-auto leading-relaxed">
-              Seu cadastro foi realizado com sucesso! Para garantir a segurança e o acesso correto
-              aos seus dados, siga os <strong>dois passos obrigatórios</strong> abaixo.
+              Cadastro realizado com sucesso! Sua conta está sendo analisada e aguarda a aprovação
+              do administrador do sistema.
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-6 relative mt-8">
-            <Card className="border-2 border-blue-200 shadow-lg relative overflow-hidden bg-white">
-              <div className="absolute top-0 left-0 w-1.5 h-full bg-blue-500"></div>
-              <CardContent className="p-8">
-                <div className="flex items-center gap-4 mb-6">
-                  <div className="w-14 h-14 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 shrink-0">
-                    <Mail className="w-7 h-7" />
-                  </div>
-                  <div>
-                    <span className="text-sm font-bold text-blue-600 uppercase tracking-wider block mb-1">
-                      Passo 1
-                    </span>
-                    <h3 className="text-xl font-bold text-slate-800 leading-tight">
-                      Confirme seu E-mail
-                    </h3>
-                  </div>
-                </div>
-                <p className="text-slate-600 leading-relaxed mb-6 text-base">
-                  Enviamos um link de confirmação para <strong>{displayEmail}</strong>. Procure na
-                  sua caixa de entrada ou na pasta de spam por um e-mail com o título{' '}
-                  <strong>"Supabase Auth"</strong> ou <strong>"Confirm Your Signup"</strong>.
-                </p>
-                <div className="bg-blue-50/50 p-4 rounded-lg border border-blue-100 flex flex-col gap-3">
-                  <div className="flex items-start gap-3">
-                    <CheckCircle2 className="w-5 h-5 text-blue-600 mt-0.5 shrink-0" />
-                    <span className="text-sm text-blue-900 font-medium">
-                      Abra a mensagem e clique no link de confirmação para validar sua identidade e
-                      ativar o login.
-                    </span>
-                  </div>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="w-full mt-2 bg-white border-blue-200 text-blue-700 hover:bg-blue-50"
-                    onClick={handleResendEmail}
-                    disabled={resending || displayEmail === 'seu e-mail'}
-                  >
-                    {resending ? (
-                      <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
-                    ) : (
-                      <Mail className="w-4 h-4 mr-2" />
-                    )}
-                    Não recebeu? Reenviar e-mail
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-
-            <div className="hidden md:flex absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 w-12 h-12 bg-slate-50 rounded-full items-center justify-center border-4 border-white shadow-sm">
-              <ArrowRight className="w-6 h-6 text-slate-400" />
-            </div>
-
+          <div className="max-w-2xl mx-auto mt-8">
             <Card className="border-2 border-amber-200 shadow-lg relative overflow-hidden bg-white">
               <div className="absolute top-0 left-0 w-1.5 h-full bg-amber-500"></div>
-              <CardContent className="p-8 flex flex-col h-full">
-                <div className="flex items-center gap-4 mb-6">
-                  <div className="w-14 h-14 bg-amber-100 rounded-full flex items-center justify-center text-amber-600 shrink-0">
-                    <ShieldCheck className="w-7 h-7" />
-                  </div>
-                  <div>
-                    <span className="text-sm font-bold text-amber-600 uppercase tracking-wider block mb-1">
-                      Passo 2
-                    </span>
-                    <h3 className="text-xl font-bold text-slate-800 leading-tight">
-                      Aprovação do Admin
-                    </h3>
-                  </div>
+              <CardContent className="p-8 flex flex-col items-center text-center">
+                <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center text-amber-600 mb-6">
+                  <ShieldCheck className="w-8 h-8" />
                 </div>
-                <p className="text-slate-600 leading-relaxed mb-6 text-base flex-1">
-                  Após confirmar seu e-mail, sua conta ficará com o status <strong>Pendente</strong>
-                  . O administrador do sistema já foi notificado e revisará sua solicitação de
-                  acesso em breve.
+                <h3 className="text-2xl font-bold text-slate-800 leading-tight mb-4">
+                  Aprovação do Administrador
+                </h3>
+                <p className="text-slate-600 leading-relaxed text-base mb-6">
+                  O administrador do sistema já foi notificado e revisará sua solicitação de acesso
+                  em breve.
                 </p>
-                <div className="bg-amber-50/50 p-4 rounded-lg border border-amber-100 flex items-start gap-3 mt-auto">
+                <div className="bg-amber-50/50 p-4 rounded-lg border border-amber-100 flex items-start gap-3 w-full">
                   <Clock className="w-5 h-5 text-amber-600 mt-0.5 shrink-0" />
-                  <span className="text-sm text-amber-900 font-medium">
+                  <span className="text-sm text-amber-900 font-medium text-left">
                     Assim que sua conta for aprovada, você terá acesso total ao painel e a todas as
-                    ferramentas.
+                    ferramentas. Sua tela será redirecionada automaticamente.
                   </span>
                 </div>
               </CardContent>
             </Card>
           </div>
 
-          <div className="mt-12 text-center bg-white p-6 rounded-lg border shadow-sm">
-            <p className="text-slate-600 font-medium">
-              Se você já concluiu a validação de e-mail e foi aprovado, sua tela será redirecionada
-              automaticamente para o Dashboard.
-            </p>
-            <p className="mt-2 text-slate-500 text-sm">
-              Está com dificuldades? Entre em contato com o administrador do sistema para agilizar a
-              liberação.
-            </p>
+          <div className="mt-8 text-center text-slate-500 text-sm">
+            Está com dificuldades? Entre em contato com o administrador do sistema para agilizar a
+            liberação.
           </div>
         </div>
       </main>
