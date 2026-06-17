@@ -128,9 +128,12 @@ export function UserManagement() {
   }
 
   const sortedUsers = [...users].sort((a, b) => {
+    const isPendingA = a.status === 'Pendente' || !a.status
+    const isPendingB = b.status === 'Pendente' || !b.status
+
     // 1. Pendentes at the top
-    if (a.status === 'Pendente' && b.status !== 'Pendente') return -1
-    if (b.status === 'Pendente' && a.status !== 'Pendente') return 1
+    if (isPendingA && !isPendingB) return -1
+    if (isPendingB && !isPendingA) return 1
 
     // 2. Administradores no fundo
     if (a.role === 'Administrador' && b.role !== 'Administrador') return 1
@@ -153,7 +156,7 @@ export function UserManagement() {
     return daysA - daysB
   })
 
-  const pendingCount = users.filter((u) => u.status === 'Pendente').length
+  const pendingCount = users.filter((u) => u.status === 'Pendente' || !u.status).length
 
   return (
     <div className="space-y-4">
@@ -346,7 +349,7 @@ export function UserManagement() {
                     }
                     className={cn(
                       'text-xs cursor-pointer hover:opacity-80 transition-opacity',
-                      u.status === 'Pendente' &&
+                      (!u.status || u.status === 'Pendente') &&
                         'bg-amber-500 hover:bg-amber-600 text-white border-transparent',
                     )}
                     onClick={() => {
@@ -355,12 +358,12 @@ export function UserManagement() {
                       }
                     }}
                   >
-                    {u.role === 'Administrador' ? 'Ativo' : u.status || 'Pendente'}
+                    {u.role === 'Administrador' ? 'Ativo' : !u.status ? 'Pendente' : u.status}
                   </Badge>
                 </TableCell>
                 <TableCell className="text-center">
                   <div className="flex items-center justify-center gap-1">
-                    {u.status === 'Pendente' && (
+                    {(!u.status || u.status === 'Pendente') && (
                       <Button
                         variant="ghost"
                         size="icon"
