@@ -60,29 +60,35 @@ const isValidCnpj = (val: string) => {
   return true
 }
 
-const registerSchema = z.object({
-  razaoSocial: z.string().min(1, 'Este campo é obrigatório'),
-  nomeFantasia: z.string().min(1, 'Este campo é obrigatório'),
-  cnpj: z
-    .string()
-    .min(1, 'Este campo é obrigatório')
-    .transform((val) => val.replace(/\D/g, ''))
-    .refine((val) => isValidCnpj(val), 'CNPJ inválido'),
-  telefone: z.string().min(1, 'Este campo é obrigatório'),
-  cep: z.string().min(1, 'Este campo é obrigatório'),
-  logradouro: z.string().min(1, 'Este campo é obrigatório'),
-  numero: z.string().min(1, 'Este campo é obrigatório'),
-  complemento: z.string().optional(),
-  bairro: z.string().min(1, 'Este campo é obrigatório'),
-  cidade: z.string().min(1, 'Este campo é obrigatório'),
-  estado: z.string().min(1, 'Este campo é obrigatório'),
-  responsavel: z.string().min(1, 'Este campo é obrigatório'),
-  email: z
-    .string()
-    .min(1, 'Este campo é obrigatório')
-    .regex(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, 'E-mail em formato inválido'),
-  password: z.string().min(6, 'A senha deve ter no mínimo 6 caracteres'),
-})
+const registerSchema = z
+  .object({
+    razaoSocial: z.string().min(1, 'Este campo é obrigatório'),
+    nomeFantasia: z.string().min(1, 'Este campo é obrigatório'),
+    cnpj: z
+      .string()
+      .min(1, 'Este campo é obrigatório')
+      .transform((val) => val.replace(/\D/g, ''))
+      .refine((val) => isValidCnpj(val), 'CNPJ inválido'),
+    telefone: z.string().min(1, 'Este campo é obrigatório'),
+    cep: z.string().min(1, 'Este campo é obrigatório'),
+    logradouro: z.string().min(1, 'Este campo é obrigatório'),
+    numero: z.string().min(1, 'Este campo é obrigatório'),
+    complemento: z.string().optional(),
+    bairro: z.string().min(1, 'Este campo é obrigatório'),
+    cidade: z.string().min(1, 'Este campo é obrigatório'),
+    estado: z.string().min(1, 'Este campo é obrigatório'),
+    responsavel: z.string().min(1, 'Este campo é obrigatório'),
+    email: z
+      .string()
+      .min(1, 'Este campo é obrigatório')
+      .regex(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, 'E-mail em formato inválido'),
+    confirmEmail: z.string().min(1, 'Este campo é obrigatório'),
+    password: z.string().min(6, 'A senha deve ter no mínimo 6 caracteres'),
+  })
+  .refine((data) => data.email === data.confirmEmail, {
+    message: 'Os e-mails não coincidem',
+    path: ['confirmEmail'],
+  })
 
 type RegisterFormValues = z.infer<typeof registerSchema>
 
@@ -113,12 +119,15 @@ export default function Register() {
       telefone: '',
       responsavel: '',
       email: '',
+      confirmEmail: '',
       password: '',
     },
   })
 
   const cnpjValue = form.watch('cnpj')
   const cepValue = form.watch('cep')
+  const emailValue = form.watch('email')
+  const confirmEmailValue = form.watch('confirmEmail')
 
   useEffect(() => {
     const fetchCepData = async (digits: string) => {
@@ -235,7 +244,7 @@ export default function Register() {
       toast.error(error.message || 'Erro ao criar conta.')
     } else {
       toast.success(
-        'Cadastro realizado com sucesso! Siga as instruções na tela para concluir seu acesso.',
+        'Solicitação enviada com sucesso! Seu acesso está aguardando aprovação do administrador.',
         { duration: 10000 },
       )
       navigate('/pendente', { state: { email: data.email } })
@@ -531,9 +540,22 @@ export default function Register() {
               />
               <FormField
                 control={form.control}
-                name="password"
+                name="confirmEmail"
                 render={({ field }) => (
                   <FormItem>
+                    <FormLabel>Confirme seu e-mail</FormLabel>
+                    <FormControl>
+                      <Input type="email" placeholder="Confirme seu e-mail" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem className="md:col-span-2">
                     <FormLabel>Senha</FormLabel>
                     <div className="relative">
                       <FormControl>
@@ -564,7 +586,13 @@ export default function Register() {
             <Button
               type="submit"
               className="w-full bg-[#1e3a8a] hover:bg-[#1e3a8a]/90 mt-6"
-              disabled={loading || isFetchingCnpj || isFetchingCep}
+              disabled={
+                loading ||
+                isFetchingCnpj ||
+                isFetchingCep ||
+                !emailValue ||
+                emailValue !== confirmEmailValue
+              }
             >
               {loading ? 'Aguarde...' : 'Solicitar Acesso'}
             </Button>
