@@ -10,7 +10,6 @@ import {
 import { BackupDataButton } from './BackupDataButton'
 import { Link } from 'react-router-dom'
 import { LayoutDashboard, BookOpen, Users, UserCircle, LogOut } from 'lucide-react'
-import { ThemeToggle } from '@/components/ThemeToggle'
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip'
 
 const MONTHS = [
@@ -44,16 +43,16 @@ export function DashboardHeader() {
   return (
     <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-2 bg-white dark:bg-slate-900 p-6 rounded-xl shadow-sm border-b-4 border-blue-600 dark:border-blue-500">
       <div className="flex items-center gap-4">
-        <div className="p-3 bg-blue-100 dark:bg-blue-900/50 rounded-xl text-blue-700 dark:text-blue-400 shrink-0">
-          <LayoutDashboard className="w-8 h-8 md:w-10 md:h-10" />
+        <div className="p-5 md:p-6 bg-blue-100 dark:bg-blue-900/50 rounded-xl text-blue-700 dark:text-blue-400 shrink-0">
+          <LayoutDashboard className="w-16 h-16 md:w-20 md:h-20" />
         </div>
         <div>
-          <h1 className="text-2xl md:text-3xl font-black text-slate-800 dark:text-slate-100 tracking-tight">
+          <h1 className="text-5xl md:text-6xl font-black text-slate-800 dark:text-slate-100 tracking-tight">
             Painel Geral
           </h1>
-          <div className="flex items-center gap-2 mt-2">
+          <div className="flex flex-wrap items-center gap-3 md:gap-4 mt-3 md:mt-4">
             <Select value={activeMonth} onValueChange={(val) => setFilter('months', [val])}>
-              <SelectTrigger className="h-8 text-xs font-semibold bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 w-[120px]">
+              <SelectTrigger className="h-14 md:h-16 text-lg md:text-xl px-4 font-semibold bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 w-[160px] md:w-[200px]">
                 <SelectValue placeholder="Mês" />
               </SelectTrigger>
               <SelectContent>
@@ -66,7 +65,7 @@ export function DashboardHeader() {
             </Select>
 
             <Select value={activeYear} onValueChange={(val) => setFilter('years', [val])}>
-              <SelectTrigger className="h-8 text-xs font-semibold bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 w-[90px]">
+              <SelectTrigger className="h-14 md:h-16 text-lg md:text-xl px-4 font-semibold bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 w-[120px] md:w-[160px]">
                 <SelectValue placeholder="Ano" />
               </SelectTrigger>
               <SelectContent>
@@ -82,10 +81,6 @@ export function DashboardHeader() {
       </div>
 
       <div className="flex items-center gap-2 bg-slate-50 dark:bg-slate-800 p-2 rounded-xl border border-slate-200 dark:border-slate-700">
-        <ThemeToggle />
-
-        <div className="h-8 w-px bg-slate-200 dark:bg-slate-700 mx-1 hidden sm:block"></div>
-
         <Tooltip>
           <TooltipTrigger asChild>
             <Link

@@ -28,7 +28,16 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { TransactionForm } from '@/components/transactions/TransactionForm'
 import { DeleteTransactionDialog } from '@/components/transactions/DeleteTransactionDialog'
-import { Plus, Search, Pencil, Trash2, Info, Activity } from 'lucide-react'
+import {
+  Plus,
+  Search,
+  Pencil,
+  Trash2,
+  Info,
+  Activity,
+  TrendingUp,
+  TrendingDown,
+} from 'lucide-react'
 import { cn, getTagColor } from '@/lib/utils'
 import { Transaction } from '@/types/finance'
 const MONTHS_PT = [
@@ -111,10 +120,10 @@ export default function Transactions() {
         return t.type === 'PARTNER_WITHDRAWAL'
       }
       if (quickFilter === 'RECEITAS') {
-        return t.type === 'INCOME'
+        return t.type === 'INCOME' && t.status === 'REALIZADO'
       }
       if (quickFilter === 'DESPESAS') {
-        return t.type === 'EXPENSE'
+        return t.type === 'EXPENSE' && t.status === 'REALIZADO'
       }
 
       return true
@@ -380,23 +389,25 @@ export default function Transactions() {
               variant={quickFilter === 'RECEITAS' ? 'default' : 'ghost'}
               size="sm"
               className={cn(
-                'text-xs h-8 px-4 whitespace-nowrap flex-1 sm:flex-none',
+                'text-xs h-8 px-4 whitespace-nowrap flex-1 sm:flex-none gap-1.5',
                 quickFilter === 'RECEITAS' &&
                   'bg-emerald-600 text-white hover:bg-emerald-700 shadow-sm',
               )}
               onClick={() => setQuickFilter('RECEITAS')}
             >
+              <TrendingUp className="w-3.5 h-3.5" />
               Receitas
             </Button>
             <Button
               variant={quickFilter === 'DESPESAS' ? 'default' : 'ghost'}
               size="sm"
               className={cn(
-                'text-xs h-8 px-4 whitespace-nowrap flex-1 sm:flex-none',
+                'text-xs h-8 px-4 whitespace-nowrap flex-1 sm:flex-none gap-1.5',
                 quickFilter === 'DESPESAS' && 'bg-red-600 text-white hover:bg-red-700 shadow-sm',
               )}
               onClick={() => setQuickFilter('DESPESAS')}
             >
+              <TrendingDown className="w-3.5 h-3.5" />
               Despesas
             </Button>
           </div>
@@ -550,19 +561,25 @@ export default function Transactions() {
             )}
 
             {quickFilter === 'RECEITAS' && (
-              <div className="font-semibold text-emerald-600 bg-emerald-50 px-3 py-1.5 rounded-md">
+              <div className="font-semibold text-emerald-600 bg-emerald-50 px-3 py-1.5 rounded-md flex items-center gap-1.5">
+                <TrendingUp className="w-4 h-4" />
                 Total Receitas:{' '}
                 {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(
-                  filteredData.reduce((acc, tx) => acc + tx.amount, 0),
+                  filteredData
+                    .filter((tx) => tx.status === 'REALIZADO')
+                    .reduce((acc, tx) => acc + tx.amount, 0),
                 )}
               </div>
             )}
 
             {quickFilter === 'DESPESAS' && (
-              <div className="font-semibold text-red-600 bg-red-50 px-3 py-1.5 rounded-md border border-red-100 shadow-sm">
+              <div className="font-semibold text-red-600 bg-red-50 px-3 py-1.5 rounded-md border border-red-100 shadow-sm flex items-center gap-1.5">
+                <TrendingDown className="w-4 h-4" />
                 Total Despesas:{' '}
                 {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(
-                  filteredData.reduce((acc, tx) => acc + tx.amount, 0),
+                  filteredData
+                    .filter((tx) => tx.status === 'REALIZADO')
+                    .reduce((acc, tx) => acc + tx.amount, 0),
                 )}
               </div>
             )}

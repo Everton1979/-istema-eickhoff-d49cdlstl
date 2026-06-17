@@ -483,13 +483,13 @@ export function PharmacyMetrics() {
           Inteligência Analítica
         </h3>
       </div>
-      <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
+      <div className="grid grid-cols-2 lg:grid-cols-2 gap-4">
         {items.map((item, i) => (
           <Card
             key={item.id}
             className={cn(
               'rounded-md shadow-sm border-slate-200 bg-slate-50/50 hover:bg-white hover:border-indigo-200 transition-all',
-              i < 3 ? 'bg-indigo-50/50 border-indigo-100' : '',
+              i < 2 ? 'bg-indigo-50/50 border-indigo-100' : '',
             )}
           >
             <CardContent className="p-3 text-center flex flex-col justify-center h-full">
