@@ -41,8 +41,10 @@ export function UserManagement() {
     const targetApp = currentProfile.app_name || currentProfile.id
     let query = supabase.from('profiles').select('*').order('email')
 
-    if (!currentProfile.is_super_admin) {
-      query = query.eq('app_name', targetApp)
+    const isMaster = currentProfile.role === 'Master' || currentProfile.is_super_admin
+
+    if (!isMaster) {
+      query = query.eq('app_name', targetApp).neq('status', 'Pendente')
     }
 
     const { data, error } = await query
