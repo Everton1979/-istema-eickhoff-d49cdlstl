@@ -11,7 +11,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
-import { Trash2, UserPlus, Edit, Mail } from 'lucide-react'
+import { Trash2, UserPlus, Edit, Mail, AlertCircle } from 'lucide-react'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
 import { UserProfile, useAuth } from '@/hooks/use-auth'
@@ -35,13 +35,13 @@ export function UserManagement() {
   const [creating, setCreating] = useState(false)
   const [editingUser, setEditingUser] = useState<UserProfile | null>(null)
 
+  const isMaster = currentProfile?.role === 'Master' || currentProfile?.is_super_admin
+
   const fetchUsers = async () => {
     if (!currentProfile) return
     setLoading(true)
     const targetApp = currentProfile.app_name || currentProfile.id
     let query = supabase.from('profiles').select('*').order('email')
-
-    const isMaster = currentProfile.role === 'Master' || currentProfile.is_super_admin
 
     if (!isMaster) {
       query = query.eq('app_name', targetApp).neq('status', 'Pendente')
@@ -157,15 +157,22 @@ export function UserManagement() {
 
   return (
     <div className="space-y-4">
-      {pendingCount > 0 && (
-        <div className="bg-yellow-50 border border-yellow-200 text-yellow-800 p-4 rounded-md flex items-center justify-between mb-6">
-          <div>
-            <h3 className="font-semibold text-yellow-900">Aprovação Pendente</h3>
-            <p className="text-sm">
-              Você tem {pendingCount}{' '}
-              {pendingCount === 1 ? 'usuário aguardando' : 'usuários aguardando'} aprovação para
-              acessar o sistema.
-            </p>
+      {pendingCount > 0 && isMaster && (
+        <div className="bg-destructive/10 border-2 border-destructive text-destructive p-5 rounded-lg flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 shadow-sm">
+          <div className="flex items-center gap-4">
+            <div className="bg-destructive text-destructive-foreground p-2.5 rounded-full animate-pulse">
+              <AlertCircle className="h-6 w-6" />
+            </div>
+            <div>
+              <h3 className="text-lg font-bold tracking-tight">
+                Ação Necessária: Aprovação de Cadastros
+              </h3>
+              <p className="text-base font-medium mt-1">
+                Existem <strong className="text-destructive text-lg">{pendingCount}</strong>{' '}
+                {pendingCount === 1 ? 'novo usuário aguardando' : 'novos usuários aguardando'}{' '}
+                liberação de acesso ao sistema.
+              </p>
+            </div>
           </div>
         </div>
       )}

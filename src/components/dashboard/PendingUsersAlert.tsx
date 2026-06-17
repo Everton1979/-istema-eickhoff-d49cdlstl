@@ -37,22 +37,22 @@ export function PendingUsersAlert() {
   if (pendingCount === 0) return null
 
   return (
-    <Alert className="bg-orange-600 border-orange-700 text-white -mt-4 mb-6 shadow-md animate-in fade-in slide-in-from-top-2">
-      <AlertCircle className="h-5 w-5 text-white" />
-      <AlertTitle className="font-bold text-lg flex items-center gap-2">
+    <Alert className="bg-destructive/10 border-2 border-destructive text-destructive -mt-4 mb-6 shadow-sm animate-in fade-in slide-in-from-top-2">
+      <AlertCircle className="h-6 w-6 text-destructive animate-pulse" />
+      <AlertTitle className="font-bold text-lg flex items-center gap-2 tracking-tight">
         Ação Necessária: Aprovação de Cadastros
       </AlertTitle>
       <AlertDescription className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mt-2">
-        <span className="text-orange-50 text-base">
-          Existem <strong className="text-white text-lg">{pendingCount}</strong>{' '}
+        <span className="text-destructive/90 text-base font-medium">
+          Existem <strong className="text-destructive text-lg">{pendingCount}</strong>{' '}
           {pendingCount === 1 ? 'novo usuário aguardando' : 'novos usuários aguardando'} liberação
           de acesso ao sistema.
         </span>
         <Link
           to="/usuarios"
-          className="flex items-center gap-2 font-bold hover:bg-orange-50 hover:text-orange-700 text-white bg-orange-700/50 border border-orange-500 px-4 py-2 rounded-full transition-colors whitespace-nowrap"
+          className="flex items-center gap-2 font-bold hover:bg-destructive hover:text-destructive-foreground text-destructive bg-destructive/10 border border-destructive px-5 py-2.5 rounded-md transition-colors whitespace-nowrap"
         >
-          Analisar agora <ArrowRight className="w-4 h-4" />
+          Analisar agora <ArrowRight className="w-5 h-5" />
         </Link>
       </AlertDescription>
     </Alert>
