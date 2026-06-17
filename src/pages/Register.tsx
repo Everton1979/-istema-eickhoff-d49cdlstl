@@ -66,6 +66,7 @@ const registerSchema = z.object({
   cnpj: z
     .string()
     .min(1, 'Este campo é obrigatório')
+    .transform((val) => val.replace(/\D/g, ''))
     .refine((val) => isValidCnpj(val), 'CNPJ inválido'),
   telefone: z.string().min(1, 'Este campo é obrigatório'),
   cep: z.string().min(1, 'Este campo é obrigatório'),
@@ -212,10 +213,8 @@ export default function Register() {
   const onSubmit = async (data: RegisterFormValues) => {
     setLoading(true)
 
-    const cnpjDigits = data.cnpj.replace(/\D/g, '')
-
     const metadata = {
-      app_name: cnpjDigits,
+      app_name: data.cnpj,
       cnpj: data.cnpj,
       razao_social: data.razaoSocial,
       nome_fantasia: data.nomeFantasia,
@@ -265,7 +264,7 @@ export default function Register() {
                 render={({ field }) => (
                   <FormItem className="md:col-span-2">
                     <FormLabel className="flex items-center gap-2">
-                      CNPJ (somente números)
+                      CNPJ
                       {isFetchingCnpj && (
                         <span className="text-xs text-blue-600 flex items-center gap-1 font-medium">
                           <Loader2 className="w-3 h-3 animate-spin" /> Buscando dados...
