@@ -86,7 +86,7 @@ Deno.serve(async (req: Request) => {
       )
     }
 
-    // Refactored payload to match AbacatePay API v2 specification
+    // Refactored payload to match AbacatePay API v1 specification
     let maxInstallments = 1
     if (plan === 'trimestral') maxInstallments = 3
     else if (plan === 'semestral') maxInstallments = 6
@@ -101,7 +101,7 @@ Deno.serve(async (req: Request) => {
 
     const payload = {
       frequency: frequency || 'ONE_TIME',
-      methods: ['PIX', 'CREDIT_CARD'], // Supported payment methods configured for v2
+      methods: ['PIX', 'CREDIT_CARD'], // Supported payment methods configured
       products: [
         {
           externalId: plan,
@@ -130,10 +130,10 @@ Deno.serve(async (req: Request) => {
       },
     }
 
-    console.log('Sending payload to AbacatePay v2:', JSON.stringify(payload))
+    console.log('Sending payload to AbacatePay v1:', JSON.stringify(payload))
 
-    // Endpoint migrated to /v2/ paths as per AbacatePay documentation
-    const response = await fetch('https://api.abacatepay.com/v2/billing/create', {
+    // Endpoint migrated to /v1/ paths as per AbacatePay documentation
+    const response = await fetch('https://api.abacatepay.com/v1/billing/create', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -155,7 +155,7 @@ Deno.serve(async (req: Request) => {
 
     if (!response.ok) {
       // Enhanced Error Diagnostics logging full response body from AbacatePay
-      console.error(`AbacatePay API v2 Error Details (${response.status}):`, responseText)
+      console.error(`AbacatePay API v1 Error Details (${response.status}):`, responseText)
       let errorMessage = data?.error?.message || data?.message || data?.detail
 
       if (!errorMessage && typeof data?.error === 'string') {
@@ -188,9 +188,12 @@ Deno.serve(async (req: Request) => {
     })
   } catch (err: any) {
     console.error('Checkout creation error:', err)
-    return new Response(JSON.stringify({ error: 'INTERNAL_ERROR', message: err.message }), {
-      status: 400,
-      headers: { ...reqCorsHeaders, 'Content-Type': 'application/json' },
-    })
+    return new Response(
+      JSON.stringify({ error: err.message || 'INTERNAL_ERROR', message: err.message }),
+      {
+        status: 400,
+        headers: { ...reqCorsHeaders, 'Content-Type': 'application/json' },
+      },
+    )
   }
 })
