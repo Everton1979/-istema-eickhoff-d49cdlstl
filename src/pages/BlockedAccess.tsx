@@ -1,6 +1,7 @@
+import { useState } from 'react'
 import { useAuth } from '@/hooks/use-auth'
 import { Button } from '@/components/ui/button'
-import { XOctagon, LogOut } from 'lucide-react'
+import { XOctagon, LogOut, Loader2 } from 'lucide-react'
 import { Navigate } from 'react-router-dom'
 import {
   Card,
@@ -10,7 +11,10 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { cn } from '@/lib/utils'
+import { supabase } from '@/lib/supabase/client'
+import { useToast } from '@/hooks/use-toast'
 
 const PLANS = [
   {
@@ -53,6 +57,37 @@ const PLANS = [
 
 export default function BlockedAccess() {
   const { signOut, profile, loading } = useAuth()
+  const { toast } = useToast()
+  const [loadingPlan, setLoadingPlan] = useState<string | null>(null)
+
+  const handleSelectPlan = async (plan: any) => {
+    setLoadingPlan(plan.id)
+    try {
+      const { data, error } = await supabase.functions.invoke('create-subscription', {
+        body: {
+          plan: plan.id,
+          price: plan.price,
+          origin: window.location.origin,
+        },
+      })
+
+      if (error) throw error
+      if (data?.url) {
+        window.location.href = data.url
+      } else {
+        throw new Error('URL de checkout não retornada')
+      }
+    } catch (err: any) {
+      console.error('Checkout error:', err)
+      toast({
+        title: 'Erro ao gerar pagamento',
+        description: err.message || 'Por favor, tente novamente ou entre em contato com o suporte.',
+        variant: 'destructive',
+      })
+    } finally {
+      setLoadingPlan(null)
+    }
+  }
 
   if (loading) return null
 
@@ -82,6 +117,29 @@ export default function BlockedAccess() {
               : 'Seu acesso ao sistema foi temporariamente bloqueado. Regularize sua assinatura para restaurar o acesso.'}
           </p>
         </div>
+
+        <Alert className="bg-amber-50 border-amber-200 text-amber-800">
+          <AlertTitle className="text-amber-800 font-bold mb-2">⚠️ Atenção</AlertTitle>
+          <AlertDescription className="text-amber-700">
+            Após realizar o pagamento, por favor envie o comprovante para o nosso WhatsApp{' '}
+            <a
+              href="https://wa.me/55981416666"
+              className="font-bold underline hover:text-amber-900"
+              target="_blank"
+              rel="noreferrer"
+            >
+              (55) 9814-16666
+            </a>{' '}
+            ou para o e-mail{' '}
+            <a
+              href="mailto:farmaciaeickhoff@terra.com.br"
+              className="font-bold underline hover:text-amber-900"
+            >
+              farmaciaeickhoff@terra.com.br
+            </a>{' '}
+            para que o seu acesso seja liberado.
+          </AlertDescription>
+        </Alert>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {PLANS.map((plan) => {
@@ -124,9 +182,17 @@ export default function BlockedAccess() {
                   <Button
                     className="w-full"
                     variant={plan.id === 'anual' ? 'default' : 'outline'}
-                    onClick={() => window.open(plan.link, '_blank')}
+                    onClick={() => handleSelectPlan(plan)}
+                    disabled={loadingPlan !== null}
                   >
-                    Selecionar Plano
+                    {loadingPlan === plan.id ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Aguarde...
+                      </>
+                    ) : (
+                      'Selecionar Plano'
+                    )}
                   </Button>
                 </CardFooter>
               </Card>

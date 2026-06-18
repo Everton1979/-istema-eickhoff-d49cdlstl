@@ -3,6 +3,7 @@
     "manage-users": 23,
     "notify-new-user": 12,
     "abacatepay-webhook": 12,
-    "create-checkout": 22
+    "create-checkout": 22,
+    "create-subscription": 1
   }
 }

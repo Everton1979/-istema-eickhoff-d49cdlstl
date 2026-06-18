@@ -1,0 +1,169 @@
+import 'jsr:@supabase/functions-js/edge-runtime.d.ts'
+import { createClient } from 'jsr:@supabase/supabase-js@2'
+
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+  'Access-Control-Allow-Headers':
+    'authorization, x-client-info, x-supabase-client-platform, apikey, content-type',
+}
+
+const allowedOrigins = [
+  'https://controle-financeiro-planilha-9bacd--preview.goskip.app',
+  'https://app.farmaciaeickhoff.com.br',
+]
+
+function getCorsHeaders(req: Request) {
+  const origin = req.headers.get('Origin')
+  return {
+    ...corsHeaders,
+    'Access-Control-Allow-Origin': origin && allowedOrigins.includes(origin) ? origin : '*',
+  }
+}
+
+Deno.serve(async (req: Request) => {
+  const reqCorsHeaders = getCorsHeaders(req)
+  if (req.method === 'OPTIONS') return new Response('ok', { headers: reqCorsHeaders })
+
+  try {
+    const authHeader = req.headers.get('Authorization')
+    if (!authHeader) throw new Error('Missing Authorization header')
+
+    const supabaseUrl = Deno.env.get('SUPABASE_URL') ?? ''
+    const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY') ?? ''
+    const supabaseClient = createClient(supabaseUrl, supabaseAnonKey, {
+      global: { headers: { Authorization: authHeader } },
+    })
+
+    const {
+      data: { user },
+      error: userError,
+    } = await supabaseClient.auth.getUser()
+    if (userError || !user) throw new Error('Unauthorized')
+
+    const { plan, price, origin } = await req.json()
+
+    const ABACATEPAY_API_KEY = Deno.env.get('ABACATEPAY_API_KEY')
+    if (!ABACATEPAY_API_KEY) {
+      console.error('Missing ABACATEPAY_API_KEY environment variable')
+      throw new Error('AbacatePay API key not configured')
+    }
+
+    const { data: profile } = await supabaseClient
+      .from('profiles')
+      .select('cnpj, telefone, razao_social, nome_fantasia, email')
+      .eq('id', user.id)
+      .single()
+
+    const rawCnpj = profile?.cnpj?.replace(/\D/g, '') || '00000000000000'
+    let rawTelefone = profile?.telefone?.replace(/\D/g, '') || '5599999999999'
+
+    if (rawTelefone && !rawTelefone.startsWith('55')) {
+      rawTelefone = '55' + rawTelefone
+    }
+
+    const rawEmail = (profile?.email || user.email || 'cliente@exemplo.com').trim()
+
+    const planNames: Record<string, string> = {
+      mensal: 'Plano Mensal - Controle Financeiro',
+      trimestral: 'Plano Trimestral - Controle Financeiro',
+      semestral: 'Plano Semestral - Controle Financeiro',
+      anual: 'Plano Anual - Controle Financeiro',
+    }
+
+    const payload = {
+      frequency: 'SUBSCRIPTION',
+      methods: ['credit_card', 'pix'],
+      products: [
+        {
+          externalId: plan,
+          name: planNames[plan] || 'Plano - Controle Financeiro',
+          quantity: 1,
+          price: price,
+        },
+      ],
+      returnUrl: `${origin}/dashboard?payment=success`,
+      completionUrl: `${origin}/dashboard?payment=success`,
+      cancelUrl: `${origin}/bloqueado`,
+      customer: {
+        email: rawEmail,
+        name:
+          profile?.razao_social || profile?.nome_fantasia || user.user_metadata?.name || 'Cliente',
+        phone: rawTelefone,
+        taxId: rawCnpj,
+        metadata: {
+          userId: user.id,
+          planType: plan,
+        },
+      },
+      metadata: {
+        userId: user.id,
+        planType: plan,
+      },
+    }
+
+    console.log('Sending payload to AbacatePay v2:', JSON.stringify(payload))
+
+    const response = await fetch('https://api.abacatepay.com/v2/subscriptions/create', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${ABACATEPAY_API_KEY}`,
+      },
+      body: JSON.stringify(payload),
+    })
+
+    const responseText = await response.text()
+    console.log('AbacatePay Raw Response:', responseText, 'Status:', response.status)
+
+    let data
+    try {
+      data = JSON.parse(responseText)
+    } catch (e) {
+      console.error('Failed to parse AbacatePay response', responseText)
+      throw new Error('Invalid response from payment gateway')
+    }
+
+    if (!response.ok) {
+      console.error(`AbacatePay API v2 Error Details (${response.status}):`, responseText)
+      let errorMessage = data?.error?.message || data?.message || data?.detail
+
+      if (!errorMessage && typeof data?.error === 'string') {
+        errorMessage = data.error
+      }
+      if (!errorMessage && data?.errors) {
+        if (Array.isArray(data.errors) && data.errors.length > 0) {
+          errorMessage = data.errors
+            .map((e: any) => e.message || e.field || JSON.stringify(e))
+            .join(', ')
+        } else {
+          errorMessage = typeof data.errors === 'string' ? data.errors : JSON.stringify(data.errors)
+        }
+      }
+
+      throw new Error(
+        errorMessage || `Payment gateway error: ${response.status} - ${JSON.stringify(data)}`,
+      )
+    }
+
+    const checkoutUrl = data.data?.url || data.url
+    if (!checkoutUrl) {
+      console.error('Missing URL in AbacatePay response:', data)
+      throw new Error('Checkout URL not returned from gateway')
+    }
+
+    return new Response(JSON.stringify({ url: checkoutUrl }), {
+      headers: { ...reqCorsHeaders, 'Content-Type': 'application/json' },
+      status: 200,
+    })
+  } catch (err: any) {
+    console.error('Subscription creation error:', err)
+    return new Response(
+      JSON.stringify({ error: err.message || 'INTERNAL_ERROR', message: err.message }),
+      {
+        status: 400,
+        headers: { ...reqCorsHeaders, 'Content-Type': 'application/json' },
+      },
+    )
+  }
+})
