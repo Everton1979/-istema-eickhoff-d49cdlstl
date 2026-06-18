@@ -105,9 +105,14 @@ Deno.serve(async (req: Request) => {
       event === 'checkout.completed' ||
       event === 'subscription.completed' ||
       event === 'billing.paid' ||
-      event === 'billing.completed'
+      event === 'billing.completed' ||
+      event === 'payment.paid'
     ) {
-      const days = planType === 'anual' ? 365 : 30
+      let days = 30
+      if (planType === 'trimestral') days = 90
+      else if (planType === 'semestral') days = 180
+      else if (planType === 'anual') days = 365
+
       updates = {
         status: 'Ativo',
         plan_type: planType,
@@ -117,7 +122,11 @@ Deno.serve(async (req: Request) => {
       }
       actionLog = 'ASSINATURA_ATIVA'
     } else if (event === 'subscription.renewed') {
-      const days = planType === 'anual' ? 365 : 30
+      let days = 30
+      if (planType === 'trimestral') days = 90
+      else if (planType === 'semestral') days = 180
+      else if (planType === 'anual') days = 365
+
       updates = {
         status: 'Ativo',
         plan_end_date: new Date(now.getTime() + days * 24 * 60 * 60 * 1000).toISOString(),

@@ -81,16 +81,25 @@ Deno.serve(async (req: Request) => {
     }
 
     // Refactored payload to match AbacatePay API v2 specification
+    let maxInstallments = 1
+    if (plan === 'trimestral') maxInstallments = 3
+    else if (plan === 'semestral') maxInstallments = 6
+    else if (plan === 'anual') maxInstallments = 12
+
+    const planNames: Record<string, string> = {
+      mensal: 'Plano Mensal - Controle Financeiro',
+      trimestral: 'Plano Trimestral - Controle Financeiro',
+      semestral: 'Plano Semestral - Controle Financeiro',
+      anual: 'Plano Anual - Controle Financeiro',
+    }
+
     const payload = {
       frequency: frequency || 'ONE_TIME',
-      methods: ['PIX'], // Supported payment methods configured for v2
+      methods: ['PIX', 'CREDIT_CARD'], // Supported payment methods configured for v2
       products: [
         {
           externalId: plan,
-          name:
-            plan === 'mensal'
-              ? 'Plano Mensal - Controle Financeiro'
-              : 'Plano Anual - Controle Financeiro',
+          name: planNames[plan] || 'Plano - Controle Financeiro',
           quantity: 1,
           price: price,
         },
