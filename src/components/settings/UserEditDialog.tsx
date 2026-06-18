@@ -115,6 +115,7 @@ export function UserEditDialog({ user, open, onOpenChange, onUpdate }: UserEditD
   const formatDate = (isoString?: string | null) => {
     if (!isoString) return '-'
     const d = new Date(isoString)
+    if (isNaN(d.getTime())) return '-'
     return d.toLocaleDateString('pt-BR')
   }
 
@@ -168,11 +169,13 @@ export function UserEditDialog({ user, open, onOpenChange, onUpdate }: UserEditD
               <Label className="text-xs text-slate-500 uppercase">Fim do Plano</Label>
               <div className="font-medium flex items-center gap-2">
                 {formatDate(user.plan_end_date)}
-                {user.plan_end_date && new Date() > new Date(user.plan_end_date) && (
-                  <span className="text-[10px] bg-red-100 text-red-700 px-1.5 py-0.5 rounded font-bold">
-                    VENCIDO
-                  </span>
-                )}
+                {user.plan_end_date &&
+                  !isNaN(new Date(user.plan_end_date).getTime()) &&
+                  new Date() > new Date(user.plan_end_date) && (
+                    <span className="text-[10px] bg-red-100 text-red-700 px-1.5 py-0.5 rounded font-bold">
+                      VENCIDO
+                    </span>
+                  )}
               </div>
             </div>
           </div>

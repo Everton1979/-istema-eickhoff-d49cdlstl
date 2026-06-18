@@ -289,7 +289,7 @@ export function UserManagement() {
                   <div className="text-xs font-bold text-slate-700 uppercase">
                     {u.plan_type || 'free'}
                   </div>
-                  {u.plan_end_date && (
+                  {u.plan_end_date && !isNaN(new Date(u.plan_end_date).getTime()) && (
                     <div
                       className={cn(
                         'text-[10px] mt-0.5',
@@ -306,6 +306,8 @@ export function UserManagement() {
                   {(() => {
                     if (!u.plan_end_date) return <span className="text-xs text-slate-500">-</span>
                     const end = new Date(u.plan_end_date)
+                    if (isNaN(end.getTime()))
+                      return <span className="text-xs text-slate-500">-</span>
                     end.setHours(0, 0, 0, 0)
                     const today = new Date()
                     today.setHours(0, 0, 0, 0)
