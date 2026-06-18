@@ -1,10 +1,7 @@
-import { useState } from 'react'
 import { useAuth } from '@/hooks/use-auth'
 import { Button } from '@/components/ui/button'
-import { XOctagon, LogOut, Loader2, CreditCard, QrCode } from 'lucide-react'
+import { XOctagon, LogOut } from 'lucide-react'
 import { Navigate } from 'react-router-dom'
-import { supabase } from '@/lib/supabase/client'
-import { useToast } from '@/components/ui/use-toast'
 import {
   Card,
   CardContent,
@@ -13,8 +10,6 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import { cn } from '@/lib/utils'
 
 const PLANS = [
@@ -24,7 +19,8 @@ const PLANS = [
     price: 14990,
     priceFormatted: 'R$ 149,90',
     description: 'Acesso por 30 dias',
-    installments: '1x no cartão',
+    installmentsCount: 1,
+    link: 'https://app.abacatepay.com/pay/bill_Ade3dg2GZNNxpJjagAk46dMW',
   },
   {
     id: 'trimestral',
@@ -32,7 +28,8 @@ const PLANS = [
     price: 40490,
     priceFormatted: 'R$ 404,90',
     description: 'Acesso por 90 dias',
-    installments: 'Até 3x sem juros',
+    installmentsCount: 3,
+    link: 'https://app.abacatepay.com/pay/bill_q4H3h0aTDKuw63XhaC2RngZy',
   },
   {
     id: 'semestral',
@@ -40,7 +37,8 @@ const PLANS = [
     price: 76490,
     priceFormatted: 'R$ 764,90',
     description: 'Acesso por 180 dias',
-    installments: 'Até 6x sem juros',
+    installmentsCount: 6,
+    link: 'https://app.abacatepay.com/pay/bill_LfMQqX6wZ5sJeRLS5j3YHbQz',
   },
   {
     id: 'anual',
@@ -48,20 +46,13 @@ const PLANS = [
     price: 125900,
     priceFormatted: 'R$ 1.259,00',
     description: 'Acesso por 365 dias',
-    installments: 'Até 12x sem juros',
+    installmentsCount: 12,
+    link: 'https://app.abacatepay.com/pay/bill_2QK4U6we2BYTKuAMRdWFePWk',
   },
 ]
 
 export default function BlockedAccess() {
   const { signOut, profile, loading } = useAuth()
-  const { toast } = useToast()
-
-  const [selectedPlan, setSelectedPlan] = useState<string | null>(null)
-  const [isCheckingOut, setIsCheckingOut] = useState(false)
-  const [showBillingForm, setShowBillingForm] = useState(false)
-
-  const [taxId, setTaxId] = useState(profile?.cnpj || '')
-  const [phone, setPhone] = useState(profile?.telefone || '')
 
   if (loading) return null
 
@@ -75,120 +66,6 @@ export default function BlockedAccess() {
 
   if (!isBlocked && !isExpired && profile?.status === 'Ativo') {
     return <Navigate to="/dashboard" replace />
-  }
-
-  const handleSelectPlan = (planId: string) => {
-    setSelectedPlan(planId)
-    const currentTaxId = profile?.cnpj?.replace(/\D/g, '') || ''
-    const currentPhone = profile?.telefone?.replace(/\D/g, '') || ''
-
-    // Force update if CNPJ is not exactly 14 digits or phone is not complete
-    if (currentTaxId.length !== 14 || currentPhone.length < 10) {
-      setTaxId(profile?.cnpj || '')
-      setPhone(profile?.telefone || '')
-      setShowBillingForm(true)
-    } else {
-      handleCheckout(planId, profile!.cnpj!, profile!.telefone!)
-    }
-  }
-
-  const handleBillingSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-
-    const rawTaxId = taxId.replace(/\D/g, '')
-    const rawPhone = phone.replace(/\D/g, '')
-
-    if (rawTaxId.length !== 14) {
-      toast({
-        title: 'CNPJ Inválido',
-        description:
-          'O CNPJ deve conter exatamente 14 dígitos (CPFs não são mais aceitos para o faturamento).',
-        variant: 'destructive',
-      })
-      return
-    }
-
-    if (rawPhone.length < 10) {
-      toast({
-        title: 'Telefone Inválido',
-        description: 'O telefone deve conter o DDD e o número válido.',
-        variant: 'destructive',
-      })
-      return
-    }
-
-    setIsCheckingOut(true)
-    const { error } = await supabase
-      .from('profiles')
-      .update({ cnpj: taxId, telefone: phone })
-      .eq('id', profile!.id)
-
-    if (error) {
-      toast({
-        title: 'Erro ao salvar dados',
-        description: error.message,
-        variant: 'destructive',
-      })
-      setIsCheckingOut(false)
-      return
-    }
-
-    handleCheckout(selectedPlan!, taxId, phone)
-  }
-
-  const handleCheckout = async (planId: string, currentTaxId: string, currentPhone: string) => {
-    try {
-      setIsCheckingOut(true)
-      const plan = PLANS.find((p) => p.id === planId)
-      if (!plan) return
-
-      // Use fetch directly to capture the exact non-2xx JSON response body from Edge Function
-      const {
-        data: { session },
-      } = await supabase.auth.getSession()
-
-      const res = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/create-checkout`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${session?.access_token}`,
-        },
-        body: JSON.stringify({
-          plan: plan.id,
-          price: plan.price,
-          frequency: 'ONE_TIME',
-          taxId: currentTaxId,
-          cellphone: currentPhone,
-          origin: window.location.origin,
-        }),
-      })
-
-      const data = await res.json().catch(() => ({}))
-
-      if (!res.ok) {
-        const backendMessage =
-          data?.message || data?.error || `Erro ${res.status}: Falha no provedor de pagamento.`
-        throw new Error(backendMessage)
-      }
-
-      if (data?.error) {
-        throw new Error(data.error.message || data.error)
-      }
-
-      if (data?.url) {
-        window.location.href = data.url
-      } else {
-        throw new Error('URL de checkout não retornada')
-      }
-    } catch (err: any) {
-      console.error(err)
-      toast({
-        title: 'Atenção no checkout',
-        description: err.message || 'Não foi possível iniciar o pagamento. Tente novamente.',
-        variant: 'destructive',
-      })
-      setIsCheckingOut(false)
-    }
   }
 
   return (
@@ -206,9 +83,15 @@ export default function BlockedAccess() {
           </p>
         </div>
 
-        {!showBillingForm ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {PLANS.map((plan) => (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {PLANS.map((plan) => {
+            const installmentValue = plan.price / 100 / plan.installmentsCount
+            const formattedInstallment = new Intl.NumberFormat('pt-BR', {
+              style: 'currency',
+              currency: 'BRL',
+            }).format(installmentValue)
+
+            return (
               <Card
                 key={plan.id}
                 className={cn(
@@ -225,106 +108,31 @@ export default function BlockedAccess() {
                   <CardTitle className="text-xl">{plan.name}</CardTitle>
                   <CardDescription>{plan.description}</CardDescription>
                 </CardHeader>
-                <CardContent className="text-center flex-1">
-                  <div className="text-3xl font-bold text-slate-800 mb-4">
-                    {plan.priceFormatted}
-                  </div>
-
-                  <div className="space-y-3 text-sm text-slate-600">
-                    <div className="flex items-center justify-center gap-2">
-                      <CreditCard className="w-4 h-4 text-slate-400" />
-                      <span>{plan.installments}</span>
+                <CardContent className="text-center flex-1 flex flex-col justify-center">
+                  <div className="text-3xl font-bold text-slate-800">{plan.priceFormatted}</div>
+                  {plan.installmentsCount > 1 ? (
+                    <div className="text-sm text-slate-500 mt-2 font-medium">
+                      {plan.installmentsCount}x de {formattedInstallment}
                     </div>
-                    <div className="flex items-center justify-center gap-2">
-                      <QrCode className="w-4 h-4 text-slate-400" />
-                      <span>Pix à vista</span>
+                  ) : (
+                    <div className="text-sm text-transparent mt-2 select-none" aria-hidden>
+                      1x de R$ 0,00
                     </div>
-                  </div>
+                  )}
                 </CardContent>
                 <CardFooter>
                   <Button
                     className="w-full"
                     variant={plan.id === 'anual' ? 'default' : 'outline'}
-                    onClick={() => handleSelectPlan(plan.id)}
-                    disabled={isCheckingOut}
+                    onClick={() => window.open(plan.link, '_blank')}
                   >
-                    {isCheckingOut && selectedPlan === plan.id ? (
-                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                    ) : null}
                     Selecionar Plano
                   </Button>
                 </CardFooter>
               </Card>
-            ))}
-          </div>
-        ) : (
-          <Card className="max-w-md mx-auto">
-            <CardHeader>
-              <CardTitle>Dados de Faturamento</CardTitle>
-              <CardDescription>
-                Precisamos de mais alguns dados para gerar seu pagamento de forma segura.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <form id="billing-form" onSubmit={handleBillingSubmit} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="taxId">CNPJ</Label>
-                  <Input
-                    id="taxId"
-                    value={taxId}
-                    onChange={(e) => {
-                      let value = e.target.value.replace(/\D/g, '')
-                      if (value.length > 14) value = value.slice(0, 14)
-                      value = value.replace(/^(\d{2})(\d)/, '$1.$2')
-                      value = value.replace(/^(\d{2})\.(\d{3})(\d)/, '$1.$2.$3')
-                      value = value.replace(/\.(\d{3})(\d)/, '.$1/$2')
-                      value = value.replace(/(\d{4})(\d)/, '$1-$2')
-                      setTaxId(value)
-                    }}
-                    placeholder="00.000.000/0000-00"
-                    maxLength={18}
-                    required
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="phone">Telefone (com DDD)</Label>
-                  <Input
-                    id="phone"
-                    value={phone}
-                    onChange={(e) => {
-                      let value = e.target.value.replace(/\D/g, '')
-                      if (value.length > 11) value = value.slice(0, 11)
-                      if (value.length > 10) {
-                        value = value.replace(/^(\d{2})(\d{5})(\d{4})$/, '($1) $2-$3')
-                      } else if (value.length > 6) {
-                        value = value.replace(/^(\d{2})(\d{4})(\d{0,4})$/, '($1) $2-$3')
-                      } else if (value.length > 2) {
-                        value = value.replace(/^(\d{2})(\d{0,5})$/, '($1) $2')
-                      }
-                      setPhone(value)
-                    }}
-                    placeholder="(00) 00000-0000"
-                    maxLength={15}
-                    required
-                  />
-                </div>
-              </form>
-            </CardContent>
-            <CardFooter className="flex gap-3">
-              <Button
-                variant="outline"
-                onClick={() => setShowBillingForm(false)}
-                disabled={isCheckingOut}
-              >
-                Voltar
-              </Button>
-              <Button type="submit" form="billing-form" disabled={isCheckingOut} className="flex-1">
-                {isCheckingOut ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
-                Ir para o Pagamento
-              </Button>
-            </CardFooter>
-          </Card>
-        )}
+            )
+          })}
+        </div>
 
         <div className="flex flex-col sm:flex-row items-center justify-between bg-white p-6 rounded-xl border border-slate-200 text-sm shadow-sm gap-4">
           <div className="text-slate-600 text-center sm:text-left">
