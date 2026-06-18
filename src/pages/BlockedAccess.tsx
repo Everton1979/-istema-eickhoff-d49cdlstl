@@ -21,32 +21,32 @@ const PLANS = [
   {
     id: 'mensal',
     name: 'Mensal',
-    price: 9700,
-    priceFormatted: 'R$ 97,00',
+    price: 14990,
+    priceFormatted: 'R$ 149,90',
     description: 'Acesso por 30 dias',
     installments: '1x no cartão',
   },
   {
     id: 'trimestral',
     name: 'Trimestral',
-    price: 26190,
-    priceFormatted: 'R$ 261,90',
+    price: 40490,
+    priceFormatted: 'R$ 404,90',
     description: 'Acesso por 90 dias',
     installments: 'Até 3x sem juros',
   },
   {
     id: 'semestral',
     name: 'Semestral',
-    price: 49470,
-    priceFormatted: 'R$ 494,70',
+    price: 76490,
+    priceFormatted: 'R$ 764,90',
     description: 'Acesso por 180 dias',
     installments: 'Até 6x sem juros',
   },
   {
     id: 'anual',
     name: 'Anual',
-    price: 93120,
-    priceFormatted: 'R$ 931,20',
+    price: 125900,
+    priceFormatted: 'R$ 1.259,00',
     description: 'Acesso por 365 dias',
     installments: 'Até 12x sem juros',
   },
@@ -93,7 +93,7 @@ export default function BlockedAccess() {
     if (!taxId || !phone) {
       toast({
         title: 'Dados incompletos',
-        description: 'Por favor, preencha o CPF/CNPJ e Telefone.',
+        description: 'Por favor, preencha o CNPJ e Telefone.',
         variant: 'destructive',
       })
       return
@@ -235,12 +235,21 @@ export default function BlockedAccess() {
             <CardContent>
               <form id="billing-form" onSubmit={handleBillingSubmit} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="taxId">CPF ou CNPJ</Label>
+                  <Label htmlFor="taxId">CNPJ</Label>
                   <Input
                     id="taxId"
                     value={taxId}
-                    onChange={(e) => setTaxId(e.target.value)}
-                    placeholder="000.000.000-00 ou 00.000.000/0000-00"
+                    onChange={(e) => {
+                      let value = e.target.value.replace(/\D/g, '')
+                      if (value.length > 14) value = value.slice(0, 14)
+                      value = value.replace(/^(\d{2})(\d)/, '$1.$2')
+                      value = value.replace(/^(\d{2})\.(\d{3})(\d)/, '$1.$2.$3')
+                      value = value.replace(/\.(\d{3})(\d)/, '.$1/$2')
+                      value = value.replace(/(\d{4})(\d)/, '$1-$2')
+                      setTaxId(value)
+                    }}
+                    placeholder="00.000.000/0000-00"
+                    maxLength={18}
                     required
                   />
                 </div>
@@ -249,8 +258,20 @@ export default function BlockedAccess() {
                   <Input
                     id="phone"
                     value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
+                    onChange={(e) => {
+                      let value = e.target.value.replace(/\D/g, '')
+                      if (value.length > 11) value = value.slice(0, 11)
+                      if (value.length > 10) {
+                        value = value.replace(/^(\d{2})(\d{5})(\d{4})$/, '($1) $2-$3')
+                      } else if (value.length > 6) {
+                        value = value.replace(/^(\d{2})(\d{4})(\d{0,4})$/, '($1) $2-$3')
+                      } else if (value.length > 2) {
+                        value = value.replace(/^(\d{2})(\d{0,5})$/, '($1) $2')
+                      }
+                      setPhone(value)
+                    }}
                     placeholder="(00) 00000-0000"
+                    maxLength={15}
                     required
                   />
                 </div>
@@ -279,14 +300,14 @@ export default function BlockedAccess() {
               href="https://wa.me/55981416666"
               className="text-primary font-medium hover:underline ml-1"
             >
-              (55) 9814-1666
+              (55) 9814-16666
             </a>{' '}
             ou{' '}
             <a
-              href="mailto:evertoneickchoff@terra.com.br"
+              href="mailto:farmaciaeickhoff@terra.com.br"
               className="text-primary font-medium hover:underline"
             >
-              evertoneickchoff@terra.com.br
+              farmaciaeickhoff@terra.com.br
             </a>
           </div>
           <Button

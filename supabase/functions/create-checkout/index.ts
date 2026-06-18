@@ -73,11 +73,11 @@ Deno.serve(async (req: Request) => {
     const rawEmail = (profile?.email || user.email || 'cliente@exemplo.com').trim()
 
     // Pre-flight Validation
-    if (!rawCnpj || !rawTelefone || rawCnpj.length < 11 || rawTelefone.length < 10) {
+    if (!rawCnpj || !rawTelefone || rawCnpj.length !== 14 || rawTelefone.length < 10) {
       return new Response(
         JSON.stringify({
           error: 'MISSING_BILLING_DATA',
-          message: 'Por favor, complete seu CPF/CNPJ e Telefone no perfil antes de prosseguir.',
+          message: 'Por favor, complete seu CNPJ e Telefone no perfil antes de prosseguir.',
         }),
         {
           status: 400,
