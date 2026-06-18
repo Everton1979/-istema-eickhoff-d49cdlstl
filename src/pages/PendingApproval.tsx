@@ -10,19 +10,23 @@ export default function PendingApproval() {
   const navigate = useNavigate()
 
   useEffect(() => {
+    if (loading) return
+
+    const isMasterEmail = user?.email === 'farmaciaeickhoff@terra.com.br'
+
     if (
-      !loading &&
-      profile &&
-      (profile.status === 'Ativo' ||
-        profile.role === 'Administrador' ||
-        profile.role === 'Master' ||
-        profile.role === 'admin' ||
-        profile.is_super_admin ||
-        profile.email === 'farmaciaeickhoff@terra.com.br')
+      isMasterEmail ||
+      (profile &&
+        (profile.status === 'Ativo' ||
+          profile.status === 'approved' ||
+          profile.role === 'Administrador' ||
+          profile.role === 'Master' ||
+          profile.role === 'admin' ||
+          profile.is_super_admin))
     ) {
       navigate('/dashboard', { replace: true })
     }
-  }, [profile, loading, navigate])
+  }, [profile, user, loading, navigate])
 
   if (loading) {
     return (

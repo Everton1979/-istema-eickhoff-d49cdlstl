@@ -41,6 +41,11 @@ const ProtectedRoute = ({
     return <Navigate to="/login" replace />
   }
 
+  // Email-based bypass directly from session
+  if (user?.email === 'farmaciaeickhoff@terra.com.br') {
+    return <>{children}</>
+  }
+
   if (requireActive && !profile) {
     return <Navigate to="/pendente" replace />
   }
@@ -50,8 +55,7 @@ const ProtectedRoute = ({
     profile?.role === 'Master' ||
     profile?.role === 'admin' ||
     profile?.role === 'Administrador' ||
-    profile?.is_super_admin ||
-    profile?.email === 'farmaciaeickhoff@terra.com.br'
+    profile?.is_super_admin
   ) {
     return <>{children}</>
   }
