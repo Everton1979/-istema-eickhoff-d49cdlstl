@@ -13,7 +13,12 @@ export default function PendingApproval() {
     if (
       !loading &&
       profile &&
-      (profile.status === 'Ativo' || profile.role === 'Administrador' || profile.role === 'Master')
+      (profile.status === 'Ativo' ||
+        profile.role === 'Administrador' ||
+        profile.role === 'Master' ||
+        profile.role === 'admin' ||
+        profile.is_super_admin ||
+        profile.email === 'farmaciaeickhoff@terra.com.br')
     ) {
       navigate('/dashboard', { replace: true })
     }

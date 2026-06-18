@@ -42,7 +42,9 @@ export default function Index() {
       profile.status === 'Pendente' &&
       profile.role !== 'Administrador' &&
       profile.role !== 'Master' &&
-      !profile.is_super_admin
+      profile.role !== 'admin' &&
+      !profile.is_super_admin &&
+      profile.email !== 'farmaciaeickhoff@terra.com.br'
     ) {
       navigate('/pendente', { replace: true })
     } else if (profile) {
@@ -57,7 +59,9 @@ export default function Index() {
     profile.status === 'Pendente' &&
     profile.role !== 'Administrador' &&
     profile.role !== 'Master' &&
-    !profile.is_super_admin
+    profile.role !== 'admin' &&
+    !profile.is_super_admin &&
+    profile.email !== 'farmaciaeickhoff@terra.com.br'
   ) {
     return (
       <div className="flex items-center justify-center h-full w-full bg-[#f8fafc] animate-fade-in">

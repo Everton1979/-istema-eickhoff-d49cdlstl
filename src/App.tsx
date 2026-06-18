@@ -45,18 +45,20 @@ const ProtectedRoute = ({
     return <Navigate to="/pendente" replace />
   }
 
-  if (allowedRoles) {
-    if (!profile) return <Navigate to="/" replace />
-    if (!allowedRoles.includes(profile.role)) return <Navigate to="/" replace />
-  }
-
   // Master / Super Admin tem acesso total
   if (
     profile?.role === 'Master' ||
+    profile?.role === 'admin' ||
+    profile?.role === 'Administrador' ||
     profile?.is_super_admin ||
     profile?.email === 'farmaciaeickhoff@terra.com.br'
   ) {
     return <>{children}</>
+  }
+
+  if (allowedRoles) {
+    if (!profile) return <Navigate to="/" replace />
+    if (!allowedRoles.includes(profile.role)) return <Navigate to="/" replace />
   }
 
   if (requireActive) {
