@@ -19,7 +19,7 @@ import {
 } from '@/components/ui/select'
 import { supabase } from '@/lib/supabase/client'
 import { toast } from 'sonner'
-import { UserProfile } from '@/hooks/use-auth'
+import { UserProfile, useAuth } from '@/hooks/use-auth'
 
 interface UserEditDialogProps {
   user: UserProfile | null
@@ -29,7 +29,11 @@ interface UserEditDialogProps {
 }
 
 export function UserEditDialog({ user, open, onOpenChange, onUpdate }: UserEditDialogProps) {
+  const { profile } = useAuth()
+  const isMasterEmail = profile?.email === 'farmaciaeickhoff@terra.com.br'
+
   const [status, setStatus] = useState('Pendente')
+  const [role, setRole] = useState('Usuário')
   const [planType, setPlanType] = useState('free')
   const [adminNotes, setAdminNotes] = useState('')
   const [loading, setLoading] = useState(false)
@@ -37,6 +41,7 @@ export function UserEditDialog({ user, open, onOpenChange, onUpdate }: UserEditD
   useEffect(() => {
     if (user) {
       setStatus(user.status || 'Pendente')
+      setRole(user.role || 'Usuário')
       setPlanType(user.plan_type || 'free')
       setAdminNotes(user.admin_notes || '')
     }
@@ -62,6 +67,7 @@ export function UserEditDialog({ user, open, onOpenChange, onUpdate }: UserEditD
         .from('profiles')
         .update({
           status,
+          role,
           plan_type: planType,
           admin_notes: adminNotes,
           ...(startDate ? { plan_start_date: startDate } : {}),
@@ -128,10 +134,10 @@ export function UserEditDialog({ user, open, onOpenChange, onUpdate }: UserEditD
           </DialogTitle>
         </DialogHeader>
         <div className="space-y-4 py-4">
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="space-y-2">
               <Label>Status de Acesso</Label>
-              <Select value={status} onValueChange={setStatus}>
+              <Select value={status} onValueChange={setStatus} disabled={!isMasterEmail}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
@@ -139,6 +145,20 @@ export function UserEditDialog({ user, open, onOpenChange, onUpdate }: UserEditD
                   <SelectItem value="Pendente">Pendente</SelectItem>
                   <SelectItem value="Ativo">Ativo (Liberado)</SelectItem>
                   <SelectItem value="Bloqueado">Bloqueado</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label>Papel (Role)</Label>
+              <Select value={role} onValueChange={setRole} disabled={!isMasterEmail}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Administrador">Administrador</SelectItem>
+                  <SelectItem value="Usuário">Usuário</SelectItem>
+                  <SelectItem value="Visitante">Visitante</SelectItem>
                 </SelectContent>
               </Select>
             </div>

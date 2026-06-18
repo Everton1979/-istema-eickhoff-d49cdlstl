@@ -68,12 +68,12 @@ export default function BlockedAccess() {
   const isBlocked = profile?.status === 'Bloqueado'
   const isExpired = profile?.plan_end_date && new Date() > new Date(profile.plan_end_date)
 
-  if (
-    profile?.role === 'Administrador' ||
-    profile?.role === 'Master' ||
-    profile?.is_super_admin ||
-    (!isBlocked && !isExpired && profile?.status === 'Ativo')
-  ) {
+  // Bypass only for the exact master email
+  if (profile?.email === 'farmaciaeickhoff@terra.com.br') {
+    return <Navigate to="/dashboard" replace />
+  }
+
+  if (!isBlocked && !isExpired && profile?.status === 'Ativo') {
     return <Navigate to="/dashboard" replace />
   }
 

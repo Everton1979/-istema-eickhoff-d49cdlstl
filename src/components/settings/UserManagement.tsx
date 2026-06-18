@@ -35,10 +35,9 @@ export function UserManagement() {
   const [creating, setCreating] = useState(false)
   const [editingUser, setEditingUser] = useState<UserProfile | null>(null)
 
+  const isMasterEmail = currentProfile?.email === 'farmaciaeickhoff@terra.com.br'
   const isMaster =
-    currentProfile?.role === 'Master' ||
-    currentProfile?.is_super_admin ||
-    currentProfile?.email === 'farmaciaeickhoff@terra.com.br'
+    currentProfile?.role === 'Master' || currentProfile?.is_super_admin || isMasterEmail
 
   const fetchUsers = async () => {
     if (!currentProfile) return
@@ -344,26 +343,25 @@ export function UserManagement() {
                 <TableCell>
                   <Badge
                     variant={
-                      u.role === 'Administrador'
+                      u.status === 'Ativo'
                         ? 'default'
-                        : u.status === 'Ativo'
-                          ? 'default'
-                          : u.status === 'Bloqueado'
-                            ? 'destructive'
-                            : 'secondary'
+                        : u.status === 'Bloqueado'
+                          ? 'destructive'
+                          : 'secondary'
                     }
                     className={cn(
-                      'text-xs cursor-pointer hover:opacity-80 transition-opacity',
+                      'text-xs transition-opacity',
+                      u.id !== currentProfile?.id && 'cursor-pointer hover:opacity-80',
                       (!u.status || u.status === 'Pendente') &&
                         'bg-amber-500 hover:bg-amber-600 text-white border-transparent',
                     )}
                     onClick={() => {
-                      if (u.role !== 'Administrador') {
+                      if (u.id !== currentProfile?.id) {
                         setEditingUser(u)
                       }
                     }}
                   >
-                    {u.role === 'Administrador' ? 'Ativo' : !u.status ? 'Pendente' : u.status}
+                    {!u.status ? 'Pendente' : u.status}
                   </Badge>
                 </TableCell>
                 <TableCell className="text-center">
@@ -384,7 +382,7 @@ export function UserManagement() {
                       size="icon"
                       className="h-8 w-8 text-blue-600 hover:bg-blue-50"
                       onClick={() => setEditingUser(u)}
-                      disabled={u.id === currentProfile?.id && u.role === 'Administrador'}
+                      disabled={u.id === currentProfile?.id}
                     >
                       <Edit className="h-4 w-4" />
                     </Button>

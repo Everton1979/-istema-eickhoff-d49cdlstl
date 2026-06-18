@@ -41,7 +41,7 @@ const ProtectedRoute = ({
     return <Navigate to="/login" replace />
   }
 
-  // Email-based bypass directly from session
+  // 1. Email-based bypass directly from session
   if (user?.email === 'farmaciaeickhoff@terra.com.br') {
     return <>{children}</>
   }
@@ -50,7 +50,25 @@ const ProtectedRoute = ({
     return <Navigate to="/pendente" replace />
   }
 
-  // Master / Super Admin tem acesso total
+  // 2. Check if the user's status is 'Bloqueado'
+  if (requireActive) {
+    if (profile?.status === 'Bloqueado') {
+      return <Navigate to="/bloqueado" replace />
+    }
+
+    if (profile?.plan_end_date) {
+      const endDate = new Date(profile.plan_end_date)
+      if (new Date() > endDate) {
+        return <Navigate to="/bloqueado" replace />
+      }
+    }
+
+    if (profile?.status === 'Pendente') {
+      return <Navigate to="/pendente" replace />
+    }
+  }
+
+  // 3. Master / Super Admin tem acesso total
   if (
     profile?.role === 'Master' ||
     profile?.role === 'admin' ||
@@ -63,23 +81,6 @@ const ProtectedRoute = ({
   if (allowedRoles) {
     if (!profile) return <Navigate to="/" replace />
     if (!allowedRoles.includes(profile.role)) return <Navigate to="/" replace />
-  }
-
-  if (requireActive) {
-    if (profile?.status === 'Pendente') {
-      return <Navigate to="/pendente" replace />
-    }
-
-    if (profile?.status === 'Bloqueado') {
-      return <Navigate to="/bloqueado" replace />
-    }
-
-    if (profile?.plan_end_date) {
-      const endDate = new Date(profile.plan_end_date)
-      if (new Date() > endDate) {
-        return <Navigate to="/bloqueado" replace />
-      }
-    }
   }
 
   return <>{children}</>
