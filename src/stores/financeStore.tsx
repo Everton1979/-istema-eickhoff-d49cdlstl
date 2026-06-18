@@ -155,9 +155,10 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
   })
 
   const projectId = profile?.app_name || user?.id
+  const isMasterUser = user?.email === 'farmaciaeickhoff@terra.com.br'
 
   useEffect(() => {
-    if (user && profile && projectId) {
+    if (user && (profile || isMasterUser) && projectId) {
       fetchData()
     } else if (!user) {
       setTransactions([])
@@ -165,10 +166,10 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
       setAccounts(ACCOUNTS)
       setLoadingData(false)
     }
-  }, [user, profile?.app_name, projectId])
+  }, [user, profile?.app_name, projectId, isMasterUser])
 
   const fetchData = async (force: boolean = false) => {
-    if (!user || !profile || !projectId) return
+    if (!user || (!profile && !isMasterUser) || !projectId) return
 
     if (force) {
       setTransactions([])
@@ -341,7 +342,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
   }
 
   const logAction = async (action: string, entity: string, entity_id?: string, details?: any) => {
-    if (!user || !profile) return
+    if (!user || (!profile && user.email !== 'farmaciaeickhoff@terra.com.br')) return
     try {
       await supabase.from('audit_logs').insert({
         user_id: user.id,
@@ -357,7 +358,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
   }
 
   const addTransaction = async (tx: Omit<Transaction, 'id'>) => {
-    if (!user || !profile) return
+    if (!user || (!profile && user.email !== 'farmaciaeickhoff@terra.com.br')) return
     const dbType = mapTypeToDB(tx.type)
     const formattedDate = ensureUtcNoon(tx.date)
 
@@ -409,7 +410,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
   }
 
   const updateTransaction = async (id: string, tx: Partial<Omit<Transaction, 'id'>>) => {
-    if (!user || !profile) return
+    if (!user || (!profile && user.email !== 'farmaciaeickhoff@terra.com.br')) return
     const original = transactions.find((t) => t.id === id)
     const updateData: any = {}
     if (tx.description !== undefined) updateData.description = tx.description
@@ -479,7 +480,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
   }
 
   const deleteTransaction = async (id: string) => {
-    if (!user || !profile) return
+    if (!user || (!profile && user.email !== 'farmaciaeickhoff@terra.com.br')) return
     const original = transactions.find((t) => t.id === id)
     const { error } = await supabase.from('transactions').delete().eq('id', id)
     if (!error) {
@@ -507,7 +508,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
   }
 
   const saveMonthlyMetric = async (metric: Omit<MonthlyMetric, 'id'>) => {
-    if (!user || !profile) return
+    if (!user || (!profile && user.email !== 'farmaciaeickhoff@terra.com.br')) return
 
     const existing = monthlyMetrics.find((m) => m.month === metric.month && m.year === metric.year)
 
@@ -617,7 +618,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
     endDate: string,
     type: string,
   ): Promise<Transaction[]> => {
-    if (!user || !profile) return []
+    if (!user || (!profile && user.email !== 'farmaciaeickhoff@terra.com.br')) return []
 
     let allData: any[] = []
     let page = 0
@@ -684,7 +685,8 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
   }
 
   const updateAccountInitialBalances = async (balances: Record<string, number>) => {
-    if (!user || !profile) return { error: 'Not authenticated' }
+    if (!user || (!profile && user.email !== 'farmaciaeickhoff@terra.com.br'))
+      return { error: 'Not authenticated' }
 
     const payload: any = {
       user_id: user.id,
