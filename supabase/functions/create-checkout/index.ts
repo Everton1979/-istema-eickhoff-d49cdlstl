@@ -100,8 +100,8 @@ Deno.serve(async (req: Request) => {
     }
 
     const payload = {
-      frequency: frequency || 'ONE_TIME',
-      methods: ['CREDIT_CARD'], // Supported payment methods configured
+      frequency: 'SUBSCRIPTION',
+      methods: ['credit_card'], // Supported payment methods configured
       products: [
         {
           externalId: plan,
