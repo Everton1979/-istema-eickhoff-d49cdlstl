@@ -101,7 +101,7 @@ Deno.serve(async (req: Request) => {
 
     const payload = {
       frequency: 'SUBSCRIPTION',
-      methods: ['credit_card'], // Supported payment methods configured
+      methods: ['PIX', 'CREDIT_CARD'], // Supported payment methods configured
       products: [
         {
           externalId: plan,
@@ -118,6 +118,8 @@ Deno.serve(async (req: Request) => {
         name:
           profile?.razao_social || profile?.nome_fantasia || user.user_metadata?.name || 'Cliente',
         phone: rawTelefone,
+        phoneNumber: rawTelefone,
+        cellphone: rawTelefone,
         taxId: rawCnpj,
         metadata: {
           userId: user.id,

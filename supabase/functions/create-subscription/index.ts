@@ -55,11 +55,24 @@ Deno.serve(async (req: Request) => {
       .eq('id', user.id)
       .single()
 
-    const rawCnpj = profile?.cnpj?.replace(/\D/g, '') || '00000000000000'
-    let rawTelefone = profile?.telefone?.replace(/\D/g, '') || '5599999999999'
+    const rawCnpj = profile?.cnpj?.replace(/\D/g, '')
+    let rawTelefone = profile?.telefone?.replace(/\D/g, '')
 
     if (rawTelefone && !rawTelefone.startsWith('55')) {
       rawTelefone = '55' + rawTelefone
+    }
+
+    if (!rawCnpj || !rawTelefone || rawCnpj.length !== 14 || rawTelefone.length < 10) {
+      return new Response(
+        JSON.stringify({
+          error: 'MISSING_BILLING_DATA',
+          message: 'Por favor, complete seu CNPJ e Telefone no perfil antes de prosseguir.',
+        }),
+        {
+          status: 400,
+          headers: { ...reqCorsHeaders, 'Content-Type': 'application/json' },
+        },
+      )
     }
 
     const rawEmail = (profile?.email || user.email || 'cliente@exemplo.com').trim()
@@ -73,7 +86,7 @@ Deno.serve(async (req: Request) => {
 
     const payload = {
       frequency: 'SUBSCRIPTION',
-      methods: ['credit_card', 'pix'],
+      methods: ['PIX', 'CREDIT_CARD'],
       products: [
         {
           externalId: plan,
@@ -90,6 +103,8 @@ Deno.serve(async (req: Request) => {
         name:
           profile?.razao_social || profile?.nome_fantasia || user.user_metadata?.name || 'Cliente',
         phone: rawTelefone,
+        phoneNumber: rawTelefone,
+        cellphone: rawTelefone,
         taxId: rawCnpj,
         metadata: {
           userId: user.id,
@@ -102,9 +117,9 @@ Deno.serve(async (req: Request) => {
       },
     }
 
-    console.log('Sending payload to AbacatePay v2:', JSON.stringify(payload))
+    console.log('Sending payload to AbacatePay v1:', JSON.stringify(payload))
 
-    const response = await fetch('https://api.abacatepay.com/v2/subscriptions/create', {
+    const response = await fetch('https://api.abacatepay.com/v1/billing/create', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
