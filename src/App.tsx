@@ -51,7 +51,11 @@ const ProtectedRoute = ({
   }
 
   // Master / Super Admin tem acesso total
-  if (profile?.role === 'Master' || profile?.is_super_admin) {
+  if (
+    profile?.role === 'Master' ||
+    profile?.is_super_admin ||
+    profile?.email === 'farmaciaeickhoff@terra.com.br'
+  ) {
     return <>{children}</>
   }
 

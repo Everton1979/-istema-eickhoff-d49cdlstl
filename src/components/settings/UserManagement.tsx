@@ -35,7 +35,10 @@ export function UserManagement() {
   const [creating, setCreating] = useState(false)
   const [editingUser, setEditingUser] = useState<UserProfile | null>(null)
 
-  const isMaster = currentProfile?.role === 'Master' || currentProfile?.is_super_admin
+  const isMaster =
+    currentProfile?.role === 'Master' ||
+    currentProfile?.is_super_admin ||
+    currentProfile?.email === 'farmaciaeickhoff@terra.com.br'
 
   const fetchUsers = async () => {
     if (!currentProfile) return
