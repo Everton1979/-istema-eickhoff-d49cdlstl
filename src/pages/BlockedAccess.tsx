@@ -79,21 +79,39 @@ export default function BlockedAccess() {
 
   const handleSelectPlan = (planId: string) => {
     setSelectedPlan(planId)
-    if (!profile?.cnpj || !profile?.telefone) {
+    const currentTaxId = profile?.cnpj?.replace(/\D/g, '') || ''
+    const currentPhone = profile?.telefone?.replace(/\D/g, '') || ''
+
+    // Force update if CNPJ is not exactly 14 digits or phone is not complete
+    if (currentTaxId.length !== 14 || currentPhone.length < 10) {
       setTaxId(profile?.cnpj || '')
       setPhone(profile?.telefone || '')
       setShowBillingForm(true)
     } else {
-      handleCheckout(planId, profile.cnpj, profile.telefone)
+      handleCheckout(planId, profile!.cnpj!, profile!.telefone!)
     }
   }
 
   const handleBillingSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!taxId || !phone) {
+
+    const rawTaxId = taxId.replace(/\D/g, '')
+    const rawPhone = phone.replace(/\D/g, '')
+
+    if (rawTaxId.length !== 14) {
       toast({
-        title: 'Dados incompletos',
-        description: 'Por favor, preencha o CNPJ e Telefone.',
+        title: 'CNPJ Inválido',
+        description:
+          'O CNPJ deve conter exatamente 14 dígitos (CPFs não são mais aceitos para o faturamento).',
+        variant: 'destructive',
+      })
+      return
+    }
+
+    if (rawPhone.length < 10) {
+      toast({
+        title: 'Telefone Inválido',
+        description: 'O telefone deve conter o DDD e o número válido.',
         variant: 'destructive',
       })
       return
@@ -104,6 +122,7 @@ export default function BlockedAccess() {
       .from('profiles')
       .update({ cnpj: taxId, telefone: phone })
       .eq('id', profile!.id)
+
     if (error) {
       toast({
         title: 'Erro ao salvar dados',
@@ -123,34 +142,48 @@ export default function BlockedAccess() {
       const plan = PLANS.find((p) => p.id === planId)
       if (!plan) return
 
-      const response = await supabase.functions.invoke('create-checkout', {
-        body: {
+      // Use fetch directly to capture the exact non-2xx JSON response body from Edge Function
+      const {
+        data: { session },
+      } = await supabase.auth.getSession()
+
+      const res = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/create-checkout`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${session?.access_token}`,
+        },
+        body: JSON.stringify({
           plan: plan.id,
           price: plan.price,
           frequency: 'ONE_TIME',
           taxId: currentTaxId,
           cellphone: currentPhone,
           origin: window.location.origin,
-        },
+        }),
       })
 
-      if (response.error) throw new Error(response.error.message || 'Erro ao gerar checkout')
+      const data = await res.json().catch(() => ({}))
 
-      const { url, error } = response.data
-
-      if (error) {
-        throw new Error(error.message || error)
+      if (!res.ok) {
+        const backendMessage =
+          data?.message || data?.error || `Erro ${res.status}: Falha no provedor de pagamento.`
+        throw new Error(backendMessage)
       }
 
-      if (url) {
-        window.location.href = url
+      if (data?.error) {
+        throw new Error(data.error.message || data.error)
+      }
+
+      if (data?.url) {
+        window.location.href = data.url
       } else {
         throw new Error('URL de checkout não retornada')
       }
     } catch (err: any) {
       console.error(err)
       toast({
-        title: 'Erro no checkout',
+        title: 'Atenção no checkout',
         description: err.message || 'Não foi possível iniciar o pagamento. Tente novamente.',
         variant: 'destructive',
       })
