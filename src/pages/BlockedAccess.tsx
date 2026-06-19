@@ -1,6 +1,6 @@
 import { useAuth } from '@/hooks/use-auth'
 import { Button } from '@/components/ui/button'
-import { XOctagon, LogOut } from 'lucide-react'
+import { XOctagon, LogOut, MessageCircle } from 'lucide-react'
 import { Navigate } from 'react-router-dom'
 import {
   Card,
@@ -144,17 +144,30 @@ export default function BlockedAccess() {
                     </div>
                   )}
                 </CardContent>
-                <CardFooter>
+                <CardFooter className="flex-col gap-2">
                   <Button
                     className="w-full"
                     variant={plan.id === 'anual' ? 'default' : 'outline'}
                     asChild
                   >
                     <a href={plan.link} target="_blank" rel="noopener noreferrer">
-                      Selecionar Plano
+                      1. Pagar Plano
                     </a>
                   </Button>
-                </CardFooter>{' '}
+                  <Button
+                    className="w-full bg-[#25D366] hover:bg-[#20bd5a] text-white border-none shadow-sm gap-2"
+                    onClick={() => {
+                      const msg = `Olá! Acabei de realizar o pagamento do plano ${plan.name} via AbacatePay. Segue em anexo o meu comprovante para a liberação/renovação do meu acesso. Meu e-mail de cadastro é: ${profile?.email || ''}.`
+                      window.open(
+                        `https://wa.me/55981416666?text=${encodeURIComponent(msg)}`,
+                        '_blank',
+                      )
+                    }}
+                  >
+                    <MessageCircle className="w-4 h-4" />
+                    2. Enviar Comprovante
+                  </Button>
+                </CardFooter>
               </Card>
             )
           })}

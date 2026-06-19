@@ -137,6 +137,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
   const [loadingData, setLoadingData] = useState(true)
   const [isTransactionSheetOpen, setTransactionSheetOpen] = useState(false)
   const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null)
+  const lastProjectIdRef = React.useRef<string | null>(null)
 
   const [filters, setFilters] = useState<FinanceFilters>(() => {
     const now = new Date()
@@ -171,7 +172,12 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
   const fetchData = async (force: boolean = false) => {
     if (!user || (!profile && !isMasterUser) || !projectId) return
 
-    if (force) {
+    const isNewProject = lastProjectIdRef.current !== projectId && lastProjectIdRef.current !== null
+    lastProjectIdRef.current = projectId
+
+    let hasCache = false
+
+    if (force || isNewProject) {
       setTransactions([])
       setMonthlyMetrics([])
     } else {
@@ -197,21 +203,26 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
         sessionStorage.clear() // Force clear session storage to remove stale queries if any
 
         const cachedTx = localStorage.getItem(`v6_finance_tx_cache_${user.id}_${projectId}`)
-        if (cachedTx && transactions.length === 0) {
-          setTransactions(JSON.parse(cachedTx))
+        if (cachedTx) {
+          if (transactions.length === 0) setTransactions(JSON.parse(cachedTx))
+          hasCache = true
         }
         const cachedMetrics = localStorage.getItem(
           `v6_finance_metrics_cache_${user.id}_${projectId}`,
         )
-        if (cachedMetrics && monthlyMetrics.length === 0) {
-          setMonthlyMetrics(JSON.parse(cachedMetrics))
+        if (cachedMetrics) {
+          if (monthlyMetrics.length === 0) setMonthlyMetrics(JSON.parse(cachedMetrics))
+          hasCache = true
         }
       } catch (e) {
         console.warn('Cache loading failed', e)
       }
     }
 
-    setLoadingData(true)
+    // Only set loading to true if we don't have cache/existing data or if forcing
+    if (force || isNewProject || (!hasCache && transactions.length === 0)) {
+      setLoadingData(true)
+    }
 
     const txQuery = supabase
       .from('transactions')

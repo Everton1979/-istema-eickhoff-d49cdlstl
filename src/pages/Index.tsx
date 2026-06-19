@@ -48,10 +48,21 @@ export default function Index() {
     ) {
       navigate('/pendente', { replace: true })
     } else if (profile) {
-      // Ao entrar no dashboard ou mudar de empresa, força fetch ignorando cache stale
-      fetchData(true)
+      // Refresh silently without clearing state to avoid flickering
+      fetchData(false)
     }
   }, [profile, loading, navigate]) // fetchData is intentionally omitted to avoid loops
+
+  // Revalidação silenciosa ao voltar para a aba
+  useEffect(() => {
+    const handleFocus = () => {
+      if (profile) {
+        fetchData(false)
+      }
+    }
+    window.addEventListener('focus', handleFocus)
+    return () => window.removeEventListener('focus', handleFocus)
+  }, [profile, fetchData])
 
   if (
     !loading &&
