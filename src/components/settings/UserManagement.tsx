@@ -24,6 +24,15 @@ import {
   DialogTrigger,
   DialogFooter,
 } from '@/components/ui/dialog'
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogCancel,
+} from '@/components/ui/alert-dialog'
 
 export function UserManagement() {
   const { profile: currentProfile } = useAuth()
@@ -34,6 +43,10 @@ export function UserManagement() {
   const [newPassword, setNewPassword] = useState('')
   const [creating, setCreating] = useState(false)
   const [editingUser, setEditingUser] = useState<UserProfile | null>(null)
+
+  const [userToDelete, setUserToDelete] = useState<string | null>(null)
+  const [deleteStep, setDeleteStep] = useState<number>(0)
+  const [deleting, setDeleting] = useState(false)
 
   const isMasterEmail = currentProfile?.email === 'farmaciaeickhoff@terra.com.br'
   const isMaster =
@@ -102,26 +115,36 @@ export function UserManagement() {
     }
   }
 
-  const handleDeleteUser = async (userId: string) => {
+  const initiateDeleteUser = (userId: string) => {
     if (userId === currentProfile?.id) {
       toast.error('Você não pode excluir a si mesmo.')
       return
     }
+    setUserToDelete(userId)
+    setDeleteStep(1)
+  }
 
-    if (!confirm('Tem certeza que deseja excluir este usuário?')) return
+  const handleDeleteUser = async () => {
+    if (!userToDelete) return
+    setDeleting(true)
 
     try {
       const { data, error } = await supabase.functions.invoke('manage-users', {
-        body: { action: 'delete', userId },
+        body: { action: 'delete', userId: userToDelete },
       })
 
       if (error) throw error
       if (data?.error) throw new Error(data.error)
 
       toast.success('Usuário excluído com sucesso')
-      setUsers(users.filter((u) => u.id !== userId))
+      setUsers(users.filter((u) => u.id !== userToDelete))
+      setUserToDelete(null)
+      setDeleteStep(0)
+      fetchUsers()
     } catch (err: any) {
       toast.error(err.message || 'Erro ao excluir usuário')
+    } finally {
+      setDeleting(false)
     }
   }
 
@@ -231,6 +254,45 @@ export function UserManagement() {
         onOpenChange={(open) => !open && setEditingUser(null)}
         onUpdate={fetchUsers}
       />
+
+      <AlertDialog
+        open={!!userToDelete}
+        onOpenChange={(open) => {
+          if (!open && !deleting) {
+            setUserToDelete(null)
+            setDeleteStep(0)
+          }
+        }}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              {deleteStep === 1 ? 'Confirmar Exclusão' : 'Ação Irreversível'}
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              {deleteStep === 1
+                ? 'Tem certeza que deseja excluir este cadastro?'
+                : 'Esta ação é irreversível. Deseja realmente confirmar a exclusão?'}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={deleting}>Cancelar</AlertDialogCancel>
+            <Button
+              variant="destructive"
+              disabled={deleting}
+              onClick={() => {
+                if (deleteStep === 1) {
+                  setDeleteStep(2)
+                } else {
+                  handleDeleteUser()
+                }
+              }}
+            >
+              {deleting ? 'Excluindo...' : deleteStep === 1 ? 'Continuar' : 'Confirmar Exclusão'}
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       <div className="rounded-md border bg-white overflow-hidden">
         <Table>
@@ -390,7 +452,7 @@ export function UserManagement() {
                       variant="ghost"
                       size="icon"
                       className="h-8 w-8 text-slate-400 hover:text-red-600 hover:bg-red-50"
-                      onClick={() => handleDeleteUser(u.id)}
+                      onClick={() => initiateDeleteUser(u.id)}
                       disabled={u.id === currentProfile?.id}
                     >
                       <Trash2 className="h-4 w-4" />

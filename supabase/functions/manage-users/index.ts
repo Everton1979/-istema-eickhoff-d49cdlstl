@@ -42,7 +42,7 @@ Deno.serve(async (req: Request) => {
     // Get current user's profile to enforce permissions
     const { data: currentUserProfile, error: profileError } = await supabaseAdmin
       .from('profiles')
-      .select('role, app_name')
+      .select('role, app_name, is_super_admin')
       .eq('id', user.id)
       .single()
 
@@ -50,7 +50,12 @@ Deno.serve(async (req: Request) => {
       throw new Error('User profile not found')
     }
 
-    const isSuperAdmin = currentUserProfile.role === 'Administrador'
+    const isMasterEmail = user.email === 'farmaciaeickhoff@terra.com.br'
+    const isSuperAdmin =
+      currentUserProfile.role === 'Administrador' ||
+      currentUserProfile.role === 'admin' ||
+      currentUserProfile.is_super_admin ||
+      isMasterEmail
 
     if (action === 'create') {
       const fallbackAppName = currentUserProfile.app_name || user.id
@@ -115,7 +120,7 @@ Deno.serve(async (req: Request) => {
         if (targetUser.app_name !== fallbackAppName) {
           throw new Error('Acesso negado: Você não tem permissão para excluir este usuário.')
         }
-        if (targetUser.role === 'Administrador') {
+        if (targetUser.role === 'Administrador' || targetUser.role === 'admin') {
           throw new Error('Acesso negado: Não é possível excluir um Administrador.')
         }
       }
