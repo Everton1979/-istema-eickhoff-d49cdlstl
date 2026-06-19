@@ -62,14 +62,14 @@ const isValidCnpj = (val: string) => {
 
 const registerSchema = z
   .object({
-    razaoSocial: z.string().min(1, 'Este campo é obrigatório'),
-    nomeFantasia: z.string().min(1, 'Este campo é obrigatório'),
     cnpj: z
       .string()
       .min(1, 'Este campo é obrigatório')
       .transform((val) => val.replace(/\D/g, ''))
       .refine((val) => isValidCnpj(val), 'CNPJ inválido'),
-    telefone: z.string().min(1, 'Este campo é obrigatório'),
+    razaoSocial: z.string().min(1, 'Este campo é obrigatório'),
+    nomeFantasia: z.string().min(1, 'Este campo é obrigatório'),
+    appName: z.string().min(1, 'Este campo é obrigatório'),
     cep: z.string().min(1, 'Este campo é obrigatório'),
     logradouro: z.string().min(1, 'Este campo é obrigatório'),
     numero: z.string().min(1, 'Este campo é obrigatório'),
@@ -77,6 +77,7 @@ const registerSchema = z
     bairro: z.string().min(1, 'Este campo é obrigatório'),
     cidade: z.string().min(1, 'Este campo é obrigatório'),
     estado: z.string().min(1, 'Este campo é obrigatório'),
+    telefone: z.string().min(1, 'Este campo é obrigatório'),
     responsavel: z.string().min(1, 'Este campo é obrigatório'),
     email: z
       .string()
@@ -84,16 +85,22 @@ const registerSchema = z
       .regex(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, 'E-mail em formato inválido'),
     confirmEmail: z.string().min(1, 'Este campo é obrigatório'),
     password: z.string().min(6, 'A senha deve ter no mínimo 6 caracteres'),
+    confirmPassword: z.string().min(1, 'Este campo é obrigatório'),
   })
   .refine((data) => data.email === data.confirmEmail, {
     message: 'Os e-mails não coincidem',
     path: ['confirmEmail'],
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: 'As senhas não coincidem',
+    path: ['confirmPassword'],
   })
 
 type RegisterFormValues = z.infer<typeof registerSchema>
 
 export default function Register() {
   const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [loading, setLoading] = useState(false)
   const [isFetchingCnpj, setIsFetchingCnpj] = useState(false)
   const [lastFetchedCnpj, setLastFetchedCnpj] = useState('')
@@ -109,6 +116,7 @@ export default function Register() {
       cnpj: '',
       razaoSocial: '',
       nomeFantasia: '',
+      appName: '',
       cep: '',
       logradouro: '',
       numero: '',
@@ -121,6 +129,7 @@ export default function Register() {
       email: '',
       confirmEmail: '',
       password: '',
+      confirmPassword: '',
     },
   })
 
@@ -173,6 +182,9 @@ export default function Register() {
         form.setValue('nomeFantasia', data.nome_fantasia || data.razao_social || '', {
           shouldValidate: true,
         })
+        form.setValue('appName', data.nome_fantasia || data.razao_social || '', {
+          shouldValidate: true,
+        })
         form.setValue('cep', data.cep ? data.cep.replace(/^(\d{5})(\d{3})$/, '$1-$2') : '', {
           shouldValidate: true,
         })
@@ -223,7 +235,7 @@ export default function Register() {
     setLoading(true)
 
     const metadata = {
-      app_name: data.cnpj,
+      app_name: data.appName,
       cnpj: data.cnpj,
       razao_social: data.razaoSocial,
       nome_fantasia: data.nomeFantasia,
@@ -243,11 +255,9 @@ export default function Register() {
     if (error) {
       toast.error(error.message || 'Erro ao criar conta.')
     } else {
-      toast.success(
-        'Solicitação enviada com sucesso! Seu acesso está aguardando aprovação do administrador.',
-        { duration: 10000 },
-      )
-      navigate('/pendente', { state: { email: data.email } })
+      toast.success('Solicitação enviada com sucesso! Seu acesso está aguardando aprovação.', {
+        duration: 10000,
+      })
     }
   }
 
@@ -273,7 +283,7 @@ export default function Register() {
                 render={({ field }) => (
                   <FormItem className="md:col-span-2">
                     <FormLabel className="flex items-center gap-2">
-                      CNPJ
+                      CNPJ <span className="text-red-500">*</span>
                       {isFetchingCnpj && (
                         <span className="text-xs text-blue-600 flex items-center gap-1 font-medium">
                           <Loader2 className="w-3 h-3 animate-spin" /> Buscando dados...
@@ -312,7 +322,9 @@ export default function Register() {
                 name="razaoSocial"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Razão Social</FormLabel>
+                    <FormLabel>
+                      Razão Social <span className="text-red-500">*</span>
+                    </FormLabel>
                     <FormControl>
                       <Input {...field} />
                     </FormControl>
@@ -325,9 +337,26 @@ export default function Register() {
                 name="nomeFantasia"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Nome Fantasia</FormLabel>
+                    <FormLabel>
+                      Nome Fantasia <span className="text-red-500">*</span>
+                    </FormLabel>
                     <FormControl>
                       <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="appName"
+                render={({ field }) => (
+                  <FormItem className="md:col-span-2">
+                    <FormLabel>
+                      Nome do Aplicativo <span className="text-red-500">*</span>
+                    </FormLabel>
+                    <FormControl>
+                      <Input placeholder="Como o sistema será chamado" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -339,7 +368,7 @@ export default function Register() {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="flex items-center gap-2">
-                      CEP
+                      CEP <span className="text-red-500">*</span>
                       {isFetchingCep && (
                         <span className="text-xs text-blue-600 flex items-center gap-1 font-medium">
                           <Loader2 className="w-3 h-3 animate-spin" /> Buscando...
@@ -369,7 +398,9 @@ export default function Register() {
                 name="logradouro"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Logradouro (Rua/Av)</FormLabel>
+                    <FormLabel>
+                      Logradouro (Rua/Av) <span className="text-red-500">*</span>
+                    </FormLabel>
                     <FormControl>
                       <Input autoComplete="street-address" placeholder="Rua Exemplo" {...field} />
                     </FormControl>
@@ -382,7 +413,9 @@ export default function Register() {
                 name="numero"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Número</FormLabel>
+                    <FormLabel>
+                      Número <span className="text-red-500">*</span>
+                    </FormLabel>
                     <FormControl>
                       <Input autoComplete="address-line1" placeholder="123" {...field} />
                     </FormControl>
@@ -408,7 +441,9 @@ export default function Register() {
                 name="bairro"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Bairro</FormLabel>
+                    <FormLabel>
+                      Bairro <span className="text-red-500">*</span>
+                    </FormLabel>
                     <FormControl>
                       <Input autoComplete="address-level3" placeholder="Centro" {...field} />
                     </FormControl>
@@ -421,7 +456,9 @@ export default function Register() {
                 name="cidade"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Cidade</FormLabel>
+                    <FormLabel>
+                      Cidade <span className="text-red-500">*</span>
+                    </FormLabel>
                     <FormControl>
                       <Input autoComplete="address-level2" placeholder="Ex: São Paulo" {...field} />
                     </FormControl>
@@ -434,7 +471,9 @@ export default function Register() {
                 name="estado"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Estado</FormLabel>
+                    <FormLabel>
+                      Estado <span className="text-red-500">*</span>
+                    </FormLabel>
                     <Select
                       onValueChange={field.onChange}
                       value={field.value}
@@ -484,7 +523,9 @@ export default function Register() {
                 name="telefone"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Telefone / WhatsApp</FormLabel>
+                    <FormLabel>
+                      Telefone / WhatsApp <span className="text-red-500">*</span>
+                    </FormLabel>
                     <FormControl>
                       <Input
                         placeholder="(00) 00000-0000"
@@ -513,7 +554,9 @@ export default function Register() {
                   name="responsavel"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Nome do Responsável</FormLabel>
+                      <FormLabel>
+                        Nome do Responsável <span className="text-red-500">*</span>
+                      </FormLabel>
                       <FormControl>
                         <Input {...field} />
                       </FormControl>
@@ -530,7 +573,9 @@ export default function Register() {
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email de Acesso</FormLabel>
+                    <FormLabel>
+                      Email de Acesso <span className="text-red-500">*</span>
+                    </FormLabel>
                     <FormControl>
                       <Input type="email" placeholder="seu@email.com" {...field} />
                     </FormControl>
@@ -543,9 +588,19 @@ export default function Register() {
                 name="confirmEmail"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Confirme seu e-mail</FormLabel>
+                    <FormLabel>
+                      Confirme seu e-mail <span className="text-red-500">*</span>
+                    </FormLabel>
                     <FormControl>
-                      <Input type="email" placeholder="Confirme seu e-mail" {...field} />
+                      <Input
+                        type="email"
+                        placeholder="Confirme seu e-mail"
+                        onPaste={(e) => {
+                          e.preventDefault()
+                          toast.error('Por favor, digite seu e-mail manualmente para evitar erros.')
+                        }}
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -555,8 +610,10 @@ export default function Register() {
                 control={form.control}
                 name="password"
                 render={({ field }) => (
-                  <FormItem className="md:col-span-2">
-                    <FormLabel>Senha</FormLabel>
+                  <FormItem>
+                    <FormLabel>
+                      Senha <span className="text-red-500">*</span>
+                    </FormLabel>
                     <div className="relative">
                       <FormControl>
                         <Input
@@ -571,6 +628,38 @@ export default function Register() {
                         className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
                       >
                         {showPassword ? (
+                          <EyeOff className="w-4 h-4" />
+                        ) : (
+                          <Eye className="w-4 h-4" />
+                        )}
+                      </button>
+                    </div>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="confirmPassword"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>
+                      Confirmar Senha <span className="text-red-500">*</span>
+                    </FormLabel>
+                    <div className="relative">
+                      <FormControl>
+                        <Input
+                          type={showConfirmPassword ? 'text' : 'password'}
+                          className="pr-10"
+                          {...field}
+                        />
+                      </FormControl>
+                      <button
+                        type="button"
+                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                      >
+                        {showConfirmPassword ? (
                           <EyeOff className="w-4 h-4" />
                         ) : (
                           <Eye className="w-4 h-4" />
