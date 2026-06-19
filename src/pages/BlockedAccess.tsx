@@ -1,7 +1,6 @@
-import { useState } from 'react'
 import { useAuth } from '@/hooks/use-auth'
 import { Button } from '@/components/ui/button'
-import { XOctagon, LogOut, Loader2 } from 'lucide-react'
+import { XOctagon, LogOut } from 'lucide-react'
 import { Navigate } from 'react-router-dom'
 import {
   Card,
@@ -13,8 +12,6 @@ import {
 } from '@/components/ui/card'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { cn } from '@/lib/utils'
-import { supabase } from '@/lib/supabase/client'
-import { useToast } from '@/hooks/use-toast'
 
 const PLANS = [
   {
@@ -24,7 +21,7 @@ const PLANS = [
     priceFormatted: 'R$ 149,90',
     description: 'Acesso por 30 dias',
     installmentsCount: 1,
-    link: 'https://app.abacatepay.com/pay/bill_Ade3dg2GZNNxpJjagAk46dMW',
+    link: 'https://app.abacatepay.com/pay/bill_5Q3M3NJsp6XJw6bEU122MyQE',
   },
   {
     id: 'trimestral',
@@ -57,37 +54,6 @@ const PLANS = [
 
 export default function BlockedAccess() {
   const { signOut, profile, loading } = useAuth()
-  const { toast } = useToast()
-  const [loadingPlan, setLoadingPlan] = useState<string | null>(null)
-
-  const handleSelectPlan = async (plan: any) => {
-    setLoadingPlan(plan.id)
-    try {
-      const { data, error } = await supabase.functions.invoke('create-subscription', {
-        body: {
-          plan: plan.id,
-          price: plan.price,
-          origin: window.location.origin,
-        },
-      })
-
-      if (error) throw error
-      if (data?.url) {
-        window.location.href = data.url
-      } else {
-        throw new Error('URL de checkout não retornada')
-      }
-    } catch (err: any) {
-      console.error('Checkout error:', err)
-      toast({
-        title: 'Erro ao gerar pagamento',
-        description: err.message || 'Por favor, tente novamente ou entre em contato com o suporte.',
-        variant: 'destructive',
-      })
-    } finally {
-      setLoadingPlan(null)
-    }
-  }
 
   if (loading) return null
 
@@ -182,19 +148,13 @@ export default function BlockedAccess() {
                   <Button
                     className="w-full"
                     variant={plan.id === 'anual' ? 'default' : 'outline'}
-                    onClick={() => handleSelectPlan(plan)}
-                    disabled={loadingPlan !== null}
+                    asChild
                   >
-                    {loadingPlan === plan.id ? (
-                      <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Aguarde...
-                      </>
-                    ) : (
-                      'Selecionar Plano'
-                    )}
+                    <a href={plan.link} target="_blank" rel="noopener noreferrer">
+                      Selecionar Plano
+                    </a>
                   </Button>
-                </CardFooter>
+                </CardFooter>{' '}
               </Card>
             )
           })}
