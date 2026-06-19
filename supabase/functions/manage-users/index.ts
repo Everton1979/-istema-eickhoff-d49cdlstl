@@ -52,6 +52,7 @@ Deno.serve(async (req: Request) => {
 
     const isMasterEmail = user.email === 'farmaciaeickhoff@terra.com.br'
     const isSuperAdmin =
+      currentUserProfile.role === 'Master' ||
       currentUserProfile.role === 'Administrador' ||
       currentUserProfile.role === 'admin' ||
       currentUserProfile.is_super_admin ||
@@ -120,8 +121,12 @@ Deno.serve(async (req: Request) => {
         if (targetUser.app_name !== fallbackAppName) {
           throw new Error('Acesso negado: Você não tem permissão para excluir este usuário.')
         }
-        if (targetUser.role === 'Administrador' || targetUser.role === 'admin') {
-          throw new Error('Acesso negado: Não é possível excluir um Administrador.')
+        if (
+          targetUser.role === 'Master' ||
+          targetUser.role === 'Administrador' ||
+          targetUser.role === 'admin'
+        ) {
+          throw new Error('Acesso negado: Não é possível excluir um Administrador/Master.')
         }
       }
 
