@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState, ReactNode } from 'react'
+import { createContext, useContext, useEffect, useState, useRef, ReactNode } from 'react'
 import { User, Session } from '@supabase/supabase-js'
 import { supabase } from '@/lib/supabase/client'
 
@@ -53,6 +53,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [session, setSession] = useState<Session | null>(null)
   const [loadingUser, setLoadingUser] = useState(true)
   const [loadingProfile, setLoadingProfile] = useState(true)
+  const currentProfileId = useRef<string | null>(null)
 
   useEffect(() => {
     const {
@@ -80,7 +81,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     const loadProfile = async () => {
       if (user) {
-        setLoadingProfile(true)
+        // Only set loading to true if we don't have the profile for this user yet.
+        // This prevents the "Carregando..." flash on background revalidations (e.g. Alt+Tab focus).
+        if (currentProfileId.current !== user.id) {
+          setLoadingProfile(true)
+        }
         const { data, error } = await supabase
           .from('profiles')
           .select('*')
@@ -90,14 +95,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         if (mounted) {
           if (!error && data) {
             setProfile(data as UserProfile)
+            currentProfileId.current = data.id
           } else {
             setProfile(null)
+            currentProfileId.current = null
           }
           setLoadingProfile(false)
         }
       } else {
         if (mounted) {
           setProfile(null)
+          currentProfileId.current = null
           setLoadingProfile(false)
         }
       }
@@ -111,6 +119,27 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       mounted = false
     }
   }, [user, loadingUser])
+
+  // Listener para revalidação silenciosa em background ao voltar o foco
+  useEffect(() => {
+    const handleFocus = () => {
+      if (user && currentProfileId.current === user.id) {
+        // Revalida perfil silenciosamente
+        supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', user.id)
+          .single()
+          .then(({ data, error }) => {
+            if (!error && data) {
+              setProfile(data as UserProfile)
+            }
+          })
+      }
+    }
+    window.addEventListener('focus', handleFocus)
+    return () => window.removeEventListener('focus', handleFocus)
+  }, [user])
 
   const signUp = async (email: string, password: string, metadata?: any) => {
     const { error } = await supabase.auth.signUp({
