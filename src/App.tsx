@@ -63,19 +63,16 @@ const ProtectedRoute = ({
     }
   }
 
-  // 3. Master / Super Admin tem acesso total
-  if (
-    profile?.role === 'Master' ||
-    profile?.role === 'admin' ||
-    profile?.role === 'Administrador' ||
-    profile?.is_super_admin
-  ) {
-    return <>{children}</>
-  }
-
   if (allowedRoles) {
     if (!profile) return <Navigate to="/" replace />
-    if (!allowedRoles.includes(profile.role)) return <Navigate to="/" replace />
+    // Master sempre tem acesso restrito a áreas administrativas
+    if (
+      profile.role !== 'Master' &&
+      profile.email !== 'farmaciaeickhoff@terra.com.br' &&
+      !allowedRoles.includes(profile.role)
+    ) {
+      return <Navigate to="/" replace />
+    }
   }
 
   return <>{children}</>
@@ -120,11 +117,11 @@ const App = () => (
                 <Route
                   path="/usuarios"
                   element={
-                    <ProtectedRoute>
+                    <ProtectedRoute allowedRoles={['Master']}>
                       <Users />
                     </ProtectedRoute>
                   }
-                />
+                />{' '}
               </Route>
               <Route path="*" element={<NotFound />} />
             </Routes>
