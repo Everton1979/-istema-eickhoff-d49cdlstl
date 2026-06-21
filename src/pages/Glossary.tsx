@@ -72,15 +72,16 @@ const GLOSSARY_TERMS = [
     trend: 'neutral',
   },
   {
-    id: 'custo-fixo-formula',
-    title: 'Custo Fixo por Fórmula',
+    id: 'custo-estrutura',
+    title: 'Custo de Estrutura (Blindagem Operacional)',
     definition:
-      'Indica qual é o "peso" do custo fixo que cada fórmula manipulada precisa pagar para manter a farmácia aberta.',
-    calculation: 'CFA Total / Número de Pedidos (ou Fórmulas).',
+      'Também conhecido como Blindagem Operacional, representa o "peso" financeiro que cada fórmula precisa carregar para manter a farmácia aberta e cobrir a operação. Ele engloba tanto as Despesas Fixas (ex: aluguel, salários, despesas administrativas) quanto as Despesas Variáveis Gerais (ex: impostos sobre faturamento, taxas de cartão de crédito, comissões e fretes). O cálculo exclui expressamente os custos diretos da fórmula específica (matéria-prima e embalagem).',
+    calculation:
+      '(Total de Despesas Fixas + Total de Despesas Variáveis Gerais) / Média de Volume de Produção (Fórmulas).',
     example:
-      'Seu Custo Fixo Administrativo totalizou R$ 20.000 no mês. Foram produzidas 1.000 fórmulas. R$ 20.000 ÷ 1.000 = R$ 20,00. Ou seja, cada fórmula vendida precisa deixar pelo menos R$ 20 só para pagar a loja.',
+      'Contexto: 2.000 fórmulas produzidas. Custo de Estrutura: R$ 88.000,00 (Fixas + Variáveis Gerais). Cálculo: R$ 88.000 ÷ 2.000 = R$ 44,00 por fórmula. Aplicação: Para uma fórmula com R$ 15,00 em matéria-prima, o custo base é R$ 44,00 (Estrutura) + R$ 15,00 (Insumos) = R$ 59,00.',
     reference:
-      'Quanto menor, melhor. Produzir um volume maior de fórmulas ajuda a "diluir" o custo fixo, reduzindo este indicador.',
+      'Quanto menor, melhor. Manter o Custo de Estrutura controlado é essencial para compor o Piso de Segurança e evitar vendas com prejuízo invisível.',
     category: 'Métricas de Performance',
     trend: 'down',
   },
@@ -522,9 +523,9 @@ const GLOSSARY_TERMS = [
     title: 'Piso de Segurança',
     definition:
       'Valor mínimo absoluto pelo qual uma fórmula pode ser vendida para não gerar prejuízo de caixa imediato.',
-    calculation: 'Custo Insumos + Rateio Custos Fixos + Rateio Despesas Variáveis.',
+    calculation: 'Custo Insumos + Blindagem Operacional (Custo de Estrutura).',
     example:
-      'Para fazer uma cápsula específica, você gastou R$ 5 de pó e pote. O painel diz que seu custo fixo/var rateado é R$ 25 por fórmula. O Piso de Segurança é R$ 30,00. Vender esse orçamento por R$ 29 é tirar dinheiro do próprio bolso para pagar o cliente.',
+      'Para fazer uma cápsula específica, você gastou R$ 15,00 de insumos. O painel indica que sua Blindagem Operacional (custo fixo/var rateado) é R$ 44,00 por fórmula. O Piso de Segurança é R$ 59,00. Vender esse orçamento por R$ 58,00 é tirar dinheiro do próprio bolso para pagar o cliente.',
     reference: 'Nenhum orçamento deve ser aprovado abaixo deste valor.',
     category: 'Ferramentas do Dashboard',
     trend: 'neutral',
@@ -655,19 +656,7 @@ const GLOSSARY_TERMS = [
     category: 'Ferramentas do Dashboard',
     trend: 'up',
   },
-  {
-    id: 'taxa-tecnica',
-    title: 'Taxa Técnica',
-    definition:
-      'O valor fixo que cada fórmula produzida precisa carregar para manter o seu laboratório aberto (salários, aluguel, energia, manutenção).',
-    calculation: 'Custos Fixos Totais / Total de Fórmulas Produzidas.',
-    example:
-      'Se os custos fixos são R$ 10.000 e você produziu 1.000 fórmulas, a Taxa Técnica é R$ 10,00 por fórmula.',
-    reference:
-      'Ajuda a compor o Piso de Segurança junto com o custo da matéria-prima e custos variáveis.',
-    category: 'Métricas de Performance',
-    trend: 'down',
-  },
+
   {
     id: 'ticket-medio',
     title: 'Ticket Médio Manipulação',

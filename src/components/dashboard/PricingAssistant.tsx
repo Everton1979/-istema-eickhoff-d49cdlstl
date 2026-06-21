@@ -452,8 +452,7 @@ export function PricingAssistant() {
                   </TooltipTrigger>
                   <TooltipContent className="max-w-[250px] text-center" side="top">
                     <p className="text-xs mb-1">
-                      O valor mínimo vital. Cobre Custo MP + Embalagem + Custo Fixo e Variável
-                      Rateado.
+                      O valor mínimo vital. Cobre Custo MP + Embalagem + Blindagem Operacional.
                     </p>
                     <p className="text-[9px] text-blue-300 mt-2 border-t border-slate-700/50 pt-1">
                       Clique para ver composição no Glossário
@@ -532,16 +531,16 @@ export function PricingAssistant() {
             <Tooltip>
               <TooltipTrigger asChild>
                 <span className="cursor-help flex items-center gap-1">
-                  Taxa Técnica (CF/Fórm):{' '}
+                  Blindagem Operacional:{' '}
                   <span className="font-black text-slate-700 text-sm">
-                    R$ {stats.taxaTecnica.toFixed(2)}
+                    R$ {stats.precoMinimoPorFormula.toFixed(2)}
                   </span>
                 </span>
               </TooltipTrigger>
               <TooltipContent className="max-w-[200px] text-center" side="top">
                 <p className="text-xs">
-                  Custo Fixo rateado por fórmula (Taxa Técnica). Essencial para cálculo do Preço
-                  Mínimo.
+                  Custo de Estrutura rateado por fórmula (Fixos + Variáveis Gerais). Base para o
+                  Piso de Segurança.
                 </p>
               </TooltipContent>
             </Tooltip>
