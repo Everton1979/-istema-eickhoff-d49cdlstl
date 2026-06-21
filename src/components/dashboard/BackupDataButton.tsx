@@ -7,16 +7,68 @@ import { format } from 'date-fns'
 import { useAuth } from '@/hooks/use-auth'
 
 export function BackupDataButton() {
-  const { profile } = useAuth()
+  const { user, profile } = useAuth()
   const [exporting, setExporting] = useState(false)
 
+  const fetchAll = async (tableName: string, projectId?: string) => {
+    let allData: any[] = []
+    let from = 0
+    const limit = 1000
+    let hasMore = true
+
+    while (hasMore) {
+      // Using 'as any' to allow dynamic table names without strict type errors for the table name
+      let query = supabase
+        .from(tableName as any)
+        .select('*')
+        .range(from, from + limit - 1)
+
+      if (projectId) {
+        query = query.eq('project_id', projectId) as any
+      }
+
+      const { data, error } = await query
+
+      if (error) throw error
+
+      if (data) {
+        allData = allData.concat(data)
+        if (data.length < limit) {
+          hasMore = false
+        } else {
+          from += limit
+        }
+      } else {
+        hasMore = false
+      }
+    }
+    return allData
+  }
+
   const handleExportData = async () => {
+    if (!user) {
+      toast.error('Usuário não autenticado.')
+      return
+    }
+
+    const toastId = toast.loading(
+      'Preparando backup dos dados. Isso pode levar alguns instantes...',
+    )
     setExporting(true)
+
     try {
-      const { data: transactions } = await supabase.from('transactions').select('*')
-      const { data: appointments } = await supabase.from('appointments').select('*')
-      const { data: metrics } = await supabase.from('monthly_metrics').select('*')
-      const { data: settings } = await supabase.from('user_settings').select('*')
+      const { data: userRec } = await supabase
+        .from('users')
+        .select('project_id')
+        .eq('user_id', user.id)
+        .maybeSingle()
+
+      const projectId = userRec?.project_id
+
+      const transactions = await fetchAll('transactions', projectId)
+      const appointments = await fetchAll('appointments', projectId)
+      const metrics = await fetchAll('monthly_metrics', projectId)
+      const settings = await fetchAll('user_settings', projectId)
 
       const exportData = {
         profile,
@@ -37,10 +89,10 @@ export function BackupDataButton() {
       document.body.removeChild(a)
       URL.revokeObjectURL(url)
 
-      toast.success('Backup exportado com sucesso!')
+      toast.success('Backup exportado com sucesso!', { id: toastId })
     } catch (error) {
       console.error('Erro ao exportar:', error)
-      toast.error('Erro ao exportar os dados.')
+      toast.error('Erro ao exportar os dados.', { id: toastId })
     } finally {
       setExporting(false)
     }
