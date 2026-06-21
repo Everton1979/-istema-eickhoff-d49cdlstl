@@ -638,6 +638,28 @@ export function MonthlyDataDialog() {
                   )}
                 />
               </div>
+              <div className="space-y-2">
+                <Label>
+                  Colaboradores Vendas <span className="text-red-500">*</span>
+                </Label>
+                <Input
+                  type="text"
+                  inputMode="numeric"
+                  required
+                  value={formData.colaboradores_vendas}
+                  onChange={(e) => {
+                    const val = e.target.value.replace(/\D/g, '')
+                    handleChange('colaboradores_vendas', val ? parseInt(val, 10).toString() : '')
+                  }}
+                  placeholder="0"
+                  className={cn(
+                    'h-12 sm:h-10 text-base sm:text-sm',
+                    formData.colaboradores_vendas === ''
+                      ? 'border-red-400 dark:border-red-500/50'
+                      : '',
+                  )}
+                />
+              </div>
             </div>
           </div>
 
@@ -709,28 +731,6 @@ export function MonthlyDataDialog() {
                   disabled
                   className="bg-slate-50 dark:bg-slate-900 text-slate-500 dark:text-slate-400 font-medium h-12 sm:h-10 text-base sm:text-sm"
                   placeholder="0,00"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label>
-                  Colaboradores Vendas <span className="text-red-500">*</span>
-                </Label>
-                <Input
-                  type="text"
-                  inputMode="numeric"
-                  required
-                  value={formData.colaboradores_vendas}
-                  onChange={(e) => {
-                    const val = e.target.value.replace(/\D/g, '')
-                    handleChange('colaboradores_vendas', val ? parseInt(val, 10).toString() : '')
-                  }}
-                  placeholder="0"
-                  className={cn(
-                    'h-12 sm:h-10 text-base sm:text-sm',
-                    formData.colaboradores_vendas === ''
-                      ? 'border-red-400 dark:border-red-500/50'
-                      : '',
-                  )}
                 />
               </div>
               <div className="space-y-2">
