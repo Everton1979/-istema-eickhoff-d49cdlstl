@@ -48,9 +48,11 @@ export function UserManagement() {
   const [deleteStep, setDeleteStep] = useState<number>(0)
   const [deleting, setDeleting] = useState(false)
 
-  const isMasterEmail = currentProfile?.email === 'farmaciaeickhoff@terra.com.br'
   const isMaster =
-    currentProfile?.role === 'Master' || currentProfile?.is_super_admin || isMasterEmail
+    currentProfile?.role === 'Master' ||
+    currentProfile?.is_super_admin ||
+    currentProfile?.role === 'admin' ||
+    currentProfile?.role === 'Administrador'
 
   const fetchUsers = async () => {
     if (!currentProfile) return

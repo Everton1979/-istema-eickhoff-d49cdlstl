@@ -15,6 +15,7 @@ import { PerformanceEvolutionChart } from '@/components/dashboard/PerformanceEvo
 import { PrintableReport } from '@/components/dashboard/PrintableReport'
 import { PendingUsersAlert } from '@/components/dashboard/PendingUsersAlert'
 import { PlanExpirationBanner } from '@/components/dashboard/PlanExpirationBanner'
+import { OnboardingWizard } from '@/components/OnboardingWizard'
 import { useState, useEffect } from 'react'
 import {
   AlertTriangle,
@@ -43,8 +44,7 @@ export default function Index() {
       profile.role !== 'Administrador' &&
       profile.role !== 'Master' &&
       profile.role !== 'admin' &&
-      !profile.is_super_admin &&
-      profile.email !== 'farmaciaeickhoff@terra.com.br'
+      !profile.is_super_admin
     ) {
       navigate('/pendente', { replace: true })
     } else if (profile) {
@@ -64,6 +64,8 @@ export default function Index() {
     return () => window.removeEventListener('focus', handleFocus)
   }, [profile, fetchData])
 
+  const { isDemoMode } = useFinanceStore()
+
   if (
     !loading &&
     profile &&
@@ -71,8 +73,7 @@ export default function Index() {
     profile.role !== 'Administrador' &&
     profile.role !== 'Master' &&
     profile.role !== 'admin' &&
-    !profile.is_super_admin &&
-    profile.email !== 'farmaciaeickhoff@terra.com.br'
+    !profile.is_super_admin
   ) {
     return (
       <div className="flex items-center justify-center h-full w-full bg-[#f8fafc] animate-fade-in">
@@ -86,7 +87,14 @@ export default function Index() {
 
   return (
     <>
+      <OnboardingWizard />
       <div className="flex flex-col h-full bg-[#f8fafc] overflow-hidden animate-fade-in print:hidden">
+        {isDemoMode && (
+          <div className="bg-indigo-600 text-white text-center py-2 font-medium text-sm shadow-sm flex items-center justify-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
+            Visualizando dados de exemplo. Insira seus dados para começar.
+          </div>
+        )}
         <div className="flex justify-between items-center w-full">
           <div className="flex-1">
             <DashboardHeader />

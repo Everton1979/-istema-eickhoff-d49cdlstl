@@ -38,6 +38,9 @@ interface FinanceFilters {
 }
 
 interface FinanceContextType {
+  isDemoMode: boolean
+  hasUserSettings: boolean | null
+  completeOnboarding: () => Promise<void>
   isTransactionSheetOpen: boolean
   setTransactionSheetOpen: (open: boolean) => void
   editingTransaction: Transaction | null
@@ -123,6 +126,57 @@ const mapPaymentMethodFromDB = (pm: string | null) => {
   return pm
 }
 
+const now = new Date()
+const DUMMY_TRANSACTIONS: Transaction[] = [
+  {
+    id: 'd1',
+    date: new Date(now.getFullYear(), now.getMonth(), 15, 12).toISOString(),
+    description: 'Venda Balcão',
+    amount: 1500,
+    type: 'INCOME',
+    categoryId: 'RECEITA_OPERACIONAL',
+    accountId: 'sicredi',
+    status: 'REALIZADO',
+    tags: '',
+  },
+  {
+    id: 'd2',
+    date: new Date(now.getFullYear(), now.getMonth(), 16, 12).toISOString(),
+    description: 'Fornecedor A',
+    amount: -500,
+    type: 'EXPENSE',
+    categoryId: 'VARIAVEL',
+    accountId: 'sicredi',
+    status: 'REALIZADO',
+    tags: '',
+  },
+]
+
+const DUMMY_METRICS: MonthlyMetric[] = [
+  {
+    id: 'm1',
+    month: now.getMonth() + 1,
+    year: now.getFullYear(),
+    orders_count: 120,
+    total_system_sales: 15000,
+    raw_material_costs: 4000,
+    sales_target: 20000,
+    global_sales_target: 30000,
+    num_formulas_capsulas: 50,
+    vendas_capsulas: 8000,
+    custo_mp_emb_capsulas: 2000,
+    num_formulas_dermato: 70,
+    vendas_dermato: 7000,
+    custo_mp_emb_dermato: 2000,
+    vendas_revenda: 2000,
+    colaboradores_capsulas: 2,
+    colaboradores_dermato: 2,
+    colaboradores_vendas: 3,
+    meta_vendas_manipulacao: 15000,
+    meta_vendas_extra: 5000,
+  },
+]
+
 const ensureUtcNoon = (dateStr: string) => {
   if (!dateStr) return new Date().toISOString()
   if (dateStr.includes('T')) return dateStr
@@ -131,6 +185,29 @@ const ensureUtcNoon = (dateStr: string) => {
 
 export function FinanceProvider({ children }: { children: React.ReactNode }) {
   const { user, profile } = useAuth()
+  const isDemoModeRef = React.useRef(false)
+  const [isDemoMode, setIsDemoModeState] = useState(false)
+  const [hasUserSettings, setHasUserSettings] = useState<boolean | null>(null)
+
+  const setIsDemoMode = (val: boolean) => {
+    isDemoModeRef.current = val
+    setIsDemoModeState(val)
+  }
+
+  const completeOnboarding = async () => {
+    setHasUserSettings(true)
+    const pid = profile?.app_name || user?.id
+    if (user && pid) {
+      await supabase.from('user_settings').upsert(
+        {
+          user_id: user.id,
+          project_id: pid,
+        },
+        { onConflict: 'user_id,project_id' },
+      )
+    }
+  }
+
   const [transactions, setTransactions] = useState<Transaction[]>([])
   const [accounts, setAccounts] = useState<Account[]>(ACCOUNTS)
   const [monthlyMetrics, setMonthlyMetrics] = useState<MonthlyMetric[]>([])
@@ -156,7 +233,11 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
   })
 
   const projectId = profile?.app_name || user?.id
-  const isMasterUser = user?.email === 'farmaciaeickhoff@terra.com.br'
+  const isMasterUser =
+    profile?.is_super_admin ||
+    profile?.role === 'admin' ||
+    profile?.role === 'Master' ||
+    profile?.role === 'Administrador'
 
   useEffect(() => {
     if (user && (profile || isMasterUser) && projectId) {
@@ -269,8 +350,11 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
       metricQuery,
     ])
 
+    let parsedTx: Transaction[] = []
+    let parsedMetrics: MonthlyMetric[] = []
+
     if (txData) {
-      const parsedTx = txData.map((d: any) => ({
+      parsedTx = txData.map((d: any) => ({
         id: d.id,
         date: d.date || '',
         description: d.description || '',
@@ -283,7 +367,6 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
         status: (d.status || 'REALIZADO').toUpperCase() as any,
         tags: d.tags || '',
       }))
-      setTransactions(parsedTx)
       if (user?.id)
         localStorage.setItem(
           `v6_finance_tx_cache_${user.id}_${projectId}`,
@@ -292,7 +375,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
     }
 
     if (metricsRes.data) {
-      const parsedMetrics = metricsRes.data.map((m: any) => ({
+      parsedMetrics = metricsRes.data.map((m: any) => ({
         id: m.id,
         month: m.month,
         year: m.year,
@@ -314,7 +397,6 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
         meta_vendas_manipulacao: Number(m.meta_vendas_manipulacao || 0),
         meta_vendas_extra: Number(m.meta_vendas_extra || 0),
       }))
-      setMonthlyMetrics(parsedMetrics)
       if (user?.id)
         localStorage.setItem(
           `v6_finance_metrics_cache_${user.id}_${projectId}`,
@@ -322,12 +404,26 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
         )
     }
 
+    const demo = parsedTx.length === 0 && parsedMetrics.length === 0
+    setIsDemoMode(demo)
+
+    if (demo) {
+      setTransactions(DUMMY_TRANSACTIONS)
+      setMonthlyMetrics(DUMMY_METRICS)
+    } else {
+      setTransactions(parsedTx)
+      setMonthlyMetrics(parsedMetrics)
+    }
+
     let accBalances = { sicredi: 0 }
     if (settingsRes.data) {
+      setHasUserSettings(true)
       const data = settingsRes.data as any
       accBalances = {
         sicredi: Number(data.initial_balance_sicredi || 0),
       }
+    } else {
+      setHasUserSettings(false)
     }
 
     setAccounts([{ id: 'sicredi', name: 'Sicredi', initialBalance: accBalances.sicredi }])
@@ -353,7 +449,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
   }
 
   const logAction = async (action: string, entity: string, entity_id?: string, details?: any) => {
-    if (!user || (!profile && user.email !== 'farmaciaeickhoff@terra.com.br')) return
+    if (!user || !profile) return
     try {
       await supabase.from('audit_logs').insert({
         user_id: user.id,
@@ -369,7 +465,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
   }
 
   const addTransaction = async (tx: Omit<Transaction, 'id'>) => {
-    if (!user || (!profile && user.email !== 'farmaciaeickhoff@terra.com.br')) return
+    if (!user || !profile) return
     const dbType = mapTypeToDB(tx.type)
     const formattedDate = ensureUtcNoon(tx.date)
 
@@ -403,15 +499,26 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
         status: (data.status || 'REALIZADO').toUpperCase() as any,
         tags: (data as any).tags || '',
       }
-      setTransactions((prev) => {
-        const updated = [newTx, ...prev]
+      if (isDemoModeRef.current) {
+        setIsDemoMode(false)
+        setMonthlyMetrics([])
+        setTransactions([newTx])
         if (user?.id)
           localStorage.setItem(
             `v6_finance_tx_cache_${user.id}_${projectId}`,
-            JSON.stringify(updated),
+            JSON.stringify([newTx]),
           )
-        return updated
-      })
+      } else {
+        setTransactions((prev) => {
+          const updated = [newTx, ...prev]
+          if (user?.id)
+            localStorage.setItem(
+              `v6_finance_tx_cache_${user.id}_${projectId}`,
+              JSON.stringify(updated),
+            )
+          return updated
+        })
+      }
       await logAction('CRIAR', 'Transação', data.id, {
         description: data.description,
         amount: data.amount,
@@ -421,7 +528,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
   }
 
   const updateTransaction = async (id: string, tx: Partial<Omit<Transaction, 'id'>>) => {
-    if (!user || (!profile && user.email !== 'farmaciaeickhoff@terra.com.br')) return
+    if (!user || !profile) return
     const original = transactions.find((t) => t.id === id)
     const updateData: any = {}
     if (tx.description !== undefined) updateData.description = tx.description
@@ -491,7 +598,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
   }
 
   const deleteTransaction = async (id: string) => {
-    if (!user || (!profile && user.email !== 'farmaciaeickhoff@terra.com.br')) return
+    if (!user || !profile) return
     const original = transactions.find((t) => t.id === id)
     const { error } = await supabase.from('transactions').delete().eq('id', id)
     if (!error) {
@@ -519,7 +626,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
   }
 
   const saveMonthlyMetric = async (metric: Omit<MonthlyMetric, 'id'>) => {
-    if (!user || (!profile && user.email !== 'farmaciaeickhoff@terra.com.br')) return
+    if (!user || !profile) return
 
     const existing = monthlyMetrics.find((m) => m.month === metric.month && m.year === metric.year)
 
@@ -583,40 +690,50 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
     const { data, error } = result
 
     if (!error && data) {
-      setMonthlyMetrics((prev) => {
-        const filtered = prev.filter((m) => m.id !== data.id)
-        const updated = [
-          ...filtered,
-          {
-            id: data.id,
-            month: data.month,
-            year: data.year,
-            orders_count: Number(data.orders_count),
-            total_system_sales: Number(data.total_system_sales),
-            raw_material_costs: Number(data.raw_material_costs),
-            sales_target: Number(data.sales_target || 0),
-            global_sales_target: Number(data.global_sales_target || 0),
-            num_formulas_capsulas: Number(data.num_formulas_capsulas || 0),
-            vendas_capsulas: Number(data.vendas_capsulas || 0),
-            custo_mp_emb_capsulas: Number(data.custo_mp_emb_capsulas || 0),
-            num_formulas_dermato: Number(data.num_formulas_dermato || 0),
-            vendas_dermato: Number(data.vendas_dermato || 0),
-            custo_mp_emb_dermato: Number(data.custo_mp_emb_dermato || 0),
-            vendas_revenda: Number(data.vendas_revenda || 0),
-            colaboradores_capsulas: Number(data.colaboradores_capsulas || 0),
-            colaboradores_dermato: Number(data.colaboradores_dermato || 0),
-            colaboradores_vendas: Number(data.colaboradores_vendas || 0),
-            meta_vendas_manipulacao: Number(data.meta_vendas_manipulacao || 0),
-            meta_vendas_extra: Number(data.meta_vendas_extra || 0),
-          },
-        ]
+      const newMetric = {
+        id: data.id,
+        month: data.month,
+        year: data.year,
+        orders_count: Number(data.orders_count),
+        total_system_sales: Number(data.total_system_sales),
+        raw_material_costs: Number(data.raw_material_costs),
+        sales_target: Number(data.sales_target || 0),
+        global_sales_target: Number(data.global_sales_target || 0),
+        num_formulas_capsulas: Number(data.num_formulas_capsulas || 0),
+        vendas_capsulas: Number(data.vendas_capsulas || 0),
+        custo_mp_emb_capsulas: Number(data.custo_mp_emb_capsulas || 0),
+        num_formulas_dermato: Number(data.num_formulas_dermato || 0),
+        vendas_dermato: Number(data.vendas_dermato || 0),
+        custo_mp_emb_dermato: Number(data.custo_mp_emb_dermato || 0),
+        vendas_revenda: Number(data.vendas_revenda || 0),
+        colaboradores_capsulas: Number(data.colaboradores_capsulas || 0),
+        colaboradores_dermato: Number(data.colaboradores_dermato || 0),
+        colaboradores_vendas: Number(data.colaboradores_vendas || 0),
+        meta_vendas_manipulacao: Number(data.meta_vendas_manipulacao || 0),
+        meta_vendas_extra: Number(data.meta_vendas_extra || 0),
+      }
+
+      if (isDemoModeRef.current) {
+        setIsDemoMode(false)
+        setTransactions([])
+        setMonthlyMetrics([newMetric])
         if (user?.id)
           localStorage.setItem(
             `v6_finance_metrics_cache_${user.id}_${projectId}`,
-            JSON.stringify(updated),
+            JSON.stringify([newMetric]),
           )
-        return updated
-      })
+      } else {
+        setMonthlyMetrics((prev) => {
+          const filtered = prev.filter((m) => m.id !== data.id)
+          const updated = [...filtered, newMetric]
+          if (user?.id)
+            localStorage.setItem(
+              `v6_finance_metrics_cache_${user.id}_${projectId}`,
+              JSON.stringify(updated),
+            )
+          return updated
+        })
+      }
       await logAction(existing ? 'ATUALIZAR' : 'CRIAR', 'Métrica Mensal', data.id, {
         month: data.month,
         year: data.year,
@@ -629,7 +746,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
     endDate: string,
     type: string,
   ): Promise<Transaction[]> => {
-    if (!user || (!profile && user.email !== 'farmaciaeickhoff@terra.com.br')) return []
+    if (!user || !profile) return []
 
     let allData: any[] = []
     let page = 0
@@ -696,13 +813,17 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
   }
 
   const updateAccountInitialBalances = async (balances: Record<string, number>) => {
-    if (!user || (!profile && user.email !== 'farmaciaeickhoff@terra.com.br'))
-      return { error: 'Not authenticated' }
+    if (!user || !profile) return { error: 'Not authenticated' }
 
     const payload: any = {
       user_id: user.id,
       project_id: projectId,
       initial_balance_sicredi: balances.sicredi ?? 0,
+      initial_balance_dinheiro: balances.dinheiro ?? 0,
+      initial_balance_stone: balances.stone ?? 0,
+      initial_balance_pagbank: balances.pagbank ?? 0,
+      initial_balance_pix: balances.pix ?? 0,
+      initial_balance_banricompras: balances.banricompras ?? 0,
       updated_at: new Date().toISOString(),
     }
 
@@ -777,6 +898,9 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
         setTransactionSheetOpen,
         editingTransaction,
         setEditingTransaction,
+        isDemoMode,
+        hasUserSettings,
+        completeOnboarding,
       }}
     >
       {children}

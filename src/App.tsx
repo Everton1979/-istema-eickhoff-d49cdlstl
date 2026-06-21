@@ -41,11 +41,6 @@ const ProtectedRoute = ({
     return <Navigate to="/login" replace />
   }
 
-  // 1. Email-based bypass directly from session
-  if (user?.email === 'farmaciaeickhoff@terra.com.br') {
-    return <>{children}</>
-  }
-
   if (requireActive && !profile) {
     return <Navigate to="/pendente" replace />
   }
