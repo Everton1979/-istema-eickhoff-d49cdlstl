@@ -3,7 +3,9 @@ import { Transaction, Account, Category, MonthlyMetric, PaymentMethod } from '@/
 import { supabase } from '@/lib/supabase/client'
 import { useAuth } from '@/hooks/use-auth'
 
-export const ACCOUNTS: Account[] = [{ id: 'sicredi', name: 'Sicredi', initialBalance: 0 }]
+export const ACCOUNTS: Account[] = [
+  { id: 'conta_principal', name: 'Conta Principal', initialBalance: 0 },
+]
 
 export const PAYMENT_METHODS: PaymentMethod[] = [
   { id: 'dinheiro', name: 'Dinheiro' },
@@ -116,8 +118,9 @@ const mapCategoryFromDB = (cat: string | null) => {
   return cat.toUpperCase()
 }
 
-const mapAccountToDB = (acc: string) => 'sicredi'
-const mapAccountFromDB = (acc: string | null) => 'sicredi'
+const mapAccountToDB = (acc: string) => acc || 'conta_principal'
+const mapAccountFromDB = (acc: string | null) =>
+  !acc || acc === 'sicredi' ? 'conta_principal' : acc
 
 const mapPaymentMethodToDB = (pm: string | undefined) => pm || null
 const mapPaymentMethodFromDB = (pm: string | null) => {
@@ -135,7 +138,7 @@ const DUMMY_TRANSACTIONS: Transaction[] = [
     amount: 1500,
     type: 'INCOME',
     categoryId: 'RECEITA_OPERACIONAL',
-    accountId: 'sicredi',
+    accountId: 'conta_principal',
     status: 'REALIZADO',
     tags: '',
   },
@@ -146,7 +149,7 @@ const DUMMY_TRANSACTIONS: Transaction[] = [
     amount: -500,
     type: 'EXPENSE',
     categoryId: 'VARIAVEL',
-    accountId: 'sicredi',
+    accountId: 'conta_principal',
     status: 'REALIZADO',
     tags: '',
   },
@@ -408,18 +411,24 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
     setTransactions(parsedTx)
     setMonthlyMetrics(parsedMetrics)
 
-    let accBalances = { sicredi: 0 }
+    let accBalances = { conta_principal: 0 }
     if (settingsRes.data) {
       setHasUserSettings(true)
       const data = settingsRes.data as any
       accBalances = {
-        sicredi: Number(data.initial_balance_sicredi || 0),
+        conta_principal: Number(data.initial_balance_sicredi || 0),
       }
     } else {
       setHasUserSettings(false)
     }
 
-    setAccounts([{ id: 'sicredi', name: 'Sicredi', initialBalance: accBalances.sicredi }])
+    setAccounts([
+      {
+        id: 'conta_principal',
+        name: 'Conta Principal',
+        initialBalance: accBalances.conta_principal,
+      },
+    ])
 
     setLoadingData(false)
   }
@@ -811,7 +820,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
     const payload: any = {
       user_id: user.id,
       project_id: projectId,
-      initial_balance_sicredi: balances.sicredi ?? 0,
+      initial_balance_sicredi: balances.conta_principal ?? balances.sicredi ?? 0,
       initial_balance_dinheiro: balances.dinheiro ?? 0,
       initial_balance_stone: balances.stone ?? 0,
       initial_balance_pagbank: balances.pagbank ?? 0,

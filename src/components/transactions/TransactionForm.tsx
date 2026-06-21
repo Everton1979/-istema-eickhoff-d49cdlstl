@@ -37,6 +37,7 @@ const formSchema = z
     categoryId: z.string().optional(),
     subcategoryId: z.string().optional(),
     paymentMethodId: z.string().optional(),
+    accountId: z.string().optional(),
     status: z.enum(['PREVISTO', 'REALIZADO', 'VENCIDO']),
     tags: z.string().optional(),
   })
@@ -188,6 +189,7 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
       categoryId: '',
       subcategoryId: '',
       paymentMethodId: '',
+      accountId: 'conta_principal',
       tags: '',
     }),
     [],
@@ -211,6 +213,7 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
           initialData.categoryId || (initialData.type === 'INCOME' ? 'RECEITA_OPERACIONAL' : ''),
         subcategoryId: initialData.subcategoryId || '',
         paymentMethodId: initialData.paymentMethodId || '',
+        accountId: initialData.accountId || 'conta_principal',
         tags: initialData.tags || '',
       }
     : draft
@@ -301,7 +304,7 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
               ? 'RECEITA_OPERACIONAL'
               : ''),
         subcategoryId: values.subcategoryId || '',
-        accountId: 'sicredi', // Auto-assigned unified account
+        accountId: values.accountId || 'conta_principal',
         paymentMethodId: values.type === 'INCOME' ? values.paymentMethodId || '' : '',
         tags: values.tags || '',
       }
