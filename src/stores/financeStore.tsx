@@ -404,16 +404,9 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
         )
     }
 
-    const demo = parsedTx.length === 0 && parsedMetrics.length === 0
-    setIsDemoMode(demo)
-
-    if (demo) {
-      setTransactions(DUMMY_TRANSACTIONS)
-      setMonthlyMetrics(DUMMY_METRICS)
-    } else {
-      setTransactions(parsedTx)
-      setMonthlyMetrics(parsedMetrics)
-    }
+    setIsDemoMode(false)
+    setTransactions(parsedTx)
+    setMonthlyMetrics(parsedMetrics)
 
     let accBalances = { sicredi: 0 }
     if (settingsRes.data) {

@@ -63,8 +63,6 @@ export default function Index() {
     return () => window.removeEventListener('focus', handleFocus)
   }, [profile, fetchData])
 
-  const { isDemoMode } = useFinanceStore()
-
   if (
     !loading &&
     profile &&
@@ -87,12 +85,6 @@ export default function Index() {
   return (
     <>
       <div className="flex flex-col h-full bg-[#f8fafc] overflow-hidden animate-fade-in print:hidden">
-        {isDemoMode && (
-          <div className="bg-indigo-600 text-white text-center py-2 font-medium text-sm shadow-sm flex items-center justify-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
-            Visualizando dados de exemplo. Insira seus dados para começar.
-          </div>
-        )}
         <div className="flex justify-between items-center w-full">
           <div className="flex-1">
             <DashboardHeader />
