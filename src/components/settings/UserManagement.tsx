@@ -54,6 +54,8 @@ export function UserManagement() {
     currentProfile?.role === 'admin' ||
     currentProfile?.role === 'Administrador'
 
+  const isMasterEmail = currentProfile?.email === 'farmaciaeickhoff@terra.com.br'
+
   const fetchUsers = async () => {
     if (!currentProfile) return
     setLoading(true)
@@ -273,8 +275,8 @@ export function UserManagement() {
             </AlertDialogTitle>
             <AlertDialogDescription>
               {deleteStep === 1
-                ? 'Tem certeza que deseja excluir este cadastro?'
-                : 'Esta ação é irreversível. Deseja realmente confirmar a exclusão?'}
+                ? 'Tem certeza que deseja excluir este usuário? Esta ação não pode ser desfeita.'
+                : 'Atenção: Todos os dados financeiros, lançamentos e configurações deste usuário serão apagados permanentemente. Confirmar exclusão definitiva?'}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -450,15 +452,18 @@ export function UserManagement() {
                     >
                       <Edit className="h-4 w-4" />
                     </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-8 w-8 text-slate-400 hover:text-red-600 hover:bg-red-50"
-                      onClick={() => initiateDeleteUser(u.id)}
-                      disabled={u.id === currentProfile?.id}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
+                    {isMasterEmail && (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 text-slate-400 hover:text-red-600 hover:bg-red-50"
+                        onClick={() => initiateDeleteUser(u.id)}
+                        disabled={u.id === currentProfile?.id}
+                        title="Excluir Usuário"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    )}
                   </div>
                 </TableCell>
               </TableRow>

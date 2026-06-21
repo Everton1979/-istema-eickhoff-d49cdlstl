@@ -99,6 +99,10 @@ Deno.serve(async (req: Request) => {
     }
 
     if (action === 'delete') {
+      if (!isMasterEmail) {
+        throw new Error('Apenas o Master principal pode excluir usuários definitivamente.')
+      }
+
       if (!userId) throw new Error('ID do usuário não fornecido para exclusão.')
       // Don't allow deleting self
       if (userId === user.id) {
@@ -114,20 +118,6 @@ Deno.serve(async (req: Request) => {
 
       if (targetError || !targetUser) {
         throw new Error('Usuário alvo não encontrado.')
-      }
-
-      if (!isSuperAdmin) {
-        const fallbackAppName = currentUserProfile.app_name || user.id
-        if (targetUser.app_name !== fallbackAppName) {
-          throw new Error('Acesso negado: Você não tem permissão para excluir este usuário.')
-        }
-        if (
-          targetUser.role === 'Master' ||
-          targetUser.role === 'Administrador' ||
-          targetUser.role === 'admin'
-        ) {
-          throw new Error('Acesso negado: Não é possível excluir um Administrador/Master.')
-        }
       }
 
       const { error } = await supabaseAdmin.auth.admin.deleteUser(userId)
