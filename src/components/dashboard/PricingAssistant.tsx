@@ -164,86 +164,41 @@ export function PricingAssistant() {
   }, [user, profile, filterYears, filterMonths])
 
   const stats = useMemo(() => {
-    let cfaTotal = 0
-    let varExpOperacional = 0
+    let totalOperationalExpenses = 0
 
     historyTx.forEach((t) => {
       const status = (t.status || 'REALIZADO').toUpperCase()
       const typeStr = (t.type || '').toLowerCase().trim()
-      let type = 'EXPENSE'
-      if (typeStr === 'receita' || typeStr === 'income') type = 'INCOME'
+      const isExpense = typeStr !== 'receita' && typeStr !== 'income'
 
-      const catStr = (t.category || '').toLowerCase().trim()
-      let categoryId = catStr.toUpperCase()
-      if (catStr === 'fixa') categoryId = 'FIXA'
-      if (catStr === 'variável' || catStr === 'variavel') categoryId = 'VARIAVEL'
-
-      if (status === 'REALIZADO') {
-        if (type === 'EXPENSE') {
-          if (categoryId === 'FIXA') cfaTotal += Number(t.amount) || 0
-          if (categoryId === 'VARIAVEL') {
-            if (
-              t.subcategory !== 'materia_prima' &&
-              t.subcategory !== 'embalagens' &&
-              t.subcategory !== 'medicamentos_drogaria'
-            ) {
-              varExpOperacional += Number(t.amount) || 0
-            }
-          }
+      if (status === 'REALIZADO' && isExpense) {
+        const sub = (t.subcategory || '').toLowerCase().trim()
+        if (sub !== 'materia_prima' && sub !== 'embalagens' && sub !== 'medicamentos_drogaria') {
+          totalOperationalExpenses += Number(t.amount) || 0
         }
       }
     })
 
     const vendas_caps = historyMetrics.reduce((sum, m) => sum + (m.vendas_capsulas || 0), 0)
     const vendas_derm = historyMetrics.reduce((sum, m) => sum + (m.vendas_dermato || 0), 0)
+    const vendas_revenda = historyMetrics.reduce((sum, m) => sum + (m.vendas_revenda || 0), 0)
     const n_caps = historyMetrics.reduce((sum, m) => sum + (m.num_formulas_capsulas || 0), 0)
     const n_derm = historyMetrics.reduce((sum, m) => sum + (m.num_formulas_dermato || 0), 0)
     const mpemb_caps = historyMetrics.reduce((sum, m) => sum + (m.custo_mp_emb_capsulas || 0), 0)
     const mpemb_derm = historyMetrics.reduce((sum, m) => sum + (m.custo_mp_emb_dermato || 0), 0)
-    const vendas_revenda = historyMetrics.reduce((sum, m) => sum + (m.vendas_revenda || 0), 0)
 
-    const vendas_manipulacao = vendas_caps + vendas_derm
-    const vendas_totais_sistema = vendas_manipulacao + vendas_revenda
-    const formulasTotais = n_caps + n_derm
-    const custoOperacionalTotal = cfaTotal + varExpOperacional
+    const totalRevenue = vendas_caps + vendas_derm + vendas_revenda
 
-    let participacaoManipulacao = 1
-    if (vendas_totais_sistema > 0) {
-      participacaoManipulacao = Math.min(1, vendas_manipulacao / vendas_totais_sistema)
-    } else if (vendas_manipulacao > 0) {
-      participacaoManipulacao = 1
-    }
-
-    const despesasManipulacao = custoOperacionalTotal * participacaoManipulacao
+    const proportion_caps = totalRevenue > 0 ? vendas_caps / totalRevenue : 0
+    const proportion_derm = totalRevenue > 0 ? vendas_derm / totalRevenue : 0
 
     const n_grupo = tipoFormula === 'capsulas' ? n_caps : n_derm
     const vendas_grupo = tipoFormula === 'capsulas' ? vendas_caps : vendas_derm
     const mpemb_grupo = tipoFormula === 'capsulas' ? mpemb_caps : mpemb_derm
+    const proportion_grupo = tipoFormula === 'capsulas' ? proportion_caps : proportion_derm
 
-    // 3. Rateio do Custo Fixo específico por Setor (Baseado na representatividade de receita)
-    let peso_setor = 0.5 // Padrão equilibrado
-    if (vendas_manipulacao > 0) {
-      peso_setor = vendas_grupo / vendas_manipulacao
-    } else if (formulasTotais > 0) {
-      peso_setor = n_grupo / formulasTotais
-    }
-
-    const custoOperacionalSetor = despesasManipulacao * peso_setor
-
-    const taxaTecnica =
-      n_grupo > 0
-        ? (cfaTotal * participacaoManipulacao * peso_setor) / n_grupo
-        : formulasTotais > 0
-          ? cfaTotal / formulasTotais
-          : 0
-    const custoVariavelPorFormula =
-      n_grupo > 0
-        ? (varExpOperacional * participacaoManipulacao * peso_setor) / n_grupo
-        : formulasTotais > 0
-          ? varExpOperacional / formulasTotais
-          : 0
-
-    const precoMinimoPorFormula = taxaTecnica + custoVariavelPorFormula
+    const allocatedCosts = totalOperationalExpenses * proportion_grupo
+    const precoMinimoPorFormula = n_grupo > 0 ? allocatedCosts / n_grupo : 0
 
     const precoMedioIdeal = n_grupo > 0 ? vendas_grupo / n_grupo : 0
     const mkpMultiplicador = mpemb_grupo > 0 ? vendas_grupo / mpemb_grupo : 0
@@ -251,7 +206,7 @@ export function PricingAssistant() {
 
     return {
       precoMinimoPorFormula,
-      taxaTecnica,
+      taxaTecnica: 0,
       precoMedioIdeal,
       mkpMultiplicador,
       custoMedioInsumo,
