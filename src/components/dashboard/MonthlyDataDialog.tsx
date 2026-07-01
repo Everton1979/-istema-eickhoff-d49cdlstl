@@ -121,8 +121,9 @@ export function MonthlyDataDialog() {
   const { user } = useAuth()
   const { monthlyMetrics, saveMonthlyMetric } = useFinanceStore()
   const [searchParams, setSearchParams] = useSearchParams()
-  const [open, setOpen] = useState(() => searchParams.get('view') === 'dados-sistema')
+  const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
+  const isInitialMount = useRef(true)
 
   const { draft, saveDraft, clearDraft } = useDraft('monthly-data-draft', {
     month: new Date().getMonth() + 1,
@@ -145,6 +146,25 @@ export function MonthlyDataDialog() {
   const { month, year, formData, isDirty } = draft
 
   useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false
+      if (searchParams.get('view')) {
+        setSearchParams(
+          (prev) => {
+            prev.delete('view')
+            return prev
+          },
+          { replace: true },
+        )
+      }
+      if (
+        window.location.hash === '#dados-sistema' ||
+        window.location.hash === '#dados-manipulacao'
+      ) {
+        window.history.replaceState(null, '', window.location.pathname + window.location.search)
+      }
+      return
+    }
     if (searchParams.get('view') === 'dados-sistema') {
       setOpen(true)
     } else {
@@ -168,7 +188,6 @@ export function MonthlyDataDialog() {
         window.history.replaceState(null, '', window.location.pathname + window.location.search)
       }
     }
-    checkHash()
     window.addEventListener('hashchange', checkHash)
 
     const handleEvent = () => {
