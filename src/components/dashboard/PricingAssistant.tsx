@@ -166,14 +166,36 @@ export function PricingAssistant() {
   const stats = useMemo(() => {
     let totalOperationalExpenses = 0
 
+    const COGS_SUBCATEGORIES = [
+      'materia_prima',
+      'embalagens',
+      'medicamentos_drogaria',
+      'insumos e ativos',
+      'frascos, potes, rótulos e caixas',
+      'produtos para revenda',
+    ]
+
+    const EXCLUDED_TYPES = [
+      'retirada_socios',
+      'cortesia',
+      'investimento',
+      'retirada de sócios',
+      'retirada',
+    ]
+
     historyTx.forEach((t) => {
       const status = (t.status || 'REALIZADO').toUpperCase()
       const typeStr = (t.type || '').toLowerCase().trim()
+      const catStr = (t.category || '').toLowerCase().trim()
+
+      const isExcludedType = EXCLUDED_TYPES.some((et) => typeStr === et || catStr === et)
+      if (isExcludedType) return
+
       const isExpense = typeStr !== 'receita' && typeStr !== 'income'
 
       if (status === 'REALIZADO' && isExpense) {
         const sub = (t.subcategory || '').toLowerCase().trim()
-        if (sub !== 'materia_prima' && sub !== 'embalagens' && sub !== 'medicamentos_drogaria') {
+        if (!COGS_SUBCATEGORIES.includes(sub)) {
           totalOperationalExpenses += Number(t.amount) || 0
         }
       }
