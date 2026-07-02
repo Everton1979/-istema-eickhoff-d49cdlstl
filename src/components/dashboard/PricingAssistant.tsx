@@ -127,6 +127,7 @@ export function PricingAssistant() {
         .from('monthly_metrics')
         .select('*')
         .eq('project_id', projectId)
+        .eq('user_id', user.id)
         .or(orString)
 
       const oldest = targetMonths[targetMonths.length - 1]
@@ -140,6 +141,9 @@ export function PricingAssistant() {
         .from('transactions')
         .select('date, amount, type, category, subcategory, status')
         .eq('project_id', projectId)
+        .eq('user_id', user.id)
+        .eq('status', 'REALIZADO')
+        .eq('type', 'despesa')
         .gte('date', startDate)
         .lte('date', endDate)
 
@@ -164,8 +168,6 @@ export function PricingAssistant() {
   }, [user, profile, filterYears, filterMonths])
 
   const stats = useMemo(() => {
-    let totalOperationalExpenses = 0
-
     const COGS_SUBCATEGORIES = [
       'materia_prima',
       'embalagens',
@@ -175,56 +177,81 @@ export function PricingAssistant() {
       'produtos para revenda',
     ]
 
-    const EXCLUDED_TYPES = [
-      'retirada_socios',
-      'cortesia',
-      'investimento',
-      'retirada de sócios',
-      'retirada',
-    ]
+    const txByMonth: Record<string, { totalExpenses: number; insumos: number }> = {}
 
     historyTx.forEach((t) => {
-      const status = (t.status || 'REALIZADO').toUpperCase()
-      const typeStr = (t.type || '').toLowerCase().trim()
-      const catStr = (t.category || '').toLowerCase().trim()
+      const datePart = (t.date || '').split('T')[0]
+      const parts = datePart.split('-')
+      if (parts.length < 3) return
+      const monthKey = `${parts[0]}-${parts[1]}`
 
-      const isExcludedType = EXCLUDED_TYPES.some((et) => typeStr === et || catStr === et)
-      if (isExcludedType) return
+      if (!txByMonth[monthKey]) txByMonth[monthKey] = { totalExpenses: 0, insumos: 0 }
 
-      const isExpense = typeStr !== 'receita' && typeStr !== 'income'
+      const amount = Math.abs(Number(t.amount) || 0)
+      txByMonth[monthKey].totalExpenses += amount
 
-      if (status === 'REALIZADO' && isExpense) {
-        const sub = (t.subcategory || '').toLowerCase().trim()
-        if (!COGS_SUBCATEGORIES.includes(sub)) {
-          totalOperationalExpenses += Number(t.amount) || 0
-        }
+      const sub = (t.subcategory || '').toLowerCase().trim()
+      if (COGS_SUBCATEGORIES.includes(sub)) {
+        txByMonth[monthKey].insumos += amount
       }
     })
 
-    const vendas_caps = historyMetrics.reduce((sum, m) => sum + (m.vendas_capsulas || 0), 0)
-    const vendas_derm = historyMetrics.reduce((sum, m) => sum + (m.vendas_dermato || 0), 0)
-    const vendas_revenda = historyMetrics.reduce((sum, m) => sum + (m.vendas_revenda || 0), 0)
-    const n_caps = historyMetrics.reduce((sum, m) => sum + (m.num_formulas_capsulas || 0), 0)
-    const n_derm = historyMetrics.reduce((sum, m) => sum + (m.num_formulas_dermato || 0), 0)
-    const mpemb_caps = historyMetrics.reduce((sum, m) => sum + (m.custo_mp_emb_capsulas || 0), 0)
-    const mpemb_derm = historyMetrics.reduce((sum, m) => sum + (m.custo_mp_emb_dermato || 0), 0)
+    const monthlyPerFormulaCosts: number[] = []
 
-    const totalRevenue = vendas_caps + vendas_derm + vendas_revenda
+    historyMetrics.forEach((m) => {
+      const monthKey = `${m.year}-${m.month.toString().padStart(2, '0')}`
+      const txData = txByMonth[monthKey] || { totalExpenses: 0, insumos: 0 }
 
-    const proportion_caps = totalRevenue > 0 ? vendas_caps / totalRevenue : 0
-    const proportion_derm = totalRevenue > 0 ? vendas_derm / totalRevenue : 0
+      const netExpense = txData.totalExpenses - txData.insumos
 
-    const n_grupo = tipoFormula === 'capsulas' ? n_caps : n_derm
-    const vendas_grupo = tipoFormula === 'capsulas' ? vendas_caps : vendas_derm
-    const mpemb_grupo = tipoFormula === 'capsulas' ? mpemb_caps : mpemb_derm
-    const proportion_grupo = tipoFormula === 'capsulas' ? proportion_caps : proportion_derm
+      const vendas_caps = m.vendas_capsulas || 0
+      const vendas_derm = m.vendas_dermato || 0
+      const vendas_revenda = m.vendas_revenda || 0
+      const totalRevenue = vendas_caps + vendas_derm + vendas_revenda
 
-    const allocatedCosts = totalOperationalExpenses * proportion_grupo
-    const precoMinimoPorFormula = n_grupo > 0 ? allocatedCosts / n_grupo : 0
+      const proportion_grupo =
+        tipoFormula === 'capsulas'
+          ? totalRevenue > 0
+            ? vendas_caps / totalRevenue
+            : 0
+          : totalRevenue > 0
+            ? vendas_derm / totalRevenue
+            : 0
 
-    const precoMedioIdeal = n_grupo > 0 ? vendas_grupo / n_grupo : 0
+      const n_grupo =
+        tipoFormula === 'capsulas' ? m.num_formulas_capsulas || 0 : m.num_formulas_dermato || 0
+
+      const allocatedCosts = netExpense * proportion_grupo
+      const perFormula = n_grupo > 0 ? allocatedCosts / n_grupo : 0
+
+      monthlyPerFormulaCosts.push(perFormula)
+    })
+
+    const precoMinimoPorFormula =
+      monthlyPerFormulaCosts.length > 0
+        ? monthlyPerFormulaCosts.reduce((sum, c) => sum + c, 0) / monthlyPerFormulaCosts.length
+        : 0
+
+    const vendas_caps_total = historyMetrics.reduce((sum, m) => sum + (m.vendas_capsulas || 0), 0)
+    const vendas_derm_total = historyMetrics.reduce((sum, m) => sum + (m.vendas_dermato || 0), 0)
+    const n_caps_total = historyMetrics.reduce((sum, m) => sum + (m.num_formulas_capsulas || 0), 0)
+    const n_derm_total = historyMetrics.reduce((sum, m) => sum + (m.num_formulas_dermato || 0), 0)
+    const mpemb_caps_total = historyMetrics.reduce(
+      (sum, m) => sum + (m.custo_mp_emb_capsulas || 0),
+      0,
+    )
+    const mpemb_derm_total = historyMetrics.reduce(
+      (sum, m) => sum + (m.custo_mp_emb_dermato || 0),
+      0,
+    )
+
+    const n_grupo_total = tipoFormula === 'capsulas' ? n_caps_total : n_derm_total
+    const vendas_grupo = tipoFormula === 'capsulas' ? vendas_caps_total : vendas_derm_total
+    const mpemb_grupo = tipoFormula === 'capsulas' ? mpemb_caps_total : mpemb_derm_total
+
+    const precoMedioIdeal = n_grupo_total > 0 ? vendas_grupo / n_grupo_total : 0
     const mkpMultiplicador = mpemb_grupo > 0 ? vendas_grupo / mpemb_grupo : 0
-    const custoMedioInsumo = n_grupo > 0 ? mpemb_grupo / n_grupo : 0
+    const custoMedioInsumo = n_grupo_total > 0 ? mpemb_grupo / n_grupo_total : 0
 
     return {
       precoMinimoPorFormula,
