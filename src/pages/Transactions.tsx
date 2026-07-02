@@ -70,7 +70,14 @@ export default function Transactions() {
   const { profile } = useAuth()
   const [search, setSearch] = useState('')
   const [quickFilter, setQuickFilter] = useState<
-    'ALL' | 'PREVISTO' | 'VENCIDO' | 'CORTESIA' | 'PARTNER_WITHDRAWAL' | 'RECEITAS' | 'DESPESAS'
+    | 'ALL'
+    | 'PREVISTO'
+    | 'VENCIDO'
+    | 'CORTESIA'
+    | 'PARTNER_WITHDRAWAL'
+    | 'RECEITAS'
+    | 'DESPESAS'
+    | 'MP_EMB_MED'
   >('ALL')
   const [deletingId, setDeletingId] = useState<string | null>(null)
   const dayFilter = filters.dayFilter || 'ALL'
@@ -124,6 +131,18 @@ export default function Transactions() {
       }
       if (quickFilter === 'DESPESAS') {
         return t.type === 'EXPENSE' && t.status === 'REALIZADO'
+      }
+      if (quickFilter === 'MP_EMB_MED') {
+        const MP_EMB_MED_SUBCATEGORIES = [
+          'materia_prima',
+          'embalagens',
+          'medicamentos_drogaria',
+          'insumos e ativos',
+          'frascos, potes, rótulos e caixas',
+          'produtos para revenda',
+        ]
+        const sub = (t.subcategoryId || '').toLowerCase().trim()
+        return t.status === 'REALIZADO' && MP_EMB_MED_SUBCATEGORIES.includes(sub)
       }
 
       return true
@@ -410,6 +429,18 @@ export default function Transactions() {
               <TrendingDown className="w-3.5 h-3.5" />
               Despesas
             </Button>
+            <Button
+              variant={quickFilter === 'MP_EMB_MED' ? 'default' : 'ghost'}
+              size="sm"
+              className={cn(
+                'text-xs h-8 px-4 whitespace-nowrap flex-1 sm:flex-none gap-1.5',
+                quickFilter === 'MP_EMB_MED' &&
+                  'bg-amber-600 text-white hover:bg-amber-700 shadow-sm',
+              )}
+              onClick={() => setQuickFilter('MP_EMB_MED')}
+            >
+              Soma MP + EMB + MED
+            </Button>
           </div>
         </div>
 
@@ -602,12 +633,22 @@ export default function Transactions() {
               </div>
             )}
 
+            {quickFilter === 'MP_EMB_MED' && (
+              <div className="font-semibold text-amber-700 bg-amber-50 px-3 py-1.5 rounded-md border border-amber-100 shadow-sm flex items-center gap-1.5">
+                Soma MP + EMB + MED:{' '}
+                {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(
+                  filteredData.reduce((acc, tx) => acc + tx.amount, 0),
+                )}
+              </div>
+            )}
+
             {quickFilter !== 'CORTESIA' &&
               quickFilter !== 'PARTNER_WITHDRAWAL' &&
               quickFilter !== 'RECEITAS' &&
               quickFilter !== 'DESPESAS' &&
               quickFilter !== 'PREVISTO' &&
               quickFilter !== 'VENCIDO' &&
+              quickFilter !== 'MP_EMB_MED' &&
               filteredData.length > 0 && (
                 <div
                   className={cn(
