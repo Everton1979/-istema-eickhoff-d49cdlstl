@@ -42,12 +42,22 @@ function TargetCard({
     }).format(val)
 
   const handleEdit = () => {
-    setTempValue(target.toString())
+    if (target === 0) {
+      setTempValue('')
+    } else {
+      setTempValue(
+        target.toLocaleString('pt-BR', {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        }),
+      )
+    }
     setIsEditing(true)
   }
 
   const handleSave = () => {
-    const val = parseFloat(tempValue)
+    const cleanStr = tempValue.replace(/\./g, '').replace(',', '.')
+    const val = parseFloat(cleanStr)
     if (!isNaN(val) && val >= 0) {
       onSave(val)
     }
@@ -91,10 +101,25 @@ function TargetCard({
             <div className="relative flex-1">
               <span className="absolute left-2 top-1.5 text-xs text-gray-500">R$</span>
               <Input
-                type="number"
+                type="text"
+                inputMode="numeric"
                 className="h-7 text-xs pl-6"
                 value={tempValue}
-                onChange={(e) => setTempValue(e.target.value)}
+                onChange={(e) => {
+                  const raw = e.target.value.replace(/\D/g, '')
+                  if (!raw) {
+                    setTempValue('')
+                    return
+                  }
+                  const num = parseInt(raw, 10) / 100
+                  setTempValue(
+                    num.toLocaleString('pt-BR', {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    }),
+                  )
+                }}
+                onFocus={(e) => e.target.select()}
                 autoFocus
                 onKeyDown={(e) => e.key === 'Enter' && handleSave()}
               />
