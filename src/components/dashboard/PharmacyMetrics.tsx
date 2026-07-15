@@ -504,12 +504,12 @@ export function PharmacyMetrics() {
             className={cn('rounded-md shadow-sm border-0 transition-all', colorToBg(item.color))}
           >
             <CardContent className="p-3 text-center flex flex-col justify-center h-full">
-              <h4 className="text-[10px] font-bold text-white/70 uppercase leading-tight mb-2 flex items-center justify-center gap-1">
+              <h4 className="text-[10px] font-bold text-black/70 uppercase leading-tight mb-2 flex items-center justify-center gap-1">
                 {item.title}
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Link to={`/glossario#${item.id}`}>
-                      <HelpCircle className="w-3.5 h-3.5 text-white/50 hover:text-white cursor-pointer" />
+                      <HelpCircle className="w-3.5 h-3.5 text-black/50 hover:text-black cursor-pointer" />
                     </Link>
                   </TooltipTrigger>
                   <TooltipContent className="max-w-[220px] text-center" side="top">
@@ -521,11 +521,11 @@ export function PharmacyMetrics() {
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <div className="cursor-help group flex flex-col items-center">
-                      <p className="text-lg font-bold tracking-tight decoration-dashed underline-offset-4 decoration-white/50 group-hover:underline text-white">
+                      <p className="text-lg font-bold tracking-tight decoration-dashed underline-offset-4 decoration-black/50 group-hover:underline text-black">
                         {item.value}
                       </p>
                       {item.statusText && (
-                        <p className="text-[11px] font-bold mt-1 text-white">{item.statusText}</p>
+                        <p className="text-[11px] font-bold mt-1 text-black">{item.statusText}</p>
                       )}
                     </div>
                   </TooltipTrigger>
@@ -538,9 +538,9 @@ export function PharmacyMetrics() {
                 </Tooltip>
               ) : (
                 <>
-                  <p className="text-lg font-bold tracking-tight text-white">{item.value}</p>
+                  <p className="text-lg font-bold tracking-tight text-black">{item.value}</p>
                   {item.statusText && (
-                    <p className="text-[11px] font-bold mt-1 text-white">{item.statusText}</p>
+                    <p className="text-[11px] font-bold mt-1 text-black">{item.statusText}</p>
                   )}
                 </>
               )}

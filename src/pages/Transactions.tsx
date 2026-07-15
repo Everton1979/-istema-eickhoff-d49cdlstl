@@ -363,7 +363,7 @@ export default function Transactions() {
               size="sm"
               className={cn(
                 'text-xs h-8 px-4 whitespace-nowrap flex-1 sm:flex-none',
-                quickFilter === 'PREVISTO' && 'bg-blue-600 text-white hover:bg-blue-700 shadow-sm',
+                quickFilter === 'PREVISTO' && 'bg-blue-600 text-black hover:bg-blue-700 shadow-sm',
               )}
               onClick={() => setQuickFilter('PREVISTO')}
             >
@@ -374,7 +374,7 @@ export default function Transactions() {
               size="sm"
               className={cn(
                 'text-xs h-8 px-4 whitespace-nowrap flex-1 sm:flex-none',
-                quickFilter === 'VENCIDO' && 'bg-red-600 text-white hover:bg-red-700 shadow-sm',
+                quickFilter === 'VENCIDO' && 'bg-red-600 text-black hover:bg-red-700 shadow-sm',
               )}
               onClick={() => setQuickFilter('VENCIDO')}
             >
@@ -386,7 +386,7 @@ export default function Transactions() {
               className={cn(
                 'text-xs h-8 px-4 whitespace-nowrap flex-1 sm:flex-none',
                 quickFilter === 'CORTESIA' &&
-                  'bg-orange-500 text-white hover:bg-orange-600 shadow-sm',
+                  'bg-orange-500 text-black hover:bg-orange-600 shadow-sm',
               )}
               onClick={() => setQuickFilter('CORTESIA')}
             >
@@ -398,7 +398,7 @@ export default function Transactions() {
               className={cn(
                 'text-xs h-8 px-4 whitespace-nowrap flex-1 sm:flex-none',
                 quickFilter === 'PARTNER_WITHDRAWAL' &&
-                  'bg-purple-600 text-white hover:bg-purple-700 shadow-sm',
+                  'bg-purple-600 text-black hover:bg-purple-700 shadow-sm',
               )}
               onClick={() => setQuickFilter('PARTNER_WITHDRAWAL')}
             >
@@ -410,7 +410,7 @@ export default function Transactions() {
               className={cn(
                 'text-xs h-8 px-4 whitespace-nowrap flex-1 sm:flex-none gap-1.5',
                 quickFilter === 'RECEITAS' &&
-                  'bg-emerald-600 text-white hover:bg-emerald-700 shadow-sm',
+                  'bg-emerald-600 text-black hover:bg-emerald-700 shadow-sm',
               )}
               onClick={() => setQuickFilter('RECEITAS')}
             >
@@ -422,7 +422,7 @@ export default function Transactions() {
               size="sm"
               className={cn(
                 'text-xs h-8 px-4 whitespace-nowrap flex-1 sm:flex-none gap-1.5',
-                quickFilter === 'DESPESAS' && 'bg-red-600 text-white hover:bg-red-700 shadow-sm',
+                quickFilter === 'DESPESAS' && 'bg-red-600 text-black hover:bg-red-700 shadow-sm',
               )}
               onClick={() => setQuickFilter('DESPESAS')}
             >
@@ -435,7 +435,7 @@ export default function Transactions() {
               className={cn(
                 'text-xs h-8 px-4 whitespace-nowrap flex-1 sm:flex-none gap-1.5',
                 quickFilter === 'MP_EMB_MED' &&
-                  'bg-amber-600 text-white hover:bg-amber-700 shadow-sm',
+                  'bg-amber-600 text-black hover:bg-amber-700 shadow-sm',
               )}
               onClick={() => setQuickFilter('MP_EMB_MED')}
             >
@@ -518,7 +518,8 @@ export default function Transactions() {
                           }
                           className={cn(
                             'text-[10px] font-semibold',
-                            tx.status === 'REALIZADO' && 'bg-emerald-500 hover:bg-emerald-600',
+                            tx.status === 'REALIZADO' &&
+                              'bg-emerald-500 hover:bg-emerald-600 text-black',
                           )}
                         >
                           {tx.status}
@@ -574,7 +575,7 @@ export default function Transactions() {
           </div>
           <div className="flex flex-wrap gap-2 sm:gap-4 items-center ml-auto">
             {quickFilter === 'CORTESIA' && (
-              <div className="font-semibold text-orange-600 bg-orange-50 px-3 py-1.5 rounded-md">
+              <div className="font-semibold text-black bg-orange-500 px-3 py-1.5 rounded-md">
                 Total Cortesias:{' '}
                 {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(
                   filteredData.reduce((acc, tx) => acc + tx.amount, 0),
@@ -583,7 +584,7 @@ export default function Transactions() {
             )}
 
             {quickFilter === 'PARTNER_WITHDRAWAL' && (
-              <div className="font-semibold text-purple-600 bg-purple-50 px-3 py-1.5 rounded-md">
+              <div className="font-semibold text-black bg-purple-500 px-3 py-1.5 rounded-md">
                 Total Retiradas:{' '}
                 {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(
                   filteredData.reduce((acc, tx) => acc + tx.amount, 0),
@@ -592,7 +593,7 @@ export default function Transactions() {
             )}
 
             {quickFilter === 'RECEITAS' && (
-              <div className="font-semibold text-emerald-600 bg-emerald-50 px-3 py-1.5 rounded-md flex items-center gap-1.5">
+              <div className="font-semibold text-black bg-emerald-500 px-3 py-1.5 rounded-md flex items-center gap-1.5">
                 <TrendingUp className="w-4 h-4" />
                 Total Receitas:{' '}
                 {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(
@@ -604,7 +605,7 @@ export default function Transactions() {
             )}
 
             {quickFilter === 'DESPESAS' && (
-              <div className="font-semibold text-red-600 bg-red-50 px-3 py-1.5 rounded-md border border-red-100 shadow-sm flex items-center gap-1.5">
+              <div className="font-semibold text-black bg-red-500 px-3 py-1.5 rounded-md border border-red-400 shadow-sm flex items-center gap-1.5">
                 <TrendingDown className="w-4 h-4" />
                 Total Despesas:{' '}
                 {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(
@@ -616,7 +617,7 @@ export default function Transactions() {
             )}
 
             {quickFilter === 'PREVISTO' && (
-              <div className="font-semibold text-blue-600 bg-blue-50 px-3 py-1.5 rounded-md border border-blue-100 shadow-sm">
+              <div className="font-semibold text-black bg-blue-500 px-3 py-1.5 rounded-md border border-blue-400 shadow-sm">
                 Total Previsto:{' '}
                 {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(
                   filteredData.reduce((acc, tx) => acc + tx.amount, 0),
@@ -625,7 +626,7 @@ export default function Transactions() {
             )}
 
             {quickFilter === 'VENCIDO' && (
-              <div className="font-semibold text-rose-600 bg-rose-50 px-3 py-1.5 rounded-md border border-rose-100 shadow-sm">
+              <div className="font-semibold text-black bg-red-500 px-3 py-1.5 rounded-md border border-red-400 shadow-sm">
                 Total Vencido:{' '}
                 {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(
                   filteredData.reduce((acc, tx) => acc + tx.amount, 0),
@@ -634,7 +635,7 @@ export default function Transactions() {
             )}
 
             {quickFilter === 'MP_EMB_MED' && (
-              <div className="font-semibold text-amber-700 bg-amber-50 px-3 py-1.5 rounded-md border border-amber-100 shadow-sm flex items-center gap-1.5">
+              <div className="font-semibold text-black bg-yellow-400 px-3 py-1.5 rounded-md border border-yellow-600 shadow-sm flex items-center gap-1.5">
                 Soma MP + EMB + MED:{' '}
                 {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(
                   filteredData.reduce((acc, tx) => acc + tx.amount, 0),
@@ -652,10 +653,10 @@ export default function Transactions() {
               filteredData.length > 0 && (
                 <div
                   className={cn(
-                    'font-semibold px-3 py-1.5 rounded-md border shadow-sm flex gap-4',
+                    'font-semibold px-3 py-1.5 rounded-md border shadow-sm flex gap-4 text-black',
                     visibleBalance >= 0
-                      ? 'text-emerald-700 bg-emerald-50 border-emerald-100'
-                      : 'text-red-700 bg-red-50 border-red-100',
+                      ? 'bg-emerald-500 border-emerald-700'
+                      : 'bg-red-500 border-red-700',
                   )}
                 >
                   <span>

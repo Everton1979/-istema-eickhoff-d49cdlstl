@@ -84,24 +84,12 @@ function KpiCard({ kpi }: { kpi: any }) {
   return (
     <Card className={cn('rounded-sm shadow-sm border-0', kpi.bg)}>
       <CardContent className="p-2 text-center flex flex-col justify-center h-full">
-        <h3
-          className={cn(
-            'text-[10px] font-bold uppercase mb-1 flex items-center justify-center gap-1',
-            kpi.isLight ? 'text-slate-700' : 'text-white/80',
-          )}
-        >
+        <h3 className="text-[10px] font-bold uppercase mb-1 flex items-center justify-center gap-1 text-black">
           {kpi.title}
           <Tooltip>
             <TooltipTrigger asChild>
               <Link to={`/glossario#${kpi.id}`}>
-                <HelpCircle
-                  className={cn(
-                    'w-3 h-3 cursor-pointer',
-                    kpi.isLight
-                      ? 'text-slate-500 hover:text-slate-700'
-                      : 'text-white/50 hover:text-white',
-                  )}
-                />
+                <HelpCircle className="w-3 h-3 cursor-pointer text-black/60 hover:text-black" />
               </Link>
             </TooltipTrigger>
             <TooltipContent className="max-w-[200px] text-center" side="bottom">
@@ -112,14 +100,7 @@ function KpiCard({ kpi }: { kpi: any }) {
             </TooltipContent>
           </Tooltip>
         </h3>
-        <p
-          className={cn(
-            'text-xl font-bold tracking-tight',
-            kpi.isLight ? 'text-slate-800' : 'text-white',
-          )}
-        >
-          {kpi.value}
-        </p>
+        <p className="text-xl font-bold tracking-tight text-black">{kpi.value}</p>
       </CardContent>
     </Card>
   )

@@ -42,9 +42,9 @@ export function AccountBalances() {
 
   return (
     <div className="bg-white rounded-sm border shadow-sm flex flex-col h-full overflow-hidden">
-      <div className="bg-[#1e3a8a] text-white text-xs font-bold py-2 px-3 flex justify-between items-center shrink-0">
+      <div className="bg-blue-500 text-black text-xs font-bold py-2 px-3 flex justify-between items-center shrink-0">
         <span>Receitas Realizadas (Entradas)</span>
-        <span className="bg-blue-800/50 px-2 py-0.5 rounded text-[10px] tracking-wide">
+        <span className="bg-blue-700/50 px-2 py-0.5 rounded text-[10px] tracking-wide">
           {formatCurrency(totalIncome)}
         </span>
       </div>
@@ -54,18 +54,16 @@ export function AccountBalances() {
             {breakdowns.map((item) => (
               <div
                 key={item.id}
-                className="bg-white border rounded-sm p-2 flex flex-col justify-center items-center text-center hover:border-blue-200 hover:shadow-sm transition-all"
+                className="bg-blue-100 border border-blue-300 rounded-sm p-2 flex flex-col justify-center items-center text-center hover:border-blue-400 hover:shadow-sm transition-all"
               >
                 <span
-                  className="text-[10px] text-slate-500 font-medium uppercase truncate w-full mb-1"
+                  className="text-[10px] text-black/70 font-medium uppercase truncate w-full mb-1"
                   title={item.name}
                 >
                   {item.name}
                 </span>
-                <span className="text-xs font-bold text-slate-700">
-                  {formatCurrency(item.amount)}
-                </span>
-                <span className="text-[9px] text-emerald-600 font-semibold bg-emerald-50 px-1.5 py-0.5 rounded-sm mt-1">
+                <span className="text-xs font-bold text-black">{formatCurrency(item.amount)}</span>
+                <span className="text-[9px] text-black font-semibold bg-blue-200 px-1.5 py-0.5 rounded-sm mt-1">
                   {item.percentage.toFixed(1)}%
                 </span>
               </div>

@@ -80,7 +80,7 @@ function TargetCard({
               <h3 className="text-xs uppercase tracking-wide">{title}</h3>
             </div>
             {subtitle && (
-              <p className="text-[9px] text-white/70 font-medium italic mt-1 ml-[22px]">
+              <p className="text-[9px] text-black/70 font-medium italic mt-1 ml-[22px]">
                 {subtitle}
               </p>
             )}
@@ -89,7 +89,7 @@ function TargetCard({
             <Button
               variant="ghost"
               size="icon"
-              className={cn('h-5 w-5 absolute right-2 top-2 text-white/50', hoverTextClass)}
+              className={cn('h-5 w-5 absolute right-2 top-2 text-black/50', hoverTextClass)}
               onClick={handleEdit}
             >
               <Pencil className="h-3 w-3" />
@@ -127,7 +127,7 @@ function TargetCard({
             </div>
             <Button
               size="icon"
-              className={cn('h-7 w-7 shrink-0 text-white', bgClass)}
+              className={cn('h-7 w-7 shrink-0 text-black', bgClass)}
               onClick={handleSave}
             >
               <Check className="h-3 w-3" />
@@ -135,7 +135,7 @@ function TargetCard({
             <Button
               variant="ghost"
               size="icon"
-              className="h-7 w-7 text-white/70 shrink-0"
+              className="h-7 w-7 text-black/70 shrink-0"
               onClick={() => setIsEditing(false)}
             >
               <X className="h-3 w-3" />
@@ -144,35 +144,35 @@ function TargetCard({
         ) : (
           <div className="flex justify-between items-end mb-1">
             <div>
-              <p className="text-[10px] text-white/70 font-medium">Meta Mês</p>
-              <p className="text-sm font-bold text-white">{formatCurrency(target)}</p>
+              <p className="text-[10px] text-black/70 font-medium">Meta Mês</p>
+              <p className="text-sm font-bold text-black">{formatCurrency(target)}</p>
             </div>
             <div className="text-right">
-              <p className="text-[10px] text-white/70 font-medium">Realizado</p>
+              <p className="text-[10px] text-black/70 font-medium">Realizado</p>
               <p className={cn('text-sm font-bold', textClass)}>{formatCurrency(achieved)}</p>
             </div>
           </div>
         )}
 
         <div className="space-y-1 mt-1.5">
-          <Progress value={achievedPct} className={cn('h-2 bg-white/20', progressColorClass)} />
+          <Progress value={achievedPct} className={cn('h-2 bg-black/20', progressColorClass)} />
           <div className="flex justify-between items-start text-[10px] mt-1">
             {!isPastMonth ? (
               <div className="flex flex-col">
-                <p className="text-white/70 font-medium">
+                <p className="text-black/70 font-medium">
                   Diária:{' '}
-                  <span className="text-white font-bold">{formatCurrency(dailyTarget)}</span>
+                  <span className="text-black font-bold">{formatCurrency(dailyTarget)}</span>
                 </p>
-                <span className="text-white/50 text-[8px] -mt-0.5">({workingDays} dias úteis)</span>
+                <span className="text-black/50 text-[8px] -mt-0.5">({workingDays} dias úteis)</span>
               </div>
             ) : (
               <div className="flex flex-col">
-                <p className="text-white/70 font-medium">
+                <p className="text-black/70 font-medium">
                   Status:{' '}
                   <span
                     className={cn(
                       'font-bold',
-                      achieved >= target && target > 0 ? textClass : 'text-amber-300',
+                      achieved >= target && target > 0 ? textClass : 'text-black/70',
                     )}
                   >
                     {achieved >= target && target > 0 ? 'Meta Batida' : 'Não Atingida'}
@@ -182,11 +182,11 @@ function TargetCard({
             )}
             {target > 0 && remaining > 0 && (
               <div className="flex flex-col items-end">
-                <span className="font-bold text-amber-200">
+                <span className="font-bold text-black/80">
                   {isPastMonth ? 'Faltou:' : 'Falta:'} {formatCurrency(remaining)}
                 </span>
                 {showPercentage && (
-                  <span className="text-amber-200/80 font-medium text-[9px] -mt-0.5">
+                  <span className="text-black/60 font-medium text-[9px] -mt-0.5">
                     ({remainingPct.toFixed(1)}% restando)
                   </span>
                 )}
@@ -194,11 +194,11 @@ function TargetCard({
             )}
             {target > 0 && exceeded > 0 && (
               <div className="flex flex-col items-end">
-                <span className={cn('font-bold', textClass)}>
+                <span className="font-bold text-black">
                   {isPastMonth ? 'Superou:' : 'Superado:'} +{formatCurrency(exceeded)}
                 </span>
                 {showPercentage && (
-                  <span className={cn('font-medium text-[9px] -mt-0.5', textClass)}>
+                  <span className="font-medium text-[9px] -mt-0.5 text-black/80">
                     ({((exceeded / target) * 100).toFixed(1)}% acima da meta)
                   </span>
                 )}
@@ -360,10 +360,10 @@ export function SalesTargetsDashboard() {
         showPercentage={false}
         onSave={(val: number) => saveMonthlyMetric({ ...metric, meta_vendas_manipulacao: val })}
         colorClass="bg-blue-500"
-        textClass="text-white"
-        hoverTextClass="hover:text-white"
+        textClass="text-black"
+        hoverTextClass="hover:text-black"
         bgClass="bg-blue-600 hover:bg-blue-700"
-        progressColorClass="[&>div]:bg-white/80"
+        progressColorClass="[&>div]:bg-black/80"
       />
 
       <TargetCard
@@ -377,10 +377,10 @@ export function SalesTargetsDashboard() {
         showPercentage={false}
         onSave={(val: number) => saveMonthlyMetric({ ...metric, meta_vendas_extra: val })}
         colorClass="bg-purple-500"
-        textClass="text-white"
-        hoverTextClass="hover:text-white"
+        textClass="text-black"
+        hoverTextClass="hover:text-black"
         bgClass="bg-purple-600 hover:bg-purple-700"
-        progressColorClass="[&>div]:bg-white/80"
+        progressColorClass="[&>div]:bg-black/80"
       />
 
       <TargetCard
@@ -394,10 +394,10 @@ export function SalesTargetsDashboard() {
         readonly={true}
         showPercentage={true}
         colorClass="bg-emerald-500"
-        textClass="text-white"
-        hoverTextClass="hover:text-white"
+        textClass="text-black"
+        hoverTextClass="hover:text-black"
         bgClass="bg-emerald-600 hover:bg-emerald-700"
-        progressColorClass="[&>div]:bg-white/80"
+        progressColorClass="[&>div]:bg-black/80"
       />
     </div>
   )
