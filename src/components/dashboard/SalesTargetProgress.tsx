@@ -24,6 +24,7 @@ function TargetCard({
   bgClass,
   progressColorClass,
   readonly,
+  showPercentage,
 }: any) {
   const [isEditing, setIsEditing] = useState(false)
   const [tempValue, setTempValue] = useState('')
@@ -184,9 +185,11 @@ function TargetCard({
                 <span className="font-bold text-orange-500">
                   {isPastMonth ? 'Faltou:' : 'Falta:'} {formatCurrency(remaining)}
                 </span>
-                <span className="text-orange-400 font-medium text-[9px] -mt-0.5">
-                  ({remainingPct.toFixed(1)}% restando)
-                </span>
+                {showPercentage && (
+                  <span className="text-orange-400 font-medium text-[9px] -mt-0.5">
+                    ({remainingPct.toFixed(1)}% restando)
+                  </span>
+                )}
               </div>
             )}
             {target > 0 && exceeded > 0 && (
@@ -194,9 +197,11 @@ function TargetCard({
                 <span className={cn('font-bold', textClass)}>
                   {isPastMonth ? 'Superou:' : 'Superado:'} +{formatCurrency(exceeded)}
                 </span>
-                <span className={cn('font-medium text-[9px] -mt-0.5', textClass)}>
-                  ({((exceeded / target) * 100).toFixed(1)}% acima da meta)
-                </span>
+                {showPercentage && (
+                  <span className={cn('font-medium text-[9px] -mt-0.5', textClass)}>
+                    ({((exceeded / target) * 100).toFixed(1)}% acima da meta)
+                  </span>
+                )}
               </div>
             )}
           </div>
@@ -352,6 +357,7 @@ export function SalesTargetsDashboard() {
         workingDays={workingDays}
         isPastMonth={isPastMonth}
         isEditable={isEditable}
+        showPercentage={false}
         onSave={(val: number) => saveMonthlyMetric({ ...metric, meta_vendas_manipulacao: val })}
         colorClass="border-t-blue-500"
         textClass="text-blue-600"
@@ -368,6 +374,7 @@ export function SalesTargetsDashboard() {
         workingDays={workingDays}
         isPastMonth={isPastMonth}
         isEditable={isEditable}
+        showPercentage={false}
         onSave={(val: number) => saveMonthlyMetric({ ...metric, meta_vendas_extra: val })}
         colorClass="border-t-purple-500"
         textClass="text-purple-600"
@@ -385,6 +392,7 @@ export function SalesTargetsDashboard() {
         isPastMonth={isPastMonth}
         isEditable={false}
         readonly={true}
+        showPercentage={true}
         colorClass="border-t-emerald-500"
         textClass="text-emerald-600"
         hoverTextClass="hover:text-emerald-600"

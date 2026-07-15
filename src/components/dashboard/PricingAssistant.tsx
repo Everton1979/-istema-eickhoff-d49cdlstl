@@ -337,7 +337,7 @@ export function PricingAssistant() {
         <div className="flex flex-col md:flex-row gap-6 items-center">
           <div className="w-full md:w-1/3">
             <Label className="text-xs font-bold text-slate-600 uppercase tracking-wider mb-2 block">
-              Custo (MP + Emb)
+              Custo (Matéria Prima + Embalagem)
             </Label>
             <div className="relative">
               <span className="absolute left-3 top-2.5 text-sm text-slate-500 font-medium">R$</span>
