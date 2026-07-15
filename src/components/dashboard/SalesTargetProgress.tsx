@@ -80,9 +80,7 @@ function TargetCard({
               <h3 className="text-xs uppercase tracking-wide">{title}</h3>
             </div>
             {subtitle && (
-              <p className="text-[9px] text-black/70 font-medium italic mt-1 ml-[22px]">
-                {subtitle}
-              </p>
+              <p className="text-[9px] text-black/70 font-bold italic mt-1 ml-[22px]">{subtitle}</p>
             )}
           </div>
           {isEditable && !isEditing && !readonly && (
@@ -144,11 +142,11 @@ function TargetCard({
         ) : (
           <div className="flex justify-between items-end mb-1">
             <div>
-              <p className="text-[10px] text-black/70 font-medium">Meta Mês</p>
+              <p className="text-[10px] text-black/70 font-bold">Meta Mês</p>
               <p className="text-sm font-bold text-black">{formatCurrency(target)}</p>
             </div>
             <div className="text-right">
-              <p className="text-[10px] text-black/70 font-medium">Realizado</p>
+              <p className="text-[10px] text-black/70 font-bold">Realizado</p>
               <p className={cn('text-sm font-bold', textClass)}>{formatCurrency(achieved)}</p>
             </div>
           </div>
@@ -159,15 +157,17 @@ function TargetCard({
           <div className="flex justify-between items-start text-[10px] mt-1">
             {!isPastMonth ? (
               <div className="flex flex-col">
-                <p className="text-black/70 font-medium">
+                <p className="text-black/70 font-bold">
                   Diária:{' '}
                   <span className="text-black font-bold">{formatCurrency(dailyTarget)}</span>
                 </p>
-                <span className="text-black/50 text-[8px] -mt-0.5">({workingDays} dias úteis)</span>
+                <span className="text-black/50 font-bold text-[8px] -mt-0.5">
+                  ({workingDays} dias úteis)
+                </span>
               </div>
             ) : (
               <div className="flex flex-col">
-                <p className="text-black/70 font-medium">
+                <p className="text-black/70 font-bold">
                   Status:{' '}
                   <span
                     className={cn(
@@ -186,7 +186,7 @@ function TargetCard({
                   {isPastMonth ? 'Faltou:' : 'Falta:'} {formatCurrency(remaining)}
                 </span>
                 {showPercentage && (
-                  <span className="text-black/60 font-medium text-[9px] -mt-0.5">
+                  <span className="text-black/60 font-bold text-[9px] -mt-0.5">
                     ({remainingPct.toFixed(1)}% restando)
                   </span>
                 )}
@@ -198,7 +198,7 @@ function TargetCard({
                   {isPastMonth ? 'Superou:' : 'Superado:'} +{formatCurrency(exceeded)}
                 </span>
                 {showPercentage && (
-                  <span className="font-medium text-[9px] -mt-0.5 text-black/80">
+                  <span className="font-bold text-[9px] -mt-0.5 text-black/80">
                     ({((exceeded / target) * 100).toFixed(1)}% acima da meta)
                   </span>
                 )}
@@ -359,7 +359,7 @@ export function SalesTargetsDashboard() {
         isEditable={isEditable}
         showPercentage={false}
         onSave={(val: number) => saveMonthlyMetric({ ...metric, meta_vendas_manipulacao: val })}
-        colorClass="bg-blue-100"
+        colorClass="bg-blue-200"
         textClass="text-black"
         hoverTextClass="hover:text-black"
         bgClass="bg-blue-600 hover:bg-blue-700"
@@ -376,7 +376,7 @@ export function SalesTargetsDashboard() {
         isEditable={isEditable}
         showPercentage={false}
         onSave={(val: number) => saveMonthlyMetric({ ...metric, meta_vendas_extra: val })}
-        colorClass="bg-purple-100"
+        colorClass="bg-purple-200"
         textClass="text-black"
         hoverTextClass="hover:text-black"
         bgClass="bg-purple-600 hover:bg-purple-700"
@@ -393,7 +393,7 @@ export function SalesTargetsDashboard() {
         isEditable={false}
         readonly={true}
         showPercentage={true}
-        colorClass="bg-emerald-100"
+        colorClass="bg-green-200"
         textClass="text-black"
         hoverTextClass="hover:text-black"
         bgClass="bg-emerald-600 hover:bg-emerald-700"

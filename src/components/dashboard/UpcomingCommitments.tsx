@@ -50,13 +50,13 @@ export function UpcomingCommitments() {
   return (
     <Card className="rounded-sm shadow-sm border flex flex-col h-full bg-white relative overflow-hidden">
       <CardContent className="p-0 flex flex-col h-full">
-        <div className="bg-slate-50 border-b px-3 py-2 flex items-center justify-between">
+        <div className="bg-slate-200 border-b px-3 py-2 flex items-center justify-between">
           <div className="flex items-center gap-1.5 text-slate-700">
             <CalendarDays className="w-4 h-4 text-orange-500" />
             <h3 className="text-xs font-bold uppercase tracking-wide">Compromissos de Hoje</h3>
           </div>
           {upcoming.length > 0 && (
-            <span className="text-[9px] bg-slate-200 text-slate-600 px-1.5 py-0.5 rounded-sm font-medium">
+            <span className="text-[9px] bg-slate-300 text-slate-600 px-1.5 py-0.5 rounded-sm font-bold">
               {upcoming.length} pendentes
             </span>
           )}
@@ -72,14 +72,14 @@ export function UpcomingCommitments() {
                     key={tx.id}
                     className={cn(
                       'p-2 flex items-center justify-between transition-colors',
-                      dueToday ? 'hover:bg-slate-50' : 'bg-red-50/50 hover:bg-red-50',
+                      dueToday ? 'hover:bg-slate-100' : 'bg-red-200/50 hover:bg-red-200',
                     )}
                   >
                     <div className="flex items-center gap-2 overflow-hidden">
                       <div
                         className={cn(
                           'flex flex-col items-center justify-center min-w-[32px] rounded-sm py-0.5 px-1 text-[9px] font-bold text-center leading-tight',
-                          !dueToday ? 'bg-red-100 text-red-700' : 'bg-slate-100 text-slate-600',
+                          !dueToday ? 'bg-red-200 text-red-700' : 'bg-slate-200 text-slate-600',
                         )}
                       >
                         <span>{formatDate(tx.date).split('/')[0]}</span>
@@ -88,11 +88,11 @@ export function UpcomingCommitments() {
                         </span>
                       </div>
                       <div className="truncate">
-                        <p className="text-xs font-medium text-slate-700 truncate flex items-center gap-1">
+                        <p className="text-xs font-bold text-slate-700 truncate flex items-center gap-1">
                           {tx.description}
                           {!dueToday && <AlertCircle className="w-3 h-3 text-red-500 shrink-0" />}
                         </p>
-                        <p className="text-[9px] text-slate-400 truncate">
+                        <p className="text-[9px] font-bold text-slate-400 truncate">
                           {!dueToday
                             ? 'Atrasado'
                             : tx.categoryId === 'FIXA'

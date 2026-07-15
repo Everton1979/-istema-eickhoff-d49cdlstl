@@ -291,7 +291,7 @@ export function PricingAssistant() {
   return (
     <div className="w-full flex flex-col justify-center bg-gradient-to-br from-white to-blue-50/30 h-full min-h-[140px] relative rounded-b-xl">
       <div className="p-4 md:p-6 flex flex-col h-full justify-between">
-        <div className="mb-6 text-xs bg-blue-50 border border-blue-200 text-blue-800 p-3 rounded-md flex items-start gap-2 shadow-sm">
+        <div className="mb-6 text-xs font-bold bg-blue-200 border border-blue-300 text-blue-800 p-3 rounded-md flex items-start gap-2 shadow-sm">
           <Info className="w-4 h-4 text-blue-500 shrink-0 mt-0.5" />
           <p>
             <strong className="font-bold">Observação Estratégica:</strong> Cálculos baseados na
@@ -356,9 +356,9 @@ export function PricingAssistant() {
                 'flex flex-col p-4 rounded-lg border-2 shadow-md transition-colors relative overflow-hidden',
                 hasCost
                   ? suggestedIsHealthy
-                    ? 'bg-emerald-50 border-emerald-200'
-                    : 'bg-red-50 border-red-200'
-                  : 'bg-white border-blue-100',
+                    ? 'bg-green-200 border-green-300'
+                    : 'bg-red-200 border-red-300'
+                  : 'bg-blue-200 border-blue-200',
               )}
             >
               <div className="absolute top-0 left-0 w-1 h-full bg-current opacity-20"></div>
@@ -474,7 +474,7 @@ export function PricingAssistant() {
         </div>
 
         {hasCost && (
-          <div className="mt-4 bg-emerald-50/80 border border-emerald-200/60 rounded-lg p-3 flex justify-between items-center shadow-sm">
+          <div className="mt-4 bg-green-200/80 border border-green-300/60 rounded-lg p-3 flex justify-between items-center shadow-sm">
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600">
                 <Calculator className="w-4 h-4" />
@@ -483,7 +483,7 @@ export function PricingAssistant() {
                 <Label className="text-xs font-bold text-emerald-800 uppercase tracking-wider block">
                   Margem de Contribuição
                 </Label>
-                <span className="text-[10px] text-emerald-600/80 font-medium">
+                <span className="text-[10px] text-emerald-600/80 font-bold">
                   Preço Sugerido - Piso de Segurança
                 </span>
               </div>
@@ -492,7 +492,7 @@ export function PricingAssistant() {
               <span className="text-xl font-black text-emerald-700 font-mono">
                 R$ {Math.max(0, precoSugerido - pisoSeguranca).toFixed(2)}
               </span>
-              <p className="text-[10px] text-emerald-600/70 font-medium">Sobras por fórmula</p>
+              <p className="text-[10px] text-emerald-600/70 font-bold">Sobras por fórmula</p>
             </div>
           </div>
         )}

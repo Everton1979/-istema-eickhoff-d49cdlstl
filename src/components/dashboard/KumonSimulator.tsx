@@ -22,7 +22,7 @@ export function KumonSimulator() {
   const projectedGain = avgFormulas * priceAdjustment
 
   return (
-    <Card className="border-emerald-200 bg-emerald-50/50 shadow-sm relative overflow-hidden">
+    <Card className="border-green-300 bg-green-200/50 shadow-sm relative overflow-hidden">
       <div className="absolute -right-6 -top-6 text-emerald-500/10 z-0 pointer-events-none">
         <Activity className="w-32 h-32" />
       </div>
@@ -45,7 +45,7 @@ export function KumonSimulator() {
                 </TooltipContent>
               </Tooltip>
             </h3>
-            <p className="text-xs text-emerald-700 mb-4">
+            <p className="text-xs font-bold text-emerald-700 mb-4">
               Ajuste o valor para simular o acréscimo médio no preço de venda ou redução de custo
               unitário.
             </p>
@@ -55,7 +55,7 @@ export function KumonSimulator() {
                 <span className="text-xs font-bold text-emerald-800">
                   Ajuste de Preço/Custo Unitário:
                 </span>
-                <span className="text-sm font-black text-emerald-600 bg-white px-2 py-0.5 rounded border border-emerald-200">
+                <span className="text-sm font-black text-emerald-600 bg-white px-2 py-0.5 rounded border border-green-300">
                   + R$ {priceAdjustment.toFixed(2)}
                 </span>
               </div>
@@ -67,7 +67,7 @@ export function KumonSimulator() {
                 onValueChange={(val) => setPriceAdjustment(val[0])}
                 className="w-full"
               />
-              <div className="flex justify-between text-[10px] text-emerald-600/70 font-medium px-1">
+              <div className="flex justify-between text-[10px] text-emerald-600/70 font-bold px-1">
                 <span>R$ 0</span>
                 <span>R$ 5</span>
                 <span>R$ 10</span>
@@ -83,7 +83,7 @@ export function KumonSimulator() {
               <ArrowUpRight className="w-6 h-6" />
               R$ {projectedGain.toFixed(2)}
             </p>
-            <p className="text-[10px] text-slate-400 mt-2">
+            <p className="text-[10px] font-bold text-slate-400 mt-2">
               Baseado na média de <strong>{Math.round(avgFormulas)}</strong> fórmulas/mês.
             </p>
           </div>

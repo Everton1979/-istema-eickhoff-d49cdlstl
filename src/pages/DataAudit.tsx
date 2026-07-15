@@ -133,9 +133,9 @@ export default function DataAudit() {
       {!error && (
         <>
           <div className="grid gap-4 md:grid-cols-2">
-            <Card className="shadow-sm bg-blue-50">
+            <Card className="shadow-sm bg-blue-200">
               <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-black">
+                <CardTitle className="text-sm font-bold text-black">
                   Total Geral - Receitas
                 </CardTitle>
               </CardHeader>
@@ -146,9 +146,9 @@ export default function DataAudit() {
               </CardContent>
             </Card>
 
-            <Card className="shadow-sm bg-red-50">
+            <Card className="shadow-sm bg-red-200">
               <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-black">
+                <CardTitle className="text-sm font-bold text-black">
                   Total Geral - Despesas
                 </CardTitle>
               </CardHeader>
@@ -194,17 +194,19 @@ export default function DataAudit() {
                           key={`${row.user_id}_${row.project_id}`}
                           className="hover:bg-slate-50"
                         >
-                          <TableCell className="font-medium font-mono text-xs text-slate-700">
+                          <TableCell className="font-bold font-mono text-xs text-slate-700">
                             {row.user_id}
                           </TableCell>
-                          <TableCell className="font-medium font-mono text-xs text-slate-600">
+                          <TableCell className="font-bold font-mono text-xs text-slate-600">
                             {row.project_id}
                           </TableCell>
-                          <TableCell className="text-right">{row.total_lancamentos}</TableCell>
-                          <TableCell className="text-right text-black font-medium">
+                          <TableCell className="text-right font-bold">
+                            {row.total_lancamentos}
+                          </TableCell>
+                          <TableCell className="text-right text-black font-bold">
                             {formatCurrency(row.receitas_total)}
                           </TableCell>
-                          <TableCell className="text-right text-black font-medium">
+                          <TableCell className="text-right text-black font-bold">
                             {formatCurrency(row.despesas_total)}
                           </TableCell>
                         </TableRow>

@@ -166,29 +166,33 @@ export function ExpenseDistribution() {
         </div>
         <div className="flex justify-between items-center px-1">
           <div className="flex flex-col">
-            <div className="flex items-center gap-1.5 text-[10px] text-gray-500 font-medium uppercase mb-0.5">
+            <div className="flex items-center gap-1.5 text-[10px] text-gray-500 font-bold uppercase mb-0.5">
               <div className="w-2 h-2 rounded-sm bg-orange-300" />
               Fixas (≤ 40%)
             </div>
             <span className="font-bold text-orange-600 text-sm leading-none">
               {formatCurrency(cfaTotal)}
             </span>
-            <span className="text-[10px] text-gray-400 mt-0.5">{pctFixa.toFixed(1)}%</span>
+            <span className="text-[10px] font-bold text-gray-400 mt-0.5">
+              {pctFixa.toFixed(1)}%
+            </span>
           </div>
 
           <div className="flex flex-col items-center">
-            <div className="flex items-center gap-1.5 text-[10px] text-gray-500 font-medium uppercase mb-0.5">
+            <div className="flex items-center gap-1.5 text-[10px] text-gray-500 font-bold uppercase mb-0.5">
               <div className="w-2 h-2 rounded-sm bg-emerald-300" />
               Variáveis (≤ 45%)
             </div>
             <span className="font-bold text-emerald-600 text-sm leading-none">
               {formatCurrency(varExpenses)}
             </span>
-            <span className="text-[10px] text-gray-400 mt-0.5">{pctVariavel.toFixed(1)}%</span>
+            <span className="text-[10px] font-bold text-gray-400 mt-0.5">
+              {pctVariavel.toFixed(1)}%
+            </span>
           </div>
 
           <div className="flex flex-col text-right items-end">
-            <div className="flex items-center gap-1.5 text-[10px] text-gray-500 font-medium uppercase mb-0.5">
+            <div className="flex items-center gap-1.5 text-[10px] text-gray-500 font-bold uppercase mb-0.5">
               Lucro Líquido (≥ 15%)
               <div className="w-2 h-2 rounded-sm bg-blue-300" />
             </div>
@@ -201,7 +205,7 @@ export function ExpenseDistribution() {
             >
               {formatCurrency(lucroTotal)}
             </span>
-            <span className="text-[10px] text-gray-400 mt-0.5">
+            <span className="text-[10px] font-bold text-gray-400 mt-0.5">
               {receitasTotal > 0 ? ((lucroTotal / receitasTotal) * 100).toFixed(1) : 0}%
             </span>
           </div>

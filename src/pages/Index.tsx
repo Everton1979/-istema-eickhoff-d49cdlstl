@@ -92,7 +92,7 @@ export default function Index() {
         </div>
 
         <div className="flex-1 overflow-y-auto p-4 md:p-6 flex flex-col gap-8">
-          <div className="bg-amber-50 border border-amber-200 text-amber-800 px-4 py-3 rounded-md flex items-start gap-3 shadow-sm text-sm">
+          <div className="bg-yellow-200 border border-yellow-300 text-amber-800 px-4 py-3 rounded-md flex items-start gap-3 shadow-sm text-sm font-bold">
             <AlertTriangle className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
             <p>
               <strong>Aviso de Navegação:</strong> Por favor, deixe sempre no modo inglês e não
@@ -222,7 +222,7 @@ export default function Index() {
                   <div className="w-3 h-6 bg-slate-700 rounded-sm" />
                   Análise Estratégica
                 </h2>
-                <p className="text-sm text-slate-600 mt-2 ml-9 border-l-2 border-amber-400 pl-3 bg-amber-50/70 py-1.5 rounded-r-md max-w-3xl">
+                <p className="text-sm font-bold text-slate-600 mt-2 ml-9 border-l-2 border-amber-400 pl-3 bg-yellow-200/70 py-1.5 rounded-r-md max-w-3xl">
                   <strong className="text-amber-700">Observação:</strong> Esta análise somente terá
                   validade e poderá ser analisada depois que <strong>todos os dados do mês</strong>{' '}
                   (transações e dados manipulação) forem lançados.

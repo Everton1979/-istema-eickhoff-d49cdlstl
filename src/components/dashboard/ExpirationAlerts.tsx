@@ -55,11 +55,11 @@ export function ExpirationAlerts() {
         </Button>
       </PopoverTrigger>
       <PopoverContent align="end" className="w-80 p-0 shadow-lg border-slate-200">
-        <div className="bg-slate-50 border-b px-4 py-3 flex items-center justify-between rounded-t-md">
+        <div className="bg-slate-200 border-b px-4 py-3 flex items-center justify-between rounded-t-md">
           <h4 className="font-semibold text-sm text-slate-800 flex items-center gap-2">
             <Bell className="w-4 h-4 text-slate-500" /> Alertas
           </h4>
-          <Badge variant="secondary" className="bg-slate-200 hover:bg-slate-200 text-slate-700">
+          <Badge variant="secondary" className="bg-slate-300 hover:bg-slate-300 text-slate-700">
             {alerts.total}
           </Badge>
         </div>
@@ -67,16 +67,16 @@ export function ExpirationAlerts() {
         <ScrollArea className="h-[300px]">
           {alerts.total === 0 ? (
             <div className="p-8 text-center text-sm text-slate-500 flex flex-col items-center gap-2">
-              <div className="bg-slate-100 p-3 rounded-full">
+              <div className="bg-slate-200 p-3 rounded-full">
                 <Bell className="w-5 h-5 text-slate-400" />
               </div>
-              <p>Nenhum alerta no momento.</p>
-              <p className="text-xs">Tudo em dia!</p>
+              <p className="font-bold">Nenhum alerta no momento.</p>
+              <p className="text-xs font-bold">Tudo em dia!</p>
             </div>
           ) : (
             <div className="flex flex-col">
               {alerts.overdue.length > 0 && (
-                <div className="p-2 bg-red-50/50">
+                <div className="p-2 bg-red-200/50">
                   <div className="text-[10px] font-bold text-red-800 uppercase px-2 py-1 flex items-center gap-1">
                     <AlertCircle className="w-3 h-3" /> Vencidos ({alerts.overdue.length})
                   </div>
@@ -87,10 +87,29 @@ export function ExpirationAlerts() {
                         className="bg-white p-2 rounded-sm border border-red-100 flex justify-between items-center shadow-sm"
                       >
                         <div className="flex-1 min-w-0 pr-2">
-                          <p className="text-xs font-medium text-slate-800 truncate">
+                          <p className="text-xs font-bold text-slate-800 truncate">
                             {t.description}
                           </p>
-                          <p className="text-[10px] text-red-600 font-medium mt-0.5">
+                          <p className="text-[10px] text-red-600 font-bold mt-0.5">
+                            Venceu em {format(new Date(t.date), 'dd/MM/yyyy')}
+                          </p>
+                        </div>
+                        <div className="text-right shrink-0">
+                  <div className="p-2 bg-red-200/50">
+                  <div className="text-[10px] font-bold text-red-800 uppercase px-2 py-1 flex items-center gap-1">
+                    <AlertCircle className="w-3 h-3" /> Vencidos ({alerts.overdue.length})
+                  </div>
+                  <div className="flex flex-col gap-1 mt-1">
+                    {alerts.overdue.map((t) => (
+                      <div
+                        key={t.id}
+                        className="bg-white p-2 rounded-sm border border-red-100 flex justify-between items-center shadow-sm"
+                      >
+                        <div className="flex-1 min-w-0 pr-2">
+                          <p className="text-xs font-bold text-slate-800 truncate">
+                            {t.description}
+                          </p>
+                          <p className="text-[10px] text-red-600 font-bold mt-0.5">
                             Venceu em {format(new Date(t.date), 'dd/MM/yyyy')}
                           </p>
                         </div>
@@ -106,7 +125,7 @@ export function ExpirationAlerts() {
               )}
 
               {alerts.dueToday.length > 0 && (
-                <div className="p-2 bg-amber-50/50">
+                <div className="p-2 bg-yellow-200/50">
                   <div className="text-[10px] font-bold text-amber-800 uppercase px-2 py-1 flex items-center gap-1">
                     <Clock className="w-3 h-3" /> Vence Hoje ({alerts.dueToday.length})
                   </div>
@@ -117,10 +136,10 @@ export function ExpirationAlerts() {
                         className="bg-white p-2 rounded-sm border border-amber-100 flex justify-between items-center shadow-sm"
                       >
                         <div className="flex-1 min-w-0 pr-2">
-                          <p className="text-xs font-medium text-slate-800 truncate">
+                          <p className="text-xs font-bold text-slate-800 truncate">
                             {t.description}
                           </p>
-                          <p className="text-[10px] text-amber-600 font-medium mt-0.5">Previsto</p>
+                          <p className="text-[10px] text-amber-600 font-bold mt-0.5">Previsto</p>
                         </div>
                         <div className="text-right shrink-0">
                           <p className="text-xs font-bold text-slate-800">

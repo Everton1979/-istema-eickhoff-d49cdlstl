@@ -114,7 +114,7 @@ export function OperationalKpis() {
       title: 'RECEITAS REALIZADAS',
       tooltip: 'Total de entradas financeiras realizadas no período.',
       value: formatCurrency(metrics.receitas),
-      bg: 'bg-blue-100',
+      bg: 'bg-blue-200',
       isLight: false,
     },
     {
@@ -122,7 +122,7 @@ export function OperationalKpis() {
       title: 'DESPESAS REALIZADAS',
       tooltip: 'Soma de todas as saídas de caixa realizadas (fixas e variáveis).',
       value: formatCurrency(-metrics.despesas),
-      bg: 'bg-red-100',
+      bg: 'bg-red-200',
       isLight: false,
     },
     {
@@ -130,7 +130,7 @@ export function OperationalKpis() {
       title: 'LUCRO LÍQUIDO REALIZADO',
       tooltip: 'Resultado final de caixa (Receitas Realizadas - Despesas Realizadas).',
       value: formatCurrency(metrics.lucro),
-      bg: metrics.lucro >= 0 ? 'bg-emerald-100' : 'bg-red-100',
+      bg: metrics.lucro >= 0 ? 'bg-green-200' : 'bg-red-200',
       isLight: false,
     },
     {
@@ -138,7 +138,7 @@ export function OperationalKpis() {
       title: 'DESPESAS PREVISTAS',
       tooltip: 'Soma das despesas e custos previstos ou vencidos (não realizados) para o período.',
       value: formatCurrency(-metrics.despesasPrevistas),
-      bg: 'bg-yellow-100',
+      bg: 'bg-yellow-200',
       isLight: true,
     },
   ]
@@ -160,7 +160,7 @@ export function StrategicKpis() {
       title: 'EBITDA',
       tooltip: 'Geração de caixa operacional (Margem de Contribuição - Custos Fixos).',
       value: formatCurrency(metrics.ebitda),
-      bg: metrics.ebitda >= 0 ? 'bg-emerald-100' : 'bg-red-100',
+      bg: metrics.ebitda >= 0 ? 'bg-green-200' : 'bg-red-200',
       isLight: false,
     },
     {
@@ -168,7 +168,7 @@ export function StrategicKpis() {
       title: 'MARGEM DE CONTRIBUIÇÃO',
       tooltip: 'Receita bruta menos os custos variáveis totais das transações.',
       value: formatCurrency(metrics.margem),
-      bg: 'bg-blue-100',
+      bg: 'bg-blue-200',
       isLight: false,
     },
     {
@@ -184,7 +184,7 @@ export function StrategicKpis() {
       title: 'CMA',
       tooltip: 'Contribuição média por fórmula/pedido (Margem / Qtde Pedidos).',
       value: formatCurrency(metrics.cma),
-      bg: 'bg-orange-100',
+      bg: 'bg-orange-200',
       isLight: false,
     },
   ]

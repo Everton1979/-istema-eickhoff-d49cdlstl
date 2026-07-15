@@ -259,16 +259,16 @@ export function PharmacyMetrics() {
 
   const colorToBg = (color: string): string => {
     const map: Record<string, string> = {
-      'text-red-600': 'bg-red-100',
-      'text-orange-500': 'bg-orange-100',
-      'text-orange-600': 'bg-orange-100',
-      'text-emerald-600': 'bg-emerald-100',
-      'text-blue-600': 'bg-blue-100',
-      'text-indigo-600': 'bg-indigo-100',
-      'text-slate-500': 'bg-slate-100',
+      'text-red-600': 'bg-red-200',
+      'text-orange-500': 'bg-orange-200',
+      'text-orange-600': 'bg-orange-200',
+      'text-emerald-600': 'bg-green-200',
+      'text-blue-600': 'bg-blue-200',
+      'text-indigo-600': 'bg-indigo-200',
+      'text-slate-500': 'bg-slate-200',
       'text-slate-600': 'bg-slate-200',
     }
-    return map[color] || 'bg-slate-100'
+    return map[color] || 'bg-slate-200'
   }
 
   const getPerformanceStatus = (value: number, type: string) => {
