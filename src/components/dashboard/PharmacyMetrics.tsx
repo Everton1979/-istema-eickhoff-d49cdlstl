@@ -257,6 +257,20 @@ export function PharmacyMetrics() {
       val,
     )
 
+  const colorToBg = (color: string): string => {
+    const map: Record<string, string> = {
+      'text-red-600': 'bg-red-500',
+      'text-orange-500': 'bg-orange-500',
+      'text-orange-600': 'bg-orange-500',
+      'text-emerald-600': 'bg-emerald-500',
+      'text-blue-600': 'bg-blue-500',
+      'text-indigo-600': 'bg-indigo-500',
+      'text-slate-500': 'bg-slate-500',
+      'text-slate-600': 'bg-slate-600',
+    }
+    return map[color] || 'bg-slate-500'
+  }
+
   const getPerformanceStatus = (value: number, type: string) => {
     if (type === 'fat-colab-geral') {
       if (value < 8000) return { text: 'Péssimo', color: 'text-red-600' }
@@ -487,18 +501,15 @@ export function PharmacyMetrics() {
         {items.map((item, i) => (
           <Card
             key={item.id}
-            className={cn(
-              'rounded-md shadow-sm border-slate-200 bg-slate-50/50 hover:bg-white hover:border-indigo-200 transition-all',
-              i < 2 ? 'bg-indigo-50/50 border-indigo-100' : '',
-            )}
+            className={cn('rounded-md shadow-sm border-0 transition-all', colorToBg(item.color))}
           >
             <CardContent className="p-3 text-center flex flex-col justify-center h-full">
-              <h4 className="text-[10px] font-bold text-slate-500 uppercase leading-tight mb-2 flex items-center justify-center gap-1">
+              <h4 className="text-[10px] font-bold text-white/70 uppercase leading-tight mb-2 flex items-center justify-center gap-1">
                 {item.title}
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Link to={`/glossario#${item.id}`}>
-                      <HelpCircle className="w-3.5 h-3.5 text-slate-400 hover:text-indigo-500 cursor-pointer" />
+                      <HelpCircle className="w-3.5 h-3.5 text-white/50 hover:text-white cursor-pointer" />
                     </Link>
                   </TooltipTrigger>
                   <TooltipContent className="max-w-[220px] text-center" side="top">
@@ -510,18 +521,11 @@ export function PharmacyMetrics() {
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <div className="cursor-help group flex flex-col items-center">
-                      <p
-                        className={cn(
-                          'text-lg font-bold tracking-tight decoration-dashed underline-offset-4 decoration-red-300 group-hover:underline',
-                          item.color,
-                        )}
-                      >
+                      <p className="text-lg font-bold tracking-tight decoration-dashed underline-offset-4 decoration-white/50 group-hover:underline text-white">
                         {item.value}
                       </p>
                       {item.statusText && (
-                        <p className={cn('text-[11px] font-bold mt-1', item.color)}>
-                          {item.statusText}
-                        </p>
+                        <p className="text-[11px] font-bold mt-1 text-white">{item.statusText}</p>
                       )}
                     </div>
                   </TooltipTrigger>
@@ -534,11 +538,9 @@ export function PharmacyMetrics() {
                 </Tooltip>
               ) : (
                 <>
-                  <p className={cn('text-lg font-bold tracking-tight', item.color)}>{item.value}</p>
+                  <p className="text-lg font-bold tracking-tight text-white">{item.value}</p>
                   {item.statusText && (
-                    <p className={cn('text-[11px] font-bold mt-1', item.color)}>
-                      {item.statusText}
-                    </p>
+                    <p className="text-[11px] font-bold mt-1 text-white">{item.statusText}</p>
                   )}
                 </>
               )}

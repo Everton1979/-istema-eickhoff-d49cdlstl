@@ -82,14 +82,26 @@ const formatCurrency = (val: number) =>
 
 function KpiCard({ kpi }: { kpi: any }) {
   return (
-    <Card className={cn('rounded-sm border-t-4 shadow-sm bg-white', kpi.border)}>
+    <Card className={cn('rounded-sm shadow-sm border-0', kpi.bg)}>
       <CardContent className="p-2 text-center flex flex-col justify-center h-full">
-        <h3 className="text-[10px] font-bold text-gray-600 uppercase mb-1 flex items-center justify-center gap-1">
+        <h3
+          className={cn(
+            'text-[10px] font-bold uppercase mb-1 flex items-center justify-center gap-1',
+            kpi.isLight ? 'text-slate-700' : 'text-white/80',
+          )}
+        >
           {kpi.title}
           <Tooltip>
             <TooltipTrigger asChild>
               <Link to={`/glossario#${kpi.id}`}>
-                <HelpCircle className="w-3 h-3 text-gray-400 hover:text-blue-600 cursor-pointer" />
+                <HelpCircle
+                  className={cn(
+                    'w-3 h-3 cursor-pointer',
+                    kpi.isLight
+                      ? 'text-slate-500 hover:text-slate-700'
+                      : 'text-white/50 hover:text-white',
+                  )}
+                />
               </Link>
             </TooltipTrigger>
             <TooltipContent className="max-w-[200px] text-center" side="bottom">
@@ -100,7 +112,14 @@ function KpiCard({ kpi }: { kpi: any }) {
             </TooltipContent>
           </Tooltip>
         </h3>
-        <p className={cn('text-xl font-bold tracking-tight', kpi.color)}>{kpi.value}</p>
+        <p
+          className={cn(
+            'text-xl font-bold tracking-tight',
+            kpi.isLight ? 'text-slate-800' : 'text-white',
+          )}
+        >
+          {kpi.value}
+        </p>
       </CardContent>
     </Card>
   )
@@ -114,32 +133,32 @@ export function OperationalKpis() {
       title: 'RECEITAS REALIZADAS',
       tooltip: 'Total de entradas financeiras realizadas no período.',
       value: formatCurrency(metrics.receitas),
-      color: 'text-blue-600',
-      border: 'border-t-blue-500',
+      bg: 'bg-blue-500',
+      isLight: false,
     },
     {
       id: 'despesas-e-custos',
       title: 'DESPESAS REALIZADAS',
       tooltip: 'Soma de todas as saídas de caixa realizadas (fixas e variáveis).',
       value: formatCurrency(-metrics.despesas),
-      color: 'text-red-500',
-      border: 'border-t-red-500',
+      bg: 'bg-red-500',
+      isLight: false,
     },
     {
       id: 'lucro-liquido',
       title: 'LUCRO LÍQUIDO REALIZADO',
       tooltip: 'Resultado final de caixa (Receitas Realizadas - Despesas Realizadas).',
       value: formatCurrency(metrics.lucro),
-      color: metrics.lucro >= 0 ? 'text-emerald-600' : 'text-red-600',
-      border: metrics.lucro >= 0 ? 'border-t-emerald-500' : 'border-t-red-500',
+      bg: metrics.lucro >= 0 ? 'bg-emerald-500' : 'bg-red-500',
+      isLight: false,
     },
     {
       id: 'despesas-previstas',
       title: 'DESPESAS PREVISTAS',
       tooltip: 'Soma das despesas e custos previstos ou vencidos (não realizados) para o período.',
       value: formatCurrency(-metrics.despesasPrevistas),
-      color: 'text-amber-500',
-      border: 'border-t-amber-500',
+      bg: 'bg-yellow-400',
+      isLight: true,
     },
   ]
 
@@ -160,32 +179,32 @@ export function StrategicKpis() {
       title: 'EBITDA',
       tooltip: 'Geração de caixa operacional (Margem de Contribuição - Custos Fixos).',
       value: formatCurrency(metrics.ebitda),
-      color: metrics.ebitda >= 0 ? 'text-emerald-600' : 'text-red-600',
-      border: metrics.ebitda >= 0 ? 'border-t-emerald-500' : 'border-t-red-500',
+      bg: metrics.ebitda >= 0 ? 'bg-emerald-500' : 'bg-red-500',
+      isLight: false,
     },
     {
       id: 'margem-de-contribuicao',
       title: 'MARGEM DE CONTRIBUIÇÃO',
       tooltip: 'Receita bruta menos os custos variáveis totais das transações.',
       value: formatCurrency(metrics.margem),
-      color: 'text-blue-600',
-      border: 'border-t-blue-500',
+      bg: 'bg-blue-500',
+      isLight: false,
     },
     {
       id: 'ponto-de-equilibrio',
       title: 'PONTO DE EQUILÍBRIO',
       tooltip: 'Faturamento necessário para cobrir a parcela fixa de custos.',
       value: formatCurrency(metrics.pontoEquilibrio),
-      color: 'text-slate-600',
-      border: 'border-t-slate-500',
+      bg: 'bg-slate-600',
+      isLight: false,
     },
     {
       id: 'cma',
       title: 'CMA',
       tooltip: 'Contribuição média por fórmula/pedido (Margem / Qtde Pedidos).',
       value: formatCurrency(metrics.cma),
-      color: 'text-orange-600',
-      border: 'border-t-orange-500',
+      bg: 'bg-orange-500',
+      isLight: false,
     },
   ]
 

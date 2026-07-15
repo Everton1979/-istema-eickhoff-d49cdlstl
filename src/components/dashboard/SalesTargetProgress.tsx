@@ -68,7 +68,7 @@ function TargetCard({
   return (
     <Card
       className={cn(
-        'rounded-sm shadow-sm w-full flex flex-col justify-center border-t-4 relative',
+        'rounded-sm shadow-sm w-full flex flex-col justify-center relative',
         colorClass,
       )}
     >
@@ -80,7 +80,7 @@ function TargetCard({
               <h3 className="text-xs uppercase tracking-wide">{title}</h3>
             </div>
             {subtitle && (
-              <p className="text-[9px] text-gray-500 font-medium italic mt-1 ml-[22px]">
+              <p className="text-[9px] text-white/70 font-medium italic mt-1 ml-[22px]">
                 {subtitle}
               </p>
             )}
@@ -89,7 +89,7 @@ function TargetCard({
             <Button
               variant="ghost"
               size="icon"
-              className={cn('h-5 w-5 absolute right-2 top-2 text-gray-400', hoverTextClass)}
+              className={cn('h-5 w-5 absolute right-2 top-2 text-white/50', hoverTextClass)}
               onClick={handleEdit}
             >
               <Pencil className="h-3 w-3" />
@@ -135,7 +135,7 @@ function TargetCard({
             <Button
               variant="ghost"
               size="icon"
-              className="h-7 w-7 text-gray-500 shrink-0"
+              className="h-7 w-7 text-white/70 shrink-0"
               onClick={() => setIsEditing(false)}
             >
               <X className="h-3 w-3" />
@@ -144,35 +144,35 @@ function TargetCard({
         ) : (
           <div className="flex justify-between items-end mb-1">
             <div>
-              <p className="text-[10px] text-gray-500 font-medium">Meta Mês</p>
-              <p className="text-sm font-bold text-gray-800">{formatCurrency(target)}</p>
+              <p className="text-[10px] text-white/70 font-medium">Meta Mês</p>
+              <p className="text-sm font-bold text-white">{formatCurrency(target)}</p>
             </div>
             <div className="text-right">
-              <p className="text-[10px] text-gray-500 font-medium">Realizado</p>
+              <p className="text-[10px] text-white/70 font-medium">Realizado</p>
               <p className={cn('text-sm font-bold', textClass)}>{formatCurrency(achieved)}</p>
             </div>
           </div>
         )}
 
         <div className="space-y-1 mt-1.5">
-          <Progress value={achievedPct} className={cn('h-2 bg-gray-100', progressColorClass)} />
+          <Progress value={achievedPct} className={cn('h-2 bg-white/20', progressColorClass)} />
           <div className="flex justify-between items-start text-[10px] mt-1">
             {!isPastMonth ? (
               <div className="flex flex-col">
-                <p className="text-gray-500 font-medium">
+                <p className="text-white/70 font-medium">
                   Diária:{' '}
-                  <span className="text-gray-800 font-bold">{formatCurrency(dailyTarget)}</span>
+                  <span className="text-white font-bold">{formatCurrency(dailyTarget)}</span>
                 </p>
-                <span className="text-gray-400 text-[8px] -mt-0.5">({workingDays} dias úteis)</span>
+                <span className="text-white/50 text-[8px] -mt-0.5">({workingDays} dias úteis)</span>
               </div>
             ) : (
               <div className="flex flex-col">
-                <p className="text-gray-500 font-medium">
+                <p className="text-white/70 font-medium">
                   Status:{' '}
                   <span
                     className={cn(
                       'font-bold',
-                      achieved >= target && target > 0 ? textClass : 'text-orange-500',
+                      achieved >= target && target > 0 ? textClass : 'text-amber-300',
                     )}
                   >
                     {achieved >= target && target > 0 ? 'Meta Batida' : 'Não Atingida'}
@@ -182,11 +182,11 @@ function TargetCard({
             )}
             {target > 0 && remaining > 0 && (
               <div className="flex flex-col items-end">
-                <span className="font-bold text-orange-500">
+                <span className="font-bold text-amber-200">
                   {isPastMonth ? 'Faltou:' : 'Falta:'} {formatCurrency(remaining)}
                 </span>
                 {showPercentage && (
-                  <span className="text-orange-400 font-medium text-[9px] -mt-0.5">
+                  <span className="text-amber-200/80 font-medium text-[9px] -mt-0.5">
                     ({remainingPct.toFixed(1)}% restando)
                   </span>
                 )}
@@ -359,11 +359,11 @@ export function SalesTargetsDashboard() {
         isEditable={isEditable}
         showPercentage={false}
         onSave={(val: number) => saveMonthlyMetric({ ...metric, meta_vendas_manipulacao: val })}
-        colorClass="border-t-blue-500"
-        textClass="text-blue-600"
-        hoverTextClass="hover:text-blue-600"
-        bgClass="bg-blue-500 hover:bg-blue-600"
-        progressColorClass="[&>div]:bg-blue-500"
+        colorClass="bg-blue-500"
+        textClass="text-white"
+        hoverTextClass="hover:text-white"
+        bgClass="bg-blue-600 hover:bg-blue-700"
+        progressColorClass="[&>div]:bg-white/80"
       />
 
       <TargetCard
@@ -376,11 +376,11 @@ export function SalesTargetsDashboard() {
         isEditable={isEditable}
         showPercentage={false}
         onSave={(val: number) => saveMonthlyMetric({ ...metric, meta_vendas_extra: val })}
-        colorClass="border-t-purple-500"
-        textClass="text-purple-600"
-        hoverTextClass="hover:text-purple-600"
-        bgClass="bg-purple-500 hover:bg-purple-600"
-        progressColorClass="[&>div]:bg-purple-500"
+        colorClass="bg-purple-500"
+        textClass="text-white"
+        hoverTextClass="hover:text-white"
+        bgClass="bg-purple-600 hover:bg-purple-700"
+        progressColorClass="[&>div]:bg-white/80"
       />
 
       <TargetCard
@@ -393,11 +393,11 @@ export function SalesTargetsDashboard() {
         isEditable={false}
         readonly={true}
         showPercentage={true}
-        colorClass="border-t-emerald-500"
-        textClass="text-emerald-600"
-        hoverTextClass="hover:text-emerald-600"
-        bgClass="bg-emerald-500 hover:bg-emerald-600"
-        progressColorClass="[&>div]:bg-emerald-500"
+        colorClass="bg-emerald-500"
+        textClass="text-white"
+        hoverTextClass="hover:text-white"
+        bgClass="bg-emerald-600 hover:bg-emerald-700"
+        progressColorClass="[&>div]:bg-white/80"
       />
     </div>
   )
