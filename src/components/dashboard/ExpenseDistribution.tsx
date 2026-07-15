@@ -41,16 +41,16 @@ const VARIAVEL_LABELS: Record<string, string> = {
 }
 
 const COLORS = [
-  '#fdba74',
-  '#93c5fd',
-  '#86efac',
-  '#c4b5fd',
-  '#d8b4fe',
-  '#f9a8d4',
-  '#fca5a5',
-  '#fcd34d',
-  '#67e8f9',
-  '#5eead4',
+  '#f97316',
+  '#3b82f6',
+  '#22c55e',
+  '#8b5cf6',
+  '#a855f7',
+  '#ec4899',
+  '#ef4444',
+  '#f59e0b',
+  '#06b6d4',
+  '#14b8a6',
 ]
 
 export function ExpenseDistribution() {

@@ -501,7 +501,10 @@ export function PharmacyMetrics() {
         {items.map((item, i) => (
           <Card
             key={item.id}
-            className={cn('rounded-md shadow-sm border-0 transition-all', colorToBg(item.color))}
+            className={cn(
+              'rounded-md shadow-sm border border-black/40 transition-all',
+              colorToBg(item.color),
+            )}
           >
             <CardContent className="p-3 text-center flex flex-col justify-center h-full">
               <h4 className="text-[10px] font-bold text-black/70 uppercase leading-tight mb-2 flex items-center justify-center gap-1">

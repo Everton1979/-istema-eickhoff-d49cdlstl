@@ -82,7 +82,7 @@ const formatCurrency = (val: number) =>
 
 function KpiCard({ kpi }: { kpi: any }) {
   return (
-    <Card className={cn('rounded-sm shadow-sm border border-black/20', kpi.bg)}>
+    <Card className={cn('rounded-sm shadow-sm border border-black/40', kpi.bg)}>
       <CardContent className="p-2 text-center flex flex-col justify-center h-full">
         <h3 className="text-[10px] font-bold uppercase mb-1 flex items-center justify-center gap-1 text-black">
           {kpi.title}
