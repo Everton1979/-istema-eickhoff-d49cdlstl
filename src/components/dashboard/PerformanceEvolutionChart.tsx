@@ -86,9 +86,9 @@ export function PerformanceEvolutionChart() {
     <div className="w-full flex flex-col">
       <ChartContainer
         config={{
-          receitasRealizadas: { label: 'Receitas Realizadas', color: '#10b981' },
-          despesasRealizadas: { label: 'Despesas Realizadas', color: '#ef4444' },
-          lucroLiquido: { label: 'Lucro Líquido', color: '#3b82f6' },
+          receitasRealizadas: { label: 'Receitas Realizadas', color: '#93c5fd' },
+          despesasRealizadas: { label: 'Despesas Realizadas', color: '#fca5a5' },
+          lucroLiquido: { label: 'Lucro Líquido', color: '#86efac' },
         }}
         className="w-full h-[350px] aspect-auto mt-6"
       >

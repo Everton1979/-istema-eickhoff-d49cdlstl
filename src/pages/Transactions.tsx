@@ -249,7 +249,7 @@ export default function Transactions() {
   return (
     <div className="flex-1 overflow-y-auto p-3 sm:p-6 flex flex-col custom-scrollbar">
       {/* PrintableReport removed as unused in Transactions */}
-      <div className="flex flex-col bg-white rounded-md shadow-md border p-4 sm:p-6 animate-fade-in-up mb-8 w-full print:hidden shrink-0">
+      <div className="flex flex-col bg-white rounded-md shadow-md border border-black/15 p-4 sm:p-6 animate-fade-in-up mb-8 w-full print:hidden shrink-0">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
           <div>
             <div className="flex items-center gap-3">
@@ -299,7 +299,7 @@ export default function Transactions() {
             <Sheet open={isTransactionSheetOpen} onOpenChange={handleSheetChange}>
               <SheetTrigger asChild>
                 <Button
-                  className="gap-2 bg-green-600 hover:bg-green-700 flex-1 sm:flex-none"
+                  className="gap-2 bg-emerald-500 hover:bg-emerald-600 flex-1 sm:flex-none"
                   onClick={() => setEditingTransaction(null)}
                 >
                   <Plus className="h-4 w-4" /> Novo Lançamento
@@ -363,7 +363,7 @@ export default function Transactions() {
               size="sm"
               className={cn(
                 'text-xs h-8 px-4 whitespace-nowrap flex-1 sm:flex-none',
-                quickFilter === 'PREVISTO' && 'bg-blue-600 text-black hover:bg-blue-700 shadow-sm',
+                quickFilter === 'PREVISTO' && 'bg-blue-400 text-black hover:bg-blue-500 shadow-sm',
               )}
               onClick={() => setQuickFilter('PREVISTO')}
             >
@@ -374,7 +374,7 @@ export default function Transactions() {
               size="sm"
               className={cn(
                 'text-xs h-8 px-4 whitespace-nowrap flex-1 sm:flex-none',
-                quickFilter === 'VENCIDO' && 'bg-red-600 text-black hover:bg-red-700 shadow-sm',
+                quickFilter === 'VENCIDO' && 'bg-red-400 text-black hover:bg-red-500 shadow-sm',
               )}
               onClick={() => setQuickFilter('VENCIDO')}
             >
@@ -386,7 +386,7 @@ export default function Transactions() {
               className={cn(
                 'text-xs h-8 px-4 whitespace-nowrap flex-1 sm:flex-none',
                 quickFilter === 'CORTESIA' &&
-                  'bg-orange-500 text-black hover:bg-orange-600 shadow-sm',
+                  'bg-orange-400 text-black hover:bg-orange-500 shadow-sm',
               )}
               onClick={() => setQuickFilter('CORTESIA')}
             >
@@ -398,7 +398,7 @@ export default function Transactions() {
               className={cn(
                 'text-xs h-8 px-4 whitespace-nowrap flex-1 sm:flex-none',
                 quickFilter === 'PARTNER_WITHDRAWAL' &&
-                  'bg-purple-600 text-black hover:bg-purple-700 shadow-sm',
+                  'bg-purple-400 text-black hover:bg-purple-500 shadow-sm',
               )}
               onClick={() => setQuickFilter('PARTNER_WITHDRAWAL')}
             >
@@ -410,7 +410,7 @@ export default function Transactions() {
               className={cn(
                 'text-xs h-8 px-4 whitespace-nowrap flex-1 sm:flex-none gap-1.5',
                 quickFilter === 'RECEITAS' &&
-                  'bg-emerald-600 text-black hover:bg-emerald-700 shadow-sm',
+                  'bg-emerald-400 text-black hover:bg-emerald-500 shadow-sm',
               )}
               onClick={() => setQuickFilter('RECEITAS')}
             >
@@ -422,7 +422,7 @@ export default function Transactions() {
               size="sm"
               className={cn(
                 'text-xs h-8 px-4 whitespace-nowrap flex-1 sm:flex-none gap-1.5',
-                quickFilter === 'DESPESAS' && 'bg-red-600 text-black hover:bg-red-700 shadow-sm',
+                quickFilter === 'DESPESAS' && 'bg-red-400 text-black hover:bg-red-500 shadow-sm',
               )}
               onClick={() => setQuickFilter('DESPESAS')}
             >
@@ -435,7 +435,7 @@ export default function Transactions() {
               className={cn(
                 'text-xs h-8 px-4 whitespace-nowrap flex-1 sm:flex-none gap-1.5',
                 quickFilter === 'MP_EMB_MED' &&
-                  'bg-amber-600 text-black hover:bg-amber-700 shadow-sm',
+                  'bg-amber-400 text-black hover:bg-amber-500 shadow-sm',
               )}
               onClick={() => setQuickFilter('MP_EMB_MED')}
             >
@@ -444,10 +444,10 @@ export default function Transactions() {
           </div>
         </div>
 
-        <div className="rounded-md border bg-white relative w-full overflow-hidden">
+        <div className="rounded-md border border-black/15 bg-white relative w-full overflow-hidden">
           <div className="overflow-x-auto overflow-y-auto max-h-[65vh] w-full custom-scrollbar">
             <Table className="min-w-[800px] w-full">
-              <TableHeader className="bg-slate-50 sticky top-0 z-10 shadow-sm border-b">
+              <TableHeader className="bg-blue-50 sticky top-0 z-10 shadow-sm border-b border-black/15">
                 <TableRow>
                   <TableHead className="w-28">Data</TableHead>
                   <TableHead>Descrição / Observações</TableHead>

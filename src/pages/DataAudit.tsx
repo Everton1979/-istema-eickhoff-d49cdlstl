@@ -133,7 +133,7 @@ export default function DataAudit() {
       {!error && (
         <>
           <div className="grid gap-4 md:grid-cols-2">
-            <Card className="shadow-sm bg-blue-200">
+            <Card className="shadow-sm bg-blue-200 border border-black/15">
               <CardHeader className="pb-2">
                 <CardTitle className="text-sm font-bold text-black">
                   Total Geral - Receitas
@@ -146,7 +146,7 @@ export default function DataAudit() {
               </CardContent>
             </Card>
 
-            <Card className="shadow-sm bg-red-200">
+            <Card className="shadow-sm bg-red-200 border border-black/15">
               <CardHeader className="pb-2">
                 <CardTitle className="text-sm font-bold text-black">
                   Total Geral - Despesas
@@ -160,7 +160,7 @@ export default function DataAudit() {
             </Card>
           </div>
 
-          <Card className="shadow-sm">
+          <Card className="shadow-sm border border-black/15">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Activity className="h-5 w-5" />
@@ -179,7 +179,7 @@ export default function DataAudit() {
               ) : (
                 <div className="rounded-md border overflow-x-auto">
                   <Table>
-                    <TableHeader className="bg-slate-50">
+                    <TableHeader className="bg-blue-50">
                       <TableRow>
                         <TableHead>User ID</TableHead>
                         <TableHead>Project ID</TableHead>

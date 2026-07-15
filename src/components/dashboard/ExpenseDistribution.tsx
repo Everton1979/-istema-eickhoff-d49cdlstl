@@ -41,16 +41,16 @@ const VARIAVEL_LABELS: Record<string, string> = {
 }
 
 const COLORS = [
-  '#f97316',
-  '#3b82f6',
-  '#10b981',
-  '#8b5cf6',
-  '#a855f7',
-  '#ec4899',
-  '#f43f5e',
-  '#eab308',
-  '#06b6d4',
-  '#14b8a6',
+  '#fdba74',
+  '#93c5fd',
+  '#86efac',
+  '#c4b5fd',
+  '#d8b4fe',
+  '#f9a8d4',
+  '#fca5a5',
+  '#fcd34d',
+  '#67e8f9',
+  '#5eead4',
 ]
 
 export function ExpenseDistribution() {
@@ -139,7 +139,7 @@ export function ExpenseDistribution() {
     new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val)
 
   return (
-    <div className="bg-white p-4 rounded-sm border shadow-sm flex flex-col gap-4">
+    <div className="bg-white p-4 rounded-sm border border-black/15 shadow-sm flex flex-col gap-4">
       <div className="flex items-center justify-between">
         <h3 className="text-xs font-bold text-gray-600 uppercase tracking-wide">
           Distribuição de Despesas e Lucro Líquido Real

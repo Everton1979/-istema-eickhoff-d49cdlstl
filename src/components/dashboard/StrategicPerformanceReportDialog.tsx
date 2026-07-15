@@ -349,17 +349,17 @@ export function StrategicPerformanceReportDialog() {
               </div>
             ) : (
               <div className="space-y-6 animate-fade-in">
-                {renderSection('Entradas', 'entradas', formatCurrency, '#10b981')}
-                {renderSection('Despesas', 'despesas', formatCurrency, '#ef4444')}
-                {renderSection('Lucro Líquido Real', 'lucroLiquido', formatCurrency, '#3b82f6')}
+                {renderSection('Entradas', 'entradas', formatCurrency, '#93c5fd')}
+                {renderSection('Despesas', 'despesas', formatCurrency, '#fca5a5')}
+                {renderSection('Lucro Líquido Real', 'lucroLiquido', formatCurrency, '#86efac')}
                 {renderSection(
                   'Mark-up Manip.',
                   'markup',
                   (val) => `${val.toFixed(2)}x`,
-                  '#8b5cf6',
+                  '#c4b5fd',
                 )}
-                {renderSection('Ticket Médio', 'ticket', formatCurrency, '#f59e0b')}
-                {renderSection('Valuation', 'valuation', formatCurrency, '#0f172a')}
+                {renderSection('Ticket Médio', 'ticket', formatCurrency, '#fcd34d')}
+                {renderSection('Valuation', 'valuation', formatCurrency, '#94a3b8')}
               </div>
             )}
           </div>
