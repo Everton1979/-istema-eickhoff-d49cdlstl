@@ -95,25 +95,6 @@ export function ExpirationAlerts() {
                           </p>
                         </div>
                         <div className="text-right shrink-0">
-                  <div className="p-2 bg-red-200/50">
-                  <div className="text-[10px] font-bold text-red-800 uppercase px-2 py-1 flex items-center gap-1">
-                    <AlertCircle className="w-3 h-3" /> Vencidos ({alerts.overdue.length})
-                  </div>
-                  <div className="flex flex-col gap-1 mt-1">
-                    {alerts.overdue.map((t) => (
-                      <div
-                        key={t.id}
-                        className="bg-white p-2 rounded-sm border border-red-100 flex justify-between items-center shadow-sm"
-                      >
-                        <div className="flex-1 min-w-0 pr-2">
-                          <p className="text-xs font-bold text-slate-800 truncate">
-                            {t.description}
-                          </p>
-                          <p className="text-[10px] text-red-600 font-bold mt-0.5">
-                            Venceu em {format(new Date(t.date), 'dd/MM/yyyy')}
-                          </p>
-                        </div>
-                        <div className="text-right shrink-0">
                           <p className="text-xs font-bold text-slate-800">
                             {formatCurrency(t.amount)}
                           </p>
