@@ -150,24 +150,24 @@ export function ExpenseDistribution() {
         <div className="flex h-3 w-full rounded-full overflow-hidden bg-gray-100 mb-3 shadow-inner">
           <div
             style={{ width: `${pctFixa}%` }}
-            className="bg-orange-400 transition-all duration-500"
+            className="bg-orange-300 transition-all duration-500"
             title={`Fixas: ${pctFixa.toFixed(1)}%`}
           />
           <div
             style={{ width: `${pctVariavel}%` }}
-            className="bg-emerald-400 transition-all duration-500"
+            className="bg-emerald-300 transition-all duration-500"
             title={`Variáveis: ${pctVariavel.toFixed(1)}%`}
           />
           <div
             style={{ width: `${pctLucro}%` }}
-            className="bg-blue-500 transition-all duration-500"
+            className="bg-blue-300 transition-all duration-500"
             title={`Lucro Líquido: ${pctLucro.toFixed(1)}%`}
           />
         </div>
         <div className="flex justify-between items-center px-1">
           <div className="flex flex-col">
             <div className="flex items-center gap-1.5 text-[10px] text-gray-500 font-medium uppercase mb-0.5">
-              <div className="w-2 h-2 rounded-sm bg-orange-400" />
+              <div className="w-2 h-2 rounded-sm bg-orange-300" />
               Fixas (≤ 40%)
             </div>
             <span className="font-bold text-orange-600 text-sm leading-none">
@@ -178,7 +178,7 @@ export function ExpenseDistribution() {
 
           <div className="flex flex-col items-center">
             <div className="flex items-center gap-1.5 text-[10px] text-gray-500 font-medium uppercase mb-0.5">
-              <div className="w-2 h-2 rounded-sm bg-emerald-400" />
+              <div className="w-2 h-2 rounded-sm bg-emerald-300" />
               Variáveis (≤ 45%)
             </div>
             <span className="font-bold text-emerald-600 text-sm leading-none">
@@ -190,7 +190,7 @@ export function ExpenseDistribution() {
           <div className="flex flex-col text-right items-end">
             <div className="flex items-center gap-1.5 text-[10px] text-gray-500 font-medium uppercase mb-0.5">
               Lucro Líquido (≥ 15%)
-              <div className="w-2 h-2 rounded-sm bg-blue-500" />
+              <div className="w-2 h-2 rounded-sm bg-blue-300" />
             </div>
             <span
               className={

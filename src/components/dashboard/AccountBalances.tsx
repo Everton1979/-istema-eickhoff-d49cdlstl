@@ -42,9 +42,9 @@ export function AccountBalances() {
 
   return (
     <div className="bg-white rounded-sm border shadow-sm flex flex-col h-full overflow-hidden">
-      <div className="bg-blue-500 text-black text-xs font-bold py-2 px-3 flex justify-between items-center shrink-0">
+      <div className="bg-blue-100 text-black text-xs font-bold py-2 px-3 flex justify-between items-center shrink-0">
         <span>Receitas Realizadas (Entradas)</span>
-        <span className="bg-blue-700/50 px-2 py-0.5 rounded text-[10px] tracking-wide">
+        <span className="bg-blue-200 px-2 py-0.5 rounded text-[10px] tracking-wide">
           {formatCurrency(totalIncome)}
         </span>
       </div>

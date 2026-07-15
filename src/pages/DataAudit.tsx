@@ -133,27 +133,27 @@ export default function DataAudit() {
       {!error && (
         <>
           <div className="grid gap-4 md:grid-cols-2">
-            <Card className="shadow-sm">
+            <Card className="shadow-sm bg-blue-50">
               <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground">
+                <CardTitle className="text-sm font-medium text-black">
                   Total Geral - Receitas
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-emerald-600">
+                <div className="text-2xl font-bold text-black">
                   {formatCurrency(globalReceitas)}
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="shadow-sm">
+            <Card className="shadow-sm bg-red-50">
               <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground">
+                <CardTitle className="text-sm font-medium text-black">
                   Total Geral - Despesas
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-rose-600">
+                <div className="text-2xl font-bold text-black">
                   {formatCurrency(globalDespesas)}
                 </div>
               </CardContent>
@@ -201,10 +201,10 @@ export default function DataAudit() {
                             {row.project_id}
                           </TableCell>
                           <TableCell className="text-right">{row.total_lancamentos}</TableCell>
-                          <TableCell className="text-right text-emerald-600 font-medium">
+                          <TableCell className="text-right text-black font-medium">
                             {formatCurrency(row.receitas_total)}
                           </TableCell>
-                          <TableCell className="text-right text-rose-600 font-medium">
+                          <TableCell className="text-right text-black font-medium">
                             {formatCurrency(row.despesas_total)}
                           </TableCell>
                         </TableRow>

@@ -575,7 +575,7 @@ export default function Transactions() {
           </div>
           <div className="flex flex-wrap gap-2 sm:gap-4 items-center ml-auto">
             {quickFilter === 'CORTESIA' && (
-              <div className="font-semibold text-black bg-orange-500 px-3 py-1.5 rounded-md">
+              <div className="font-semibold text-black bg-orange-100 px-3 py-1.5 rounded-md">
                 Total Cortesias:{' '}
                 {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(
                   filteredData.reduce((acc, tx) => acc + tx.amount, 0),
@@ -584,7 +584,7 @@ export default function Transactions() {
             )}
 
             {quickFilter === 'PARTNER_WITHDRAWAL' && (
-              <div className="font-semibold text-black bg-purple-500 px-3 py-1.5 rounded-md">
+              <div className="font-semibold text-black bg-purple-100 px-3 py-1.5 rounded-md">
                 Total Retiradas:{' '}
                 {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(
                   filteredData.reduce((acc, tx) => acc + tx.amount, 0),
@@ -593,7 +593,7 @@ export default function Transactions() {
             )}
 
             {quickFilter === 'RECEITAS' && (
-              <div className="font-semibold text-black bg-emerald-500 px-3 py-1.5 rounded-md flex items-center gap-1.5">
+              <div className="font-semibold text-black bg-emerald-100 px-3 py-1.5 rounded-md flex items-center gap-1.5">
                 <TrendingUp className="w-4 h-4" />
                 Total Receitas:{' '}
                 {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(
@@ -605,7 +605,7 @@ export default function Transactions() {
             )}
 
             {quickFilter === 'DESPESAS' && (
-              <div className="font-semibold text-black bg-red-500 px-3 py-1.5 rounded-md border border-red-400 shadow-sm flex items-center gap-1.5">
+              <div className="font-semibold text-black bg-red-100 px-3 py-1.5 rounded-md border border-red-200 shadow-sm flex items-center gap-1.5">
                 <TrendingDown className="w-4 h-4" />
                 Total Despesas:{' '}
                 {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(
@@ -617,7 +617,7 @@ export default function Transactions() {
             )}
 
             {quickFilter === 'PREVISTO' && (
-              <div className="font-semibold text-black bg-blue-500 px-3 py-1.5 rounded-md border border-blue-400 shadow-sm">
+              <div className="font-semibold text-black bg-blue-100 px-3 py-1.5 rounded-md border border-blue-200 shadow-sm">
                 Total Previsto:{' '}
                 {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(
                   filteredData.reduce((acc, tx) => acc + tx.amount, 0),
@@ -626,7 +626,7 @@ export default function Transactions() {
             )}
 
             {quickFilter === 'VENCIDO' && (
-              <div className="font-semibold text-black bg-red-500 px-3 py-1.5 rounded-md border border-red-400 shadow-sm">
+              <div className="font-semibold text-black bg-red-100 px-3 py-1.5 rounded-md border border-red-200 shadow-sm">
                 Total Vencido:{' '}
                 {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(
                   filteredData.reduce((acc, tx) => acc + tx.amount, 0),
@@ -635,7 +635,7 @@ export default function Transactions() {
             )}
 
             {quickFilter === 'MP_EMB_MED' && (
-              <div className="font-semibold text-black bg-yellow-400 px-3 py-1.5 rounded-md border border-yellow-600 shadow-sm flex items-center gap-1.5">
+              <div className="font-semibold text-black bg-yellow-100 px-3 py-1.5 rounded-md border border-yellow-200 shadow-sm flex items-center gap-1.5">
                 Soma MP + EMB + MED:{' '}
                 {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(
                   filteredData.reduce((acc, tx) => acc + tx.amount, 0),
@@ -655,8 +655,8 @@ export default function Transactions() {
                   className={cn(
                     'font-semibold px-3 py-1.5 rounded-md border shadow-sm flex gap-4 text-black',
                     visibleBalance >= 0
-                      ? 'bg-emerald-500 border-emerald-700'
-                      : 'bg-red-500 border-red-700',
+                      ? 'bg-emerald-100 border-emerald-200'
+                      : 'bg-red-100 border-red-200',
                   )}
                 >
                   <span>

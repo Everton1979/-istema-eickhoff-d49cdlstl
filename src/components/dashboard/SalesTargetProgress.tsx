@@ -359,7 +359,7 @@ export function SalesTargetsDashboard() {
         isEditable={isEditable}
         showPercentage={false}
         onSave={(val: number) => saveMonthlyMetric({ ...metric, meta_vendas_manipulacao: val })}
-        colorClass="bg-blue-500"
+        colorClass="bg-blue-100"
         textClass="text-black"
         hoverTextClass="hover:text-black"
         bgClass="bg-blue-600 hover:bg-blue-700"
@@ -376,7 +376,7 @@ export function SalesTargetsDashboard() {
         isEditable={isEditable}
         showPercentage={false}
         onSave={(val: number) => saveMonthlyMetric({ ...metric, meta_vendas_extra: val })}
-        colorClass="bg-purple-500"
+        colorClass="bg-purple-100"
         textClass="text-black"
         hoverTextClass="hover:text-black"
         bgClass="bg-purple-600 hover:bg-purple-700"
@@ -393,7 +393,7 @@ export function SalesTargetsDashboard() {
         isEditable={false}
         readonly={true}
         showPercentage={true}
-        colorClass="bg-emerald-500"
+        colorClass="bg-emerald-100"
         textClass="text-black"
         hoverTextClass="hover:text-black"
         bgClass="bg-emerald-600 hover:bg-emerald-700"
