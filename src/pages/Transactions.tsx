@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useFinanceStore } from '@/stores/financeStore'
 import { useAuth } from '@/hooks/use-auth'
 import {
@@ -83,6 +83,15 @@ export default function Transactions() {
   const dayFilter = filters.dayFilter || 'ALL'
 
   const setDayFilter = (val: string) => setFilter('dayFilter', val)
+
+  const prefillDate = useMemo(() => {
+    const month = filters.months?.[0]
+    const year = filters.years?.[0]
+    if (dayFilter !== 'ALL' && month && year) {
+      return `${year}-${month}-${dayFilter.padStart(2, '0')}`
+    }
+    return new Date().toISOString().split('T')[0]
+  }, [dayFilter, filters.months, filters.years])
 
   useEffect(() => {
     const now = new Date()
@@ -314,6 +323,7 @@ export default function Transactions() {
                 <TransactionForm
                   onSuccess={() => handleSheetChange(false)}
                   initialData={editingTransaction}
+                  prefillDate={prefillDate}
                 />
               </SheetContent>
             </Sheet>

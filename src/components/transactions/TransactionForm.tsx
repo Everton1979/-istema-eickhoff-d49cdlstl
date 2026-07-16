@@ -102,6 +102,7 @@ const formSchema = z
 interface TransactionFormProps {
   onSuccess: () => void
   initialData?: Transaction | null
+  prefillDate?: string
 }
 
 const CurrencyFieldInput = forwardRef<HTMLInputElement, any>(
@@ -174,14 +175,14 @@ const CurrencyFieldInput = forwardRef<HTMLInputElement, any>(
   },
 )
 
-export function TransactionForm({ onSuccess, initialData }: TransactionFormProps) {
+export function TransactionForm({ onSuccess, initialData, prefillDate }: TransactionFormProps) {
   const { transactions, addTransaction, updateTransaction } = useFinanceStore()
   const { toast } = useToast()
   const [loading, setLoading] = useState(false)
 
   const defaultEmptyValues = useMemo(
     () => ({
-      date: new Date().toISOString().split('T')[0],
+      date: prefillDate || new Date().toISOString().split('T')[0],
       description: '',
       amount: '' as unknown as number,
       type: 'EXPENSE' as const,
@@ -216,7 +217,10 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
         accountId: initialData.accountId || 'conta_principal',
         tags: initialData.tags || '',
       }
-    : draft
+    : {
+        ...draft,
+        date: prefillDate || draft.date || new Date().toISOString().split('T')[0],
+      }
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -317,7 +321,10 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
         await addTransaction(payload as any)
         toast({ title: 'Sucesso', description: 'Transação salva com sucesso!' })
         clearDraft()
-        form.reset(defaultEmptyValues)
+        form.reset({
+          ...defaultEmptyValues,
+          date: prefillDate || new Date().toISOString().split('T')[0],
+        })
       }
       onSuccess()
     } catch (error) {
