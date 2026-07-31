@@ -1,6 +1,15 @@
-import { createContext, useContext, useEffect, useState, useRef, ReactNode } from 'react'
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  useRef,
+  useCallback,
+  ReactNode,
+} from 'react'
 import { User, Session } from '@supabase/supabase-js'
 import { supabase } from '@/lib/supabase/client'
+import { useIdleTimeout } from '@/hooks/use-idle-timeout'
 
 export interface UserProfile {
   id: string
@@ -174,6 +183,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const { error } = await supabase.auth.updateUser({ password })
     return { error }
   }
+
+  const handleIdle = useCallback(async () => {
+    await supabase.auth.signOut()
+    window.location.href = '/login?expired=true'
+  }, [])
+
+  useIdleTimeout(!!user, handleIdle)
 
   const loading = loadingUser || loadingProfile
 

@@ -1,9 +1,9 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useAuth } from '@/hooks/use-auth'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { toast } from 'sonner'
-import { useNavigate, Navigate, Link } from 'react-router-dom'
+import { useNavigate, Navigate, Link, useSearchParams } from 'react-router-dom'
 import { LayoutDashboard, Eye, EyeOff } from 'lucide-react'
 
 export default function Login() {
@@ -13,6 +13,13 @@ export default function Login() {
   const [loading, setLoading] = useState(false)
   const { signIn, user, loading: authLoading } = useAuth()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
+
+  useEffect(() => {
+    if (searchParams.get('expired') === 'true') {
+      toast.error('Sua sessão expirou por inatividade')
+    }
+  }, [searchParams])
 
   if (authLoading) {
     return (
