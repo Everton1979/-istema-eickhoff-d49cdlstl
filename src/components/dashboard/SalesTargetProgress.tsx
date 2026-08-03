@@ -25,6 +25,7 @@ function TargetCard({
   progressColorClass,
   readonly,
   showPercentage,
+  dataSourceLabel,
 }: any) {
   const [isEditing, setIsEditing] = useState(false)
   const [tempValue, setTempValue] = useState('')
@@ -78,10 +79,15 @@ function TargetCard({
             <div className={cn('flex items-center gap-1.5 font-bold', textClass)}>
               <Target className="w-4 h-4 shrink-0" />
               <h3 className="text-xs uppercase tracking-wide">{title}</h3>
+              {dataSourceLabel && (
+                <span className="text-[8px] bg-black/80 text-white px-1.5 py-0.5 rounded-sm font-bold uppercase tracking-wide">
+                  {dataSourceLabel}
+                </span>
+              )}
             </div>
             {subtitle && (
               <p className="text-[9px] text-black/70 font-bold italic mt-1 ml-[22px]">{subtitle}</p>
-            )}
+            )}{' '}
           </div>
           {isEditable && !isEditing && !readonly && (
             <Button
@@ -344,61 +350,132 @@ export function SalesTargetsDashboard() {
     achievedExtra = 0
   }
 
+  const systemManipulacao = (metric.vendas_capsulas || 0) + (metric.vendas_dermato || 0)
+  const systemRevenda = metric.vendas_revenda || 0
+  const systemTotal = systemManipulacao + systemRevenda
+
   const isEditable =
     profile?.role !== 'Visitante' && Array.isArray(filters?.months) && filters.months.length > 0
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <TargetCard
-        title="Meta Vendas Manipulação"
-        subtitle="* Clique no lápis para definir."
-        target={targetManipulacao}
-        achieved={achievedManipulacao}
-        workingDays={workingDays}
-        isPastMonth={isPastMonth}
-        isEditable={isEditable}
-        showPercentage={false}
-        onSave={(val: number) => saveMonthlyMetric({ ...metric, meta_vendas_manipulacao: val })}
-        colorClass="bg-blue-200"
-        textClass="text-black"
-        hoverTextClass="hover:text-black"
-        bgClass="bg-blue-600 hover:bg-blue-700"
-        progressColorClass="[&>div]:bg-black/80"
-      />
+    <div className="flex flex-col gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <TargetCard
+          title="Meta Vendas Manipulação"
+          subtitle="* Clique no lápis para definir."
+          target={targetManipulacao}
+          achieved={achievedManipulacao}
+          workingDays={workingDays}
+          isPastMonth={isPastMonth}
+          isEditable={isEditable}
+          showPercentage={false}
+          onSave={(val: number) => saveMonthlyMetric({ ...metric, meta_vendas_manipulacao: val })}
+          colorClass="bg-blue-200"
+          textClass="text-black"
+          hoverTextClass="hover:text-black"
+          bgClass="bg-blue-600 hover:bg-blue-700"
+          progressColorClass="[&>div]:bg-black/80"
+        />
 
-      <TargetCard
-        title="Meta Vendas Extra"
-        subtitle="* Drogaria, revenda, etc."
-        target={targetExtra}
-        achieved={achievedExtra}
-        workingDays={workingDays}
-        isPastMonth={isPastMonth}
-        isEditable={isEditable}
-        showPercentage={false}
-        onSave={(val: number) => saveMonthlyMetric({ ...metric, meta_vendas_extra: val })}
-        colorClass="bg-purple-200"
-        textClass="text-black"
-        hoverTextClass="hover:text-black"
-        bgClass="bg-purple-600 hover:bg-purple-700"
-        progressColorClass="[&>div]:bg-black/80"
-      />
+        <TargetCard
+          title="Meta Vendas Extra"
+          subtitle="* Drogaria, revenda, etc."
+          target={targetExtra}
+          achieved={achievedExtra}
+          workingDays={workingDays}
+          isPastMonth={isPastMonth}
+          isEditable={isEditable}
+          showPercentage={false}
+          onSave={(val: number) => saveMonthlyMetric({ ...metric, meta_vendas_extra: val })}
+          colorClass="bg-purple-200"
+          textClass="text-black"
+          hoverTextClass="hover:text-black"
+          bgClass="bg-purple-600 hover:bg-purple-700"
+          progressColorClass="[&>div]:bg-black/80"
+        />
 
-      <TargetCard
-        title="Meta Vendas Totais"
-        subtitle="* Soma automática das metas."
-        target={targetTotal}
-        achieved={totalAchieved}
-        workingDays={workingDays}
-        isPastMonth={isPastMonth}
-        isEditable={false}
-        readonly={true}
-        showPercentage={true}
-        colorClass="bg-green-200"
-        textClass="text-black"
-        hoverTextClass="hover:text-black"
-        bgClass="bg-emerald-600 hover:bg-emerald-700"
-        progressColorClass="[&>div]:bg-black/80"
-      />
+        <TargetCard
+          title="Meta Vendas Totais"
+          subtitle="* Soma automática das metas."
+          target={targetTotal}
+          achieved={totalAchieved}
+          workingDays={workingDays}
+          isPastMonth={isPastMonth}
+          isEditable={false}
+          readonly={true}
+          showPercentage={true}
+          colorClass="bg-green-200"
+          textClass="text-black"
+          hoverTextClass="hover:text-black"
+          bgClass="bg-emerald-600 hover:bg-emerald-700"
+          progressColorClass="[&>div]:bg-black/80"
+        />
+      </div>
+
+      <div className="flex items-center gap-2 px-1 py-1">
+        <div className="flex-1 h-px bg-black/10" />
+        <p className="text-[11px] text-slate-600 font-medium text-center max-w-2xl">
+          Comparativo entre as receitas realizadas (transações) e as vendas registradas no sistema
+          (Ex. Fórmula Certa). Os dados do sistema são preenchidos no fechamento do mês.
+        </p>
+        <div className="flex-1 h-px bg-black/10" />
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <TargetCard
+          title="Vendas Sistema Manipulação"
+          subtitle="* Dados extraídos do sistema (Fórmula Certa)."
+          target={targetManipulacao}
+          achieved={systemManipulacao}
+          workingDays={workingDays}
+          isPastMonth={isPastMonth}
+          isEditable={false}
+          readonly={true}
+          showPercentage={false}
+          dataSourceLabel="Dados do Sistema"
+          colorClass="bg-blue-100"
+          textClass="text-black"
+          hoverTextClass="hover:text-black"
+          bgClass="bg-blue-600 hover:bg-blue-700"
+          progressColorClass="[&>div]:bg-blue-700"
+        />
+
+        <TargetCard
+          title="Vendas Sistema Revenda"
+          subtitle="* Dados extraídos do sistema (Fórmula Certa)."
+          target={targetExtra}
+          achieved={systemRevenda}
+          workingDays={workingDays}
+          isPastMonth={isPastMonth}
+          isEditable={false}
+          readonly={true}
+          showPercentage={false}
+          dataSourceLabel="Dados do Sistema"
+          colorClass="bg-purple-100"
+          textClass="text-black"
+          hoverTextClass="hover:text-black"
+          bgClass="bg-purple-600 hover:bg-purple-700"
+          progressColorClass="[&>div]:bg-purple-700"
+        />
+
+        <TargetCard
+          title="Vendas Sistema Totais"
+          subtitle="* Soma automática das vendas do sistema."
+          target={targetTotal}
+          achieved={systemTotal}
+          workingDays={workingDays}
+          isPastMonth={isPastMonth}
+          isEditable={false}
+          readonly={true}
+          showPercentage={true}
+          dataSourceLabel="Dados do Sistema"
+          colorClass="bg-green-100"
+          textClass="text-black"
+          hoverTextClass="hover:text-black"
+          bgClass="bg-emerald-600 hover:bg-emerald-700"
+          progressColorClass="[&>div]:bg-emerald-700"
+        />
+      </div>
     </div>
   )
 }

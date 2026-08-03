@@ -80,6 +80,7 @@ export type Database = {
           created_at: string
           custo_mp_emb_capsulas: number
           custo_mp_emb_dermato: number
+          custo_revenda: number
           global_sales_target: number
           id: string
           meta_vendas_extra: number
@@ -106,6 +107,7 @@ export type Database = {
           created_at?: string
           custo_mp_emb_capsulas?: number
           custo_mp_emb_dermato?: number
+          custo_revenda?: number
           global_sales_target?: number
           id?: string
           meta_vendas_extra?: number
@@ -132,6 +134,7 @@ export type Database = {
           created_at?: string
           custo_mp_emb_capsulas?: number
           custo_mp_emb_dermato?: number
+          custo_revenda?: number
           global_sales_target?: number
           id?: string
           meta_vendas_extra?: number
