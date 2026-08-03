@@ -369,6 +369,7 @@ export function SalesTargetsDashboard() {
           isPastMonth={isPastMonth}
           isEditable={isEditable}
           showPercentage={false}
+          dataSourceLabel="Receitas Realizadas"
           onSave={(val: number) => saveMonthlyMetric({ ...metric, meta_vendas_manipulacao: val })}
           colorClass="bg-blue-200"
           textClass="text-black"
@@ -386,6 +387,7 @@ export function SalesTargetsDashboard() {
           isPastMonth={isPastMonth}
           isEditable={isEditable}
           showPercentage={false}
+          dataSourceLabel="Receitas Realizadas"
           onSave={(val: number) => saveMonthlyMetric({ ...metric, meta_vendas_extra: val })}
           colorClass="bg-purple-200"
           textClass="text-black"
@@ -404,6 +406,7 @@ export function SalesTargetsDashboard() {
           isEditable={false}
           readonly={true}
           showPercentage={true}
+          dataSourceLabel="Receitas Realizadas"
           colorClass="bg-green-200"
           textClass="text-black"
           hoverTextClass="hover:text-black"
@@ -424,7 +427,7 @@ export function SalesTargetsDashboard() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <TargetCard
           title="Vendas Sistema Manipulação"
-          subtitle="* Dados extraídos do sistema (Fórmula Certa)."
+          subtitle="* Dados extraídos do sistema (Ex. Fórmula Certa)."
           target={targetManipulacao}
           achieved={systemManipulacao}
           workingDays={workingDays}
@@ -442,7 +445,7 @@ export function SalesTargetsDashboard() {
 
         <TargetCard
           title="Vendas Sistema Revenda"
-          subtitle="* Dados extraídos do sistema (Fórmula Certa)."
+          subtitle="* Dados extraídos do sistema (Ex. Fórmula Certa)."
           target={targetExtra}
           achieved={systemRevenda}
           workingDays={workingDays}
@@ -460,7 +463,7 @@ export function SalesTargetsDashboard() {
 
         <TargetCard
           title="Vendas Sistema Totais"
-          subtitle="* Soma automática das vendas do sistema."
+          subtitle="* Dados extraídos do sistema (Ex. Fórmula Certa)."
           target={targetTotal}
           achieved={systemTotal}
           workingDays={workingDays}
