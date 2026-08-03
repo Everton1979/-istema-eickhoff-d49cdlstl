@@ -54,6 +54,7 @@ export interface MonthlyMetric {
   vendas_dermato: number
   custo_mp_emb_dermato: number
   vendas_revenda?: number
+  custo_revenda?: number
   colaboradores_capsulas?: number
   colaboradores_dermato?: number
   colaboradores_vendas?: number

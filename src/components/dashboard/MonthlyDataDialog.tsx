@@ -137,6 +137,7 @@ export function MonthlyDataDialog() {
       vendas_dermato: '',
       custo_mp_emb_dermato: '',
       vendas_revenda: '',
+      custo_revenda: '',
       colaboradores_capsulas: '',
       colaboradores_dermato: '',
       colaboradores_vendas: '',
@@ -261,6 +262,7 @@ export function MonthlyDataDialog() {
           vendas_dermato: currentExisting.vendas_dermato ?? '',
           custo_mp_emb_dermato: currentExisting.custo_mp_emb_dermato ?? '',
           vendas_revenda: currentExisting.vendas_revenda ?? '',
+          custo_revenda: currentExisting.custo_revenda ?? '',
           colaboradores_capsulas:
             currentExisting.colaboradores_capsulas != null
               ? String(currentExisting.colaboradores_capsulas)
@@ -282,6 +284,7 @@ export function MonthlyDataDialog() {
           vendas_dermato: '',
           custo_mp_emb_dermato: '',
           vendas_revenda: '',
+          custo_revenda: '',
           colaboradores_capsulas: '',
           colaboradores_dermato: '',
           colaboradores_vendas: '',
@@ -301,6 +304,7 @@ export function MonthlyDataDialog() {
   const vendas_capsulas_num = parseCurrency(formData.vendas_capsulas as string | number)
   const vendas_dermato_num = parseCurrency(formData.vendas_dermato as string | number)
   const vendas_revenda_num = parseCurrency(formData.vendas_revenda as string | number)
+  const custo_revenda_num = parseCurrency(formData.custo_revenda as string | number)
 
   const orders_count =
     (Number(formData.num_formulas_capsulas) || 0) + (Number(formData.num_formulas_dermato) || 0)
@@ -341,6 +345,15 @@ export function MonthlyDataDialog() {
       return
     }
 
+    if (
+      formData.custo_revenda === '' ||
+      formData.custo_revenda === undefined ||
+      formData.custo_revenda === null
+    ) {
+      toast.error('O campo Custo (R$) do setor Revenda é obrigatório.')
+      return
+    }
+
     setLoading(true)
     try {
       const payload = {
@@ -356,6 +369,7 @@ export function MonthlyDataDialog() {
         vendas_dermato: vendas_dermato_num,
         custo_mp_emb_dermato: parseCurrency(formData.custo_mp_emb_dermato as string | number),
         vendas_revenda: vendas_revenda_num,
+        custo_revenda: custo_revenda_num,
         colaboradores_capsulas: Number(formData.colaboradores_capsulas) || 0,
         colaboradores_dermato: Number(formData.colaboradores_dermato) || 0,
         colaboradores_vendas: Number(formData.colaboradores_vendas) || 0,
@@ -652,6 +666,24 @@ export function MonthlyDataDialog() {
                     formData.vendas_revenda === '' ||
                       formData.vendas_revenda === null ||
                       formData.vendas_revenda === undefined
+                      ? 'border-red-400 dark:border-red-500/50'
+                      : '',
+                  )}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>
+                  Custo (R$) <span className="text-red-500">*</span>
+                </Label>
+                <CurrencyInput
+                  required
+                  value={formData.custo_revenda}
+                  onChange={(val: any) => handleChange('custo_revenda', val)}
+                  placeholder="0,00"
+                  className={cn(
+                    formData.custo_revenda === '' ||
+                      formData.custo_revenda === null ||
+                      formData.custo_revenda === undefined
                       ? 'border-red-400 dark:border-red-500/50'
                       : '',
                   )}
