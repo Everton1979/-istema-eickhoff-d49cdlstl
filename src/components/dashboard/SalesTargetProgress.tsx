@@ -379,7 +379,7 @@ export function SalesTargetsDashboard() {
         />
 
         <TargetCard
-          title="Meta Vendas Extra"
+          title="Meta Vendas Revenda"
           subtitle="* Drogaria, revenda, etc."
           target={targetExtra}
           achieved={achievedExtra}
