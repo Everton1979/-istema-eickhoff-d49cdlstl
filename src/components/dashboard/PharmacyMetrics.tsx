@@ -268,20 +268,6 @@ export function PharmacyMetrics() {
       val,
     )
 
-  const colorToBg = (color: string): string => {
-    const map: Record<string, string> = {
-      'text-red-600': 'bg-red-200',
-      'text-orange-500': 'bg-orange-200',
-      'text-orange-600': 'bg-orange-200',
-      'text-emerald-600': 'bg-green-200',
-      'text-blue-600': 'bg-blue-200',
-      'text-indigo-600': 'bg-indigo-200',
-      'text-slate-500': 'bg-slate-200',
-      'text-slate-600': 'bg-slate-200',
-    }
-    return map[color] || 'bg-slate-200'
-  }
-
   const getPerformanceStatus = (value: number, type: string) => {
     if (type === 'fat-colab-geral') {
       if (value < 8000) return { text: 'Péssimo', color: 'text-red-600' }
@@ -540,10 +526,7 @@ export function PharmacyMetrics() {
         {items.map((item, i) => (
           <Card
             key={item.id}
-            className={cn(
-              'rounded-md shadow-sm border border-black/40 transition-all',
-              colorToBg(item.color),
-            )}
+            className="rounded-md shadow-sm border border-slate-300 bg-slate-100 transition-all"
           >
             <CardContent className="p-3 text-center flex flex-col justify-center h-full">
               <h4 className="text-xs sm:text-sm font-bold text-black uppercase leading-tight mb-2 flex items-center justify-center gap-1.5">
@@ -563,11 +546,13 @@ export function PharmacyMetrics() {
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <div className="cursor-help group flex flex-col items-center">
-                      <p className="text-lg sm:text-xl font-extrabold tracking-tight decoration-dashed underline-offset-4 decoration-black/50 group-hover:underline text-black">
+                      <p className="text-base sm:text-lg font-bold tracking-tight decoration-dashed underline-offset-4 decoration-black/50 group-hover:underline text-black">
                         {item.value}
                       </p>
                       {item.statusText && (
-                        <p className="text-xs font-bold mt-1 text-black">{item.statusText}</p>
+                        <p className={cn('text-xs font-bold mt-1', item.color)}>
+                          {item.statusText}
+                        </p>
                       )}
                     </div>
                   </TooltipTrigger>
@@ -580,11 +565,11 @@ export function PharmacyMetrics() {
                 </Tooltip>
               ) : (
                 <>
-                  <p className="text-lg sm:text-xl font-extrabold tracking-tight text-black">
+                  <p className="text-base sm:text-lg font-bold tracking-tight text-black">
                     {item.value}
                   </p>
                   {item.statusText && (
-                    <p className="text-xs font-bold mt-1 text-black">{item.statusText}</p>
+                    <p className={cn('text-xs font-bold mt-1', item.color)}>{item.statusText}</p>
                   )}
                 </>
               )}

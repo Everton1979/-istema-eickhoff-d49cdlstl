@@ -149,11 +149,13 @@ function TargetCard({
           <div className="flex justify-between items-end mb-1">
             <div>
               <p className="text-[10px] text-black/70 font-bold">Meta Mês</p>
-              <p className="text-sm font-bold text-black">{formatCurrency(target)}</p>
+              <p className="text-base sm:text-lg font-bold text-black">{formatCurrency(target)}</p>
             </div>
             <div className="text-right">
               <p className="text-[10px] text-black/70 font-bold">Realizado</p>
-              <p className={cn('text-sm font-bold', textClass)}>{formatCurrency(achieved)}</p>
+              <p className={cn('text-base sm:text-lg font-bold', textClass)}>
+                {formatCurrency(achieved)}
+              </p>
             </div>
           </div>
         )}
