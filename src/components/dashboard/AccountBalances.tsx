@@ -41,29 +41,31 @@ export function AccountBalances() {
     )
 
   return (
-    <div className="bg-white rounded-sm border shadow-sm flex flex-col h-full overflow-hidden">
-      <div className="bg-blue-200 text-black text-xs font-bold py-2 px-3 flex justify-between items-center shrink-0">
-        <span>Receitas Realizadas (Entradas)</span>
-        <span className="bg-blue-300 px-2 py-0.5 rounded text-[10px] font-bold tracking-wide">
+    <div className="bg-white rounded-xl border border-slate-300 shadow-sm flex flex-col h-full overflow-hidden">
+      <div className="bg-blue-50 border-b border-blue-200 text-slate-900 text-xs font-bold py-2.5 px-3.5 flex justify-between items-center shrink-0">
+        <span className="uppercase tracking-wide">Receitas Realizadas (Entradas)</span>
+        <span className="bg-blue-600 text-white px-2.5 py-0.5 rounded-full text-xs font-black tracking-wide shadow-sm">
           {formatCurrency(totalIncome)}
         </span>
       </div>
-      <div className="p-2 flex-1 overflow-y-auto bg-slate-50/50">
+      <div className="p-3 flex-1 overflow-y-auto bg-slate-50/50">
         {breakdowns && breakdowns.length > 0 ? (
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2.5">
             {breakdowns.map((item) => (
               <div
                 key={item.id}
-                className="bg-blue-200 border border-blue-300 rounded-sm p-2 flex flex-col justify-center items-center text-center hover:border-blue-400 hover:shadow-sm transition-all"
+                className="bg-white border border-slate-300 rounded-lg p-2.5 flex flex-col justify-center items-center text-center hover:border-blue-400 hover:shadow-sm transition-all"
               >
                 <span
-                  className="text-[10px] text-black/70 font-bold uppercase truncate w-full mb-1"
+                  className="text-[10px] text-slate-600 font-bold uppercase truncate w-full mb-1"
                   title={item.name}
                 >
                   {item.name}
                 </span>
-                <span className="text-xs font-bold text-black">{formatCurrency(item.amount)}</span>
-                <span className="text-[9px] text-black font-bold bg-blue-300 px-1.5 py-0.5 rounded-sm mt-1">
+                <span className="text-xs sm:text-sm font-black text-slate-900">
+                  {formatCurrency(item.amount)}
+                </span>
+                <span className="text-[10px] text-blue-700 font-bold bg-blue-50 border border-blue-200 px-2 py-0.5 rounded-full mt-1.5">
                   {item.percentage.toFixed(1)}%
                 </span>
               </div>

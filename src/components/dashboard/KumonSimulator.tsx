@@ -22,20 +22,20 @@ export function KumonSimulator() {
   const projectedGain = avgFormulas * priceAdjustment
 
   return (
-    <Card className="border-green-300 bg-green-200/50 shadow-sm relative overflow-hidden">
+    <Card className="border-emerald-300 bg-emerald-50/80 shadow-sm relative overflow-hidden rounded-xl">
       <div className="absolute -right-6 -top-6 text-emerald-500/10 z-0 pointer-events-none">
         <Activity className="w-32 h-32" />
       </div>
       <CardContent className="p-5 relative z-10">
         <div className="flex flex-col md:flex-row gap-6 items-center justify-between">
           <div className="w-full md:w-1/2">
-            <h3 className="text-sm font-bold text-emerald-900 uppercase tracking-wide flex items-center gap-2 mb-2">
-              <TrendingUp className="w-4 h-4 text-emerald-600" />
+            <h3 className="text-sm font-bold text-emerald-950 uppercase tracking-wide flex items-center gap-2 mb-1.5">
+              <TrendingUp className="w-4 h-4 text-emerald-700" />
               Simulador de Impacto (KUMON)
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Link to="/glossario#simulador-kumon">
-                    <HelpCircle className="w-3.5 h-3.5 text-emerald-400 hover:text-emerald-600 cursor-pointer" />
+                    <HelpCircle className="w-3.5 h-3.5 text-emerald-600 hover:text-emerald-800 cursor-pointer" />
                   </Link>
                 </TooltipTrigger>
                 <TooltipContent className="max-w-[250px] text-center" side="top">
@@ -45,17 +45,17 @@ export function KumonSimulator() {
                 </TooltipContent>
               </Tooltip>
             </h3>
-            <p className="text-xs font-bold text-emerald-700 mb-4">
+            <p className="text-xs font-medium text-emerald-800 mb-4">
               Ajuste o valor para simular o acréscimo médio no preço de venda ou redução de custo
               unitário.
             </p>
 
-            <div className="space-y-4">
+            <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-emerald-800">
+                <span className="text-xs font-bold text-emerald-900">
                   Ajuste de Preço/Custo Unitário:
                 </span>
-                <span className="text-sm font-black text-emerald-600 bg-white px-2 py-0.5 rounded border border-green-300">
+                <span className="text-sm font-black text-emerald-700 bg-white px-2.5 py-0.5 rounded-md border border-emerald-300 shadow-sm">
                   + R$ {priceAdjustment.toFixed(2)}
                 </span>
               </div>
@@ -67,7 +67,7 @@ export function KumonSimulator() {
                 onValueChange={(val) => setPriceAdjustment(val[0])}
                 className="w-full"
               />
-              <div className="flex justify-between text-[10px] text-emerald-600/70 font-bold px-1">
+              <div className="flex justify-between text-[10px] text-emerald-700/80 font-bold px-1">
                 <span>R$ 0</span>
                 <span>R$ 5</span>
                 <span>R$ 10</span>
@@ -75,16 +75,17 @@ export function KumonSimulator() {
             </div>
           </div>
 
-          <div className="w-full md:w-5/12 bg-white rounded-lg p-4 border border-emerald-100 shadow-sm flex flex-col items-center justify-center text-center">
+          <div className="w-full md:w-5/12 bg-white rounded-xl p-5 border border-emerald-200 shadow-sm flex flex-col items-center justify-center text-center">
             <span className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">
               Ganho Projetado no Mês
             </span>
-            <p className="text-3xl font-black text-emerald-600 flex items-center gap-1 font-mono">
+            <p className="text-3xl font-black text-emerald-600 flex items-center gap-1 font-mono tracking-tight">
               <ArrowUpRight className="w-6 h-6" />
               R$ {projectedGain.toFixed(2)}
             </p>
-            <p className="text-[10px] font-bold text-slate-400 mt-2">
-              Baseado na média de <strong>{Math.round(avgFormulas)}</strong> fórmulas/mês.
+            <p className="text-xs font-medium text-slate-500 mt-2">
+              Baseado na média de{' '}
+              <strong className="text-slate-800">{Math.round(avgFormulas)}</strong> fórmulas/mês.
             </p>
           </div>
         </div>

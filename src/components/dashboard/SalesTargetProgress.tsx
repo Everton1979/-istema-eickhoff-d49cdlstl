@@ -69,34 +69,41 @@ function TargetCard({
   return (
     <Card
       className={cn(
-        'rounded-sm shadow-sm w-full flex flex-col justify-center relative',
+        'rounded-lg shadow-sm border border-slate-300 w-full flex flex-col justify-center relative',
         colorClass,
       )}
     >
-      <CardContent className="p-3">
+      <CardContent className="p-4">
         <div className="flex justify-between items-start mb-2">
           <div className="flex flex-col">
             <div className={cn('flex items-center gap-1.5 font-bold', textClass)}>
-              <Target className="w-4 h-4 shrink-0" />
-              <h3 className="text-xs uppercase tracking-wide">{title}</h3>
+              <Target className="w-4 h-4 shrink-0 text-slate-800" />
+              <h3 className="text-xs sm:text-sm font-bold uppercase tracking-wide text-slate-900">
+                {title}
+              </h3>
               {dataSourceLabel && (
-                <span className="text-[8px] bg-black/80 text-white px-1.5 py-0.5 rounded-sm font-bold uppercase tracking-wide">
+                <span className="text-[9px] bg-slate-800 text-white px-2 py-0.5 rounded font-bold uppercase tracking-wide shadow-sm">
                   {dataSourceLabel}
                 </span>
               )}
             </div>
             {subtitle && (
-              <p className="text-[9px] text-black/70 font-bold italic mt-1 ml-[22px]">{subtitle}</p>
-            )}{' '}
+              <p className="text-[10px] text-slate-600 font-semibold italic mt-1 ml-[22px]">
+                {subtitle}
+              </p>
+            )}
           </div>
           {isEditable && !isEditing && !readonly && (
             <Button
               variant="ghost"
               size="icon"
-              className={cn('h-5 w-5 absolute right-2 top-2 text-black/50', hoverTextClass)}
+              className={cn(
+                'h-6 w-6 absolute right-3 top-3 text-slate-600 hover:text-slate-900',
+                hoverTextClass,
+              )}
               onClick={handleEdit}
             >
-              <Pencil className="h-3 w-3" />
+              <Pencil className="h-3.5 w-3.5" />
             </Button>
           )}
         </div>
@@ -104,11 +111,13 @@ function TargetCard({
         {isEditing ? (
           <div className="flex items-center gap-2 mb-2">
             <div className="relative flex-1">
-              <span className="absolute left-2 top-1.5 text-xs text-gray-500">R$</span>
+              <span className="absolute left-2.5 top-1.5 text-xs text-slate-500 font-semibold">
+                R$
+              </span>
               <Input
                 type="text"
                 inputMode="numeric"
-                className="h-7 text-xs pl-6"
+                className="h-8 text-sm pl-8 bg-white border-slate-300 font-bold text-slate-800"
                 value={tempValue}
                 onChange={(e) => {
                   const raw = e.target.value.replace(/\D/g, '')
@@ -131,56 +140,70 @@ function TargetCard({
             </div>
             <Button
               size="icon"
-              className={cn('h-7 w-7 shrink-0 text-black', bgClass)}
+              className={cn('h-8 w-8 shrink-0 text-white shadow-sm', bgClass)}
               onClick={handleSave}
             >
-              <Check className="h-3 w-3" />
+              <Check className="h-4 w-4" />
             </Button>
             <Button
               variant="ghost"
               size="icon"
-              className="h-7 w-7 text-black/70 shrink-0"
+              className="h-8 w-8 text-slate-600 hover:text-slate-900 shrink-0"
               onClick={() => setIsEditing(false)}
             >
-              <X className="h-3 w-3" />
+              <X className="h-4 w-4" />
             </Button>
           </div>
         ) : (
-          <div className="flex justify-between items-end mb-1">
+          <div className="flex justify-between items-end mb-2">
             <div>
-              <p className="text-[10px] text-black/70 font-bold">Meta Mês</p>
-              <p className="text-base sm:text-lg font-bold text-black">{formatCurrency(target)}</p>
+              <p className="text-[11px] text-slate-600 font-bold uppercase tracking-wide">
+                Meta Mês
+              </p>
+              <p className="text-lg sm:text-xl font-black text-slate-900 tracking-tight">
+                {formatCurrency(target)}
+              </p>
             </div>
             <div className="text-right">
-              <p className="text-[10px] text-black/70 font-bold">Realizado</p>
-              <p className={cn('text-base sm:text-lg font-bold', textClass)}>
+              <p className="text-[11px] text-slate-600 font-bold uppercase tracking-wide">
+                Realizado
+              </p>
+              <p
+                className={cn(
+                  'text-lg sm:text-xl font-black tracking-tight text-slate-900',
+                  textClass,
+                )}
+              >
                 {formatCurrency(achieved)}
               </p>
             </div>
           </div>
         )}
 
-        <div className="space-y-1 mt-1.5">
-          <Progress value={achievedPct} className={cn('h-2 bg-black/20', progressColorClass)} />
-          <div className="flex justify-between items-start text-[10px] mt-1">
+        <div className="space-y-1.5 mt-2">
+          <Progress
+            value={achievedPct}
+            className={cn('h-2.5 bg-black/15 rounded-full', progressColorClass)}
+          />
+          <div className="flex justify-between items-start text-[11px] mt-1.5">
             {!isPastMonth ? (
               <div className="flex flex-col">
-                <p className="text-black/70 font-bold">
+                <p className="text-slate-700 font-bold">
                   Diária:{' '}
-                  <span className="text-black font-bold">{formatCurrency(dailyTarget)}</span>
+                  <span className="text-slate-900 font-black">{formatCurrency(dailyTarget)}</span>
                 </p>
-                <span className="text-black/50 font-bold text-[8px] -mt-0.5">
+                <span className="text-slate-500 font-semibold text-[9px]">
                   ({workingDays} dias úteis)
                 </span>
               </div>
             ) : (
               <div className="flex flex-col">
-                <p className="text-black/70 font-bold">
+                <p className="text-slate-700 font-bold">
                   Status:{' '}
                   <span
                     className={cn(
-                      'font-bold',
-                      achieved >= target && target > 0 ? textClass : 'text-black/70',
+                      'font-black',
+                      achieved >= target && target > 0 ? 'text-emerald-700' : 'text-slate-700',
                     )}
                   >
                     {achieved >= target && target > 0 ? 'Meta Batida' : 'Não Atingida'}
@@ -190,11 +213,12 @@ function TargetCard({
             )}
             {target > 0 && remaining > 0 && (
               <div className="flex flex-col items-end">
-                <span className="font-bold text-black/80">
-                  {isPastMonth ? 'Faltou:' : 'Falta:'} {formatCurrency(remaining)}
+                <span className="font-bold text-slate-800">
+                  {isPastMonth ? 'Faltou:' : 'Falta:'}{' '}
+                  <strong className="text-slate-900">{formatCurrency(remaining)}</strong>
                 </span>
                 {showPercentage && (
-                  <span className="text-black/60 font-bold text-[9px] -mt-0.5">
+                  <span className="text-slate-600 font-semibold text-[10px]">
                     ({remainingPct.toFixed(1)}% restando)
                   </span>
                 )}
@@ -202,12 +226,12 @@ function TargetCard({
             )}
             {target > 0 && exceeded > 0 && (
               <div className="flex flex-col items-end">
-                <span className="font-bold text-black">
+                <span className="font-bold text-emerald-800">
                   {isPastMonth ? 'Superou:' : 'Superado:'} +{formatCurrency(exceeded)}
                 </span>
                 {showPercentage && (
-                  <span className="font-bold text-[9px] -mt-0.5 text-black/80">
-                    ({((exceeded / target) * 100).toFixed(1)}% acima da meta)
+                  <span className="font-semibold text-[10px] text-emerald-700">
+                    ({((exceeded / target) * 100).toFixed(1)}% acima)
                   </span>
                 )}
               </div>
@@ -368,17 +392,17 @@ export function SystemSalesCards() {
   const canEdit = Boolean(isEditableRole && isSpecificMonthSelected)
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex items-center gap-2 px-1 py-1">
-        <div className="flex-1 h-px bg-black/10" />
-        <p className="text-[11px] text-slate-600 font-medium text-center max-w-2xl">
+    <div className="flex flex-col gap-3">
+      <div className="flex items-center gap-2 px-1 py-0.5">
+        <div className="flex-1 h-px bg-slate-300" />
+        <p className="text-xs text-slate-600 font-semibold text-center max-w-2xl">
           Comparativo entre as receitas realizadas (transações) e as vendas registradas no sistema
           (Ex. Fórmula Certa). Os dados do sistema são preenchidos no fechamento do mês.
         </p>
-        <div className="flex-1 h-px bg-black/10" />
+        <div className="flex-1 h-px bg-slate-300" />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <TargetCard
           title="Vendas Sistema Manipulação"
           subtitle="* Dados extraídos do sistema (Ex. Fórmula Certa)."
@@ -391,11 +415,11 @@ export function SystemSalesCards() {
           onSave={handleSaveManipulacao}
           showPercentage={false}
           dataSourceLabel="Dados do Sistema"
-          colorClass="bg-blue-100"
-          textClass="text-black"
-          hoverTextClass="hover:text-black"
+          colorClass="bg-blue-100/90"
+          textClass="text-slate-900"
+          hoverTextClass="hover:text-blue-700"
           bgClass="bg-blue-600 hover:bg-blue-700"
-          progressColorClass="[&>div]:bg-blue-700"
+          progressColorClass="[&>div]:bg-blue-600"
         />
 
         <TargetCard
@@ -410,11 +434,11 @@ export function SystemSalesCards() {
           onSave={handleSaveRevenda}
           showPercentage={false}
           dataSourceLabel="Dados do Sistema"
-          colorClass="bg-purple-100"
-          textClass="text-black"
-          hoverTextClass="hover:text-black"
+          colorClass="bg-purple-100/90"
+          textClass="text-slate-900"
+          hoverTextClass="hover:text-purple-700"
           bgClass="bg-purple-600 hover:bg-purple-700"
-          progressColorClass="[&>div]:bg-purple-700"
+          progressColorClass="[&>div]:bg-purple-600"
         />
 
         <TargetCard
@@ -428,11 +452,11 @@ export function SystemSalesCards() {
           readonly={true}
           showPercentage={true}
           dataSourceLabel="Dados do Sistema"
-          colorClass="bg-green-100"
-          textClass="text-black"
-          hoverTextClass="hover:text-black"
+          colorClass="bg-emerald-100/90"
+          textClass="text-slate-900"
+          hoverTextClass="hover:text-emerald-700"
           bgClass="bg-emerald-600 hover:bg-emerald-700"
-          progressColorClass="[&>div]:bg-emerald-700"
+          progressColorClass="[&>div]:bg-emerald-600"
         />
       </div>
     </div>

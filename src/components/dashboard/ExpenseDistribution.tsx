@@ -139,9 +139,9 @@ export function ExpenseDistribution() {
     new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val)
 
   return (
-    <div className="bg-white p-4 rounded-sm border border-black/15 shadow-sm flex flex-col gap-4">
+    <div className="bg-white p-4 rounded-xl border border-slate-300 shadow-sm flex flex-col gap-4">
       <div className="flex items-center justify-between">
-        <h3 className="text-xs font-bold text-gray-600 uppercase tracking-wide">
+        <h3 className="text-xs font-bold text-slate-700 uppercase tracking-wide">
           Distribuição de Despesas e Lucro Líquido Real
         </h3>
       </div>

@@ -515,26 +515,26 @@ export function PharmacyMetrics() {
   ]
 
   return (
-    <div className="bg-white p-4 rounded-lg shadow-sm border border-slate-200">
+    <div className="bg-white p-5 rounded-xl shadow-sm border border-slate-300">
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wide flex items-center gap-2">
-          <div className="w-2 h-4 bg-indigo-500 rounded-sm" />
+          <div className="w-2.5 h-5 bg-indigo-600 rounded-sm" />
           Inteligência Analítica
         </h3>
       </div>
-      <div className="grid grid-cols-2 lg:grid-cols-2 gap-4">
-        {items.map((item, i) => (
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3.5">
+        {items.map((item) => (
           <Card
             key={item.id}
-            className="rounded-md shadow-sm border border-slate-300 bg-slate-100 transition-all"
+            className="rounded-lg shadow-sm border border-slate-300 bg-slate-50 hover:bg-slate-100/80 transition-all"
           >
-            <CardContent className="p-3 text-center flex flex-col justify-center h-full">
-              <h4 className="text-xs sm:text-sm font-bold text-black uppercase leading-tight mb-2 flex items-center justify-center gap-1.5">
-                {item.title}
+            <CardContent className="p-3 text-center flex flex-col justify-center h-full min-h-[90px]">
+              <h4 className="text-[11px] sm:text-xs font-bold text-slate-700 uppercase leading-tight mb-1.5 flex items-center justify-center gap-1">
+                <span className="truncate max-w-[160px] sm:max-w-none">{item.title}</span>
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Link to={`/glossario#${item.id}`}>
-                      <HelpCircle className="w-4 h-4 text-black/80 hover:text-black cursor-pointer stroke-[2.5]" />
+                      <HelpCircle className="w-3.5 h-3.5 text-slate-400 hover:text-slate-800 cursor-pointer shrink-0" />
                     </Link>
                   </TooltipTrigger>
                   <TooltipContent className="max-w-[220px] text-center" side="top">
@@ -546,11 +546,11 @@ export function PharmacyMetrics() {
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <div className="cursor-help group flex flex-col items-center">
-                      <p className="text-base sm:text-lg font-bold tracking-tight decoration-dashed underline-offset-4 decoration-black/50 group-hover:underline text-black">
+                      <p className="text-base sm:text-lg font-black tracking-tight text-slate-900 decoration-dashed underline-offset-4 decoration-slate-400 group-hover:underline">
                         {item.value}
                       </p>
                       {item.statusText && (
-                        <p className={cn('text-xs font-bold mt-1', item.color)}>
+                        <p className={cn('text-[11px] font-bold mt-0.5', item.color)}>
                           {item.statusText}
                         </p>
                       )}
@@ -565,11 +565,13 @@ export function PharmacyMetrics() {
                 </Tooltip>
               ) : (
                 <>
-                  <p className="text-base sm:text-lg font-bold tracking-tight text-black">
+                  <p className="text-base sm:text-lg font-black tracking-tight text-slate-900">
                     {item.value}
                   </p>
                   {item.statusText && (
-                    <p className={cn('text-xs font-bold mt-1', item.color)}>{item.statusText}</p>
+                    <p className={cn('text-[11px] font-bold mt-0.5', item.color)}>
+                      {item.statusText}
+                    </p>
                   )}
                 </>
               )}

@@ -82,14 +82,19 @@ const formatCurrency = (val: number) =>
 
 function KpiCard({ kpi }: { kpi: any }) {
   return (
-    <Card className={cn('rounded-sm shadow-sm border border-black/40', kpi.bg)}>
-      <CardContent className="p-2 text-center flex flex-col justify-center h-full">
-        <h3 className="text-[10px] font-bold uppercase mb-1 flex items-center justify-center gap-1 text-black">
-          {kpi.title}
+    <Card
+      className={cn(
+        'rounded-xl shadow-sm border border-slate-300 transition-all hover:shadow-md',
+        kpi.bg,
+      )}
+    >
+      <CardContent className="p-4 text-center flex flex-col justify-center h-full min-h-[95px]">
+        <h3 className="text-xs font-bold uppercase tracking-wider mb-1.5 flex items-center justify-center gap-1.5 text-slate-800">
+          <span>{kpi.title}</span>
           <Tooltip>
             <TooltipTrigger asChild>
               <Link to={`/glossario#${kpi.id}`}>
-                <HelpCircle className="w-3 h-3 cursor-pointer text-black/60 hover:text-black" />
+                <HelpCircle className="w-3.5 h-3.5 cursor-pointer text-slate-500 hover:text-slate-900 shrink-0" />
               </Link>
             </TooltipTrigger>
             <TooltipContent className="max-w-[200px] text-center" side="bottom">
@@ -100,7 +105,7 @@ function KpiCard({ kpi }: { kpi: any }) {
             </TooltipContent>
           </Tooltip>
         </h3>
-        <p className="text-xl font-bold tracking-tight text-black">{kpi.value}</p>
+        <p className="text-2xl font-black tracking-tight text-slate-900">{kpi.value}</p>
       </CardContent>
     </Card>
   )
@@ -114,7 +119,7 @@ export function OperationalKpis() {
       title: 'RECEITAS REALIZADAS',
       tooltip: 'Total de entradas financeiras realizadas no período.',
       value: formatCurrency(metrics.receitas),
-      bg: 'bg-blue-200',
+      bg: 'bg-blue-100/90 border-blue-300',
       isLight: false,
     },
     {
@@ -122,7 +127,7 @@ export function OperationalKpis() {
       title: 'DESPESAS REALIZADAS',
       tooltip: 'Soma de todas as saídas de caixa realizadas (fixas e variáveis).',
       value: formatCurrency(-metrics.despesas),
-      bg: 'bg-red-200',
+      bg: 'bg-red-100/90 border-red-300',
       isLight: false,
     },
     {
@@ -130,7 +135,10 @@ export function OperationalKpis() {
       title: 'LUCRO LÍQUIDO REALIZADO',
       tooltip: 'Resultado final de caixa (Receitas Realizadas - Despesas Realizadas).',
       value: formatCurrency(metrics.lucro),
-      bg: metrics.lucro >= 0 ? 'bg-green-200' : 'bg-red-200',
+      bg:
+        metrics.lucro >= 0
+          ? 'bg-emerald-100/90 border-emerald-300'
+          : 'bg-red-100/90 border-red-300',
       isLight: false,
     },
     {
@@ -138,13 +146,13 @@ export function OperationalKpis() {
       title: 'DESPESAS PREVISTAS',
       tooltip: 'Soma das despesas e custos previstos ou vencidos (não realizados) para o período.',
       value: formatCurrency(-metrics.despesasPrevistas),
-      bg: 'bg-yellow-200',
+      bg: 'bg-amber-100/90 border-amber-300',
       isLight: true,
     },
   ]
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-2">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
       {kpis.map((kpi, i) => (
         <KpiCard key={i} kpi={kpi} />
       ))}

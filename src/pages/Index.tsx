@@ -105,46 +105,46 @@ export default function Index() {
           <PendingUsersAlert />
 
           {/* Top row: Operational KPIs */}
-          <section className="w-full mt-2">
+          <section className="w-full">
             <OperationalKpis />
           </section>
 
           {/* Lançamentos Section */}
-          <section className="w-full bg-white p-6 rounded-xl border border-black/15 shadow-sm mt-2">
+          <section className="w-full bg-white p-6 rounded-xl border border-slate-300 shadow-sm">
             <h2 className="text-xl font-black text-slate-800 uppercase tracking-wide flex items-center gap-3 mb-6">
               <div className="w-3 h-8 bg-blue-600 rounded-sm" />
               Lançamentos
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="bg-slate-50 p-8 rounded-xl border-2 border-dashed border-slate-200 flex flex-col items-center justify-center gap-4 text-center hover:bg-slate-100 transition-colors">
-                <div className="p-4 bg-blue-100 text-blue-600 rounded-full shadow-inner">
-                  <ArrowRightLeft className="w-10 h-10" />
+              <div className="bg-slate-50/70 p-6 sm:p-8 rounded-xl border-2 border-dashed border-slate-200 flex flex-col items-center justify-center gap-4 text-center hover:bg-slate-100/70 transition-colors">
+                <div className="p-4 bg-blue-100 text-blue-600 rounded-2xl shadow-sm">
+                  <ArrowRightLeft className="w-9 h-9" />
                 </div>
                 <div>
-                  <h3 className="text-2xl font-bold text-slate-800">Transações</h3>
-                  <p className="text-slate-500 mb-6 mt-2 max-w-sm mx-auto">
+                  <h3 className="text-xl sm:text-2xl font-bold text-slate-800">Transações</h3>
+                  <p className="text-slate-500 mb-5 mt-1.5 max-w-sm mx-auto text-sm">
                     Registre e gerencie as receitas, despesas, cortesias e investimentos.
                   </p>
                   <Link
                     to="/transacoes"
-                    className="inline-flex h-12 items-center justify-center rounded-md bg-blue-600 px-8 text-sm font-medium text-white shadow transition-colors hover:bg-blue-700"
+                    className="inline-flex h-11 items-center justify-center rounded-lg bg-blue-600 px-7 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-blue-700"
                   >
                     Acessar Transações
                   </Link>
                 </div>
               </div>
 
-              <div className="bg-slate-50 p-8 rounded-xl border-2 border-dashed border-slate-200 flex flex-col items-center justify-center gap-4 text-center hover:bg-slate-100 transition-colors">
-                <div className="p-4 bg-purple-100 text-purple-600 rounded-full shadow-inner">
-                  <Database className="w-10 h-10" />
+              <div className="bg-slate-50/70 p-6 sm:p-8 rounded-xl border-2 border-dashed border-slate-200 flex flex-col items-center justify-center gap-4 text-center hover:bg-slate-100/70 transition-colors">
+                <div className="p-4 bg-purple-100 text-purple-600 rounded-2xl shadow-sm">
+                  <Database className="w-9 h-9" />
                 </div>
                 <div>
-                  <h3 className="text-2xl font-bold text-slate-800">Dados do Sistema</h3>
-                  <p className="text-slate-500 mb-6 mt-2 max-w-sm mx-auto">
+                  <h3 className="text-xl sm:text-2xl font-bold text-slate-800">Dados do Sistema</h3>
+                  <p className="text-slate-500 mb-5 mt-1.5 max-w-sm mx-auto text-sm">
                     Insira os dados mensais do sistema (ex: Fórmula Certa) para análise de
                     performance.
                   </p>
-                  <div className="flex justify-center [&>button]:h-12 [&>button]:px-8 [&>button]:text-base">
+                  <div className="flex justify-center [&>button]:h-11 [&>button]:px-7 [&>button]:text-sm [&>button]:rounded-lg">
                     <MonthlyDataDialog />
                   </div>
                 </div>
@@ -154,26 +154,25 @@ export default function Index() {
 
           {/* Destaque Central: Assistente de Precificação Estratégica */}
           <section className="w-full relative">
-            <div className="absolute inset-0 bg-blue-600/5 rounded-xl border border-blue-200/50 shadow-inner -z-10 translate-y-2 translate-x-2"></div>
-            <div className="bg-[#1e3a5f] rounded-t-xl px-5 py-3 text-white shadow-md flex items-center justify-between border-b-2 border-blue-500">
-              <h2 className="font-bold uppercase tracking-widest text-sm flex items-center gap-3">
+            <div className="bg-[#1e3a5f] rounded-t-xl px-5 py-3.5 text-white shadow-sm flex items-center justify-between border-b-2 border-blue-500">
+              <h2 className="font-bold uppercase tracking-wider text-sm flex items-center gap-2.5">
                 <span className="w-2.5 h-2.5 bg-emerald-400 rounded-full animate-pulse shadow-[0_0_8px_rgba(52,211,153,0.8)]"></span>
                 Assistente de Precificação Estratégica
               </h2>
-              <span className="text-xs text-blue-200 hidden sm:block bg-blue-900/50 px-3 py-1 rounded-full border border-blue-400/30">
+              <span className="text-xs text-blue-200 hidden sm:block bg-blue-900/60 px-3 py-1 rounded-full border border-blue-400/30 font-medium">
                 Markup Dinâmico Ativo
               </span>
             </div>
-            <div className="bg-white p-2 rounded-b-xl shadow-lg border border-black/15">
+            <div className="bg-white p-3 sm:p-4 rounded-b-xl shadow-sm border border-t-0 border-slate-300">
               <PricingAssistant />
             </div>
           </section>
 
           {/* Main Analytics - Visão Operacional Empilhada */}
-          <div className="flex flex-col gap-6 mt-3">
-            <div className="bg-white p-4 rounded-lg shadow-sm border border-black/15">
-              <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wide mb-4 flex items-center gap-2">
-                <div className="w-2 h-4 bg-emerald-500 rounded-sm" />
+          <div className="flex flex-col gap-6">
+            <div className="bg-white p-5 rounded-xl shadow-sm border border-slate-300">
+              <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wide mb-2 flex items-center gap-2">
+                <div className="w-2.5 h-5 bg-emerald-600 rounded-sm" />
                 Evolução de Performance
               </h3>
               <div className="w-full">
@@ -181,25 +180,25 @@ export default function Index() {
               </div>
             </div>
 
-            <div className="bg-white p-4 rounded-lg shadow-sm border border-black/15">
-              <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wide mb-4 flex items-center gap-2">
-                <div className="w-2 h-4 bg-blue-600 rounded-sm" />
+            <div className="bg-white p-5 rounded-xl shadow-sm border border-slate-300">
+              <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wide mb-3 flex items-center gap-2">
+                <div className="w-2.5 h-5 bg-blue-600 rounded-sm" />
                 Receitas Realizadas
               </h3>
               <AccountBalances />
             </div>
 
-            <div className="bg-white p-4 rounded-lg shadow-sm border border-black/15">
-              <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wide mb-4 flex items-center gap-2">
-                <div className="w-2 h-4 bg-purple-500 rounded-sm" />
+            <div className="bg-white p-5 rounded-xl shadow-sm border border-slate-300">
+              <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wide mb-3 flex items-center gap-2">
+                <div className="w-2.5 h-5 bg-purple-600 rounded-sm" />
                 Distribuição de Despesas Operacionais
               </h3>
               <ExpenseDistribution />
             </div>
 
-            <div className="bg-white p-4 rounded-lg shadow-sm border border-black/15">
-              <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wide mb-4 flex items-center gap-2">
-                <div className="w-2 h-4 bg-rose-500 rounded-sm" />
+            <div className="bg-white p-5 rounded-xl shadow-sm border border-slate-300">
+              <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wide mb-3 flex items-center gap-2">
+                <div className="w-2.5 h-5 bg-rose-600 rounded-sm" />
                 Próximos Compromissos
               </h3>
               <UpcomingCommitments />
@@ -207,87 +206,86 @@ export default function Index() {
           </div>
 
           {/* Seção Estratégica (Fechamento) */}
-          <section className="w-full bg-slate-200/50 p-6 rounded-xl border border-black/15 shadow-sm mt-4">
+          <section className="w-full bg-slate-100/70 p-6 rounded-xl border border-slate-300 shadow-sm">
             <div className="mb-6 flex flex-col md:flex-row md:items-start justify-between gap-4">
               <div className="flex-1">
-                <h2 className="text-lg font-bold text-slate-800 uppercase tracking-wide flex items-center gap-3">
-                  <div className="w-3 h-6 bg-slate-700 rounded-sm" />
+                <h2 className="text-xl font-black text-slate-800 uppercase tracking-wide flex items-center gap-3">
+                  <div className="w-3 h-8 bg-slate-700 rounded-sm" />
                   Análise Estratégica
                 </h2>
-                <p className="text-sm font-bold text-slate-600 mt-2 ml-9 border-l-2 border-amber-400 pl-3 bg-yellow-200/70 py-1.5 rounded-r-md max-w-3xl">
-                  <strong className="text-amber-700">Observação:</strong> Esta análise somente terá
-                  validade e poderá ser analisada depois que <strong>todos os dados do mês</strong>{' '}
-                  (transações e dados manipulação) forem lançados.
+                <p className="text-xs sm:text-sm font-medium text-slate-700 mt-2.5 ml-6 border-l-3 border-amber-500 pl-3.5 bg-amber-50 py-2 rounded-r-lg max-w-3xl border border-amber-200">
+                  <strong className="text-amber-800 font-bold">Observação:</strong> Esta análise
+                  somente terá validade e poderá ser analisada depois que{' '}
+                  <strong>todos os dados do mês</strong> (transações e dados manipulação) forem
+                  lançados.
                 </p>
               </div>
             </div>
 
-            <div>
-              <SystemSalesCards />
-            </div>
+            <div className="flex flex-col gap-6">
+              <div>
+                <SystemSalesCards />
+              </div>
 
-            <div className="mt-6">
-              <KumonSimulator />
-            </div>
+              <div>
+                <KumonSimulator />
+              </div>
 
-            <div className="mt-6">
-              <PharmacyMetrics />
+              <div>
+                <PharmacyMetrics />
+              </div>
             </div>
           </section>
 
           {/* Relatórios Section */}
-          <section className="w-full bg-white p-6 rounded-xl border border-black/15 shadow-sm mt-4">
+          <section className="w-full bg-white p-6 rounded-xl border border-slate-300 shadow-sm">
             <h2 className="text-xl font-black text-slate-800 uppercase tracking-wide flex items-center gap-3 mb-6">
               <div className="w-3 h-8 bg-slate-700 rounded-sm" />
               Relatórios
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="bg-slate-50 p-8 rounded-xl border-2 border-dashed border-slate-200 flex flex-col items-center justify-center gap-4 text-center hover:bg-slate-100 transition-colors">
-                <div className="p-4 bg-emerald-100 text-emerald-600 rounded-full shadow-inner">
-                  <FileText className="w-10 h-10" />
+              <div className="bg-slate-50/70 p-6 sm:p-8 rounded-xl border-2 border-dashed border-slate-200 flex flex-col items-center justify-center gap-4 text-center hover:bg-slate-100/70 transition-colors">
+                <div className="p-4 bg-emerald-100 text-emerald-600 rounded-2xl shadow-sm">
+                  <FileText className="w-9 h-9" />
                 </div>
                 <div>
-                  <h3 className="text-xl lg:text-2xl font-bold text-slate-800">
-                    Relatório Entradas/Saídas
-                  </h3>
-                  <p className="text-slate-500 mb-6 mt-2 max-w-sm mx-auto text-sm">
+                  <h3 className="text-xl font-bold text-slate-800">Relatório Entradas/Saídas</h3>
+                  <p className="text-slate-500 mb-5 mt-1.5 max-w-sm mx-auto text-sm">
                     Gere um documento PDF completo com os dados do período selecionado.
                   </p>
-                  <div className="flex justify-center [&>button]:h-12 [&>button]:px-8 [&>button]:text-base w-full">
+                  <div className="flex justify-center [&>button]:h-11 [&>button]:px-7 [&>button]:text-sm [&>button]:rounded-lg w-full">
                     <ExportReportDialog onExport={setExportFilters} />
                   </div>
                 </div>
               </div>
 
-              <div className="bg-slate-50 p-8 rounded-xl border-2 border-dashed border-slate-200 flex flex-col items-center justify-center gap-4 text-center hover:bg-slate-100 transition-colors">
-                <div className="p-4 bg-amber-100 text-amber-600 rounded-full shadow-inner">
-                  <BarChart3 className="w-10 h-10" />
+              <div className="bg-slate-50/70 p-6 sm:p-8 rounded-xl border-2 border-dashed border-slate-200 flex flex-col items-center justify-center gap-4 text-center hover:bg-slate-100/70 transition-colors">
+                <div className="p-4 bg-amber-100 text-amber-600 rounded-2xl shadow-sm">
+                  <BarChart3 className="w-9 h-9" />
                 </div>
                 <div>
-                  <h3 className="text-xl lg:text-2xl font-bold text-slate-800">
-                    Demonstrativo DRE
-                  </h3>
-                  <p className="text-slate-500 mb-6 mt-2 max-w-sm mx-auto text-sm">
+                  <h3 className="text-xl font-bold text-slate-800">Demonstrativo DRE</h3>
+                  <p className="text-slate-500 mb-5 mt-1.5 max-w-sm mx-auto text-sm">
                     Visualize o Demonstrativo do Resultado do Exercício.
                   </p>
-                  <div className="flex justify-center [&>button]:h-12 [&>button]:px-8 [&>button]:text-base w-full">
+                  <div className="flex justify-center [&>button]:h-11 [&>button]:px-7 [&>button]:text-sm [&>button]:rounded-lg w-full">
                     <DREDialog />
                   </div>
                 </div>
               </div>
 
-              <div className="bg-slate-50 p-8 rounded-xl border-2 border-dashed border-slate-200 flex flex-col items-center justify-center gap-4 text-center hover:bg-slate-100 transition-colors">
-                <div className="p-4 bg-blue-100 text-blue-600 rounded-full shadow-inner">
-                  <Presentation className="w-10 h-10" />
+              <div className="bg-slate-50/70 p-6 sm:p-8 rounded-xl border-2 border-dashed border-slate-200 flex flex-col items-center justify-center gap-4 text-center hover:bg-slate-100/70 transition-colors">
+                <div className="p-4 bg-blue-100 text-blue-600 rounded-2xl shadow-sm">
+                  <Presentation className="w-9 h-9" />
                 </div>
                 <div>
-                  <h3 className="text-xl lg:text-2xl font-bold text-slate-800">
+                  <h3 className="text-xl font-bold text-slate-800">
                     Relatório Estratégico Consolidado
                   </h3>
-                  <p className="text-slate-500 mb-6 mt-2 max-w-sm mx-auto text-sm">
+                  <p className="text-slate-500 mb-5 mt-1.5 max-w-sm mx-auto text-sm">
                     Analise a performance consolidada em múltiplos meses fechados.
                   </p>
-                  <div className="flex justify-center [&>button]:h-12 [&>button]:px-8 [&>button]:text-base w-full">
+                  <div className="flex justify-center [&>button]:h-11 [&>button]:px-7 [&>button]:text-sm [&>button]:rounded-lg w-full">
                     <StrategicPerformanceReportDialog />
                   </div>
                 </div>
