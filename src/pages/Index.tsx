@@ -8,7 +8,7 @@ import { UpcomingCommitments } from '@/components/dashboard/UpcomingCommitments'
 import { AccountBalances } from '@/components/dashboard/AccountBalances'
 import { PharmacyMetrics } from '@/components/dashboard/PharmacyMetrics'
 import { ExpenseDistribution } from '@/components/dashboard/ExpenseDistribution'
-import { SalesTargetsDashboard } from '@/components/dashboard/SalesTargetProgress'
+import { SystemSalesCards } from '@/components/dashboard/SalesTargetProgress'
 import { PricingAssistant } from '@/components/dashboard/PricingAssistant'
 import { KumonSimulator } from '@/components/dashboard/KumonSimulator'
 import { PerformanceEvolutionChart } from '@/components/dashboard/PerformanceEvolutionChart'
@@ -191,14 +191,6 @@ export default function Index() {
 
             <div className="bg-white p-4 rounded-lg shadow-sm border border-black/15">
               <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wide mb-4 flex items-center gap-2">
-                <div className="w-2 h-4 bg-amber-500 rounded-sm" />
-                Metas de Vendas
-              </h3>
-              <SalesTargetsDashboard />
-            </div>
-
-            <div className="bg-white p-4 rounded-lg shadow-sm border border-black/15">
-              <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wide mb-4 flex items-center gap-2">
                 <div className="w-2 h-4 bg-purple-500 rounded-sm" />
                 Distribuição de Despesas Operacionais
               </h3>
@@ -231,6 +223,10 @@ export default function Index() {
             </div>
 
             <StrategicKpis />
+
+            <div className="mt-6">
+              <SystemSalesCards />
+            </div>
 
             <div className="mt-6">
               <KumonSimulator />

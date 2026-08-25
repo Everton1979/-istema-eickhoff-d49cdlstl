@@ -217,23 +217,16 @@ function TargetCard({
   )
 }
 
-export function SalesTargetsDashboard() {
-  const { monthlyMetrics, saveMonthlyMetric, filters, transactions } = useFinanceStore()
-  const { profile } = useAuth()
+export function SystemSalesCards() {
+  const { monthlyMetrics, filters } = useFinanceStore()
 
-  const { metric, monthName, workingDays, totalAchieved, isPastMonth } = useMemo(() => {
+  const { metric, workingDays, isPastMonth } = useMemo(() => {
     const today = new Date()
     const currentYear = parseInt(
       (filters?.years && filters.years[0]) || today.getFullYear().toString(),
     )
-    const targetStatuses =
-      Array.isArray(filters?.statuses) && filters.statuses.length > 0
-        ? filters.statuses
-        : ['REALIZADO']
 
-    let inc = 0
     let wDays = 0
-    let mName = ''
     let defaultMonth = 1
     let foundMetric = null
     let pastMonth = false
@@ -255,58 +248,19 @@ export function SalesTargetsDashboard() {
         meta_vendas_manipulacao: sumTargetManipulacao,
         meta_vendas_extra: sumTargetExtra,
       }
-
-      ;(transactions || []).forEach((tx) => {
-        const d = new Date(tx.date)
-        if (
-          d.getFullYear() === currentYear &&
-          tx.type === 'INCOME' &&
-          targetStatuses.includes(tx.status)
-        ) {
-          inc += tx.amount
-        }
-      })
       wDays = 252 // approx yearly
-      mName = `Ano ${currentYear}`
     } else {
       const currentMonth = parseInt(filters.months[0])
       pastMonth =
         currentYear < today.getFullYear() ||
         (currentYear === today.getFullYear() && currentMonth < today.getMonth() + 1)
       defaultMonth = currentMonth
-      const monthLabels = [
-        'Jan',
-        'Fev',
-        'Mar',
-        'Abr',
-        'Mai',
-        'Jun',
-        'Jul',
-        'Ago',
-        'Set',
-        'Out',
-        'Nov',
-        'Dez',
-      ]
 
       foundMetric = (monthlyMetrics || []).find(
         (m) => m.year === currentYear && m.month === currentMonth,
       )
 
       wDays = getWorkingDays(currentYear, currentMonth)
-      mName = `${monthLabels[currentMonth - 1]}/${currentYear}`
-
-      ;(transactions || []).forEach((tx) => {
-        const d = new Date(tx.date)
-        if (
-          d.getFullYear() === currentYear &&
-          d.getMonth() + 1 === currentMonth &&
-          tx.type === 'INCOME' &&
-          targetStatuses.includes(tx.status)
-        ) {
-          inc += tx.amount
-        }
-      })
     }
 
     return {
@@ -329,92 +283,20 @@ export function SalesTargetsDashboard() {
         vendas_dermato: 0,
         custo_mp_emb_dermato: 0,
       },
-      monthName: mName,
       workingDays: wDays,
-      totalAchieved: inc,
     }
-  }, [monthlyMetrics, filters, transactions])
+  }, [monthlyMetrics, filters])
 
   const targetManipulacao = metric.meta_vendas_manipulacao || 0
   const targetExtra = metric.meta_vendas_extra || 0
   const targetTotal = targetManipulacao + targetExtra
 
-  let achievedManipulacao = 0
-  let achievedExtra = 0
-
-  if (targetTotal > 0) {
-    achievedManipulacao = totalAchieved * (targetManipulacao / targetTotal)
-    achievedExtra = totalAchieved * (targetExtra / targetTotal)
-  } else {
-    achievedManipulacao = totalAchieved
-    achievedExtra = 0
-  }
-
   const systemManipulacao = (metric.vendas_capsulas || 0) + (metric.vendas_dermato || 0)
   const systemRevenda = metric.vendas_revenda || 0
   const systemTotal = systemManipulacao + systemRevenda
 
-  const isEditable =
-    profile?.role !== 'Visitante' && Array.isArray(filters?.months) && filters.months.length > 0
-
   return (
     <div className="flex flex-col gap-4">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <TargetCard
-          title="Meta Vendas Manipulação"
-          subtitle="* Clique no lápis para definir."
-          target={targetManipulacao}
-          achieved={achievedManipulacao}
-          workingDays={workingDays}
-          isPastMonth={isPastMonth}
-          isEditable={isEditable}
-          showPercentage={false}
-          dataSourceLabel="Receitas Realizadas"
-          onSave={(val: number) => saveMonthlyMetric({ ...metric, meta_vendas_manipulacao: val })}
-          colorClass="bg-blue-200"
-          textClass="text-black"
-          hoverTextClass="hover:text-black"
-          bgClass="bg-blue-600 hover:bg-blue-700"
-          progressColorClass="[&>div]:bg-black/80"
-        />
-
-        <TargetCard
-          title="Meta Vendas Revenda"
-          subtitle="* Drogaria, revenda, etc."
-          target={targetExtra}
-          achieved={achievedExtra}
-          workingDays={workingDays}
-          isPastMonth={isPastMonth}
-          isEditable={isEditable}
-          showPercentage={false}
-          dataSourceLabel="Receitas Realizadas"
-          onSave={(val: number) => saveMonthlyMetric({ ...metric, meta_vendas_extra: val })}
-          colorClass="bg-purple-200"
-          textClass="text-black"
-          hoverTextClass="hover:text-black"
-          bgClass="bg-purple-600 hover:bg-purple-700"
-          progressColorClass="[&>div]:bg-black/80"
-        />
-
-        <TargetCard
-          title="Meta Vendas Totais"
-          subtitle="* Soma automática das metas."
-          target={targetTotal}
-          achieved={totalAchieved}
-          workingDays={workingDays}
-          isPastMonth={isPastMonth}
-          isEditable={false}
-          readonly={true}
-          showPercentage={true}
-          dataSourceLabel="Receitas Realizadas"
-          colorClass="bg-green-200"
-          textClass="text-black"
-          hoverTextClass="hover:text-black"
-          bgClass="bg-emerald-600 hover:bg-emerald-700"
-          progressColorClass="[&>div]:bg-black/80"
-        />
-      </div>
-
       <div className="flex items-center gap-2 px-1 py-1">
         <div className="flex-1 h-px bg-black/10" />
         <p className="text-[11px] text-slate-600 font-medium text-center max-w-2xl">
