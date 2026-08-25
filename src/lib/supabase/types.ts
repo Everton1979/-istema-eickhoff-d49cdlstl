@@ -85,6 +85,8 @@ export type Database = {
           id: string
           meta_vendas_extra: number
           meta_vendas_manipulacao: number
+          meta_vendas_sistema_manipulacao: number
+          meta_vendas_sistema_revenda: number
           month: number
           num_formulas_capsulas: number
           num_formulas_dermato: number
@@ -112,6 +114,8 @@ export type Database = {
           id?: string
           meta_vendas_extra?: number
           meta_vendas_manipulacao?: number
+          meta_vendas_sistema_manipulacao?: number
+          meta_vendas_sistema_revenda?: number
           month: number
           num_formulas_capsulas?: number
           num_formulas_dermato?: number
@@ -139,6 +143,8 @@ export type Database = {
           id?: string
           meta_vendas_extra?: number
           meta_vendas_manipulacao?: number
+          meta_vendas_sistema_manipulacao?: number
+          meta_vendas_sistema_revenda?: number
           month?: number
           num_formulas_capsulas?: number
           num_formulas_dermato?: number

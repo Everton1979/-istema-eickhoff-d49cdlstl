@@ -546,12 +546,12 @@ export function PharmacyMetrics() {
             )}
           >
             <CardContent className="p-3 text-center flex flex-col justify-center h-full">
-              <h4 className="text-[10px] font-bold text-black/70 uppercase leading-tight mb-2 flex items-center justify-center gap-1">
+              <h4 className="text-xs sm:text-sm font-bold text-black uppercase leading-tight mb-2 flex items-center justify-center gap-1.5">
                 {item.title}
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Link to={`/glossario#${item.id}`}>
-                      <HelpCircle className="w-3.5 h-3.5 text-black/50 hover:text-black cursor-pointer" />
+                      <HelpCircle className="w-4 h-4 text-black/80 hover:text-black cursor-pointer stroke-[2.5]" />
                     </Link>
                   </TooltipTrigger>
                   <TooltipContent className="max-w-[220px] text-center" side="top">
@@ -563,11 +563,11 @@ export function PharmacyMetrics() {
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <div className="cursor-help group flex flex-col items-center">
-                      <p className="text-lg font-bold tracking-tight decoration-dashed underline-offset-4 decoration-black/50 group-hover:underline text-black">
+                      <p className="text-lg sm:text-xl font-extrabold tracking-tight decoration-dashed underline-offset-4 decoration-black/50 group-hover:underline text-black">
                         {item.value}
                       </p>
                       {item.statusText && (
-                        <p className="text-[11px] font-bold mt-1 text-black">{item.statusText}</p>
+                        <p className="text-xs font-bold mt-1 text-black">{item.statusText}</p>
                       )}
                     </div>
                   </TooltipTrigger>
@@ -580,9 +580,11 @@ export function PharmacyMetrics() {
                 </Tooltip>
               ) : (
                 <>
-                  <p className="text-lg font-bold tracking-tight text-black">{item.value}</p>
+                  <p className="text-lg sm:text-xl font-extrabold tracking-tight text-black">
+                    {item.value}
+                  </p>
                   {item.statusText && (
-                    <p className="text-[11px] font-bold mt-1 text-black">{item.statusText}</p>
+                    <p className="text-xs font-bold mt-1 text-black">{item.statusText}</p>
                   )}
                 </>
               )}
