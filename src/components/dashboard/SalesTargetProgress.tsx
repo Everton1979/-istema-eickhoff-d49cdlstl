@@ -218,13 +218,18 @@ function TargetCard({
 }
 
 export function SystemSalesCards() {
-  const { monthlyMetrics, filters } = useFinanceStore()
+  const { monthlyMetrics, saveMonthlyMetric, filters } = useFinanceStore()
+  const { profile } = useAuth()
+  const isEditableRole =
+    profile?.role === 'Administrador' ||
+    profile?.role === 'Colaborador' ||
+    profile?.role === 'Master' ||
+    profile?.role === 'admin' ||
+    profile?.is_super_admin
 
-  const { metric, workingDays, isPastMonth } = useMemo(() => {
+  const { metric, workingDays, isPastMonth, currentMonth, currentYear } = useMemo(() => {
     const today = new Date()
-    const currentYear = parseInt(
-      (filters?.years && filters.years[0]) || today.getFullYear().toString(),
-    )
+    const cYear = parseInt((filters?.years && filters.years[0]) || today.getFullYear().toString())
 
     let wDays = 0
     let defaultMonth = 1
@@ -232,47 +237,49 @@ export function SystemSalesCards() {
     let pastMonth = false
 
     if (!Array.isArray(filters?.months) || filters.months.length === 0) {
-      pastMonth = currentYear < today.getFullYear()
-      const yearMetrics = (monthlyMetrics || []).filter((m) => m.year === currentYear)
+      pastMonth = cYear < today.getFullYear()
+      const yearMetrics = (monthlyMetrics || []).filter((m) => m.year === cYear)
 
       const sumTargetManipulacao = yearMetrics.reduce(
-        (acc, curr) => acc + (curr.meta_vendas_manipulacao || 0),
+        (acc, curr) => acc + (curr.meta_vendas_sistema_manipulacao || 0),
         0,
       )
-      const sumTargetExtra = yearMetrics.reduce(
-        (acc, curr) => acc + (curr.meta_vendas_extra || 0),
+      const sumTargetRevenda = yearMetrics.reduce(
+        (acc, curr) => acc + (curr.meta_vendas_sistema_revenda || 0),
         0,
       )
 
       foundMetric = {
-        meta_vendas_manipulacao: sumTargetManipulacao,
-        meta_vendas_extra: sumTargetExtra,
+        meta_vendas_sistema_manipulacao: sumTargetManipulacao,
+        meta_vendas_sistema_revenda: sumTargetRevenda,
       }
       wDays = 252 // approx yearly
     } else {
-      const currentMonth = parseInt(filters.months[0])
+      const cMonth = parseInt(filters.months[0])
       pastMonth =
-        currentYear < today.getFullYear() ||
-        (currentYear === today.getFullYear() && currentMonth < today.getMonth() + 1)
-      defaultMonth = currentMonth
+        cYear < today.getFullYear() ||
+        (cYear === today.getFullYear() && cMonth < today.getMonth() + 1)
+      defaultMonth = cMonth
 
-      foundMetric = (monthlyMetrics || []).find(
-        (m) => m.year === currentYear && m.month === currentMonth,
-      )
+      foundMetric = (monthlyMetrics || []).find((m) => m.year === cYear && m.month === cMonth)
 
-      wDays = getWorkingDays(currentYear, currentMonth)
+      wDays = getWorkingDays(cYear, cMonth)
     }
 
     return {
+      currentMonth: defaultMonth,
+      currentYear: cYear,
       isPastMonth: pastMonth,
       metric: foundMetric || {
         id: '',
         month: defaultMonth,
-        year: currentYear,
+        year: cYear,
         sales_target: 0,
         global_sales_target: 0,
         meta_vendas_manipulacao: 0,
         meta_vendas_extra: 0,
+        meta_vendas_sistema_manipulacao: 0,
+        meta_vendas_sistema_revenda: 0,
         orders_count: 0,
         total_system_sales: 0,
         raw_material_costs: 0,
@@ -287,13 +294,76 @@ export function SystemSalesCards() {
     }
   }, [monthlyMetrics, filters])
 
-  const targetManipulacao = metric.meta_vendas_manipulacao || 0
-  const targetExtra = metric.meta_vendas_extra || 0
-  const targetTotal = targetManipulacao + targetExtra
+  const targetManipulacao = metric.meta_vendas_sistema_manipulacao || 0
+  const targetRevenda = metric.meta_vendas_sistema_revenda || 0
+  const targetTotal = targetManipulacao + targetRevenda
 
   const systemManipulacao = (metric.vendas_capsulas || 0) + (metric.vendas_dermato || 0)
   const systemRevenda = metric.vendas_revenda || 0
   const systemTotal = systemManipulacao + systemRevenda
+
+  const handleSaveManipulacao = async (val: number) => {
+    const existing = (monthlyMetrics || []).find(
+      (m) => m.year === currentYear && m.month === currentMonth,
+    )
+    await saveMonthlyMetric({
+      month: currentMonth,
+      year: currentYear,
+      orders_count: existing?.orders_count || 0,
+      total_system_sales: existing?.total_system_sales || 0,
+      raw_material_costs: existing?.raw_material_costs || 0,
+      sales_target: existing?.sales_target || 0,
+      global_sales_target: existing?.global_sales_target || 0,
+      num_formulas_capsulas: existing?.num_formulas_capsulas || 0,
+      vendas_capsulas: existing?.vendas_capsulas || 0,
+      custo_mp_emb_capsulas: existing?.custo_mp_emb_capsulas || 0,
+      num_formulas_dermato: existing?.num_formulas_dermato || 0,
+      vendas_dermato: existing?.vendas_dermato || 0,
+      custo_mp_emb_dermato: existing?.custo_mp_emb_dermato || 0,
+      vendas_revenda: existing?.vendas_revenda || 0,
+      custo_revenda: existing?.custo_revenda || 0,
+      colaboradores_capsulas: existing?.colaboradores_capsulas || 0,
+      colaboradores_dermato: existing?.colaboradores_dermato || 0,
+      colaboradores_vendas: existing?.colaboradores_vendas || 0,
+      meta_vendas_manipulacao: existing?.meta_vendas_manipulacao || 0,
+      meta_vendas_extra: existing?.meta_vendas_extra || 0,
+      meta_vendas_sistema_manipulacao: val,
+      meta_vendas_sistema_revenda: existing?.meta_vendas_sistema_revenda || 0,
+    })
+  }
+
+  const handleSaveRevenda = async (val: number) => {
+    const existing = (monthlyMetrics || []).find(
+      (m) => m.year === currentYear && m.month === currentMonth,
+    )
+    await saveMonthlyMetric({
+      month: currentMonth,
+      year: currentYear,
+      orders_count: existing?.orders_count || 0,
+      total_system_sales: existing?.total_system_sales || 0,
+      raw_material_costs: existing?.raw_material_costs || 0,
+      sales_target: existing?.sales_target || 0,
+      global_sales_target: existing?.global_sales_target || 0,
+      num_formulas_capsulas: existing?.num_formulas_capsulas || 0,
+      vendas_capsulas: existing?.vendas_capsulas || 0,
+      custo_mp_emb_capsulas: existing?.custo_mp_emb_capsulas || 0,
+      num_formulas_dermato: existing?.num_formulas_dermato || 0,
+      vendas_dermato: existing?.vendas_dermato || 0,
+      custo_mp_emb_dermato: existing?.custo_mp_emb_dermato || 0,
+      vendas_revenda: existing?.vendas_revenda || 0,
+      custo_revenda: existing?.custo_revenda || 0,
+      colaboradores_capsulas: existing?.colaboradores_capsulas || 0,
+      colaboradores_dermato: existing?.colaboradores_dermato || 0,
+      colaboradores_vendas: existing?.colaboradores_vendas || 0,
+      meta_vendas_manipulacao: existing?.meta_vendas_manipulacao || 0,
+      meta_vendas_extra: existing?.meta_vendas_extra || 0,
+      meta_vendas_sistema_manipulacao: existing?.meta_vendas_sistema_manipulacao || 0,
+      meta_vendas_sistema_revenda: val,
+    })
+  }
+
+  const isSpecificMonthSelected = Array.isArray(filters?.months) && filters.months.length > 0
+  const canEdit = Boolean(isEditableRole && isSpecificMonthSelected)
 
   return (
     <div className="flex flex-col gap-4">
@@ -314,8 +384,9 @@ export function SystemSalesCards() {
           achieved={systemManipulacao}
           workingDays={workingDays}
           isPastMonth={isPastMonth}
-          isEditable={false}
-          readonly={true}
+          isEditable={canEdit}
+          readonly={false}
+          onSave={handleSaveManipulacao}
           showPercentage={false}
           dataSourceLabel="Dados do Sistema"
           colorClass="bg-blue-100"
@@ -328,12 +399,13 @@ export function SystemSalesCards() {
         <TargetCard
           title="Vendas Sistema Revenda"
           subtitle="* Dados extraídos do sistema (Ex. Fórmula Certa)."
-          target={targetExtra}
+          target={targetRevenda}
           achieved={systemRevenda}
           workingDays={workingDays}
           isPastMonth={isPastMonth}
-          isEditable={false}
-          readonly={true}
+          isEditable={canEdit}
+          readonly={false}
+          onSave={handleSaveRevenda}
           showPercentage={false}
           dataSourceLabel="Dados do Sistema"
           colorClass="bg-purple-100"

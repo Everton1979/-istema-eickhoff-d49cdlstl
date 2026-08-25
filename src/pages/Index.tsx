@@ -3,7 +3,7 @@ import { MonthlyDataDialog } from '@/components/dashboard/MonthlyDataDialog'
 import { StrategicPerformanceReportDialog } from '@/components/dashboard/StrategicPerformanceReportDialog'
 import { ExportReportDialog } from '@/components/dashboard/ExportReportDialog'
 import { DREDialog } from '@/components/dashboard/DREDialog'
-import { OperationalKpis, StrategicKpis } from '@/components/dashboard/KpiCards'
+import { OperationalKpis } from '@/components/dashboard/KpiCards'
 import { UpcomingCommitments } from '@/components/dashboard/UpcomingCommitments'
 import { AccountBalances } from '@/components/dashboard/AccountBalances'
 import { PharmacyMetrics } from '@/components/dashboard/PharmacyMetrics'
@@ -222,9 +222,7 @@ export default function Index() {
               </div>
             </div>
 
-            <StrategicKpis />
-
-            <div className="mt-6">
+            <div>
               <SystemSalesCards />
             </div>
 

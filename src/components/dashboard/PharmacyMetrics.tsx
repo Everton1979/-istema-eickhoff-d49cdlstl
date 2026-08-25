@@ -120,6 +120,9 @@ export function PharmacyMetrics() {
     const fatPorColabVendas = avgColabVendas > 0 ? totalSales / avgColabVendas : 0
 
     const ebitda = kpiMetrics.ebitda
+    const margem = kpiMetrics.margem
+    const pontoEquilibrio = kpiMetrics.pontoEquilibrio
+    const cma = kpiMetrics.cma
 
     const loPorColab = avgTotalColab > 0 ? ebitda / avgTotalColab : 0
     const ebitdaMedioMensal = countMonths > 0 ? ebitda / countMonths : 0
@@ -235,6 +238,10 @@ export function PharmacyMetrics() {
       fatPorColabVendas,
       loPorColab,
       valuationEstimado,
+      ebitda,
+      margem,
+      pontoEquilibrio,
+      cma,
       regra70Value,
       regra70Status,
       regra70Text,
@@ -252,6 +259,10 @@ export function PharmacyMetrics() {
 
   const formatCurrency = (val: number) =>
     new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val)
+  const formatCurrencyWhole = (val: number) =>
+    new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(
+      val,
+    )
   const formatDecimal = (val: number) =>
     new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(
       val,
@@ -346,6 +357,34 @@ export function PharmacyMetrics() {
     statusText?: string
     dynamicTooltip?: string
   }> = [
+    {
+      id: 'ebitda',
+      title: 'EBITDA',
+      tooltip: 'Geração de caixa operacional (Margem de Contribuição - Custos Fixos).',
+      value: formatCurrencyWhole(metrics.ebitda),
+      color: metrics.ebitda >= 0 ? 'text-emerald-600' : 'text-red-600',
+    },
+    {
+      id: 'margem-de-contribuicao',
+      title: 'Margem de Contribuição',
+      tooltip: 'Receita bruta menos os custos variáveis totais das transações.',
+      value: formatCurrencyWhole(metrics.margem),
+      color: 'text-blue-600',
+    },
+    {
+      id: 'ponto-de-equilibrio',
+      title: 'Ponto de Equilíbrio',
+      tooltip: 'Faturamento necessário para cobrir a parcela fixa de custos.',
+      value: formatCurrencyWhole(metrics.pontoEquilibrio),
+      color: 'text-slate-600',
+    },
+    {
+      id: 'cma',
+      title: 'CMA',
+      tooltip: 'Contribuição média por fórmula/pedido (Margem / Qtde Pedidos).',
+      value: formatCurrencyWhole(metrics.cma),
+      color: 'text-orange-600',
+    },
     {
       id: 'ticket-medio',
       title: 'Ticket Médio Manipulação',

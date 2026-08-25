@@ -60,4 +60,6 @@ export interface MonthlyMetric {
   colaboradores_vendas?: number
   meta_vendas_manipulacao?: number
   meta_vendas_extra?: number
+  meta_vendas_sistema_manipulacao?: number
+  meta_vendas_sistema_revenda?: number
 }

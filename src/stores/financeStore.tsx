@@ -178,6 +178,8 @@ const DUMMY_METRICS: MonthlyMetric[] = [
     colaboradores_vendas: 3,
     meta_vendas_manipulacao: 15000,
     meta_vendas_extra: 5000,
+    meta_vendas_sistema_manipulacao: 15000,
+    meta_vendas_sistema_revenda: 5000,
   },
 ]
 
@@ -401,6 +403,8 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
         colaboradores_vendas: Number(m.colaboradores_vendas || 0),
         meta_vendas_manipulacao: Number(m.meta_vendas_manipulacao || 0),
         meta_vendas_extra: Number(m.meta_vendas_extra || 0),
+        meta_vendas_sistema_manipulacao: Number(m.meta_vendas_sistema_manipulacao || 0),
+        meta_vendas_sistema_revenda: Number(m.meta_vendas_sistema_revenda || 0),
       }))
       if (user?.id)
         localStorage.setItem(
@@ -673,6 +677,14 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
         metric.meta_vendas_extra !== undefined
           ? metric.meta_vendas_extra
           : existing?.meta_vendas_extra || 0,
+      meta_vendas_sistema_manipulacao:
+        metric.meta_vendas_sistema_manipulacao !== undefined
+          ? metric.meta_vendas_sistema_manipulacao
+          : existing?.meta_vendas_sistema_manipulacao || 0,
+      meta_vendas_sistema_revenda:
+        metric.meta_vendas_sistema_revenda !== undefined
+          ? metric.meta_vendas_sistema_revenda
+          : existing?.meta_vendas_sistema_revenda || 0,
       updated_at: new Date().toISOString(),
     }
 
@@ -717,6 +729,8 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
         colaboradores_vendas: Number(data.colaboradores_vendas || 0),
         meta_vendas_manipulacao: Number(data.meta_vendas_manipulacao || 0),
         meta_vendas_extra: Number(data.meta_vendas_extra || 0),
+        meta_vendas_sistema_manipulacao: Number(data.meta_vendas_sistema_manipulacao || 0),
+        meta_vendas_sistema_revenda: Number(data.meta_vendas_sistema_revenda || 0),
       }
 
       if (isDemoModeRef.current) {
