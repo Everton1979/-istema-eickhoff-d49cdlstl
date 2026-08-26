@@ -97,13 +97,11 @@ function TargetCard({
             <Button
               variant="ghost"
               size="icon"
-              className={cn(
-                'h-6 w-6 absolute right-3 top-3 text-slate-600 hover:text-slate-900',
-                hoverTextClass,
-              )}
+              className="h-8 w-8 absolute right-3 top-3 bg-blue-50 rounded-full p-1 text-blue-600 hover:text-blue-800 hover:bg-blue-100 transition-colors"
               onClick={handleEdit}
+              title="Definir meta do mês"
             >
-              <Pencil className="h-3.5 w-3.5" />
+              <Pencil className="h-5 w-5" />
             </Button>
           )}
         </div>
@@ -393,18 +391,20 @@ export function SystemSalesCards() {
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="flex items-center gap-2 px-1 py-0.5">
-        <div className="flex-1 h-px bg-slate-300" />
-        <p className="text-xs text-slate-600 font-semibold text-center max-w-2xl">
-          Comparativo entre as receitas realizadas (transações) e as vendas registradas no sistema
-          (Ex. Fórmula Certa). Os dados do sistema são preenchidos no fechamento do mês.
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 px-1 py-0.5">
+        <h3 className="text-lg font-bold text-slate-800 tracking-tight flex items-center gap-2">
+          <span className="w-2 h-5 bg-blue-600 rounded-sm inline-block" />
+          Metas
+        </h3>
+        <p className="text-xs text-blue-700 bg-blue-50 border border-blue-200 rounded-md px-2.5 py-1 flex items-center gap-1.5 font-medium">
+          <Pencil className="h-3.5 w-3.5 text-blue-600 shrink-0" />
+          Clique no lápis para definir a meta do mês
         </p>
-        <div className="flex-1 h-px bg-slate-300" />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <TargetCard
-          title="Vendas Sistema Manipulação"
+          title="Vendas Manipulação"
           subtitle="* Dados extraídos do sistema (Ex. Fórmula Certa)."
           target={targetManipulacao}
           achieved={systemManipulacao}
@@ -423,7 +423,7 @@ export function SystemSalesCards() {
         />
 
         <TargetCard
-          title="Vendas Sistema Revenda"
+          title="Vendas Revenda"
           subtitle="* Dados extraídos do sistema (Ex. Fórmula Certa)."
           target={targetRevenda}
           achieved={systemRevenda}
@@ -442,7 +442,7 @@ export function SystemSalesCards() {
         />
 
         <TargetCard
-          title="Vendas Sistema Totais"
+          title="Vendas Totais"
           subtitle="* Dados extraídos do sistema (Ex. Fórmula Certa)."
           target={targetTotal}
           achieved={systemTotal}
