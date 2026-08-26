@@ -130,11 +130,6 @@ export default function Index() {
           <PlanExpirationBanner />
           <PendingUsersAlert />
 
-          {/* Top row: Operational KPIs */}
-          <section ref={dashboardKpisRef} className="w-full rounded-xl transition-all">
-            <OperationalKpis />
-          </section>
-
           {/* Lançamentos Section */}
           <section
             ref={lancamentosRef}
@@ -183,6 +178,11 @@ export default function Index() {
                 </div>
               </div>
             </div>
+          </section>
+
+          {/* Operational KPIs */}
+          <section ref={dashboardKpisRef} className="w-full rounded-xl transition-all">
+            <OperationalKpis />
           </section>
 
           {/* Destaque Central: Assistente de Precificação Estratégica */}
