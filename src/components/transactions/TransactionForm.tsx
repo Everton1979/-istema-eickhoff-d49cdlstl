@@ -215,10 +215,11 @@ export function TransactionForm({ onSuccess, initialData, prefillDate }: Transac
         subcategoryId: initialData.subcategoryId || '',
         paymentMethodId: initialData.paymentMethodId || '',
         accountId: initialData.accountId || 'conta_principal',
-        tags: initialData.tags || '',
+        tags: initialData.tags ? initialData.tags.toUpperCase() : '',
       }
     : {
         ...draft,
+        tags: draft?.tags ? draft.tags.toUpperCase() : '',
         date: prefillDate || draft.date || new Date().toISOString().split('T')[0],
       }
 
@@ -310,7 +311,7 @@ export function TransactionForm({ onSuccess, initialData, prefillDate }: Transac
         subcategoryId: values.subcategoryId || '',
         accountId: values.accountId || 'conta_principal',
         paymentMethodId: values.type === 'INCOME' ? values.paymentMethodId || '' : '',
-        tags: values.tags || '',
+        tags: values.tags?.trim().toUpperCase() || '',
       }
 
       if (initialData) {
@@ -692,6 +693,7 @@ export function TransactionForm({ onSuccess, initialData, prefillDate }: Transac
                       className="h-12 sm:h-10 text-base sm:text-sm"
                       {...field}
                       value={field.value || ''}
+                      onChange={(e) => field.onChange(e.target.value.toUpperCase())}
                     />
                   </FormControl>
                   <p className="text-[11px] text-slate-500 mt-1.5 leading-tight">
