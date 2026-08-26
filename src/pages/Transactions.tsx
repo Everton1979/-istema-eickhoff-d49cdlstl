@@ -322,24 +322,12 @@ export default function Transactions() {
           <div className="flex flex-wrap sm:flex-nowrap gap-2 w-full sm:w-auto mt-2 sm:mt-0">
             <Sheet open={isTransactionSheetOpen} onOpenChange={handleSheetChange}>
               <SheetTrigger asChild>
-                <div className="flex flex-col items-end gap-1 flex-1 sm:flex-none">
-                  <Button
-                    className={cn(
-                      'gap-2 flex-1 sm:flex-none w-full sm:w-auto',
-                      !loadingData && filteredTransactions.length === 0
-                        ? 'bg-emerald-600 hover:bg-emerald-700 ring-2 ring-blue-400 animate-pulse text-white'
-                        : 'bg-emerald-500 hover:bg-emerald-600',
-                    )}
-                    onClick={() => setEditingTransaction(null)}
-                  >
-                    <Plus className="h-4 w-4" /> Novo Lançamento
-                  </Button>
-                  {!loadingData && filteredTransactions.length === 0 && (
-                    <span className="text-[11px] text-blue-600 font-semibold animate-pulse hidden sm:inline-block">
-                      Comece registrando sua primeira receita ou despesa
-                    </span>
-                  )}
-                </div>
+                <Button
+                  className="gap-2 flex-1 sm:flex-none w-full sm:w-auto bg-emerald-500 hover:bg-emerald-600"
+                  onClick={() => setEditingTransaction(null)}
+                >
+                  <Plus className="h-4 w-4" /> Novo Lançamento
+                </Button>
               </SheetTrigger>
               <SheetContent className="overflow-y-auto w-full sm:max-w-md p-4 sm:p-6">
                 <SheetHeader>

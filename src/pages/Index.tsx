@@ -51,9 +51,6 @@ export default function Index() {
   const lancamentosRef = useRef<HTMLElement>(null)
   const dashboardKpisRef = useRef<HTMLElement>(null)
 
-  const hasNoTransactions =
-    !loadingData && transactions.length === 0 && filteredTransactions.length === 0
-
   useEffect(() => {
     // Checagem de segurança em tempo real para barrar acessos não aprovados
     if (
@@ -120,23 +117,6 @@ export default function Index() {
               setEditingTransaction(null)
               setTransactionSheetOpen(true)
             }}
-            onDadosSistemaClick={() => {
-              window.dispatchEvent(new CustomEvent('open-dados-sistema'))
-            }}
-            onDashboardClick={() => {
-              if (dashboardKpisRef.current) {
-                dashboardKpisRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' })
-                dashboardKpisRef.current.classList.add(
-                  'ring-4',
-                  'ring-blue-400',
-                  'transition-all',
-                  'duration-500',
-                )
-                setTimeout(() => {
-                  dashboardKpisRef.current?.classList.remove('ring-4', 'ring-blue-400')
-                }, 2000)
-              }
-            }}
           />
 
           <div className="bg-yellow-200 border border-yellow-300 text-amber-800 px-4 py-3 rounded-md flex items-start gap-3 shadow-sm text-sm font-bold">
@@ -173,21 +153,11 @@ export default function Index() {
                     setEditingTransaction(null)
                     setTransactionSheetOpen(true)
                   }}
-                  className={cn(
-                    'inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-bold text-white shadow-sm transition-all',
-                    hasNoTransactions
-                      ? 'bg-blue-600 hover:bg-blue-700 ring-2 ring-blue-400 animate-pulse shadow-md'
-                      : 'bg-emerald-600 hover:bg-emerald-700',
-                  )}
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-bold text-white shadow-sm transition-all bg-emerald-600 hover:bg-emerald-700"
                 >
                   <Plus className="w-4 h-4" />
                   Novo Lançamento
                 </button>
-                {hasNoTransactions && (
-                  <p className="text-xs text-blue-600 font-semibold animate-pulse">
-                    Comece registrando sua primeira receita ou despesa
-                  </p>
-                )}
               </div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -200,36 +170,13 @@ export default function Index() {
                   <p className="text-slate-500 mb-5 mt-1.5 max-w-sm mx-auto text-sm">
                     Registre e gerencie as receitas, despesas, cortesias e investimentos.
                   </p>
-                  <div className="flex flex-col items-center gap-2">
-                    <div className="flex items-center gap-3 flex-wrap justify-center">
-                      <Link
-                        to="/transacoes"
-                        className="inline-flex h-11 items-center justify-center rounded-lg bg-blue-600 px-7 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-blue-700"
-                      >
-                        Acessar Transações
-                      </Link>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setEditingTransaction(null)
-                          setTransactionSheetOpen(true)
-                        }}
-                        className={cn(
-                          'inline-flex h-11 items-center justify-center gap-2 rounded-lg px-6 text-sm font-bold shadow-sm transition-all',
-                          hasNoTransactions
-                            ? 'bg-emerald-600 hover:bg-emerald-700 text-white ring-2 ring-blue-400 animate-pulse'
-                            : 'bg-slate-200 hover:bg-slate-300 text-slate-800',
-                        )}
-                      >
-                        <Plus className="w-4 h-4" />
-                        Novo Lançamento
-                      </button>
-                    </div>
-                    {hasNoTransactions && (
-                      <span className="text-xs text-blue-600 font-semibold mt-1 animate-pulse">
-                        Comece registrando sua primeira receita ou despesa
-                      </span>
-                    )}
+                  <div className="flex justify-center">
+                    <Link
+                      to="/transacoes"
+                      className="inline-flex h-11 items-center justify-center rounded-lg bg-blue-600 px-7 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-blue-700"
+                    >
+                      Acessar Transações
+                    </Link>
                   </div>
                 </div>
               </div>
