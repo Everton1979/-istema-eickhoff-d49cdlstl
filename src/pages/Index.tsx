@@ -24,7 +24,6 @@ import {
   FileText,
   BarChart3,
   Presentation,
-  Plus,
 } from 'lucide-react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '@/hooks/use-auth'
@@ -146,19 +145,6 @@ export default function Index() {
                 <div className="w-3 h-8 bg-blue-600 rounded-sm" />
                 Lançamentos
               </h2>
-              <div className="flex flex-col items-end gap-1.5">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setEditingTransaction(null)
-                    setTransactionSheetOpen(true)
-                  }}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-bold text-white shadow-sm transition-all bg-emerald-600 hover:bg-emerald-700"
-                >
-                  <Plus className="w-4 h-4" />
-                  Novo Lançamento
-                </button>
-              </div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="bg-slate-50/70 p-6 sm:p-8 rounded-xl border-2 border-dashed border-slate-200 flex flex-col items-center justify-center gap-4 text-center hover:bg-slate-100/70 transition-colors">
