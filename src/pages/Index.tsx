@@ -15,7 +15,8 @@ import { PerformanceEvolutionChart } from '@/components/dashboard/PerformanceEvo
 import { PrintableReport } from '@/components/dashboard/PrintableReport'
 import { PendingUsersAlert } from '@/components/dashboard/PendingUsersAlert'
 import { PlanExpirationBanner } from '@/components/dashboard/PlanExpirationBanner'
-import { useState, useEffect } from 'react'
+import { WelcomeBanner } from '@/components/dashboard/WelcomeBanner'
+import { useState, useEffect, useRef } from 'react'
 import {
   AlertTriangle,
   ArrowRightLeft,
@@ -23,16 +24,35 @@ import {
   FileText,
   BarChart3,
   Presentation,
+  Plus,
 } from 'lucide-react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '@/hooks/use-auth'
 import { useFinanceStore } from '@/stores/financeStore'
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet'
+import { TransactionForm } from '@/components/transactions/TransactionForm'
+import { cn } from '@/lib/utils'
 
 export default function Index() {
   const [exportFilters, setExportFilters] = useState<any>(null)
   const { profile, loading } = useAuth()
   const navigate = useNavigate()
-  const { fetchData } = useFinanceStore()
+  const {
+    fetchData,
+    transactions,
+    filteredTransactions,
+    loadingData,
+    isTransactionSheetOpen,
+    setTransactionSheetOpen,
+    editingTransaction,
+    setEditingTransaction,
+  } = useFinanceStore()
+
+  const lancamentosRef = useRef<HTMLElement>(null)
+  const dashboardKpisRef = useRef<HTMLElement>(null)
+
+  const hasNoTransactions =
+    !loadingData && transactions.length === 0 && filteredTransactions.length === 0
 
   useEffect(() => {
     // Checagem de segurança em tempo real para barrar acessos não aprovados
@@ -92,6 +112,33 @@ export default function Index() {
         </div>
 
         <div className="flex-1 overflow-y-auto p-4 md:p-6 flex flex-col gap-8">
+          <WelcomeBanner
+            onAddTransactionClick={() => {
+              if (lancamentosRef.current) {
+                lancamentosRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' })
+              }
+              setEditingTransaction(null)
+              setTransactionSheetOpen(true)
+            }}
+            onDadosSistemaClick={() => {
+              window.dispatchEvent(new CustomEvent('open-dados-sistema'))
+            }}
+            onDashboardClick={() => {
+              if (dashboardKpisRef.current) {
+                dashboardKpisRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                dashboardKpisRef.current.classList.add(
+                  'ring-4',
+                  'ring-blue-400',
+                  'transition-all',
+                  'duration-500',
+                )
+                setTimeout(() => {
+                  dashboardKpisRef.current?.classList.remove('ring-4', 'ring-blue-400')
+                }, 2000)
+              }
+            }}
+          />
+
           <div className="bg-yellow-200 border border-yellow-300 text-amber-800 px-4 py-3 rounded-md flex items-start gap-3 shadow-sm text-sm font-bold">
             <AlertTriangle className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
             <p>
@@ -105,16 +152,44 @@ export default function Index() {
           <PendingUsersAlert />
 
           {/* Top row: Operational KPIs */}
-          <section className="w-full">
+          <section ref={dashboardKpisRef} className="w-full rounded-xl transition-all">
             <OperationalKpis />
           </section>
 
           {/* Lançamentos Section */}
-          <section className="w-full bg-white p-6 rounded-xl border border-slate-300 shadow-sm">
-            <h2 className="text-xl font-black text-slate-800 uppercase tracking-wide flex items-center gap-3 mb-6">
-              <div className="w-3 h-8 bg-blue-600 rounded-sm" />
-              Lançamentos
-            </h2>
+          <section
+            ref={lancamentosRef}
+            className="w-full bg-white p-6 rounded-xl border border-slate-300 shadow-sm"
+          >
+            <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
+              <h2 className="text-xl font-black text-slate-800 uppercase tracking-wide flex items-center gap-3">
+                <div className="w-3 h-8 bg-blue-600 rounded-sm" />
+                Lançamentos
+              </h2>
+              <div className="flex flex-col items-end gap-1.5">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setEditingTransaction(null)
+                    setTransactionSheetOpen(true)
+                  }}
+                  className={cn(
+                    'inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-bold text-white shadow-sm transition-all',
+                    hasNoTransactions
+                      ? 'bg-blue-600 hover:bg-blue-700 ring-2 ring-blue-400 animate-pulse shadow-md'
+                      : 'bg-emerald-600 hover:bg-emerald-700',
+                  )}
+                >
+                  <Plus className="w-4 h-4" />
+                  Novo Lançamento
+                </button>
+                {hasNoTransactions && (
+                  <p className="text-xs text-blue-600 font-semibold animate-pulse">
+                    Comece registrando sua primeira receita ou despesa
+                  </p>
+                )}
+              </div>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="bg-slate-50/70 p-6 sm:p-8 rounded-xl border-2 border-dashed border-slate-200 flex flex-col items-center justify-center gap-4 text-center hover:bg-slate-100/70 transition-colors">
                 <div className="p-4 bg-blue-100 text-blue-600 rounded-2xl shadow-sm">
@@ -125,12 +200,37 @@ export default function Index() {
                   <p className="text-slate-500 mb-5 mt-1.5 max-w-sm mx-auto text-sm">
                     Registre e gerencie as receitas, despesas, cortesias e investimentos.
                   </p>
-                  <Link
-                    to="/transacoes"
-                    className="inline-flex h-11 items-center justify-center rounded-lg bg-blue-600 px-7 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-blue-700"
-                  >
-                    Acessar Transações
-                  </Link>
+                  <div className="flex flex-col items-center gap-2">
+                    <div className="flex items-center gap-3 flex-wrap justify-center">
+                      <Link
+                        to="/transacoes"
+                        className="inline-flex h-11 items-center justify-center rounded-lg bg-blue-600 px-7 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-blue-700"
+                      >
+                        Acessar Transações
+                      </Link>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setEditingTransaction(null)
+                          setTransactionSheetOpen(true)
+                        }}
+                        className={cn(
+                          'inline-flex h-11 items-center justify-center gap-2 rounded-lg px-6 text-sm font-bold shadow-sm transition-all',
+                          hasNoTransactions
+                            ? 'bg-emerald-600 hover:bg-emerald-700 text-white ring-2 ring-blue-400 animate-pulse'
+                            : 'bg-slate-200 hover:bg-slate-300 text-slate-800',
+                        )}
+                      >
+                        <Plus className="w-4 h-4" />
+                        Novo Lançamento
+                      </button>
+                    </div>
+                    {hasNoTransactions && (
+                      <span className="text-xs text-blue-600 font-semibold mt-1 animate-pulse">
+                        Comece registrando sua primeira receita ou despesa
+                      </span>
+                    )}
+                  </div>
                 </div>
               </div>
 
@@ -294,6 +394,29 @@ export default function Index() {
           </section>
         </div>
       </div>
+      <Sheet
+        open={isTransactionSheetOpen}
+        onOpenChange={(open) => {
+          setTransactionSheetOpen(open)
+          if (!open) setEditingTransaction(null)
+        }}
+      >
+        <SheetContent className="overflow-y-auto w-full sm:max-w-md p-4 sm:p-6">
+          <SheetHeader>
+            <SheetTitle>
+              {editingTransaction ? 'Editar Transação' : 'Adicionar Transação'}
+            </SheetTitle>
+          </SheetHeader>
+          <TransactionForm
+            onSuccess={() => {
+              setTransactionSheetOpen(false)
+              setEditingTransaction(null)
+            }}
+            initialData={editingTransaction}
+          />
+        </SheetContent>
+      </Sheet>
+
       <PrintableReport exportFilters={exportFilters} />
     </>
   )
