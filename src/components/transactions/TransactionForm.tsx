@@ -563,6 +563,12 @@ export function TransactionForm({ onSuccess, initialData, prefillDate }: Transac
                               <SelectItem value="educacao_treinamentos">
                                 Educação e Treinamentos (Cursos/Congressos)
                               </SelectItem>
+                              <SelectItem value="limpeza_conservacao">
+                                Limpeza e Conservação: Produtos de limpeza, serviço terceirizado
+                              </SelectItem>
+                              <SelectItem value="brindes_presentes">
+                                Brindes e Presentes: Brindes para clientes, presentes de fim de ano
+                              </SelectItem>
                               <SelectItem value="outros">Outros</SelectItem>
                             </>
                           )}
@@ -588,6 +594,20 @@ export function TransactionForm({ onSuccess, initialData, prefillDate }: Transac
                               </SelectItem>
                               <SelectItem value="fidelidade_promocao">
                                 Fidelidade e Promoção: Programa de fidelidade
+                              </SelectItem>
+                              <SelectItem value="marketing_variavel">
+                                Marketing Variável: Campanhas sazonais (Dia das Mães, Black Friday,
+                                etc.)
+                              </SelectItem>
+                              <SelectItem value="comissoes">
+                                Comissões: Comissões sobre vendas
+                              </SelectItem>
+                              <SelectItem value="materiais_consumo">
+                                Materiais de Consumo: Luvas, máscaras e descartáveis que variam com
+                                atendimentos
+                              </SelectItem>
+                              <SelectItem value="devolucoes_perdas">
+                                Devoluções e Perdas: Perdas por vencimento, quebras, devoluções
                               </SelectItem>
                               <SelectItem value="outros">Outros</SelectItem>
                             </>

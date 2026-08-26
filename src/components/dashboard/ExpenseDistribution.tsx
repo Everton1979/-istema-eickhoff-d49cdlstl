@@ -26,6 +26,8 @@ const FIXA_LABELS: Record<string, string> = {
   juros_multas: 'Juros/Multas',
   manutencao_equipamentos: 'Manutenção Equip.',
   educacao_treinamentos: 'Educação/Trein.',
+  limpeza_conservacao: 'Limpeza/Conservação',
+  brindes_presentes: 'Brindes/Presentes',
   outros: 'Outros',
 }
 
@@ -37,6 +39,10 @@ const VARIAVEL_LABELS: Record<string, string> = {
   taxas_cartao: 'Taxas Cartão',
   logistica: 'Logística',
   fidelidade_promocao: 'Fidelidade/Promo',
+  marketing_variavel: 'Mkt Variável',
+  comissoes: 'Comissões',
+  materiais_consumo: 'Mat. Consumo',
+  devolucoes_perdas: 'Devoluções/Perdas',
   outros: 'Outros',
 }
 

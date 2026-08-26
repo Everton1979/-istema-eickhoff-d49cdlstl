@@ -85,6 +85,10 @@ export function DREDialog() {
     marketing: 'Marketing e Social',
     softwares_assinaturas: 'Softwares e Assinaturas',
     juros_multas: 'Juros, Multas e Encargos',
+    manutencao_equipamentos: 'Manutenção de Equipamentos',
+    educacao_treinamentos: 'Educação e Treinamentos',
+    limpeza_conservacao: 'Limpeza e Conservação',
+    brindes_presentes: 'Brindes e Presentes',
     materia_prima: 'Matéria-prima e Ativos',
     embalagens: 'Embalagens',
     medicamentos_drogaria: 'Medicamentos Drogaria',
@@ -92,6 +96,10 @@ export function DREDialog() {
     taxas_cartao: 'Taxas de Cartão',
     logistica: 'Logística e Fretes',
     fidelidade_promocao: 'Fidelidade e Promoção',
+    marketing_variavel: 'Marketing Variável',
+    comissoes: 'Comissões',
+    materiais_consumo: 'Materiais de Consumo',
+    devolucoes_perdas: 'Devoluções e Perdas',
     outros: 'Outros',
   }
 
