@@ -25,6 +25,95 @@ import { useEffect, useState, useMemo, forwardRef, useRef } from 'react'
 import { Transaction } from '@/types/finance'
 import { Tag as TagIcon, Lightbulb } from 'lucide-react'
 
+// Opções de Categorias e Subcategorias com ordenação alfabética e labels em MAIÚSCULAS
+const EXPENSE_CATEGORIES = [
+  { value: 'INVESTIMENTO', label: 'EQUIPAMENTOS E INVESTIMENTOS' },
+  { value: 'FIXA', label: 'FIXA' },
+  { value: 'VARIAVEL', label: 'VARIÁVEL' },
+].sort((a, b) => a.label.localeCompare(b.label, 'pt-BR'))
+
+const INCOME_CATEGORIES = [
+  { value: 'RECEITA_NAO_OPERACIONAL', label: 'DIVIDENDOS E LUCROS (NÃO OPERACIONAL)' },
+  { value: 'RECEITA_OPERACIONAL', label: 'VENDAS/SERVIÇOS (OPERACIONAL)' },
+].sort((a, b) => a.label.localeCompare(b.label, 'pt-BR'))
+
+const FIXED_SUBCATEGORIES = [
+  {
+    value: 'brindes_presentes',
+    label: 'BRINDES E PRESENTES: BRINDES PARA CLIENTES, PRESENTES DE FIM DE ANO',
+  },
+  { value: 'educacao_treinamentos', label: 'EDUCAÇÃO E TREINAMENTOS (CURSOS/CONGRESSOS)' },
+  { value: 'financeiro', label: 'FINANCEIRO: TAXAS BANCÁRIAS E TARIFAS' },
+  { value: 'juros_multas', label: 'FINANCEIRO: JUROS, MULTAS E ENCARGOS' },
+  { value: 'infraestrutura', label: 'INFRAESTRUTURA: ALUGUEL, IPTU E MANUTENÇÃO' },
+  {
+    value: 'limpeza_conservacao',
+    label: 'LIMPEZA E CONSERVAÇÃO: PRODUTOS DE LIMPEZA, SERVIÇO TERCEIRIZADO',
+  },
+  { value: 'manutencao_equipamentos', label: 'MANUTENÇÃO DE EQUIPAMENTOS' },
+  {
+    value: 'marketing',
+    label: 'MARKETING E SOCIAL: DIVULGAÇÃO, REDES SOCIAIS, PATROCÍNIO E DOAÇÃO',
+  },
+  {
+    value: 'operacional_administrativo',
+    label: 'OPERACIONAL E ADMIN.: MATERIAL DE MERCADO, PAPELARIA, INFORMÁTICA, LANCHE, ESCRITÓRIO',
+  },
+  { value: 'outros', label: 'OUTROS' },
+  { value: 'pessoal', label: 'PESSOAL: SALÁRIOS, ENCARGOS (FGTS/INSS) E BENEFÍCIOS' },
+  { value: 'prolabore', label: 'PRÓ-LABORE: RETIRADA DOS SÓCIOS' },
+  { value: 'seguros', label: 'SEGUROS: SEGURO PREDIAL, PESSOAL, LABORAL E CIVIL' },
+  {
+    value: 'servicos_profissionais',
+    label:
+      'SERVIÇOS PROF. E CONFORMIDADE: CONTABILIDADE, RESÍDUOS, QUALIDADE, CONSELHO, SEGURANÇA LABORAL',
+  },
+  {
+    value: 'softwares_assinaturas',
+    label: 'SOFTWARES E ASSINATURAS: MENSALIDADES, RELÓGIO PONTO, SOTECH',
+  },
+  { value: 'utilidades', label: 'UTILIDADES: ENERGIA, ÁGUA E INTERNET/TELEFONE' },
+].sort((a, b) => a.label.localeCompare(b.label, 'pt-BR'))
+
+const VARIABLE_SUBCATEGORIES = [
+  { value: 'comissoes', label: 'COMISSÕES: COMISSÕES SOBRE VENDAS' },
+  {
+    value: 'devolucoes_perdas',
+    label: 'DEVOLUÇÕES E PERDAS: PERDAS POR VENCIMENTO, QUEBRAS, DEVOLUÇÕES',
+  },
+  { value: 'embalagens', label: 'EMBALAGENS: FRASCOS, POTES, RÓTULOS E CAIXAS' },
+  { value: 'fidelidade_promocao', label: 'FIDELIDADE E PROMOÇÃO: PROGRAMA DE FIDELIDADE' },
+  { value: 'impostos', label: 'IMPOSTOS: SIMPLES NACIONAL, ICMS E TRIBUTOS' },
+  { value: 'logistica', label: 'LOGÍSTICA: FRETES E ENTREGAS' },
+  {
+    value: 'marketing_variavel',
+    label: 'MARKETING VARIÁVEL: CAMPANHAS SAZONAIS (DIA DAS MÃES, BLACK FRIDAY, ETC.)',
+  },
+  {
+    value: 'materiais_consumo',
+    label: 'MATERIAIS DE CONSUMO: LUVAS, MÁSCARAS E DESCARTÁVEIS QUE VARIAM COM ATENDIMENTOS',
+  },
+  { value: 'materia_prima', label: 'MATÉRIA-PRIMA: INSUMOS E ATIVOS' },
+  { value: 'medicamentos_drogaria', label: 'MEDICAMENTOS DROGARIA: PRODUTOS PARA REVENDA' },
+  { value: 'outros', label: 'OUTROS' },
+  { value: 'taxas_cartao', label: 'TAXAS DE CARTÃO: COMISSÕES E ANTECIPAÇÕES' },
+].sort((a, b) => a.label.localeCompare(b.label, 'pt-BR'))
+
+const INVESTMENT_SUBCATEGORIES = [
+  { value: 'equipamentos', label: 'EQUIPAMENTOS E MÁQUINAS' },
+  { value: 'mobiliario', label: 'MOBILIÁRIO E INSTALAÇÕES' },
+  { value: 'obras_reformas', label: 'OBRAS E REFORMAS' },
+  { value: 'outros_investimentos', label: 'OUTROS INVESTIMENTOS' },
+  { value: 'tecnologia', label: 'TECNOLOGIA (COMPUTADORES, ETC)' },
+].sort((a, b) => a.label.localeCompare(b.label, 'pt-BR'))
+
+const SORTED_PAYMENT_METHODS = [...PAYMENT_METHODS]
+  .map((pm) => ({
+    id: pm.id,
+    name: pm.name.toUpperCase(),
+  }))
+  .sort((a, b) => a.name.localeCompare(b.name, 'pt-BR'))
+
 const formSchema = z
   .object({
     date: z
@@ -494,9 +583,11 @@ export function TransactionForm({ onSuccess, initialData, prefillDate }: Transac
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="FIXA">Fixa</SelectItem>
-                        <SelectItem value="VARIAVEL">Variável</SelectItem>
-                        <SelectItem value="INVESTIMENTO">Equipamentos e Investimentos</SelectItem>
+                        {EXPENSE_CATEGORIES.map((cat) => (
+                          <SelectItem key={cat.value} value={cat.value}>
+                            {cat.label}
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                     <FormMessage />
@@ -520,111 +611,24 @@ export function TransactionForm({ onSuccess, initialData, prefillDate }: Transac
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          {categoryId === 'FIXA' && (
-                            <>
-                              <SelectItem value="prolabore">
-                                Pró-labore: Retirada dos sócios
+                          {categoryId === 'FIXA' &&
+                            FIXED_SUBCATEGORIES.map((sub) => (
+                              <SelectItem key={sub.value} value={sub.value}>
+                                {sub.label}
                               </SelectItem>
-                              <SelectItem value="pessoal">
-                                Pessoal: Salários, encargos (FGTS/INSS) e benefícios
+                            ))}
+                          {categoryId === 'VARIAVEL' &&
+                            VARIABLE_SUBCATEGORIES.map((sub) => (
+                              <SelectItem key={sub.value} value={sub.value}>
+                                {sub.label}
                               </SelectItem>
-                              <SelectItem value="infraestrutura">
-                                Infraestrutura: Aluguel, IPTU e manutenção
+                            ))}
+                          {categoryId === 'INVESTIMENTO' &&
+                            INVESTMENT_SUBCATEGORIES.map((sub) => (
+                              <SelectItem key={sub.value} value={sub.value}>
+                                {sub.label}
                               </SelectItem>
-                              <SelectItem value="operacional_administrativo">
-                                Operacional e Admin.: Material de mercado, papelaria, informática,
-                                lanche, escritório
-                              </SelectItem>
-                              <SelectItem value="softwares_assinaturas">
-                                Softwares e Assinaturas: Mensalidades, relógio ponto, Sotech
-                              </SelectItem>
-                              <SelectItem value="utilidades">
-                                Utilidades: Energia, água e internet/telefone
-                              </SelectItem>
-                              <SelectItem value="servicos_profissionais">
-                                Serviços Prof. e Conformidade: Contabilidade, resíduos, qualidade,
-                                conselho, segurança laboral
-                              </SelectItem>
-                              <SelectItem value="seguros">
-                                Seguros: Seguro predial, pessoal, laboral e civil
-                              </SelectItem>
-                              <SelectItem value="financeiro">
-                                Financeiro: Taxas bancárias e tarifas
-                              </SelectItem>
-                              <SelectItem value="marketing">
-                                Marketing e Social: Divulgação, redes sociais, patrocínio e doação
-                              </SelectItem>
-                              <SelectItem value="juros_multas">
-                                Financeiro: Juros, Multas e Encargos
-                              </SelectItem>
-                              <SelectItem value="manutencao_equipamentos">
-                                Manutenção de Equipamentos
-                              </SelectItem>
-                              <SelectItem value="educacao_treinamentos">
-                                Educação e Treinamentos (Cursos/Congressos)
-                              </SelectItem>
-                              <SelectItem value="limpeza_conservacao">
-                                Limpeza e Conservação: Produtos de limpeza, serviço terceirizado
-                              </SelectItem>
-                              <SelectItem value="brindes_presentes">
-                                Brindes e Presentes: Brindes para clientes, presentes de fim de ano
-                              </SelectItem>
-                              <SelectItem value="outros">Outros</SelectItem>
-                            </>
-                          )}
-                          {categoryId === 'VARIAVEL' && (
-                            <>
-                              <SelectItem value="materia_prima">
-                                Matéria-prima: Insumos e ativos
-                              </SelectItem>
-                              <SelectItem value="embalagens">
-                                Embalagens: Frascos, potes, rótulos e caixas
-                              </SelectItem>
-                              <SelectItem value="medicamentos_drogaria">
-                                Medicamentos Drogaria: Produtos para revenda
-                              </SelectItem>
-                              <SelectItem value="impostos">
-                                Impostos: Simples Nacional, ICMS e tributos
-                              </SelectItem>
-                              <SelectItem value="taxas_cartao">
-                                Taxas de Cartão: Comissões e antecipações
-                              </SelectItem>
-                              <SelectItem value="logistica">
-                                Logística: Fretes e entregas
-                              </SelectItem>
-                              <SelectItem value="fidelidade_promocao">
-                                Fidelidade e Promoção: Programa de fidelidade
-                              </SelectItem>
-                              <SelectItem value="marketing_variavel">
-                                Marketing Variável: Campanhas sazonais (Dia das Mães, Black Friday,
-                                etc.)
-                              </SelectItem>
-                              <SelectItem value="comissoes">
-                                Comissões: Comissões sobre vendas
-                              </SelectItem>
-                              <SelectItem value="materiais_consumo">
-                                Materiais de Consumo: Luvas, máscaras e descartáveis que variam com
-                                atendimentos
-                              </SelectItem>
-                              <SelectItem value="devolucoes_perdas">
-                                Devoluções e Perdas: Perdas por vencimento, quebras, devoluções
-                              </SelectItem>
-                              <SelectItem value="outros">Outros</SelectItem>
-                            </>
-                          )}
-                          {categoryId === 'INVESTIMENTO' && (
-                            <>
-                              <SelectItem value="equipamentos">Equipamentos e Máquinas</SelectItem>
-                              <SelectItem value="obras_reformas">Obras e Reformas</SelectItem>
-                              <SelectItem value="mobiliario">Mobiliário e Instalações</SelectItem>
-                              <SelectItem value="tecnologia">
-                                Tecnologia (Computadores, etc)
-                              </SelectItem>
-                              <SelectItem value="outros_investimentos">
-                                Outros Investimentos
-                              </SelectItem>
-                            </>
-                          )}
+                            ))}
                         </SelectContent>
                       </Select>
                       <FormMessage />
@@ -652,12 +656,11 @@ export function TransactionForm({ onSuccess, initialData, prefillDate }: Transac
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="RECEITA_OPERACIONAL">
-                          Vendas/Serviços (Operacional)
-                        </SelectItem>
-                        <SelectItem value="RECEITA_NAO_OPERACIONAL">
-                          Dividendos e Lucros (Não Operacional)
-                        </SelectItem>
+                        {INCOME_CATEGORIES.map((cat) => (
+                          <SelectItem key={cat.value} value={cat.value}>
+                            {cat.label}
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                     <FormMessage />
@@ -680,7 +683,7 @@ export function TransactionForm({ onSuccess, initialData, prefillDate }: Transac
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {PAYMENT_METHODS.map((pm) => (
+                        {SORTED_PAYMENT_METHODS.map((pm) => (
                           <SelectItem key={pm.id} value={pm.id}>
                             {pm.name}
                           </SelectItem>
