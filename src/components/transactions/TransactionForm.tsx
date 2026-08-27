@@ -18,12 +18,21 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from '@/components/ui/dialog'
 import { useFinanceStore, PAYMENT_METHODS } from '@/stores/financeStore'
+import { useAuth } from '@/hooks/use-auth'
+import { supabase } from '@/lib/supabase/client'
 import { useToast } from '@/hooks/use-toast'
 import { useDraft } from '@/hooks/use-draft'
-import { useEffect, useState, useMemo, forwardRef, useRef } from 'react'
+import { useEffect, useState, useMemo, forwardRef, useRef, useCallback } from 'react'
 import { Transaction } from '@/types/finance'
-import { Tag as TagIcon, Lightbulb } from 'lucide-react'
+import { Tag as TagIcon, Lightbulb, PlusCircle, Loader2 } from 'lucide-react'
 
 // Opções de Categorias e Subcategorias com ordenação alfabética e labels em MAIÚSCULAS
 const EXPENSE_CATEGORIES = [
@@ -266,8 +275,77 @@ const CurrencyFieldInput = forwardRef<HTMLInputElement, any>(
 
 export function TransactionForm({ onSuccess, initialData, prefillDate }: TransactionFormProps) {
   const { transactions, addTransaction, updateTransaction } = useFinanceStore()
+  const { user, profile } = useAuth()
   const { toast } = useToast()
   const [loading, setLoading] = useState(false)
+
+  // Custom categories and payment methods state
+  const [customCategories, setCustomCategories] = useState<
+    { id: string; name: string; type: string }[]
+  >([])
+  const [customPaymentMethods, setCustomPaymentMethods] = useState<{ id: string; name: string }[]>(
+    [],
+  )
+  const [loadingCustomData, setLoadingCustomData] = useState(false)
+
+  // Dialog state for adding new subcategory / payment method
+  const [newSubcategoryDialogOpen, setNewSubcategoryDialogOpen] = useState(false)
+  const [newSubcategoryName, setNewSubcategoryName] = useState('')
+  const [savingSubcategory, setSavingSubcategory] = useState(false)
+
+  const [newPaymentMethodDialogOpen, setNewPaymentMethodDialogOpen] = useState(false)
+  const [newPaymentMethodName, setNewPaymentMethodName] = useState('')
+  const [savingPaymentMethod, setSavingPaymentMethod] = useState(false)
+
+  const projectId = profile?.app_name || user?.id
+
+  // Fetch custom categories and payment methods from DB
+  const loadCustomOptions = useCallback(async () => {
+    if (!user) return
+    setLoadingCustomData(true)
+    try {
+      let catQuery = supabase.from('user_categories').select('id, name, type')
+      let pmQuery = supabase.from('user_payment_methods').select('id, name')
+
+      if (projectId) {
+        catQuery = catQuery.eq('project_id', projectId)
+        pmQuery = pmQuery.eq('project_id', projectId)
+      } else {
+        catQuery = catQuery.eq('user_id', user.id)
+        pmQuery = pmQuery.eq('user_id', user.id)
+      }
+
+      const [catRes, pmRes] = await Promise.all([catQuery, pmQuery])
+
+      if (!catRes.error && catRes.data) {
+        setCustomCategories(
+          catRes.data.map((c) => ({
+            id: c.id,
+            name: (c.name || '').toUpperCase(),
+            type: c.type || 'fixed',
+          })),
+        )
+      }
+
+      if (!pmRes.error && pmRes.data) {
+        setCustomPaymentMethods(
+          pmRes.data.map((p) => ({
+            id: p.id,
+            name: (p.name || '').toUpperCase(),
+          })),
+        )
+      }
+    } catch (err) {
+      console.error('Erro ao carregar categorias/meios customizados:', err)
+      // Fallback: keeps standard lists
+    } finally {
+      setLoadingCustomData(false)
+    }
+  }, [user, projectId])
+
+  useEffect(() => {
+    loadCustomOptions()
+  }, [loadCustomOptions])
 
   const defaultEmptyValues = useMemo(
     () => ({
@@ -329,9 +407,134 @@ export function TransactionForm({ onSuccess, initialData, prefillDate }: Transac
   const type = form.watch('type')
   const categoryId = form.watch('categoryId')
   const [prevType, setPrevType] = useState(initialData?.type || form.getValues('type'))
-  const [prevCategoryId, setPrevCategoryId] = useState(
-    initialData?.categoryId || form.getValues('categoryId'),
+  const [prevCategoryId, setPrevCategoryId] = useState<string>(
+    initialData?.categoryId || form.getValues('categoryId') || '',
   )
+
+  // Merged subcategory options based on active category
+  const activeSubcategories = useMemo(() => {
+    if (categoryId === 'FIXA') {
+      const customFixed = customCategories
+        .filter((c) => c.type === 'fixed')
+        .map((c) => ({ value: c.name, label: c.name }))
+      return [...FIXED_SUBCATEGORIES, ...customFixed].sort((a, b) =>
+        a.label.localeCompare(b.label, 'pt-BR'),
+      )
+    }
+    if (categoryId === 'VARIAVEL') {
+      const customVariable = customCategories
+        .filter((c) => c.type === 'variable')
+        .map((c) => ({ value: c.name, label: c.name }))
+      return [...VARIABLE_SUBCATEGORIES, ...customVariable].sort((a, b) =>
+        a.label.localeCompare(b.label, 'pt-BR'),
+      )
+    }
+    if (categoryId === 'INVESTIMENTO') {
+      return [...INVESTMENT_SUBCATEGORIES].sort((a, b) => a.label.localeCompare(b.label, 'pt-BR'))
+    }
+    return []
+  }, [categoryId, customCategories])
+
+  // Merged payment methods list
+  const activePaymentMethods = useMemo(() => {
+    const customList = customPaymentMethods.map((p) => ({
+      id: p.name,
+      name: p.name,
+    }))
+    return [...SORTED_PAYMENT_METHODS, ...customList].sort((a, b) =>
+      a.name.localeCompare(b.name, 'pt-BR'),
+    )
+  }, [customPaymentMethods])
+
+  // Handler for adding a new subcategory
+  const handleSaveSubcategory = async () => {
+    const trimmed = newSubcategoryName.trim().toUpperCase()
+    if (!trimmed) {
+      toast({
+        title: 'Atenção',
+        description: 'Digite o nome da subcategoria.',
+        variant: 'destructive',
+      })
+      return
+    }
+    if (!user) return
+
+    setSavingSubcategory(true)
+    try {
+      const subType = categoryId === 'VARIAVEL' ? 'variable' : 'fixed'
+      const { data, error } = await supabase
+        .from('user_categories')
+        .insert({
+          user_id: user.id,
+          project_id: projectId || null,
+          name: trimmed,
+          type: subType,
+        })
+        .select()
+        .single()
+
+      if (error) throw error
+
+      toast({ title: 'Sucesso', description: 'Subcategoria criada com sucesso!' })
+      await loadCustomOptions()
+      form.setValue('subcategoryId', trimmed)
+      setNewSubcategoryDialogOpen(false)
+      setNewSubcategoryName('')
+    } catch (err: any) {
+      console.error('Erro ao salvar subcategoria:', err)
+      toast({
+        title: 'Erro',
+        description: err.message || 'Não foi possível salvar a subcategoria.',
+        variant: 'destructive',
+      })
+    } finally {
+      setSavingSubcategory(false)
+    }
+  }
+
+  // Handler for adding a new payment method
+  const handleSavePaymentMethod = async () => {
+    const trimmed = newPaymentMethodName.trim().toUpperCase()
+    if (!trimmed) {
+      toast({
+        title: 'Atenção',
+        description: 'Digite o nome do meio de pagamento.',
+        variant: 'destructive',
+      })
+      return
+    }
+    if (!user) return
+
+    setSavingPaymentMethod(true)
+    try {
+      const { data, error } = await supabase
+        .from('user_payment_methods')
+        .insert({
+          user_id: user.id,
+          project_id: projectId || null,
+          name: trimmed,
+        })
+        .select()
+        .single()
+
+      if (error) throw error
+
+      toast({ title: 'Sucesso', description: 'Meio de pagamento criado com sucesso!' })
+      await loadCustomOptions()
+      form.setValue('paymentMethodId', trimmed)
+      setNewPaymentMethodDialogOpen(false)
+      setNewPaymentMethodName('')
+    } catch (err: any) {
+      console.error('Erro ao salvar meio de pagamento:', err)
+      toast({
+        title: 'Erro',
+        description: err.message || 'Não foi possível salvar o meio de pagamento.',
+        variant: 'destructive',
+      })
+    } finally {
+      setSavingPaymentMethod(false)
+    }
+  }
 
   useEffect(() => {
     if (type !== prevType) {
@@ -367,14 +570,14 @@ export function TransactionForm({ onSuccess, initialData, prefillDate }: Transac
       let finalDescription = values.description?.trim().toUpperCase() || ''
 
       if (values.type === 'INCOME') {
-        const allMethods = PAYMENT_METHODS
-        const pmName = allMethods.find((p) => p.id === values.paymentMethodId)?.name || ''
+        const selectedPm = activePaymentMethods.find((p) => p.id === values.paymentMethodId)
+        const pmName = selectedPm ? selectedPm.name : values.paymentMethodId || ''
         const newAutoDesc = pmName ? `RECEITA - ${pmName.toUpperCase()}` : 'RECEITA'
 
         if (initialData?.id && initialData.type === 'INCOME') {
           const descUpper = initialData.description.toUpperCase()
           const wasAutoGenerated =
-            allMethods.some((pm) => descUpper === `RECEITA - ${pm.name.toUpperCase()}`) ||
+            activePaymentMethods.some((pm) => descUpper === `RECEITA - ${pm.name.toUpperCase()}`) ||
             descUpper === 'RECEITA'
           if (wasAutoGenerated) {
             finalDescription = newAutoDesc
@@ -604,31 +807,50 @@ export function TransactionForm({ onSuccess, initialData, prefillDate }: Transac
                       <FormLabel>
                         Subcategoria <span className="text-red-500">*</span>
                       </FormLabel>
-                      <Select onValueChange={field.onChange} value={field.value || undefined}>
+                      <Select
+                        onValueChange={(val) => {
+                          if (val === '__NEW_SUBCATEGORY__') {
+                            setNewSubcategoryName('')
+                            setNewSubcategoryDialogOpen(true)
+                          } else {
+                            field.onChange(val)
+                          }
+                        }}
+                        value={field.value || undefined}
+                      >
                         <FormControl>
                           <SelectTrigger className="h-12 sm:h-10 text-base sm:text-sm">
-                            <SelectValue placeholder="Selecione a classificação..." />
+                            <SelectValue
+                              placeholder={
+                                loadingCustomData
+                                  ? 'Carregando subcategorias...'
+                                  : 'Selecione a classificação...'
+                              }
+                            />
                           </SelectTrigger>
                         </FormControl>
-                        <SelectContent>
-                          {categoryId === 'FIXA' &&
-                            FIXED_SUBCATEGORIES.map((sub) => (
-                              <SelectItem key={sub.value} value={sub.value}>
-                                {sub.label}
-                              </SelectItem>
-                            ))}
-                          {categoryId === 'VARIAVEL' &&
-                            VARIABLE_SUBCATEGORIES.map((sub) => (
-                              <SelectItem key={sub.value} value={sub.value}>
-                                {sub.label}
-                              </SelectItem>
-                            ))}
-                          {categoryId === 'INVESTIMENTO' &&
-                            INVESTMENT_SUBCATEGORIES.map((sub) => (
-                              <SelectItem key={sub.value} value={sub.value}>
-                                {sub.label}
-                              </SelectItem>
-                            ))}
+                        <SelectContent className="max-h-[300px]">
+                          {loadingCustomData && (
+                            <div className="flex items-center justify-center p-2 text-xs text-muted-foreground gap-2">
+                              <Loader2 className="w-3.5 h-3.5 animate-spin" /> Carregando...
+                            </div>
+                          )}
+                          {activeSubcategories.map((sub) => (
+                            <SelectItem key={sub.value} value={sub.value}>
+                              {sub.label}
+                            </SelectItem>
+                          ))}
+                          {(categoryId === 'FIXA' || categoryId === 'VARIAVEL') && (
+                            <SelectItem
+                              value="__NEW_SUBCATEGORY__"
+                              className="font-bold text-emerald-600 focus:text-emerald-700 focus:bg-emerald-50 cursor-pointer border-t mt-1 pt-2"
+                            >
+                              <span className="flex items-center gap-1.5">
+                                <PlusCircle className="w-4 h-4 text-emerald-600" />+ Nova
+                                subcategoria
+                              </span>
+                            </SelectItem>
+                          )}
                         </SelectContent>
                       </Select>
                       <FormMessage />
@@ -676,18 +898,47 @@ export function TransactionForm({ onSuccess, initialData, prefillDate }: Transac
                     <FormLabel>
                       Meio de Pagamento / Origem <span className="text-red-500">*</span>
                     </FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value || undefined}>
+                    <Select
+                      onValueChange={(val) => {
+                        if (val === '__NEW_PAYMENT_METHOD__') {
+                          setNewPaymentMethodName('')
+                          setNewPaymentMethodDialogOpen(true)
+                        } else {
+                          field.onChange(val)
+                        }
+                      }}
+                      value={field.value || undefined}
+                    >
                       <FormControl>
                         <SelectTrigger className="h-12 sm:h-10 text-base sm:text-sm">
-                          <SelectValue placeholder="Selecione..." />
+                          <SelectValue
+                            placeholder={
+                              loadingCustomData
+                                ? 'Carregando meios...'
+                                : 'Selecione o meio de pagamento...'
+                            }
+                          />
                         </SelectTrigger>
                       </FormControl>
-                      <SelectContent>
-                        {SORTED_PAYMENT_METHODS.map((pm) => (
+                      <SelectContent className="max-h-[300px]">
+                        {loadingCustomData && (
+                          <div className="flex items-center justify-center p-2 text-xs text-muted-foreground gap-2">
+                            <Loader2 className="w-3.5 h-3.5 animate-spin" /> Carregando...
+                          </div>
+                        )}
+                        {activePaymentMethods.map((pm) => (
                           <SelectItem key={pm.id} value={pm.id}>
                             {pm.name}
                           </SelectItem>
                         ))}
+                        <SelectItem
+                          value="__NEW_PAYMENT_METHOD__"
+                          className="font-bold text-emerald-600 focus:text-emerald-700 focus:bg-emerald-50 cursor-pointer border-t mt-1 pt-2"
+                        >
+                          <span className="flex items-center gap-1.5">
+                            <PlusCircle className="w-4 h-4 text-emerald-600" />+ Novo meio
+                          </span>
+                        </SelectItem>
                       </SelectContent>
                     </Select>
                     <p className="text-[11px] text-slate-500 mt-2 flex items-start gap-1.5 leading-tight">
@@ -737,6 +988,124 @@ export function TransactionForm({ onSuccess, initialData, prefillDate }: Transac
           {loading ? 'Salvando...' : initialData ? 'Atualizar Lançamento' : 'Salvar Lançamento'}
         </Button>
       </form>
+
+      {/* Dialog para Criar Nova Subcategoria */}
+      <Dialog
+        open={newSubcategoryDialogOpen}
+        onOpenChange={(open) => {
+          if (!savingSubcategory) setNewSubcategoryDialogOpen(open)
+        }}
+      >
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-lg font-bold">
+              + Nova Subcategoria ({categoryId === 'FIXA' ? 'Despesa Fixa' : 'Despesa Variável'})
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-2">
+            <p className="text-xs text-muted-foreground">
+              Digite o nome da nova subcategoria. Ela será salva em maiúsculas e estará disponível
+              para seus lançamentos.
+            </p>
+            <Input
+              autoFocus
+              placeholder="NOME DA SUBCATEGORIA"
+              value={newSubcategoryName}
+              onChange={(e) => setNewSubcategoryName(e.target.value.toUpperCase())}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault()
+                  handleSaveSubcategory()
+                }
+              }}
+              disabled={savingSubcategory}
+            />
+          </div>
+          <DialogFooter className="flex-row justify-end gap-2 sm:gap-0">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setNewSubcategoryDialogOpen(false)}
+              disabled={savingSubcategory}
+            >
+              Cancelar
+            </Button>
+            <Button
+              type="button"
+              className="bg-emerald-600 hover:bg-emerald-700 text-white"
+              onClick={handleSaveSubcategory}
+              disabled={savingSubcategory || !newSubcategoryName.trim()}
+            >
+              {savingSubcategory ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" /> Salvando...
+                </>
+              ) : (
+                'Salvar Subcategoria'
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Dialog para Criar Novo Meio de Pagamento */}
+      <Dialog
+        open={newPaymentMethodDialogOpen}
+        onOpenChange={(open) => {
+          if (!savingPaymentMethod) setNewPaymentMethodDialogOpen(open)
+        }}
+      >
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-lg font-bold">
+              + Novo Meio de Pagamento / Origem
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-2">
+            <p className="text-xs text-muted-foreground">
+              Digite o nome do novo meio de pagamento/origem de receita. Ele será salvo em
+              maiúsculas.
+            </p>
+            <Input
+              autoFocus
+              placeholder="EX: IFOOD, CONVÊNIO, MERCADO PAGO"
+              value={newPaymentMethodName}
+              onChange={(e) => setNewPaymentMethodName(e.target.value.toUpperCase())}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault()
+                  handleSavePaymentMethod()
+                }
+              }}
+              disabled={savingPaymentMethod}
+            />
+          </div>
+          <DialogFooter className="flex-row justify-end gap-2 sm:gap-0">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setNewPaymentMethodDialogOpen(false)}
+              disabled={savingPaymentMethod}
+            >
+              Cancelar
+            </Button>
+            <Button
+              type="button"
+              className="bg-emerald-600 hover:bg-emerald-700 text-white"
+              onClick={handleSavePaymentMethod}
+              disabled={savingPaymentMethod || !newPaymentMethodName.trim()}
+            >
+              {savingPaymentMethod ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" /> Salvando...
+                </>
+              ) : (
+                'Salvar Meio'
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </Form>
   )
 }
