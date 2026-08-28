@@ -42,9 +42,9 @@ const EXPENSE_CATEGORIES = [
 ].sort((a, b) => a.label.localeCompare(b.label, 'pt-BR'))
 
 const INCOME_CATEGORIES = [
-  { value: 'RECEITA_NAO_OPERACIONAL', label: 'DIVIDENDOS E LUCROS (NÃO OPERACIONAL)' },
   { value: 'RECEITA_OPERACIONAL', label: 'VENDAS/SERVIÇOS (OPERACIONAL)' },
-].sort((a, b) => a.label.localeCompare(b.label, 'pt-BR'))
+  { value: 'RECEITA_NAO_OPERACIONAL', label: 'DIVIDENDOS E LUCROS (NÃO OPERACIONAL)' },
+]
 
 const FIXED_SUBCATEGORIES = [
   {
@@ -701,6 +701,37 @@ export function TransactionForm({ onSuccess, initialData, prefillDate }: Transac
           )}
         />
 
+        <FormField
+          control={form.control}
+          name="amount"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>
+                Valor (R$) <span className="text-red-500">*</span>
+              </FormLabel>
+              {type === 'CORTESIA' && (
+                <p className="text-[11px] text-slate-500 font-medium mb-1.5 -mt-1 leading-tight">
+                  * Preencher com o valor do custo da matéria prima + embalagem da fórmula.
+                </p>
+              )}
+              <FormControl>
+                <div className="relative">
+                  <span className="absolute left-3 top-3.5 sm:top-2.5 text-sm text-slate-500 dark:text-slate-400 font-medium">
+                    R$
+                  </span>
+                  <CurrencyFieldInput
+                    field={field}
+                    required
+                    className="pl-9 h-12 sm:h-10 text-base sm:text-sm"
+                    placeholder="0,00"
+                  />
+                </div>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
         {(type === 'EXPENSE' ||
           type === 'CORTESIA' ||
           type === 'PARTNER_WITHDRAWAL' ||
@@ -736,37 +767,6 @@ export function TransactionForm({ onSuccess, initialData, prefillDate }: Transac
             )}
           />
         )}
-
-        <FormField
-          control={form.control}
-          name="amount"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>
-                Valor (R$) <span className="text-red-500">*</span>
-              </FormLabel>
-              {type === 'CORTESIA' && (
-                <p className="text-[11px] text-slate-500 font-medium mb-1.5 -mt-1 leading-tight">
-                  * Preencher com o valor do custo da matéria prima + embalagem da fórmula.
-                </p>
-              )}
-              <FormControl>
-                <div className="relative">
-                  <span className="absolute left-3 top-3.5 sm:top-2.5 text-sm text-slate-500 dark:text-slate-400 font-medium">
-                    R$
-                  </span>
-                  <CurrencyFieldInput
-                    field={field}
-                    required
-                    className="pl-9 h-12 sm:h-10 text-base sm:text-sm"
-                    placeholder="0,00"
-                  />
-                </div>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
 
         <div className="grid grid-cols-1 gap-4 transition-all duration-300 min-h-[80px]">
           {type === 'EXPENSE' && (
