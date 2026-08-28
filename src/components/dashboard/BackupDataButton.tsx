@@ -5,6 +5,7 @@ import { supabase } from '@/lib/supabase/client'
 import { toast } from 'sonner'
 import { format } from 'date-fns'
 import { useAuth } from '@/hooks/use-auth'
+import { useFinanceStore } from '@/stores/financeStore'
 
 export function BackupDataButton() {
   const { user, profile } = useAuth()
