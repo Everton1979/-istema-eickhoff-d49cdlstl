@@ -37,12 +37,14 @@ Deno.serve(async (req: Request) => {
     // Create admin client to bypass RLS and use auth.admin methods
     const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey)
 
-    const { action, email, password, userId, company_name, app_name, role } = await req.json()
+    const reqBody = await req.json()
+    const { action, email, password, userId, company_name, app_name, role, access_profile } =
+      reqBody
 
     // Get current user's profile to enforce permissions
     const { data: currentUserProfile, error: profileError } = await supabaseAdmin
       .from('profiles')
-      .select('role, app_name, is_super_admin')
+      .select('role, app_name, is_super_admin, access_profile, cnpj, company_name')
       .eq('id', user.id)
       .single()
 
@@ -52,72 +54,87 @@ Deno.serve(async (req: Request) => {
 
     const isMasterEmail = user.email === 'farmaciaeickhoff@terra.com.br'
     const isSuperAdmin =
-      currentUserProfile.role === 'Master' ||
-      currentUserProfile.role === 'Administrador' ||
-      currentUserProfile.role === 'admin' ||
-      currentUserProfile.is_super_admin ||
-      isMasterEmail
+      currentUserProfile.role === 'Master' || currentUserProfile.is_super_admin || isMasterEmail
+    const isProprietario =
+      isSuperAdmin ||
+      currentUserProfile.access_profile === 'Proprietário' ||
+      currentUserProfile.role === 'Administrador'
+
+    if (!isProprietario) {
+      throw new Error('Apenas o Proprietário ou Administrador Master pode gerenciar usuários.')
+    }
 
     if (action === 'create') {
       const fallbackAppName = currentUserProfile.app_name || user.id
-      let targetAppName = app_name || fallbackAppName
-
-      // Master users can only create users for their own app_name
-      if (!isSuperAdmin) {
-        targetAppName = fallbackAppName
-      }
+      const targetAppName = isSuperAdmin ? app_name || fallbackAppName : fallbackAppName
+      const targetCnpj = currentUserProfile.cnpj || ''
+      const targetCompany = currentUserProfile.company_name || company_name || ''
+      const targetAccessProfile = access_profile || 'Colaborador'
+      const targetRole = isSuperAdmin ? role || 'Administrador' : 'Administrador'
 
       const { data, error } = await supabaseAdmin.auth.admin.createUser({
         email,
         password,
         email_confirm: true,
-        user_metadata: { app_name: targetAppName },
+        user_metadata: {
+          app_name: targetAppName,
+          cnpj: targetCnpj,
+          company_name: targetCompany,
+          role: targetRole,
+          access_profile: targetAccessProfile,
+          status: 'Aprovado',
+        },
       })
-      if (error) throw error
 
-      let targetRole = role || 'Atendente'
+      if (error) throw new Error(`Erro ao criar usuário: ${error.message}`)
 
-      // Prevent Master from creating another Administrador
-      if (!isSuperAdmin && targetRole === 'Administrador') {
-        targetRole = 'Atendente'
-      }
-
-      // Update the profile role and company_name
-      await supabaseAdmin
+      // Update profile created by trigger
+      const { error: updateError } = await supabaseAdmin
         .from('profiles')
         .update({
           role: targetRole,
-          company_name: company_name || null,
-          status: 'Ativo',
+          access_profile: targetAccessProfile,
+          company_name: targetCompany,
           app_name: targetAppName,
+          cnpj: targetCnpj,
+          status: 'Aprovado',
         })
         .eq('id', data.user.id)
 
-      return new Response(JSON.stringify({ user: data.user }), {
+      if (updateError) {
+        console.error('Error updating user profile after create:', updateError)
+      }
+
+      return new Response(JSON.stringify({ success: true, user: data.user }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       })
     }
 
     if (action === 'delete') {
-      if (!isMasterEmail) {
-        throw new Error('Apenas o Master principal pode excluir usuários definitivamente.')
-      }
+      if (!userId) throw new Error('User ID is required')
 
-      if (!userId) throw new Error('ID do usuário não fornecido para exclusão.')
-      // Don't allow deleting self
-      if (userId === user.id) {
-        throw new Error('Não é permitido excluir o próprio usuário')
-      }
+      // Non-super-admin can only delete users in their own app_name / company
+      if (!isSuperAdmin) {
+        const { data: targetProfile, error: targetError } = await supabaseAdmin
+          .from('profiles')
+          .select('app_name, cnpj, role, access_profile')
+          .eq('id', userId)
+          .single()
 
-      // Check target user
-      const { data: targetUser, error: targetError } = await supabaseAdmin
-        .from('profiles')
-        .select('app_name, role')
-        .eq('id', userId)
-        .single()
+        if (targetError || !targetProfile) {
+          throw new Error('Usuário alvo não encontrado')
+        }
 
-      if (targetError || !targetUser) {
-        throw new Error('Usuário alvo não encontrado.')
+        const samePharmacy =
+          (currentUserProfile.app_name && targetProfile.app_name === currentUserProfile.app_name) ||
+          (currentUserProfile.cnpj && targetProfile.cnpj === currentUserProfile.cnpj)
+
+        if (!samePharmacy) {
+          throw new Error('Você só pode excluir usuários da sua farmácia')
+        }
+        if (targetProfile.role === 'Master') {
+          throw new Error('Não é possível excluir o usuário Master')
+        }
       }
 
       const { error } = await supabaseAdmin.auth.admin.deleteUser(userId)
@@ -129,8 +146,8 @@ Deno.serve(async (req: Request) => {
     }
 
     throw new Error('Invalid action')
-  } catch (error: any) {
-    return new Response(JSON.stringify({ error: error.message }), {
+  } catch (err: any) {
+    return new Response(JSON.stringify({ error: err.message }), {
       status: 400,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     })
