@@ -32,7 +32,7 @@ import { useToast } from '@/hooks/use-toast'
 import { useDraft } from '@/hooks/use-draft'
 import { useEffect, useState, useMemo, forwardRef, useRef, useCallback } from 'react'
 import { Transaction } from '@/types/finance'
-import { Tag as TagIcon, Lightbulb, PlusCircle, Loader2 } from 'lucide-react'
+import { Tag as TagIcon, Lightbulb, PlusCircle, Loader2, Search } from 'lucide-react'
 
 // Opções de Categorias e Subcategorias com ordenação alfabética e labels em MAIÚSCULAS
 const EXPENSE_CATEGORIES = [
@@ -297,6 +297,10 @@ export function TransactionForm({ onSuccess, initialData, prefillDate }: Transac
   const [newPaymentMethodName, setNewPaymentMethodName] = useState('')
   const [savingPaymentMethod, setSavingPaymentMethod] = useState(false)
 
+  // Search query states for subcategory and payment method dropdowns
+  const [subcategorySearch, setSubcategorySearch] = useState('')
+  const [paymentMethodSearch, setPaymentMethodSearch] = useState('')
+
   const projectId = profile?.app_name || user?.id
 
   // Fetch custom categories and payment methods from DB
@@ -413,27 +417,32 @@ export function TransactionForm({ onSuccess, initialData, prefillDate }: Transac
 
   // Merged subcategory options based on active category
   const activeSubcategories = useMemo(() => {
+    let list: { value: string; label: string }[] = []
     if (categoryId === 'FIXA') {
       const customFixed = customCategories
         .filter((c) => c.type === 'fixed')
         .map((c) => ({ value: c.name, label: c.name }))
-      return [...FIXED_SUBCATEGORIES, ...customFixed].sort((a, b) =>
+      list = [...FIXED_SUBCATEGORIES, ...customFixed].sort((a, b) =>
         a.label.localeCompare(b.label, 'pt-BR'),
       )
-    }
-    if (categoryId === 'VARIAVEL') {
+    } else if (categoryId === 'VARIAVEL') {
       const customVariable = customCategories
         .filter((c) => c.type === 'variable')
         .map((c) => ({ value: c.name, label: c.name }))
-      return [...VARIABLE_SUBCATEGORIES, ...customVariable].sort((a, b) =>
+      list = [...VARIABLE_SUBCATEGORIES, ...customVariable].sort((a, b) =>
         a.label.localeCompare(b.label, 'pt-BR'),
       )
+    } else if (categoryId === 'INVESTIMENTO') {
+      list = [...INVESTMENT_SUBCATEGORIES].sort((a, b) => a.label.localeCompare(b.label, 'pt-BR'))
     }
-    if (categoryId === 'INVESTIMENTO') {
-      return [...INVESTMENT_SUBCATEGORIES].sort((a, b) => a.label.localeCompare(b.label, 'pt-BR'))
-    }
-    return []
+    return list
   }, [categoryId, customCategories])
+
+  const filteredSubcategories = useMemo(() => {
+    if (!subcategorySearch.trim()) return activeSubcategories
+    const term = subcategorySearch.toLowerCase().trim()
+    return activeSubcategories.filter((sub) => sub.label.toLowerCase().includes(term))
+  }, [activeSubcategories, subcategorySearch])
 
   // Merged payment methods list
   const activePaymentMethods = useMemo(() => {
@@ -445,6 +454,12 @@ export function TransactionForm({ onSuccess, initialData, prefillDate }: Transac
       a.name.localeCompare(b.name, 'pt-BR'),
     )
   }, [customPaymentMethods])
+
+  const filteredPaymentMethods = useMemo(() => {
+    if (!paymentMethodSearch.trim()) return activePaymentMethods
+    const term = paymentMethodSearch.toLowerCase().trim()
+    return activePaymentMethods.filter((pm) => pm.name.toLowerCase().includes(term))
+  }, [activePaymentMethods, paymentMethodSearch])
 
   // Handler for adding a new subcategory
   const handleSaveSubcategory = async () => {
@@ -559,6 +574,7 @@ export function TransactionForm({ onSuccess, initialData, prefillDate }: Transac
   useEffect(() => {
     if (categoryId !== prevCategoryId) {
       form.setValue('subcategoryId', '')
+      setSubcategorySearch('')
       setPrevCategoryId(categoryId || '')
     }
   }, [categoryId, form, prevCategoryId])
@@ -816,6 +832,11 @@ export function TransactionForm({ onSuccess, initialData, prefillDate }: Transac
                             field.onChange(val)
                           }
                         }}
+                        onOpenChange={(open) => {
+                          if (!open) {
+                            setSubcategorySearch('')
+                          }
+                        }}
                         value={field.value || undefined}
                       >
                         <FormControl>
@@ -829,17 +850,36 @@ export function TransactionForm({ onSuccess, initialData, prefillDate }: Transac
                             />
                           </SelectTrigger>
                         </FormControl>
-                        <SelectContent className="max-h-[300px]">
+                        <SelectContent className="max-h-[420px]">
+                          <div
+                            className="sticky top-0 z-10 bg-popover p-1 border-b mb-1"
+                            onKeyDown={(e) => e.stopPropagation()}
+                          >
+                            <div className="relative flex items-center">
+                              <Search className="absolute left-2.5 w-3.5 h-3.5 text-muted-foreground pointer-events-none" />
+                              <Input
+                                placeholder="Buscar subcategoria..."
+                                value={subcategorySearch}
+                                onChange={(e) => setSubcategorySearch(e.target.value)}
+                                className="h-8 pl-8 text-xs w-full bg-background focus-visible:ring-1"
+                              />
+                            </div>
+                          </div>
                           {loadingCustomData && (
                             <div className="flex items-center justify-center p-2 text-xs text-muted-foreground gap-2">
                               <Loader2 className="w-3.5 h-3.5 animate-spin" /> Carregando...
                             </div>
                           )}
-                          {activeSubcategories.map((sub) => (
+                          {filteredSubcategories.map((sub) => (
                             <SelectItem key={sub.value} value={sub.value}>
                               {sub.label}
                             </SelectItem>
                           ))}
+                          {filteredSubcategories.length === 0 && !loadingCustomData && (
+                            <div className="py-3 text-center text-xs text-muted-foreground">
+                              Nenhuma subcategoria encontrada
+                            </div>
+                          )}
                           {(categoryId === 'FIXA' || categoryId === 'VARIAVEL') && (
                             <SelectItem
                               value="__NEW_SUBCATEGORY__"
@@ -907,6 +947,11 @@ export function TransactionForm({ onSuccess, initialData, prefillDate }: Transac
                           field.onChange(val)
                         }
                       }}
+                      onOpenChange={(open) => {
+                        if (!open) {
+                          setPaymentMethodSearch('')
+                        }
+                      }}
                       value={field.value || undefined}
                     >
                       <FormControl>
@@ -920,17 +965,36 @@ export function TransactionForm({ onSuccess, initialData, prefillDate }: Transac
                           />
                         </SelectTrigger>
                       </FormControl>
-                      <SelectContent className="max-h-[300px]">
+                      <SelectContent className="max-h-[420px]">
+                        <div
+                          className="sticky top-0 z-10 bg-popover p-1 border-b mb-1"
+                          onKeyDown={(e) => e.stopPropagation()}
+                        >
+                          <div className="relative flex items-center">
+                            <Search className="absolute left-2.5 w-3.5 h-3.5 text-muted-foreground pointer-events-none" />
+                            <Input
+                              placeholder="Buscar meio / origem..."
+                              value={paymentMethodSearch}
+                              onChange={(e) => setPaymentMethodSearch(e.target.value)}
+                              className="h-8 pl-8 text-xs w-full bg-background focus-visible:ring-1"
+                            />
+                          </div>
+                        </div>
                         {loadingCustomData && (
                           <div className="flex items-center justify-center p-2 text-xs text-muted-foreground gap-2">
                             <Loader2 className="w-3.5 h-3.5 animate-spin" /> Carregando...
                           </div>
                         )}
-                        {activePaymentMethods.map((pm) => (
+                        {filteredPaymentMethods.map((pm) => (
                           <SelectItem key={pm.id} value={pm.id}>
                             {pm.name}
                           </SelectItem>
                         ))}
+                        {filteredPaymentMethods.length === 0 && !loadingCustomData && (
+                          <div className="py-3 text-center text-xs text-muted-foreground">
+                            Nenhum meio encontrado
+                          </div>
+                        )}
                         <SelectItem
                           value="__NEW_PAYMENT_METHOD__"
                           className="font-bold text-emerald-600 focus:text-emerald-700 focus:bg-emerald-50 cursor-pointer border-t mt-1 pt-2"
