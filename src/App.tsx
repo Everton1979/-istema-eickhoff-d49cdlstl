@@ -19,6 +19,7 @@ import ResetPassword from './pages/ResetPassword'
 import Layout from './components/Layout'
 import Profile from './pages/Profile'
 import BlockedAccess from './pages/BlockedAccess'
+import Demo from './pages/Demo'
 
 const ProtectedRoute = ({
   children,
@@ -118,6 +119,7 @@ const App = () => (
               <Route path="/esqueci-a-senha" element={<ForgotPassword />} />
               <Route path="/nova-senha" element={<ResetPassword />} />
               <Route path="/pendente" element={<PendingApproval />} />
+              <Route path="/demo" element={<Demo />} />
               <Route
                 path="/bloqueado"
                 element={

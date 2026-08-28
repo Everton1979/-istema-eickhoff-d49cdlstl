@@ -3,7 +3,9 @@ import { AlertTriangle } from 'lucide-react'
 
 export function PlanExpirationBanner() {
   const { profile } = useAuth()
+  const isDemo = typeof window !== 'undefined' && window.location.pathname.startsWith('/demo')
 
+  if (isDemo) return null
   if (profile?.role === 'Administrador') return null
   if (!profile?.plan_end_date) return null
 

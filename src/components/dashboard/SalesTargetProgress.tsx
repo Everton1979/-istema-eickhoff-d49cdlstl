@@ -242,9 +242,10 @@ function TargetCard({
 }
 
 export function SystemSalesCards() {
-  const { monthlyMetrics, saveMonthlyMetric, filters } = useFinanceStore()
+  const { monthlyMetrics, saveMonthlyMetric, filters, isDemoMode } = useFinanceStore()
   const { profile } = useAuth()
   const isEditableRole =
+    isDemoMode ||
     profile?.role === 'Administrador' ||
     profile?.role === 'Colaborador' ||
     profile?.role === 'Master' ||
@@ -336,8 +337,8 @@ export function SystemSalesCards() {
       orders_count: existing?.orders_count || 0,
       total_system_sales: existing?.total_system_sales || 0,
       raw_material_costs: existing?.raw_material_costs || 0,
-      sales_target: existing?.sales_target || 0,
-      global_sales_target: existing?.global_sales_target || 0,
+      sales_target: val + (existing?.meta_vendas_sistema_revenda || 0),
+      global_sales_target: val + (existing?.meta_vendas_sistema_revenda || 0),
       num_formulas_capsulas: existing?.num_formulas_capsulas || 0,
       vendas_capsulas: existing?.vendas_capsulas || 0,
       custo_mp_emb_capsulas: existing?.custo_mp_emb_capsulas || 0,
@@ -349,7 +350,7 @@ export function SystemSalesCards() {
       colaboradores_capsulas: existing?.colaboradores_capsulas || 0,
       colaboradores_dermato: existing?.colaboradores_dermato || 0,
       colaboradores_vendas: existing?.colaboradores_vendas || 0,
-      meta_vendas_manipulacao: existing?.meta_vendas_manipulacao || 0,
+      meta_vendas_manipulacao: val,
       meta_vendas_extra: existing?.meta_vendas_extra || 0,
       meta_vendas_sistema_manipulacao: val,
       meta_vendas_sistema_revenda: existing?.meta_vendas_sistema_revenda || 0,
@@ -366,8 +367,8 @@ export function SystemSalesCards() {
       orders_count: existing?.orders_count || 0,
       total_system_sales: existing?.total_system_sales || 0,
       raw_material_costs: existing?.raw_material_costs || 0,
-      sales_target: existing?.sales_target || 0,
-      global_sales_target: existing?.global_sales_target || 0,
+      sales_target: (existing?.meta_vendas_sistema_manipulacao || 0) + val,
+      global_sales_target: (existing?.meta_vendas_sistema_manipulacao || 0) + val,
       num_formulas_capsulas: existing?.num_formulas_capsulas || 0,
       vendas_capsulas: existing?.vendas_capsulas || 0,
       custo_mp_emb_capsulas: existing?.custo_mp_emb_capsulas || 0,
@@ -380,7 +381,7 @@ export function SystemSalesCards() {
       colaboradores_dermato: existing?.colaboradores_dermato || 0,
       colaboradores_vendas: existing?.colaboradores_vendas || 0,
       meta_vendas_manipulacao: existing?.meta_vendas_manipulacao || 0,
-      meta_vendas_extra: existing?.meta_vendas_extra || 0,
+      meta_vendas_extra: val,
       meta_vendas_sistema_manipulacao: existing?.meta_vendas_sistema_manipulacao || 0,
       meta_vendas_sistema_revenda: val,
     })

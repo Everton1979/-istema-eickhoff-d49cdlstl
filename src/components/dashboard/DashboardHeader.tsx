@@ -30,6 +30,7 @@ const MONTHS = [
 export function DashboardHeader() {
   const financeStore = useFinanceStore()
   const { signOut, canManageUsers, isColaborador } = useAuth()
+  const isDemo = financeStore.isDemoMode
 
   const filters = financeStore.filters
   const setFilter = financeStore.setFilter
@@ -95,7 +96,7 @@ export function DashboardHeader() {
           </Tooltip>
         )}
 
-        {canManageUsers && (
+        {!isDemo && canManageUsers && (
           <Tooltip>
             <TooltipTrigger asChild>
               <Link
@@ -109,17 +110,19 @@ export function DashboardHeader() {
           </Tooltip>
         )}
 
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Link
-              to="/perfil"
-              className="p-2 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-md text-slate-600 dark:text-slate-400 transition-colors"
-            >
-              <UserCircle className="w-5 h-5" />
-            </Link>
-          </TooltipTrigger>
-          <TooltipContent>Perfil</TooltipContent>
-        </Tooltip>
+        {!isDemo && (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Link
+                to="/perfil"
+                className="p-2 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-md text-slate-600 dark:text-slate-400 transition-colors"
+              >
+                <UserCircle className="w-5 h-5" />
+              </Link>
+            </TooltipTrigger>
+            <TooltipContent>Perfil</TooltipContent>
+          </Tooltip>
+        )}
 
         {!isColaborador && (
           <div className="flex items-center">
@@ -129,14 +132,24 @@ export function DashboardHeader() {
 
         <Tooltip>
           <TooltipTrigger asChild>
-            <button
-              onClick={() => signOut()}
-              className="p-2 hover:bg-red-100 dark:hover:bg-red-900/30 rounded-md text-red-600 transition-colors"
-            >
-              <LogOut className="w-5 h-5" />
-            </button>
+            {isDemo ? (
+              <Link
+                to="/login"
+                className="p-2 hover:bg-blue-100 dark:hover:bg-blue-900/30 rounded-md text-blue-600 transition-colors flex items-center gap-1 font-semibold text-xs"
+                title="Acessar Login"
+              >
+                <LogOut className="w-5 h-5" />
+              </Link>
+            ) : (
+              <button
+                onClick={() => signOut()}
+                className="p-2 hover:bg-red-100 dark:hover:bg-red-900/30 rounded-md text-red-600 transition-colors"
+              >
+                <LogOut className="w-5 h-5" />
+              </button>
+            )}
           </TooltipTrigger>
-          <TooltipContent>Sair</TooltipContent>
+          <TooltipContent>{isDemo ? 'Ir para Login' : 'Sair'}</TooltipContent>
         </Tooltip>
       </div>
     </div>

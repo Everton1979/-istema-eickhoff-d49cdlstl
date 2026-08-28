@@ -89,7 +89,7 @@ import {
 } from '@/components/ui/select'
 
 export function PricingAssistant() {
-  const { filters } = useFinanceStore()
+  const { filters, isDemoMode, monthlyMetrics, transactions } = useFinanceStore()
   const { user, profile } = useAuth()
 
   const [cost, setCost] = useState<number | ''>('')
@@ -103,8 +103,6 @@ export function PricingAssistant() {
   const filterMonths = filters.months.join(',')
 
   useEffect(() => {
-    if (!user) return
-
     const activeYear =
       filters.years.length === 1 ? parseInt(filters.years[0]) : new Date().getFullYear()
     const activeMonth =
@@ -114,6 +112,39 @@ export function PricingAssistant() {
       const d = new Date(activeYear, activeMonth - 2 - i, 1)
       return { month: d.getMonth() + 1, year: d.getFullYear() }
     })
+
+    if (isDemoMode) {
+      // Use in-memory monthlyMetrics and transactions for the 3 target months
+      const targetKeys = targetMonths.map((t) => `${t.year}-${t.month}`)
+      const matchedMetrics = monthlyMetrics.filter((m) =>
+        targetKeys.includes(`${m.year}-${m.month}`),
+      )
+      const matchedTx = transactions.filter((t) => {
+        if (!t.date || t.status !== 'REALIZADO' || t.type !== 'EXPENSE') return false
+        const datePart = t.date.split('T')[0]
+        const parts = datePart.split('-')
+        if (parts.length < 3) return false
+        const y = parseInt(parts[0], 10)
+        const m = parseInt(parts[1], 10)
+        return targetKeys.includes(`${y}-${m}`)
+      })
+
+      setHistoryMetrics(matchedMetrics)
+      setHistoryTx(
+        matchedTx.map((t) => ({
+          date: t.date,
+          amount: t.amount,
+          type: t.type,
+          category: t.categoryId,
+          subcategory: t.subcategoryId,
+          status: t.status,
+        })),
+      )
+      setIsLoadingHistory(false)
+      return
+    }
+
+    if (!user) return
 
     const fetchHistory = async () => {
       setIsLoadingHistory(true)
@@ -165,7 +196,7 @@ export function PricingAssistant() {
     }
 
     fetchHistory()
-  }, [user, profile, filterYears, filterMonths])
+  }, [user, profile, filterYears, filterMonths, isDemoMode, monthlyMetrics, transactions])
 
   const stats = useMemo(() => {
     const COGS_SUBCATEGORIES = [

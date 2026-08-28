@@ -8,6 +8,7 @@ import { useAuth } from '@/hooks/use-auth'
 
 export function BackupDataButton() {
   const { user, profile } = useAuth()
+  const { isDemoMode, transactions, monthlyMetrics, accounts } = useFinanceStore()
   const [exporting, setExporting] = useState(false)
 
   const fetchAll = async (tableName: string, projectId?: string) => {
@@ -46,6 +47,35 @@ export function BackupDataButton() {
   }
 
   const handleExportData = async () => {
+    if (isDemoMode) {
+      const exportData = {
+        profile: {
+          email: 'demo@farmaciaeickhoff.com.br',
+          company_name: 'Farmácia Magistral Modelo (Demo)',
+          role: 'Administrador',
+          access_profile: 'Proprietário',
+        },
+        transactions,
+        appointments: [],
+        monthly_metrics: monthlyMetrics,
+        user_settings: { accounts },
+        exported_at: new Date().toISOString(),
+      }
+
+      const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' })
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `backup_financeiro_demo_${format(new Date(), 'yyyy-MM-dd')}.json`
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+      URL.revokeObjectURL(url)
+
+      toast.success('Backup exportado com sucesso!')
+      return
+    }
+
     if (!user) {
       toast.error('Usuário não autenticado.')
       return

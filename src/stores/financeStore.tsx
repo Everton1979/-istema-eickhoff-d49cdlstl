@@ -42,6 +42,7 @@ interface FinanceFilters {
 interface FinanceContextType {
   isDemoMode: boolean
   hasUserSettings: boolean | null
+  loadDemoData: () => void
   completeOnboarding: () => Promise<void>
   isTransactionSheetOpen: boolean
   setTransactionSheetOpen: (open: boolean) => void
@@ -192,13 +193,30 @@ const ensureUtcNoon = (dateStr: string) => {
 export function FinanceProvider({ children }: { children: React.ReactNode }) {
   const { user, profile } = useAuth()
   const isDemoModeRef = React.useRef(false)
-  const [isDemoMode, setIsDemoModeState] = useState(false)
+  const [isDemoMode, setIsDemoModeState] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return window.location.pathname.startsWith('/demo')
+    }
+    return false
+  })
   const [hasUserSettings, setHasUserSettings] = useState<boolean | null>(null)
 
   const setIsDemoMode = (val: boolean) => {
     isDemoModeRef.current = val
     setIsDemoModeState(val)
   }
+
+  const loadDemoData = React.useCallback(() => {
+    import('@/lib/demo-data').then(({ generateDemoData }) => {
+      const demo = generateDemoData()
+      setIsDemoMode(true)
+      setTransactions(demo.transactions)
+      setMonthlyMetrics(demo.monthlyMetrics)
+      setAccounts(demo.accounts)
+      setHasUserSettings(true)
+      setLoadingData(false)
+    })
+  }, [])
 
   const completeOnboarding = async () => {
     setHasUserSettings(true)
@@ -246,7 +264,12 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
     profile?.role === 'Administrador'
 
   useEffect(() => {
-    if (user && (profile || isMasterUser) && projectId) {
+    if (
+      isDemoModeRef.current ||
+      (typeof window !== 'undefined' && window.location.pathname.startsWith('/demo'))
+    ) {
+      loadDemoData()
+    } else if (user && (profile || isMasterUser) && projectId) {
       fetchData()
     } else if (!user) {
       setTransactions([])
@@ -254,9 +277,10 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
       setAccounts(ACCOUNTS)
       setLoadingData(false)
     }
-  }, [user, profile?.app_name, projectId, isMasterUser])
+  }, [user, profile?.app_name, projectId, isMasterUser, loadDemoData])
 
   const fetchData = async (force: boolean = false) => {
+    if (isDemoModeRef.current) return
     if (!user || (!profile && !isMasterUser) || !projectId) return
 
     const isNewProject = lastProjectIdRef.current !== projectId && lastProjectIdRef.current !== null
@@ -473,6 +497,16 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
   }
 
   const addTransaction = async (tx: Omit<Transaction, 'id'>) => {
+    if (isDemoModeRef.current) {
+      const newTx: Transaction = {
+        ...tx,
+        id: `demo_user_tx_${Date.now()}`,
+        date: ensureUtcNoon(tx.date),
+      }
+      setTransactions((prev) => [newTx, ...prev])
+      return
+    }
+
     if (!user || !profile) return
     const dbType = mapTypeToDB(tx.type)
     const formattedDate = ensureUtcNoon(tx.date)
@@ -536,6 +570,21 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
   }
 
   const updateTransaction = async (id: string, tx: Partial<Omit<Transaction, 'id'>>) => {
+    if (isDemoModeRef.current) {
+      setTransactions((prev) =>
+        prev.map((t) =>
+          t.id === id
+            ? {
+                ...t,
+                ...tx,
+                date: tx.date ? ensureUtcNoon(tx.date) : t.date,
+              }
+            : t,
+        ),
+      )
+      return
+    }
+
     if (!user || !profile) return
     const original = transactions.find((t) => t.id === id)
     const updateData: any = {}
@@ -606,6 +655,11 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
   }
 
   const deleteTransaction = async (id: string) => {
+    if (isDemoModeRef.current) {
+      setTransactions((prev) => prev.filter((t) => t.id !== id))
+      return
+    }
+
     if (!user || !profile) return
     const original = transactions.find((t) => t.id === id)
     const { error } = await supabase.from('transactions').delete().eq('id', id)
@@ -634,6 +688,71 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
   }
 
   const saveMonthlyMetric = async (metric: Omit<MonthlyMetric, 'id'>) => {
+    if (isDemoModeRef.current) {
+      const existing = monthlyMetrics.find(
+        (m) => m.month === metric.month && m.year === metric.year,
+      )
+      const orders_count = (metric.num_formulas_capsulas || 0) + (metric.num_formulas_dermato || 0)
+      const total_system_sales =
+        (metric.vendas_capsulas || 0) + (metric.vendas_dermato || 0) + (metric.vendas_revenda || 0)
+      const raw_material_costs =
+        (metric.custo_mp_emb_capsulas || 0) + (metric.custo_mp_emb_dermato || 0)
+
+      const updatedMetric: MonthlyMetric = {
+        id: existing?.id || `demo_metric_${metric.year}_${metric.month}`,
+        month: metric.month,
+        year: metric.year,
+        orders_count: metric.orders_count !== undefined ? metric.orders_count : orders_count,
+        total_system_sales:
+          metric.total_system_sales !== undefined ? metric.total_system_sales : total_system_sales,
+        raw_material_costs:
+          metric.raw_material_costs !== undefined ? metric.raw_material_costs : raw_material_costs,
+        sales_target:
+          metric.sales_target !== undefined ? metric.sales_target : existing?.sales_target || 0,
+        global_sales_target:
+          metric.global_sales_target !== undefined
+            ? metric.global_sales_target
+            : existing?.global_sales_target || 0,
+        num_formulas_capsulas: metric.num_formulas_capsulas || 0,
+        vendas_capsulas: metric.vendas_capsulas || 0,
+        custo_mp_emb_capsulas: metric.custo_mp_emb_capsulas || 0,
+        num_formulas_dermato: metric.num_formulas_dermato || 0,
+        vendas_dermato: metric.vendas_dermato || 0,
+        custo_mp_emb_dermato: metric.custo_mp_emb_dermato || 0,
+        vendas_revenda: metric.vendas_revenda || 0,
+        custo_revenda: metric.custo_revenda || 0,
+        colaboradores_capsulas: metric.colaboradores_capsulas || 0,
+        colaboradores_dermato: metric.colaboradores_dermato || 0,
+        colaboradores_vendas: metric.colaboradores_vendas || 0,
+        meta_vendas_manipulacao:
+          metric.meta_vendas_manipulacao !== undefined
+            ? metric.meta_vendas_manipulacao
+            : existing?.meta_vendas_manipulacao || 0,
+        meta_vendas_extra:
+          metric.meta_vendas_extra !== undefined
+            ? metric.meta_vendas_extra
+            : existing?.meta_vendas_extra || 0,
+        meta_vendas_sistema_manipulacao:
+          metric.meta_vendas_sistema_manipulacao !== undefined
+            ? metric.meta_vendas_sistema_manipulacao
+            : existing?.meta_vendas_sistema_manipulacao || 0,
+        meta_vendas_sistema_revenda:
+          metric.meta_vendas_sistema_revenda !== undefined
+            ? metric.meta_vendas_sistema_revenda
+            : existing?.meta_vendas_sistema_revenda || 0,
+      }
+
+      setMonthlyMetrics((prev) => {
+        const filtered = prev.filter(
+          (m) =>
+            m.id !== updatedMetric.id &&
+            !(m.month === updatedMetric.month && m.year === updatedMetric.year),
+        )
+        return [...filtered, updatedMetric]
+      })
+      return
+    }
+
     if (!user || !profile) return
 
     const existing = monthlyMetrics.find((m) => m.month === metric.month && m.year === metric.year)
@@ -766,6 +885,20 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
     endDate: string,
     type: string,
   ): Promise<Transaction[]> => {
+    if (isDemoModeRef.current) {
+      return transactions.filter((tx) => {
+        if (!tx.date) return false
+        const dateOnly = tx.date.split('T')[0]
+        if (dateOnly < startDate || dateOnly > endDate) return false
+        if (type === 'INCOME' && tx.type !== 'INCOME') return false
+        if (type === 'EXPENSE' && tx.type !== 'EXPENSE') return false
+        if (type === 'CORTESIA' && tx.type !== 'CORTESIA') return false
+        if (type === 'PARTNER_WITHDRAWAL' && tx.type !== 'PARTNER_WITHDRAWAL') return false
+        if (type === 'INVESTIMENTO' && tx.type !== 'INVESTIMENTO') return false
+        return tx.status === 'REALIZADO'
+      })
+    }
+
     if (!user || !profile) return []
 
     let allData: any[] = []
@@ -921,6 +1054,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
         isDemoMode,
         hasUserSettings,
         completeOnboarding,
+        loadDemoData,
       }}
     >
       {children}

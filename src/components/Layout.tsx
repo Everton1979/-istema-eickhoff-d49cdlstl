@@ -7,10 +7,12 @@ import { AdminNotificationBadge } from './AdminNotificationBadge'
 
 import { ArrowRightLeft } from 'lucide-react'
 
-export default function Layout() {
+export default function Layout({ isDemo = false }: { isDemo?: boolean }) {
   const { profile, isColaborador, canManageUsers } = useAuth()
 
-  const companyName = profile?.company_name || 'Controle Financeiro'
+  const companyName = isDemo
+    ? 'Farmácia Magistral Modelo (Demo)'
+    : profile?.company_name || 'Controle Financeiro'
   const companyInitials = companyName
     .split(' ')
     .map((n) => n[0])
@@ -34,7 +36,15 @@ export default function Layout() {
           </div>
 
           <nav className="flex items-center gap-1">
-            {!isColaborador ? (
+            {isDemo ? (
+              <Link
+                to="/demo"
+                className="flex items-center gap-2 px-3 py-2 rounded-md transition-colors text-sm font-medium bg-blue-600 text-white"
+              >
+                <LayoutDashboard className="w-4 h-4" />
+                <span className="hidden sm:inline">Painel Geral</span>
+              </Link>
+            ) : !isColaborador ? (
               <Link
                 to="/dashboard"
                 className={cn(
@@ -61,7 +71,7 @@ export default function Layout() {
                 <span className="hidden sm:inline">Lançamentos</span>
               </Link>
             )}
-            {canManageUsers && <AdminNotificationBadge />}
+            {!isDemo && canManageUsers && <AdminNotificationBadge />}
           </nav>
         </div>
       </header>

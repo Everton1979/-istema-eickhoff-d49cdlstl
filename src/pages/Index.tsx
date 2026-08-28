@@ -38,6 +38,8 @@ export default function Index() {
   const navigate = useNavigate()
   const {
     fetchData,
+    isDemoMode,
+    loadDemoData,
     transactions,
     filteredTransactions,
     loadingData,
@@ -51,6 +53,10 @@ export default function Index() {
   const dashboardKpisRef = useRef<HTMLElement>(null)
 
   useEffect(() => {
+    if (isDemoMode) {
+      return
+    }
+
     // Checagem de segurança em tempo real para barrar acessos não aprovados
     if (!loading && profile && profile.status === 'Pendente' && !isMaster) {
       navigate('/pendente', { replace: true })
@@ -61,18 +67,18 @@ export default function Index() {
       // Refresh silently without clearing state to avoid flickering
       fetchData(false)
     }
-  }, [profile, loading, isMaster, isColaborador, navigate]) // fetchData is intentionally omitted to avoid loops
+  }, [profile, loading, isMaster, isColaborador, navigate, isDemoMode])
 
   // Revalidação silenciosa ao voltar para a aba
   useEffect(() => {
     const handleFocus = () => {
-      if (profile) {
+      if (!isDemoMode && profile) {
         fetchData(false)
       }
     }
     window.addEventListener('focus', handleFocus)
     return () => window.removeEventListener('focus', handleFocus)
-  }, [profile, fetchData])
+  }, [profile, fetchData, isDemoMode])
 
   if (!loading && profile && profile.status === 'Pendente' && !isMaster) {
     return (

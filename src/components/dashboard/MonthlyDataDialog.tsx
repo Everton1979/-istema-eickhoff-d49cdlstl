@@ -334,7 +334,8 @@ export function MonthlyDataDialog() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!user) return
+    const isDemo = typeof window !== 'undefined' && window.location.pathname.startsWith('/demo')
+    if (!user && !isDemo) return
 
     if (
       formData.vendas_revenda === '' ||

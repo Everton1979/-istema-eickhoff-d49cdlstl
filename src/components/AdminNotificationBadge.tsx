@@ -10,7 +10,12 @@ export function AdminNotificationBadge() {
   const [pendingCount, setPendingCount] = useState(0)
 
   useEffect(() => {
-    if (!profile || !isMaster) return
+    if (
+      !profile ||
+      !isMaster ||
+      (typeof window !== 'undefined' && window.location.pathname.startsWith('/demo'))
+    )
+      return
 
     const fetchPending = async () => {
       try {
