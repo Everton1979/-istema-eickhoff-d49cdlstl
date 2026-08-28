@@ -5,8 +5,10 @@ import { cn } from '@/lib/utils'
 import { InpiSeal } from './InpiSeal'
 import { AdminNotificationBadge } from './AdminNotificationBadge'
 
+import { ArrowRightLeft } from 'lucide-react'
+
 export default function Layout() {
-  const { profile } = useAuth()
+  const { profile, isColaborador, canManageUsers } = useAuth()
 
   const companyName = profile?.company_name || 'Controle Financeiro'
   const companyInitials = companyName
@@ -32,19 +34,34 @@ export default function Layout() {
           </div>
 
           <nav className="flex items-center gap-1">
-            <Link
-              to="/dashboard"
-              className={cn(
-                'flex items-center gap-2 px-3 py-2 rounded-md transition-colors text-sm font-medium',
-                location.pathname === '/dashboard'
-                  ? 'bg-blue-600 text-white'
-                  : 'text-slate-300 hover:bg-white/10 hover:text-white',
-              )}
-            >
-              <LayoutDashboard className="w-4 h-4" />
-              <span className="hidden sm:inline">Painel Geral</span>
-            </Link>
-            <AdminNotificationBadge />
+            {!isColaborador ? (
+              <Link
+                to="/dashboard"
+                className={cn(
+                  'flex items-center gap-2 px-3 py-2 rounded-md transition-colors text-sm font-medium',
+                  location.pathname === '/dashboard'
+                    ? 'bg-blue-600 text-white'
+                    : 'text-slate-300 hover:bg-white/10 hover:text-white',
+                )}
+              >
+                <LayoutDashboard className="w-4 h-4" />
+                <span className="hidden sm:inline">Painel Geral</span>
+              </Link>
+            ) : (
+              <Link
+                to="/transacoes"
+                className={cn(
+                  'flex items-center gap-2 px-3 py-2 rounded-md transition-colors text-sm font-medium',
+                  location.pathname === '/transacoes'
+                    ? 'bg-blue-600 text-white'
+                    : 'text-slate-300 hover:bg-white/10 hover:text-white',
+                )}
+              >
+                <ArrowRightLeft className="w-4 h-4" />
+                <span className="hidden sm:inline">Lançamentos</span>
+              </Link>
+            )}
+            {canManageUsers && <AdminNotificationBadge />}
           </nav>
         </div>
       </header>

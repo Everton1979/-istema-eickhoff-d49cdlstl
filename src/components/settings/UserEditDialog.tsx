@@ -34,6 +34,9 @@ export function UserEditDialog({ user, open, onOpenChange, onUpdate }: UserEditD
 
   const [status, setStatus] = useState('Pendente')
   const [role, setRole] = useState('Usuário')
+  const [accessProfile, setAccessProfile] = useState<'Proprietário' | 'Gerente' | 'Colaborador'>(
+    'Proprietário',
+  )
   const [planType, setPlanType] = useState('free')
   const [adminNotes, setAdminNotes] = useState('')
   const [loading, setLoading] = useState(false)
@@ -42,6 +45,7 @@ export function UserEditDialog({ user, open, onOpenChange, onUpdate }: UserEditD
     if (user) {
       setStatus(user.status || 'Pendente')
       setRole(user.role || 'Usuário')
+      setAccessProfile((user.access_profile as any) || 'Proprietário')
       setPlanType(user.plan_type || 'free')
       setAdminNotes(user.admin_notes || '')
     }
@@ -68,6 +72,7 @@ export function UserEditDialog({ user, open, onOpenChange, onUpdate }: UserEditD
         .update({
           status,
           role,
+          access_profile: accessProfile,
           plan_type: planType,
           admin_notes: adminNotes,
           ...(startDate ? { plan_start_date: startDate } : {}),
@@ -134,7 +139,40 @@ export function UserEditDialog({ user, open, onOpenChange, onUpdate }: UserEditD
           </DialogTitle>
         </DialogHeader>
         <div className="space-y-4 py-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label>Perfil de Acesso (Permissões)</Label>
+              <Select
+                value={accessProfile}
+                onValueChange={(val: 'Proprietário' | 'Gerente' | 'Colaborador') =>
+                  setAccessProfile(val)
+                }
+              >
+                <SelectTrigger className="border-blue-300 font-semibold text-slate-800">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Proprietário" className="font-medium">
+                    Proprietário (Acesso Completo)
+                  </SelectItem>
+                  <SelectItem value="Gerente" className="font-medium">
+                    Gerente (Operacional e Relatórios)
+                  </SelectItem>
+                  <SelectItem value="Colaborador" className="font-medium">
+                    Colaborador (Apenas Lançamentos)
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+              <p className="text-[11px] text-muted-foreground leading-snug">
+                {accessProfile === 'Proprietário' &&
+                  'Vê tudo: dashboard completo, DRE, metas, precificação e gestão de usuários.'}
+                {accessProfile === 'Gerente' &&
+                  'Vê dashboard, DRE e precificação. Não acessa gestão de usuários e auditoria.'}
+                {accessProfile === 'Colaborador' &&
+                  'Vê apenas tela de lançamentos (receitas/despesas). Sem acesso a lucros, margem ou DRE.'}
+              </p>
+            </div>
+
             <div className="space-y-2">
               <Label>Status de Acesso</Label>
               <Select value={status} onValueChange={setStatus} disabled={!isMasterEmail}>
@@ -148,9 +186,11 @@ export function UserEditDialog({ user, open, onOpenChange, onUpdate }: UserEditD
                 </SelectContent>
               </Select>
             </div>
+          </div>
 
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label>Papel (Role)</Label>
+              <Label>Papel do Sistema (Role)</Label>
               <Select value={role} onValueChange={setRole} disabled={!isMasterEmail}>
                 <SelectTrigger>
                   <SelectValue />
@@ -165,7 +205,7 @@ export function UserEditDialog({ user, open, onOpenChange, onUpdate }: UserEditD
 
             <div className="space-y-2">
               <Label>Plano</Label>
-              <Select value={planType} onValueChange={setPlanType}>
+              <Select value={planType} onValueChange={setPlanType} disabled={!isMasterEmail}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>

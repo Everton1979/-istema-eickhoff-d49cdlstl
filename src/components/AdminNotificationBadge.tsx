@@ -6,11 +6,11 @@ import { useAuth } from '@/hooks/use-auth'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 
 export function AdminNotificationBadge() {
-  const { profile } = useAuth()
+  const { profile, isMaster } = useAuth()
   const [pendingCount, setPendingCount] = useState(0)
 
   useEffect(() => {
-    if (!profile || (profile.role !== 'Administrador' && profile.role !== 'Master')) return
+    if (!profile || !isMaster) return
 
     const fetchPending = async () => {
       try {
@@ -50,9 +50,9 @@ export function AdminNotificationBadge() {
     return () => {
       supabase.removeChannel(channel)
     }
-  }, [profile?.role])
+  }, [profile, isMaster])
 
-  if (!profile || (profile.role !== 'Administrador' && profile.role !== 'Master')) return null
+  if (!profile || !isMaster) return null
 
   return (
     <Tooltip>

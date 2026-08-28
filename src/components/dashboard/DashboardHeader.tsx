@@ -29,7 +29,7 @@ const MONTHS = [
 
 export function DashboardHeader() {
   const financeStore = useFinanceStore()
-  const { signOut } = useAuth()
+  const { signOut, canManageUsers, isColaborador } = useAuth()
 
   const filters = financeStore.filters
   const setFilter = financeStore.setFilter
@@ -81,29 +81,33 @@ export function DashboardHeader() {
       </div>
 
       <div className="flex items-center gap-2 bg-slate-50 dark:bg-slate-800 p-2 rounded-xl border border-slate-200 dark:border-slate-700">
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Link
-              to="/glossario"
-              className="p-2 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-md text-slate-600 dark:text-slate-400 transition-colors"
-            >
-              <BookOpen className="w-5 h-5" />
-            </Link>
-          </TooltipTrigger>
-          <TooltipContent>Glossário</TooltipContent>
-        </Tooltip>
+        {!isColaborador && (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Link
+                to="/glossario"
+                className="p-2 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-md text-slate-600 dark:text-slate-400 transition-colors"
+              >
+                <BookOpen className="w-5 h-5" />
+              </Link>
+            </TooltipTrigger>
+            <TooltipContent>Glossário</TooltipContent>
+          </Tooltip>
+        )}
 
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Link
-              to="/usuarios"
-              className="p-2 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-md text-slate-600 dark:text-slate-400 transition-colors"
-            >
-              <Users className="w-5 h-5" />
-            </Link>
-          </TooltipTrigger>
-          <TooltipContent>Usuários</TooltipContent>
-        </Tooltip>
+        {canManageUsers && (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Link
+                to="/usuarios"
+                className="p-2 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-md text-slate-600 dark:text-slate-400 transition-colors"
+              >
+                <Users className="w-5 h-5" />
+              </Link>
+            </TooltipTrigger>
+            <TooltipContent>Usuários</TooltipContent>
+          </Tooltip>
+        )}
 
         <Tooltip>
           <TooltipTrigger asChild>
@@ -117,9 +121,11 @@ export function DashboardHeader() {
           <TooltipContent>Perfil</TooltipContent>
         </Tooltip>
 
-        <div className="flex items-center">
-          <BackupDataButton />
-        </div>
+        {!isColaborador && (
+          <div className="flex items-center">
+            <BackupDataButton />
+          </div>
+        )}
 
         <Tooltip>
           <TooltipTrigger asChild>

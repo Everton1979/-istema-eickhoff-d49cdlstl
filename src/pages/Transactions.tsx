@@ -67,7 +67,7 @@ export default function Transactions() {
     editingTransaction,
     setEditingTransaction,
   } = useFinanceStore()
-  const { profile } = useAuth()
+  const { profile, isColaborador } = useAuth()
   const [search, setSearch] = useState('')
   const [quickFilter, setQuickFilter] = useState<
     | 'ALL'
@@ -668,7 +668,8 @@ export default function Transactions() {
               </div>
             )}
 
-            {quickFilter !== 'CORTESIA' &&
+            {!isColaborador &&
+              quickFilter !== 'CORTESIA' &&
               quickFilter !== 'PARTNER_WITHDRAWAL' &&
               quickFilter !== 'RECEITAS' &&
               quickFilter !== 'DESPESAS' &&

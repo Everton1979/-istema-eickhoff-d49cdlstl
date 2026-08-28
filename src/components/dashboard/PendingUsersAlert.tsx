@@ -6,11 +6,10 @@ import { supabase } from '@/lib/supabase/client'
 import { useAuth } from '@/hooks/use-auth'
 
 export function PendingUsersAlert() {
-  const { profile } = useAuth()
+  const { isMaster } = useAuth()
   const [pendingCount, setPendingCount] = useState(0)
 
   useEffect(() => {
-    const isMaster = profile?.role === 'Master' || profile?.is_super_admin
     if (!isMaster) return
 
     const fetchPending = async () => {
@@ -32,9 +31,9 @@ export function PendingUsersAlert() {
     }
 
     fetchPending()
-  }, [profile?.role, profile?.is_super_admin])
+  }, [isMaster])
 
-  if (pendingCount === 0) return null
+  if (pendingCount === 0 || !isMaster) return null
 
   return (
     <Alert className="bg-destructive/10 border-2 border-destructive text-destructive -mt-4 mb-6 shadow-sm animate-in fade-in slide-in-from-top-2">

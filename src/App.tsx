@@ -24,12 +24,26 @@ const ProtectedRoute = ({
   children,
   allowedRoles,
   requireActive = true,
+  requireManageUsers = false,
+  requireStrategic = false,
+  allowColaborador = true,
 }: {
   children: React.ReactNode
   allowedRoles?: string[]
   requireActive?: boolean
+  requireManageUsers?: boolean
+  requireStrategic?: boolean
+  allowColaborador?: boolean
 }) => {
-  const { user, profile, loading } = useAuth()
+  const {
+    user,
+    profile,
+    loading,
+    isMaster,
+    isColaborador,
+    canManageUsers: userCanManage,
+    canViewStrategic,
+  } = useAuth()
 
   if (loading) {
     return (
@@ -63,14 +77,25 @@ const ProtectedRoute = ({
     }
   }
 
+  // Se rota requer gestão de usuários (Master ou Proprietário)
+  if (requireManageUsers && !userCanManage) {
+    return <Navigate to="/transacoes" replace />
+  }
+
+  // Se rota requer visão estratégica/DRE/auditoria
+  if (requireStrategic && !canViewStrategic) {
+    return <Navigate to="/transacoes" replace />
+  }
+
+  // Se a rota não permite colaborador (ex: dashboard geral completo ou auditoria)
+  if (!allowColaborador && isColaborador) {
+    return <Navigate to="/transacoes" replace />
+  }
+
   if (allowedRoles) {
     if (!profile) return <Navigate to="/" replace />
-    // Master sempre tem acesso restrito a áreas administrativas
-    if (
-      profile.role !== 'Master' &&
-      profile.email !== 'farmaciaeickhoff@terra.com.br' &&
-      !allowedRoles.includes(profile.role)
-    ) {
+    // Master sempre tem acesso irrestrito
+    if (!isMaster && !allowedRoles.includes(profile.role)) {
       return <Navigate to="/" replace />
     }
   }
@@ -113,15 +138,22 @@ const App = () => (
                 <Route path="/glossario" element={<Glossary />} />
                 <Route path="/perfil" element={<Profile />} />
                 <Route path="/configuracoes" element={<Navigate to="/usuarios" replace />} />
-                <Route path="/auditoria-dados" element={<DataAudit />} />
+                <Route
+                  path="/auditoria-dados"
+                  element={
+                    <ProtectedRoute requireManageUsers>
+                      <DataAudit />
+                    </ProtectedRoute>
+                  }
+                />
                 <Route
                   path="/usuarios"
                   element={
-                    <ProtectedRoute allowedRoles={['Master']}>
+                    <ProtectedRoute requireManageUsers>
                       <Users />
                     </ProtectedRoute>
                   }
-                />{' '}
+                />
               </Route>
               <Route path="*" element={<NotFound />} />
             </Routes>

@@ -11,10 +11,13 @@ import { User, Session } from '@supabase/supabase-js'
 import { supabase } from '@/lib/supabase/client'
 import { useIdleTimeout } from '@/hooks/use-idle-timeout'
 
+export type AccessProfile = 'Proprietário' | 'Gerente' | 'Colaborador'
+
 export interface UserProfile {
   id: string
   email: string
   role: 'Administrador' | string
+  access_profile?: AccessProfile | string | null
   app_name?: string
   company_name?: string
   cnpj?: string
@@ -34,6 +37,54 @@ export interface UserProfile {
   plan_start_date?: string | null
   plan_end_date?: string | null
   admin_notes?: string | null
+  is_super_admin?: boolean | null
+}
+
+export const isMasterUser = (profile: UserProfile | null, userEmail?: string | null): boolean => {
+  if (!profile && !userEmail) return false
+  if (profile?.role === 'Master' || profile?.is_super_admin) return true
+  const email = profile?.email || userEmail || ''
+  return email.toLowerCase() === 'farmaciaeickhoff@terra.com.br'
+}
+
+export const isProprietarioUser = (
+  profile: UserProfile | null,
+  userEmail?: string | null,
+): boolean => {
+  if (!profile && !userEmail) return false
+  if (isMasterUser(profile, userEmail)) return true
+  const access = profile?.access_profile
+  // Se access_profile for nulo/indefinido em usuários legados ou administradores, o padrão do sistema é Proprietário
+  if (!access) return true
+  return access === 'Proprietário'
+}
+
+export const isGerenteUser = (profile: UserProfile | null, userEmail?: string | null): boolean => {
+  if (!profile && !userEmail) return false
+  if (isMasterUser(profile, userEmail)) return false
+  return profile?.access_profile === 'Gerente'
+}
+
+export const isColaboradorUser = (
+  profile: UserProfile | null,
+  userEmail?: string | null,
+): boolean => {
+  if (!profile && !userEmail) return false
+  if (isMasterUser(profile, userEmail)) return false
+  return profile?.access_profile === 'Colaborador'
+}
+
+// Helpers de capacidades
+export const canManageUsers = (profile: UserProfile | null, userEmail?: string | null): boolean => {
+  return isMasterUser(profile, userEmail) || isProprietarioUser(profile, userEmail)
+}
+
+export const canViewStrategicReports = (
+  profile: UserProfile | null,
+  userEmail?: string | null,
+): boolean => {
+  if (isMasterUser(profile, userEmail)) return true
+  return !isColaboradorUser(profile, userEmail)
 }
 
 interface AuthContextType {
@@ -46,6 +97,12 @@ interface AuthContextType {
   resetPassword: (email: string) => Promise<{ error: any }>
   updatePassword: (password: string) => Promise<{ error: any }>
   loading: boolean
+  isMaster: boolean
+  isProprietario: boolean
+  isGerente: boolean
+  isColaborador: boolean
+  canManageUsers: boolean
+  canViewStrategic: boolean
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -193,6 +250,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const loading = loadingUser || loadingProfile
 
+  const master = isMasterUser(profile, user?.email)
+  const proprietario = isProprietarioUser(profile, user?.email)
+  const gerente = isGerenteUser(profile, user?.email)
+  const colaborador = isColaboradorUser(profile, user?.email)
+  const userCanManage = canManageUsers(profile, user?.email)
+  const userCanViewStrat = canViewStrategicReports(profile, user?.email)
+
   return (
     <AuthContext.Provider
       value={{
@@ -205,6 +269,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         resetPassword,
         updatePassword,
         loading,
+        isMaster: master,
+        isProprietario: proprietario,
+        isGerente: gerente,
+        isColaborador: colaborador,
+        canManageUsers: userCanManage,
+        canViewStrategic: userCanViewStrat,
       }}
     >
       {children}

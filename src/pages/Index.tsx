@@ -34,7 +34,7 @@ import { cn } from '@/lib/utils'
 
 export default function Index() {
   const [exportFilters, setExportFilters] = useState<any>(null)
-  const { profile, loading } = useAuth()
+  const { profile, loading, isMaster, isColaborador } = useAuth()
   const navigate = useNavigate()
   const {
     fetchData,
@@ -52,21 +52,16 @@ export default function Index() {
 
   useEffect(() => {
     // Checagem de segurança em tempo real para barrar acessos não aprovados
-    if (
-      !loading &&
-      profile &&
-      profile.status === 'Pendente' &&
-      profile.role !== 'Administrador' &&
-      profile.role !== 'Master' &&
-      profile.role !== 'admin' &&
-      !profile.is_super_admin
-    ) {
+    if (!loading && profile && profile.status === 'Pendente' && !isMaster) {
       navigate('/pendente', { replace: true })
+    } else if (!loading && profile && isColaborador) {
+      // Colaborador deve ser redirecionado para a tela de transações
+      navigate('/transacoes', { replace: true })
     } else if (profile) {
       // Refresh silently without clearing state to avoid flickering
       fetchData(false)
     }
-  }, [profile, loading, navigate]) // fetchData is intentionally omitted to avoid loops
+  }, [profile, loading, isMaster, isColaborador, navigate]) // fetchData is intentionally omitted to avoid loops
 
   // Revalidação silenciosa ao voltar para a aba
   useEffect(() => {
@@ -79,20 +74,23 @@ export default function Index() {
     return () => window.removeEventListener('focus', handleFocus)
   }, [profile, fetchData])
 
-  if (
-    !loading &&
-    profile &&
-    profile.status === 'Pendente' &&
-    profile.role !== 'Administrador' &&
-    profile.role !== 'Master' &&
-    profile.role !== 'admin' &&
-    !profile.is_super_admin
-  ) {
+  if (!loading && profile && profile.status === 'Pendente' && !isMaster) {
     return (
       <div className="flex items-center justify-center h-full w-full bg-[#f8fafc] animate-fade-in">
         <div className="flex flex-col items-center gap-4 mt-20">
           <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
           <p className="text-slate-500 font-medium">Redirecionando para aprovação...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (!loading && profile && isColaborador) {
+    return (
+      <div className="flex items-center justify-center h-full w-full bg-[#f8fafc] animate-fade-in">
+        <div className="flex flex-col items-center gap-4 mt-20">
+          <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+          <p className="text-slate-500 font-medium">Redirecionando para Lançamentos...</p>
         </div>
       </div>
     )

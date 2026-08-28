@@ -164,6 +164,7 @@ export type Database = {
       }
       profiles: {
         Row: {
+          access_profile: string | null
           admin_notes: string | null
           app_name: string | null
           approved_at: string | null
@@ -192,6 +193,7 @@ export type Database = {
           updated_at: string | null
         }
         Insert: {
+          access_profile?: string | null
           admin_notes?: string | null
           app_name?: string | null
           approved_at?: string | null
@@ -220,6 +222,7 @@ export type Database = {
           updated_at?: string | null
         }
         Update: {
+          access_profile?: string | null
           admin_notes?: string | null
           app_name?: string | null
           approved_at?: string | null

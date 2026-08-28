@@ -14,16 +14,25 @@ import { Badge } from '@/components/ui/badge'
 import { Trash2, UserPlus, Edit, Mail, AlertCircle } from 'lucide-react'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
-import { UserProfile, useAuth } from '@/hooks/use-auth'
+import { UserProfile, useAuth, AccessProfile } from '@/hooks/use-auth'
 import { UserEditDialog } from './UserEditDialog'
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
   DialogTrigger,
   DialogFooter,
 } from '@/components/ui/dialog'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { Label } from '@/components/ui/label'
 import {
   AlertDialog,
   AlertDialogContent,
@@ -41,6 +50,7 @@ export function UserManagement() {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [newEmail, setNewEmail] = useState('')
   const [newPassword, setNewPassword] = useState('')
+  const [newAccessProfile, setNewAccessProfile] = useState<AccessProfile>('Colaborador')
   const [creating, setCreating] = useState(false)
   const [editingUser, setEditingUser] = useState<UserProfile | null>(null)
 
@@ -62,6 +72,7 @@ export function UserManagement() {
     const targetApp = currentProfile.app_name || currentProfile.id
     let query = supabase.from('profiles').select('*').order('email')
 
+    // Master vê todos. Outros (Proprietário) veem apenas usuários do seu app_name / empresa
     if (!isMaster) {
       query = query.eq('app_name', targetApp).neq('status', 'Pendente')
     }
@@ -100,6 +111,7 @@ export function UserManagement() {
           action: 'create',
           email: newEmail,
           password: newPassword,
+          access_profile: newAccessProfile,
           app_name: currentProfile?.app_name || currentProfile?.id,
         },
       })
@@ -111,6 +123,7 @@ export function UserManagement() {
       setIsDialogOpen(false)
       setNewEmail('')
       setNewPassword('')
+      setNewAccessProfile('Colaborador')
       fetchUsers()
     } catch (err: any) {
       toast.error(err.message || 'Erro ao criar usuário')
@@ -218,28 +231,58 @@ export function UserManagement() {
           <DialogContent>
             <DialogHeader>
               <DialogTitle>Cadastrar Novo Usuário</DialogTitle>
+              <DialogDescription>
+                Informe os dados para criar uma nova conta e selecione o perfil de acesso
+                correspondente.
+              </DialogDescription>
             </DialogHeader>
-            <form onSubmit={handleCreateUser} className="space-y-4 pt-4">
+            <form onSubmit={handleCreateUser} className="space-y-4 pt-2">
               <div>
-                <label className="block text-sm font-medium mb-1">Email</label>
+                <Label className="block text-sm font-medium mb-1">Email</Label>
                 <Input
                   type="email"
                   required
+                  placeholder="exemplo@farmacia.com.br"
                   value={newEmail}
                   onChange={(e) => setNewEmail(e.target.value)}
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">Senha</label>
+                <Label className="block text-sm font-medium mb-1">Senha Provisória</Label>
                 <Input
                   type="password"
                   required
                   minLength={6}
+                  placeholder="Mínimo 6 caracteres"
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
                 />
               </div>
-              <DialogFooter>
+              <div>
+                <Label className="block text-sm font-medium mb-1">Perfil de Acesso</Label>
+                <Select
+                  value={newAccessProfile}
+                  onValueChange={(val: AccessProfile) => setNewAccessProfile(val)}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Colaborador">Colaborador (Apenas Lançamentos)</SelectItem>
+                    <SelectItem value="Gerente">Gerente (Operação e Relatórios)</SelectItem>
+                    <SelectItem value="Proprietário">Proprietário (Acesso Completo)</SelectItem>
+                  </SelectContent>
+                </Select>
+                <p className="text-xs text-muted-foreground mt-1.5">
+                  {newAccessProfile === 'Colaborador' &&
+                    'Acessa apenas inserção e listagem de transações.'}
+                  {newAccessProfile === 'Gerente' &&
+                    'Acessa Dashboard, DRE e Precificação, sem gestão de usuários.'}
+                  {newAccessProfile === 'Proprietário' &&
+                    'Acesso irrestrito a todas as áreas e configurações da empresa.'}
+                </p>
+              </div>
+              <DialogFooter className="pt-2">
                 <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)}>
                   Cancelar
                 </Button>
@@ -307,6 +350,7 @@ export function UserManagement() {
               <TableHead>Contato</TableHead>
               <TableHead>Plano</TableHead>
               <TableHead className="w-[120px]">Dias Restantes</TableHead>
+              <TableHead className="w-[130px]">Perfil de Acesso</TableHead>
               <TableHead className="w-[100px]">Papel</TableHead>
               <TableHead className="w-[100px]">Status</TableHead>
               <TableHead className="w-[100px] text-center">Ações</TableHead>
@@ -398,6 +442,26 @@ export function UserManagement() {
                           {diffDays} {diffDays === 1 ? 'dia' : 'dias'}
                         </span>
                       </div>
+                    )
+                  })()}
+                </TableCell>
+                <TableCell>
+                  {(() => {
+                    const prof = u.access_profile || 'Proprietário'
+                    const isColab = prof === 'Colaborador'
+                    const isGer = prof === 'Gerente'
+                    return (
+                      <Badge
+                        variant="secondary"
+                        className={cn(
+                          'text-xs font-semibold whitespace-nowrap',
+                          isColab && 'bg-slate-100 text-slate-700 border-slate-300',
+                          isGer && 'bg-purple-100 text-purple-700 border-purple-300',
+                          !isColab && !isGer && 'bg-blue-100 text-blue-700 border-blue-300',
+                        )}
+                      >
+                        {prof}
+                      </Badge>
                     )
                   })()}
                 </TableCell>
