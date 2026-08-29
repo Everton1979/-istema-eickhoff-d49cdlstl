@@ -7,10 +7,18 @@ import { AdminNotificationBadge } from './AdminNotificationBadge'
 
 import { ArrowRightLeft } from 'lucide-react'
 
-export default function Layout({ isDemo = false }: { isDemo?: boolean }) {
+export default function Layout({
+  isDemo = false,
+  children,
+}: {
+  isDemo?: boolean
+  children?: React.ReactNode
+}) {
   const { profile, isColaborador, canManageUsers } = useAuth()
+  const location = useLocation()
+  const isDemoEffective = isDemo || location.pathname.startsWith('/demo')
 
-  const companyName = isDemo
+  const companyName = isDemoEffective
     ? 'Farmácia Magistral Modelo (Demo)'
     : profile?.company_name || 'Controle Financeiro'
   const companyInitials = companyName
@@ -19,7 +27,6 @@ export default function Layout({ isDemo = false }: { isDemo?: boolean }) {
     .join('')
     .substring(0, 2)
     .toUpperCase()
-  const location = useLocation()
 
   return (
     <div className="flex flex-col min-h-screen bg-slate-50">
@@ -36,7 +43,7 @@ export default function Layout({ isDemo = false }: { isDemo?: boolean }) {
           </div>
 
           <nav className="flex items-center gap-1">
-            {isDemo ? (
+            {isDemoEffective ? (
               <Link
                 to="/demo"
                 className="flex items-center gap-2 px-3 py-2 rounded-md transition-colors text-sm font-medium bg-blue-600 text-white"
@@ -71,15 +78,13 @@ export default function Layout({ isDemo = false }: { isDemo?: boolean }) {
                 <span className="hidden sm:inline">Lançamentos</span>
               </Link>
             )}
-            {!isDemo && canManageUsers && <AdminNotificationBadge />}
+            {!isDemoEffective && canManageUsers && <AdminNotificationBadge />}
           </nav>
         </div>
       </header>
 
       {/* Main Content */}
-      <main className="flex-1 flex flex-col relative bg-slate-50">
-        <Outlet />
-      </main>
+      <main className="flex-1 flex flex-col relative bg-slate-50">{children ?? <Outlet />}</main>
 
       {/* Footer / Floating Elements */}
       <InpiSeal />

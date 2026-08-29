@@ -51,9 +51,11 @@ export default function Index() {
 
   const lancamentosRef = useRef<HTMLElement>(null)
   const dashboardKpisRef = useRef<HTMLElement>(null)
+  const isDemo =
+    isDemoMode || (typeof window !== 'undefined' && window.location.pathname.startsWith('/demo'))
 
   useEffect(() => {
-    if (isDemoMode) {
+    if (isDemo) {
       return
     }
 
@@ -67,20 +69,20 @@ export default function Index() {
       // Refresh silently without clearing state to avoid flickering
       fetchData(false)
     }
-  }, [profile, loading, isMaster, isColaborador, navigate, isDemoMode])
+  }, [profile, loading, isMaster, isColaborador, navigate, isDemo])
 
   // Revalidação silenciosa ao voltar para a aba
   useEffect(() => {
     const handleFocus = () => {
-      if (!isDemoMode && profile) {
+      if (!isDemo && profile) {
         fetchData(false)
       }
     }
     window.addEventListener('focus', handleFocus)
     return () => window.removeEventListener('focus', handleFocus)
-  }, [profile, fetchData, isDemoMode])
+  }, [profile, fetchData, isDemo])
 
-  if (!loading && profile && profile.status === 'Pendente' && !isMaster) {
+  if (!isDemo && !loading && profile && profile.status === 'Pendente' && !isMaster) {
     return (
       <div className="flex items-center justify-center h-full w-full bg-[#f8fafc] animate-fade-in">
         <div className="flex flex-col items-center gap-4 mt-20">
@@ -91,7 +93,7 @@ export default function Index() {
     )
   }
 
-  if (!loading && profile && isColaborador) {
+  if (!isDemo && !loading && profile && isColaborador) {
     return (
       <div className="flex items-center justify-center h-full w-full bg-[#f8fafc] animate-fade-in">
         <div className="flex flex-col items-center gap-4 mt-20">
