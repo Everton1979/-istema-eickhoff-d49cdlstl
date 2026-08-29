@@ -1,12 +1,6 @@
 import 'jsr:@supabase/functions-js/edge-runtime.d.ts'
-import { createClient } from 'jsr:@supabase/supabase-js@2'
-
-export const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-  'Access-Control-Allow-Headers':
-    'authorization, x-client-info, x-supabase-client-platform, apikey, content-type',
-}
+import { createClient } from 'npm:@supabase/supabase-js@2'
+import { corsHeaders } from '../_shared/cors.ts'
 
 Deno.serve(async (req: Request) => {
   if (req.method === 'OPTIONS') {
@@ -15,27 +9,52 @@ Deno.serve(async (req: Request) => {
 
   try {
     const authHeader = req.headers.get('Authorization')
-    if (!authHeader) {
-      throw new Error('Missing Authorization header')
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return new Response(JSON.stringify({ error: 'Missing or invalid Authorization header' }), {
+        status: 401,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      })
+    }
+
+    const token = authHeader.replace(/^Bearer\s+/i, '').trim()
+    if (!token) {
+      return new Response(JSON.stringify({ error: 'Invalid token' }), {
+        status: 401,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      })
     }
 
     const supabaseUrl = Deno.env.get('SUPABASE_URL') ?? ''
     const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY') ?? ''
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
 
-    // Create client with the user's JWT to verify their identity and role
+    // Create client with the user's JWT to verify their identity and session
     const supabaseClient = createClient(supabaseUrl, supabaseAnonKey, {
-      global: { headers: { Authorization: authHeader } },
+      global: { headers: { Authorization: `Bearer ${token}` } },
+      auth: {
+        persistSession: false,
+        autoRefreshToken: false,
+      },
     })
 
     const {
       data: { user },
       error: userError,
-    } = await supabaseClient.auth.getUser()
-    if (userError || !user) throw new Error('Unauthorized')
+    } = await supabaseClient.auth.getUser(token)
+    if (userError || !user) {
+      return new Response(JSON.stringify({ error: 'Unauthorized: Invalid or expired token' }), {
+        status: 401,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      })
+    }
 
     // Create admin client to bypass RLS and use auth.admin methods
-    const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey)
+    const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey, {
+      auth: {
+        persistSession: false,
+        autoRefreshToken: false,
+      },
+    })
 
     const reqBody = await req.json()
     const { action, email, password, userId, company_name, app_name, role, access_profile } =

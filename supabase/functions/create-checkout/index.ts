@@ -1,12 +1,6 @@
 import 'jsr:@supabase/functions-js/edge-runtime.d.ts'
-import { createClient } from 'jsr:@supabase/supabase-js@2'
-
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-  'Access-Control-Allow-Headers':
-    'authorization, x-client-info, x-supabase-client-platform, apikey, content-type',
-}
+import { createClient } from 'npm:@supabase/supabase-js@2'
+import { corsHeaders } from '../_shared/cors.ts'
 
 const allowedOrigins = [
   'https://controle-financeiro-planilha-9bacd--preview.goskip.app',
@@ -27,19 +21,34 @@ Deno.serve(async (req: Request) => {
 
   try {
     const authHeader = req.headers.get('Authorization')
-    if (!authHeader) throw new Error('Missing Authorization header')
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return new Response(JSON.stringify({ error: 'Missing or invalid Authorization header' }), {
+        status: 401,
+        headers: { ...reqCorsHeaders, 'Content-Type': 'application/json' },
+      })
+    }
 
+    const token = authHeader.replace(/^Bearer\s+/i, '').trim()
     const supabaseUrl = Deno.env.get('SUPABASE_URL') ?? ''
     const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY') ?? ''
     const supabaseClient = createClient(supabaseUrl, supabaseAnonKey, {
-      global: { headers: { Authorization: authHeader } },
+      global: { headers: { Authorization: `Bearer ${token}` } },
+      auth: {
+        persistSession: false,
+        autoRefreshToken: false,
+      },
     })
 
     const {
       data: { user },
       error: userError,
-    } = await supabaseClient.auth.getUser()
-    if (userError || !user) throw new Error('Unauthorized')
+    } = await supabaseClient.auth.getUser(token)
+    if (userError || !user) {
+      return new Response(JSON.stringify({ error: 'Unauthorized: Invalid or expired token' }), {
+        status: 401,
+        headers: { ...reqCorsHeaders, 'Content-Type': 'application/json' },
+      })
+    }
 
     const { plan, price, origin, cellphone, taxId, frequency } = await req.json()
 

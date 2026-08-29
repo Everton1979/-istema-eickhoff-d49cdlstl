@@ -1,12 +1,6 @@
 import 'jsr:@supabase/functions-js/edge-runtime.d.ts'
-import { createClient } from 'jsr:@supabase/supabase-js@2'
-
-export const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-  'Access-Control-Allow-Headers':
-    'authorization, x-client-info, x-supabase-client-platform, apikey, content-type',
-}
+import { createClient } from 'npm:@supabase/supabase-js@2'
+import { corsHeaders } from '../_shared/cors.ts'
 
 const WEBHOOK_SECRET = Deno.env.get('ABACATEPAY_WEBHOOK_SECRET') || ''
 
@@ -15,7 +9,7 @@ async function verifySignature(req: Request, bodyText: string): Promise<boolean>
 
   if (!signatureHeader) {
     const auth = req.headers.get('authorization')
-    if (auth && auth.replace('Bearer ', '') === WEBHOOK_SECRET) {
+    if (auth && auth.replace(/^Bearer\s+/i, '').trim() === WEBHOOK_SECRET) {
       return true
     }
     return false
@@ -47,7 +41,10 @@ Deno.serve(async (req: Request) => {
       const isValid = await verifySignature(req, bodyText)
       if (!isValid) {
         console.warn('Webhook signature verification failed')
-        throw new Error('Invalid signature')
+        return new Response(JSON.stringify({ error: 'Invalid webhook signature' }), {
+          status: 401,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        })
       }
     }
 
