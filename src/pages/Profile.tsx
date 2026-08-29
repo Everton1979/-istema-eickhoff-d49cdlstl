@@ -1,13 +1,32 @@
 import { useState, useEffect } from 'react'
 import { DashboardHeader } from '@/components/dashboard/DashboardHeader'
 import { useAuth } from '@/hooks/use-auth'
-import { User, Save, Lock } from 'lucide-react'
+import {
+  User,
+  Save,
+  Lock,
+  ShieldCheck,
+  Trash2,
+  Mail,
+  ExternalLink,
+  AlertTriangle,
+} from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
 import { toast } from 'sonner'
 import { supabase } from '@/lib/supabase/client'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Link } from 'react-router-dom'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
 
 export default function Profile() {
   const { profile } = useAuth()
@@ -33,6 +52,11 @@ export default function Profile() {
     newPassword: '',
     confirmPassword: '',
   })
+
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
+  const [deletionReason, setDeletionReason] = useState('')
+  const [submittingDeletion, setSubmittingDeletion] = useState(false)
+  const [deletionRequested, setDeletionRequested] = useState(false)
 
   useEffect(() => {
     if (profile) {
@@ -144,6 +168,60 @@ export default function Profile() {
       toast.error(error.message || 'Erro ao atualizar senha')
     } finally {
       setLoading(false)
+    }
+  }
+
+  const handleRequestDataDeletion = async () => {
+    setSubmittingDeletion(true)
+    try {
+      if (isDemoMode) {
+        toast.success('Solicitação de exclusão registrada com sucesso (Modo Demonstração)!')
+        setDeletionRequested(true)
+        setIsDeleteDialogOpen(false)
+        return
+      }
+
+      if (profile?.id) {
+        // Registra log de auditoria formal da solicitação de exclusão LGPD
+        await supabase.from('audit_logs').insert({
+          user_id: profile.id,
+          action: 'SOLICITACAO_EXCLUSAO_LGPD',
+          entity: 'Perfil e Dados do Usuário',
+          entity_id: profile.id,
+          details: {
+            motivo: deletionReason || 'Solicitação direta do usuário via painel LGPD',
+            email: profile.email,
+            cnpj: profile.cnpj,
+            razao_social: profile.razao_social,
+            data_solicitacao: new Date().toISOString(),
+          },
+        })
+      }
+
+      // Prepara link de e-mail pré-preenchido para o DPO / responsável
+      const subject = encodeURIComponent(
+        `[LGPD] Solicitação de Exclusão de Dados - ${profile?.razao_social || profile?.email || 'Cliente'}`,
+      )
+      const body = encodeURIComponent(
+        `Olá,\n\nEu, na qualidade de titular e representante da empresa ${profile?.razao_social || ''} (CNPJ: ${profile?.cnpj || ''}), cadastrado sob o e-mail ${profile?.email || ''}, solicito formalmente nos termos do Art. 18 da LGPD (Lei nº 13.709/2018) a exclusão dos dados da minha conta no Sistema Eickhoff.\n\nMotivo da solicitação:\n${deletionReason || 'Não informado'}\n\nData da solicitação: ${new Date().toLocaleString('pt-BR')}\n\nAguardo confirmação do processamento.`,
+      )
+      const mailtoUrl = `mailto:farmaciaeickhoff@terra.com.br?subject=${subject}&body=${body}`
+
+      // Dispara abertura do e-mail
+      window.open(mailtoUrl, '_blank')
+
+      setDeletionRequested(true)
+      setIsDeleteDialogOpen(false)
+      toast.success(
+        'Solicitação de exclusão LGPD registrada! Abrimos seu cliente de e-mail para envio ao responsável.',
+        { duration: 8000 },
+      )
+    } catch (err: any) {
+      toast.error(
+        'Erro ao registrar solicitação de exclusão. Entre em contato por farmaciaeickhoff@terra.com.br',
+      )
+    } finally {
+      setSubmittingDeletion(false)
     }
   }
 
@@ -271,6 +349,12 @@ export default function Profile() {
                     className="data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-blue-600 rounded-none px-0 pb-3"
                   >
                     Atividades
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="lgpd"
+                    className="data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-blue-600 rounded-none px-0 pb-3"
+                  >
+                    Privacidade e LGPD
                   </TabsTrigger>
                 </TabsList>
               </div>
@@ -489,10 +573,201 @@ export default function Profile() {
                   </div>
                 </div>
               </TabsContent>
+
+              {/* Nova Aba de Privacidade & LGPD */}
+              <TabsContent value="lgpd" className="p-6 m-0">
+                <div className="space-y-6 max-w-3xl">
+                  <div>
+                    <h3 className="text-sm font-semibold mb-1 text-slate-800 flex items-center gap-2">
+                      <ShieldCheck className="w-4 h-4 text-emerald-600" />
+                      Gestão de Privacidade e Direitos LGPD
+                    </h3>
+                    <p className="text-sm text-slate-500">
+                      Em conformidade com a Lei Geral de Proteção de Dados Pessoais (Lei nº
+                      13.709/2018).
+                    </p>
+                  </div>
+
+                  {/* Status do Consentimento */}
+                  <div className="p-4 bg-slate-50 border rounded-lg space-y-3">
+                    <div className="flex items-start justify-between gap-4">
+                      <div>
+                        <p className="text-sm font-semibold text-slate-800">
+                          Status do Consentimento de Uso
+                        </p>
+                        <p className="text-xs text-slate-600 mt-1 leading-relaxed">
+                          Você consentiu com o tratamento dos dados da empresa e do responsável para
+                          fins de gestão financeira e prestação dos serviços do software.
+                        </p>
+                        {profile?.lgpd_consent_at && (
+                          <p className="text-xs text-slate-500 mt-2 font-mono">
+                            Data do consentimento:{' '}
+                            {new Date(profile.lgpd_consent_at).toLocaleString('pt-BR')} (Versão{' '}
+                            {profile.lgpd_consent_version || 'v1.0'})
+                          </p>
+                        )}
+                      </div>
+                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-emerald-100 text-emerald-800 text-xs font-semibold rounded-full shrink-0">
+                        <ShieldCheck className="w-3.5 h-3.5" /> Ativo &amp; Válido
+                      </span>
+                    </div>
+
+                    <div className="flex flex-wrap items-center gap-4 pt-2 border-t border-slate-200 text-xs">
+                      <Link
+                        to="/termos-de-uso"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-600 hover:underline flex items-center gap-1 font-medium"
+                      >
+                        <ExternalLink className="w-3.5 h-3.5" /> Ler Termos de Uso
+                      </Link>
+                      <Link
+                        to="/politica-de-privacidade"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-600 hover:underline flex items-center gap-1 font-medium"
+                      >
+                        <ExternalLink className="w-3.5 h-3.5" /> Ler Política de Privacidade
+                      </Link>
+                    </div>
+                  </div>
+
+                  {/* Seção de Exclusão de Dados */}
+                  <div className="p-5 border border-rose-200 bg-rose-50/40 rounded-lg space-y-4">
+                    <div className="flex items-start gap-3">
+                      <div className="p-2 bg-rose-100 text-rose-700 rounded-md shrink-0">
+                        <Trash2 className="w-5 h-5" />
+                      </div>
+                      <div className="space-y-1">
+                        <h4 className="text-sm font-bold text-rose-950">
+                          Exclusão de Dados e Encerramento de Conta (Art. 18, VI da LGPD)
+                        </h4>
+                        <p className="text-xs text-slate-600 leading-relaxed">
+                          Você tem o direito de solicitar a qualquer momento a exclusão definitiva
+                          dos seus dados pessoais e dos lançamentos cadastrados no sistema. Ao
+                          confirmar a solicitação, sua conta será encaminhada para o processo de
+                          anonimização e exclusão segura por nossa equipe técnica.
+                        </p>
+                      </div>
+                    </div>
+
+                    {deletionRequested ? (
+                      <div className="p-3.5 bg-emerald-50 border border-emerald-200 rounded-md text-xs text-emerald-800 space-y-1">
+                        <p className="font-semibold flex items-center gap-1.5">
+                          <ShieldCheck className="w-4 h-4 text-emerald-600" /> Solicitação de
+                          Exclusão Enviada!
+                        </p>
+                        <p className="text-emerald-700">
+                          Sua solicitação de exclusão foi devidamente registrada em nossa auditoria.
+                          Nossa equipe responderá e concluirá o procedimento em até 15 dias úteis,
+                          respeitando os prazos legais da LGPD.
+                        </p>
+                      </div>
+                    ) : (
+                      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pt-2">
+                        <p className="text-xs text-slate-500">
+                          * Dados fiscais ou decorrentes de obrigação legal serão mantidos pelo
+                          prazo regulatório.
+                        </p>
+                        <Button
+                          type="button"
+                          variant="destructive"
+                          size="sm"
+                          onClick={() => setIsDeleteDialogOpen(true)}
+                          className="gap-2 shrink-0 bg-rose-600 hover:bg-rose-700"
+                        >
+                          <Trash2 className="w-4 h-4" /> Solicitar Exclusão de Dados
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Canal de Contato DPO */}
+                  <div className="p-4 bg-slate-50 border rounded-lg text-xs space-y-2 text-slate-600">
+                    <p className="font-semibold text-slate-800 flex items-center gap-1.5">
+                      <Mail className="w-4 h-4 text-blue-600" /> Canal de Atendimento do Encarregado
+                      de Dados (DPO)
+                    </p>
+                    <p>
+                      Para esclarecer dúvidas sobre seus dados ou exercer qualquer outro direito
+                      previsto na LGPD, você também pode entrar em contato diretamente com o
+                      responsável pelo e-mail:{' '}
+                      <a
+                        href="mailto:farmaciaeickhoff@terra.com.br"
+                        className="text-blue-600 font-medium underline"
+                      >
+                        farmaciaeickhoff@terra.com.br
+                      </a>
+                    </p>
+                  </div>
+                </div>
+              </TabsContent>
             </Tabs>
           </div>
         </div>
       </div>
+
+      {/* Dialog de Confirmação de Exclusão de Dados */}
+      <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <div className="w-10 h-10 bg-rose-100 text-rose-600 rounded-full flex items-center justify-center mb-2">
+              <AlertTriangle className="w-5 h-5" />
+            </div>
+            <DialogTitle className="text-lg font-bold text-slate-900">
+              Solicitar Exclusão de Dados (LGPD)
+            </DialogTitle>
+            <DialogDescription className="text-xs text-slate-600 pt-1 leading-relaxed">
+              Esta ação iniciará o protocolo de exclusão definitiva e desativação da sua conta e dos
+              dados vinculados à empresa <strong>{profile?.razao_social || 'sua empresa'}</strong>.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-3 py-2 text-xs">
+            <div className="p-3 bg-amber-50 border border-amber-200 rounded-md text-amber-900 leading-relaxed">
+              <strong>Importante:</strong> Após a conclusão da solicitação, seus dados de acesso e
+              relatórios financeiros serão permanentemente removidos, não sendo possível
+              recuperá-los.
+            </div>
+
+            <div className="space-y-1">
+              <Label htmlFor="deletionReason" className="text-xs font-medium text-slate-700">
+                Motivo da solicitação (opcional)
+              </Label>
+              <Textarea
+                id="deletionReason"
+                placeholder="Conte-nos brevemente o motivo do encerramento..."
+                value={deletionReason}
+                onChange={(e) => setDeletionReason(e.target.value)}
+                className="text-xs resize-none"
+                rows={3}
+              />
+            </div>
+          </div>
+
+          <DialogFooter className="gap-2 sm:gap-0">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => setIsDeleteDialogOpen(false)}
+              disabled={submittingDeletion}
+            >
+              Cancelar
+            </Button>
+            <Button
+              type="button"
+              variant="destructive"
+              size="sm"
+              onClick={handleRequestDataDeletion}
+              disabled={submittingDeletion}
+              className="gap-1.5 bg-rose-600 hover:bg-rose-700"
+            >
+              {submittingDeletion ? 'Processando...' : 'Confirmar e Enviar Solicitação'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

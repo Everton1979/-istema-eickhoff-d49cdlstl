@@ -21,6 +21,27 @@ export function InpiSeal() {
             <div className="text-[11px] sm:text-xs font-mono text-blue-400/90 mt-2 font-semibold bg-blue-950/40 inline-block px-2.5 py-1 rounded border border-blue-900/50">
               Processo Oficial INPI: BR512026003002-1
             </div>
+            <div className="pt-2 flex flex-wrap items-center justify-center sm:justify-start gap-3 text-[11px] text-slate-400">
+              <a
+                href="/termos-de-uso"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-blue-300 underline"
+              >
+                Termos de Uso
+              </a>
+              <span>•</span>
+              <a
+                href="/politica-de-privacidade"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-blue-300 underline"
+              >
+                Política de Privacidade (LGPD)
+              </a>
+              <span>•</span>
+              <span className="text-slate-500">Conformidade com a Lei nº 13.709/2018</span>
+            </div>
           </div>
         </div>
       </div>

@@ -98,6 +98,18 @@ export default function Login() {
               </Link>
             </div>
           </div>
+
+          <div className="border-t border-slate-100 mt-6 pt-4 text-center">
+            <div className="flex items-center justify-center gap-3 text-xs text-slate-500">
+              <Link to="/termos-de-uso" className="hover:text-slate-800 hover:underline">
+                Termos de Uso
+              </Link>
+              <span>•</span>
+              <Link to="/politica-de-privacidade" className="hover:text-slate-800 hover:underline">
+                Política de Privacidade (LGPD)
+              </Link>
+            </div>
+          </div>
         </form>
       </div>
     </div>

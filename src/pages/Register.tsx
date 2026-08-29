@@ -86,6 +86,10 @@ const registerSchema = z
     confirmEmail: z.string().min(1, 'Este campo é obrigatório'),
     password: z.string().min(6, 'A senha deve ter no mínimo 6 caracteres'),
     confirmPassword: z.string().min(1, 'Este campo é obrigatório'),
+    lgpdConsent: z.boolean().refine((val) => val === true, {
+      message:
+        'Você precisa concordar com os Termos de Uso e a Política de Privacidade (LGPD) para prosseguir.',
+    }),
   })
   .refine((data) => data.email === data.confirmEmail, {
     message: 'Os e-mails não coincidem',
@@ -130,6 +134,7 @@ export default function Register() {
       confirmEmail: '',
       password: '',
       confirmPassword: '',
+      lgpdConsent: false,
     },
   })
 
@@ -137,6 +142,7 @@ export default function Register() {
   const cepValue = form.watch('cep')
   const emailValue = form.watch('email')
   const confirmEmailValue = form.watch('confirmEmail')
+  const lgpdConsentValue = form.watch('lgpdConsent')
 
   useEffect(() => {
     const fetchCepData = async (digits: string) => {
@@ -247,6 +253,9 @@ export default function Register() {
       cidade_estado: `${data.cidade} - ${data.estado}`,
       telefone: data.telefone,
       responsavel: data.responsavel,
+      lgpd_consent: true,
+      lgpd_consent_at: new Date().toISOString(),
+      lgpd_consent_version: 'v1.0',
     }
 
     const { error } = await signUp(data.email, data.password, metadata)
@@ -672,6 +681,59 @@ export default function Register() {
               />
             </div>
 
+            {/* Consentimento LGPD */}
+            <div className="border-t pt-4 mt-4">
+              <FormField
+                control={form.control}
+                name="lgpdConsent"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 bg-slate-50">
+                    <FormControl>
+                      <input
+                        type="checkbox"
+                        checked={field.value}
+                        onChange={(e) => field.onChange(e.target.checked)}
+                        className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 mt-1 cursor-pointer"
+                        id="lgpdConsentCheckbox"
+                      />
+                    </FormControl>
+                    <div className="space-y-1 leading-normal text-xs text-slate-700">
+                      <FormLabel
+                        htmlFor="lgpdConsentCheckbox"
+                        className="font-normal cursor-pointer block"
+                      >
+                        Declaro que li, compreendi e concordo com os{' '}
+                        <Link
+                          to="/termos-de-uso"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-600 font-semibold underline hover:text-blue-800"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          Termos de Uso
+                        </Link>{' '}
+                        e com a{' '}
+                        <Link
+                          to="/politica-de-privacidade"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-600 font-semibold underline hover:text-blue-800"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          Política de Privacidade
+                        </Link>{' '}
+                        do <strong>$istema Eickhoff</strong>, autorizando o tratamento dos dados da
+                        empresa e do responsável nos termos da{' '}
+                        <strong>LGPD (Lei nº 13.709/2018)</strong>.{' '}
+                        <span className="text-red-500 font-bold">*</span>
+                      </FormLabel>
+                      <FormMessage />
+                    </div>
+                  </FormItem>
+                )}
+              />
+            </div>
+
             <Button
               type="submit"
               className="w-full bg-[#1e3a8a] hover:bg-[#1e3a8a]/90 mt-6"
@@ -680,7 +742,8 @@ export default function Register() {
                 isFetchingCnpj ||
                 isFetchingCep ||
                 !emailValue ||
-                emailValue !== confirmEmailValue
+                emailValue !== confirmEmailValue ||
+                !lgpdConsentValue
               }
             >
               {loading ? 'Aguarde...' : 'Solicitar Acesso'}

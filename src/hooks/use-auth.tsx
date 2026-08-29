@@ -38,6 +38,9 @@ export interface UserProfile {
   plan_end_date?: string | null
   admin_notes?: string | null
   is_super_admin?: boolean | null
+  lgpd_consent?: boolean | null
+  lgpd_consent_at?: string | null
+  lgpd_consent_version?: string | null
 }
 
 export const isMasterUser = (profile: UserProfile | null, userEmail?: string | null): boolean => {

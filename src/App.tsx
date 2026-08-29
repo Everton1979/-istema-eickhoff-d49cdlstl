@@ -20,6 +20,8 @@ import Layout from './components/Layout'
 import Profile from './pages/Profile'
 import BlockedAccess from './pages/BlockedAccess'
 import Demo from './pages/Demo'
+import TermsOfUse from './pages/TermsOfUse'
+import PrivacyPolicy from './pages/PrivacyPolicy'
 
 const ProtectedRoute = ({
   children,
@@ -122,6 +124,8 @@ const App = () => (
               <Route path="/" element={<Navigate to="/dashboard" replace />} />
               <Route path="/login" element={<Login />} />
               <Route path="/cadastro" element={<Register />} />
+              <Route path="/termos-de-uso" element={<TermsOfUse />} />
+              <Route path="/politica-de-privacidade" element={<PrivacyPolicy />} />
               <Route path="/esqueci-a-senha" element={<ForgotPassword />} />
               <Route path="/nova-senha" element={<ResetPassword />} />
               <Route path="/pendente" element={<PendingApproval />} />
