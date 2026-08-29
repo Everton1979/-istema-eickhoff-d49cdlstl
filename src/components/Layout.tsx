@@ -1,11 +1,10 @@
 import { Link, Outlet, useLocation } from 'react-router-dom'
-import { LayoutDashboard } from 'lucide-react'
+import { LayoutDashboard, ArrowRightLeft } from 'lucide-react'
 import { useAuth } from '@/hooks/use-auth'
+import { useFinanceStore } from '@/stores/financeStore'
 import { cn } from '@/lib/utils'
 import { InpiSeal } from './InpiSeal'
 import { AdminNotificationBadge } from './AdminNotificationBadge'
-
-import { ArrowRightLeft } from 'lucide-react'
 
 export default function Layout({
   isDemo = false,
@@ -15,8 +14,9 @@ export default function Layout({
   children?: React.ReactNode
 }) {
   const { profile, isColaborador, canManageUsers } = useAuth()
+  const { isDemoMode } = useFinanceStore()
   const location = useLocation()
-  const isDemoEffective = isDemo || location.pathname.startsWith('/demo')
+  const isDemoEffective = isDemo || isDemoMode || location.pathname.startsWith('/demo')
 
   const companyName = isDemoEffective
     ? 'Farmácia Magistral Modelo (Demo)'
@@ -44,26 +44,59 @@ export default function Layout({
 
           <nav className="flex items-center gap-1">
             {isDemoEffective ? (
-              <Link
-                to="/demo"
-                className="flex items-center gap-2 px-3 py-2 rounded-md transition-colors text-sm font-medium bg-blue-600 text-white"
-              >
-                <LayoutDashboard className="w-4 h-4" />
-                <span className="hidden sm:inline">Painel Geral</span>
-              </Link>
+              <>
+                <Link
+                  to="/demo"
+                  className={cn(
+                    'flex items-center gap-2 px-3 py-2 rounded-md transition-colors text-sm font-medium',
+                    location.pathname === '/demo' || location.pathname === '/dashboard'
+                      ? 'bg-blue-600 text-white'
+                      : 'text-slate-300 hover:bg-white/10 hover:text-white',
+                  )}
+                >
+                  <LayoutDashboard className="w-4 h-4" />
+                  <span className="hidden sm:inline">Painel Geral</span>
+                </Link>
+                <Link
+                  to="/transacoes"
+                  className={cn(
+                    'flex items-center gap-2 px-3 py-2 rounded-md transition-colors text-sm font-medium',
+                    location.pathname === '/transacoes'
+                      ? 'bg-blue-600 text-white'
+                      : 'text-slate-300 hover:bg-white/10 hover:text-white',
+                  )}
+                >
+                  <ArrowRightLeft className="w-4 h-4" />
+                  <span className="hidden sm:inline">Lançamentos</span>
+                </Link>
+              </>
             ) : !isColaborador ? (
-              <Link
-                to="/dashboard"
-                className={cn(
-                  'flex items-center gap-2 px-3 py-2 rounded-md transition-colors text-sm font-medium',
-                  location.pathname === '/dashboard'
-                    ? 'bg-blue-600 text-white'
-                    : 'text-slate-300 hover:bg-white/10 hover:text-white',
-                )}
-              >
-                <LayoutDashboard className="w-4 h-4" />
-                <span className="hidden sm:inline">Painel Geral</span>
-              </Link>
+              <>
+                <Link
+                  to="/dashboard"
+                  className={cn(
+                    'flex items-center gap-2 px-3 py-2 rounded-md transition-colors text-sm font-medium',
+                    location.pathname === '/dashboard'
+                      ? 'bg-blue-600 text-white'
+                      : 'text-slate-300 hover:bg-white/10 hover:text-white',
+                  )}
+                >
+                  <LayoutDashboard className="w-4 h-4" />
+                  <span className="hidden sm:inline">Painel Geral</span>
+                </Link>
+                <Link
+                  to="/transacoes"
+                  className={cn(
+                    'flex items-center gap-2 px-3 py-2 rounded-md transition-colors text-sm font-medium',
+                    location.pathname === '/transacoes'
+                      ? 'bg-blue-600 text-white'
+                      : 'text-slate-300 hover:bg-white/10 hover:text-white',
+                  )}
+                >
+                  <ArrowRightLeft className="w-4 h-4" />
+                  <span className="hidden sm:inline">Lançamentos</span>
+                </Link>
+              </>
             ) : (
               <Link
                 to="/transacoes"

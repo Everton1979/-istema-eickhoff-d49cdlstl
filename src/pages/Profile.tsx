@@ -11,6 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 export default function Profile() {
   const { profile } = useAuth()
+  const { isDemoMode } = useFinanceStore()
   const [loading, setLoading] = useState(false)
 
   const [formData, setFormData] = useState({
@@ -48,8 +49,22 @@ export default function Profile() {
         bairro: profile.bairro || '',
         cidade_estado: profile.cidade_estado || '',
       })
+    } else if (isDemoMode) {
+      setFormData({
+        razao_social: 'Farmácia Magistral Modelo LTDA (Demo)',
+        nome_fantasia: 'Farmácia Magistral Modelo',
+        cnpj: '00.000.000/0001-91',
+        telefone: '(51) 99999-9999',
+        responsavel: 'Farmacêutico Responsável',
+        cep: '90000-000',
+        logradouro: 'Avenida Principal Modelo',
+        numero: '1000',
+        complemento: 'Sala 101',
+        bairro: 'Centro',
+        cidade_estado: 'Porto Alegre / RS',
+      })
     }
-  }, [profile])
+  }, [profile, isDemoMode])
 
   const handleProfileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }))
@@ -61,6 +76,10 @@ export default function Profile() {
 
   const handleSaveProfile = async (e: React.FormEvent) => {
     e.preventDefault()
+    if (isDemoMode) {
+      toast.success('Perfil atualizado com sucesso (Modo Demonstração)!')
+      return
+    }
     if (!profile?.id) return
 
     setLoading(true)
@@ -82,6 +101,11 @@ export default function Profile() {
 
   const handleSavePassword = async (e: React.FormEvent) => {
     e.preventDefault()
+    if (isDemoMode) {
+      toast.success('Senha atualizada com sucesso (Modo Demonstração)!')
+      setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' })
+      return
+    }
     if (!passwordData.currentPassword) {
       toast.error('Por favor, informe sua senha atual.')
       return
@@ -129,7 +153,26 @@ export default function Profile() {
 
     useEffect(() => {
       const fetchLogs = async () => {
-        if (!profile?.id) return
+        if (!profile?.id) {
+          if (isDemoMode) {
+            setLogs([
+              {
+                id: 'demo-log-1',
+                action: 'CRIAR',
+                entity: 'Transação',
+                created_at: new Date().toISOString(),
+              },
+              {
+                id: 'demo-log-2',
+                action: 'ATUALIZAR',
+                entity: 'Métrica Mensal',
+                created_at: new Date(Date.now() - 3600000).toISOString(),
+              },
+            ])
+          }
+          setLoadingLogs(false)
+          return
+        }
         const { data } = await supabase
           .from('audit_logs')
           .select('*')
@@ -237,15 +280,32 @@ export default function Profile() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-1 md:col-span-2">
                       <Label>Email (Fixo)</Label>
-                      <Input value={profile?.email || ''} disabled className="bg-slate-50" />
+                      <Input
+                        value={profile?.email || (isDemoMode ? 'demo@sistemaeickhoff.com.br' : '')}
+                        disabled
+                        className="bg-slate-50"
+                      />
                     </div>
                     <div className="space-y-1">
                       <Label>Status</Label>
-                      <Input value={profile?.status || 'Ativo'} disabled className="bg-slate-50" />
+                      <Input
+                        value={
+                          profile?.status || (isDemoMode ? 'Modo Demonstração (Ativo)' : 'Ativo')
+                        }
+                        disabled
+                        className="bg-slate-50"
+                      />
                     </div>
                     <div className="space-y-1">
                       <Label>Nível de Acesso</Label>
-                      <Input value={profile?.role || 'Usuário'} disabled className="bg-slate-50" />
+                      <Input
+                        value={
+                          profile?.role ||
+                          (isDemoMode ? 'Administrador / Proprietário (Demo)' : 'Usuário')
+                        }
+                        disabled
+                        className="bg-slate-50"
+                      />
                     </div>
                   </div>
 

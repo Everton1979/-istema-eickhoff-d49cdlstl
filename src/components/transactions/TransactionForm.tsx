@@ -305,7 +305,11 @@ export function TransactionForm({ onSuccess, initialData, prefillDate }: Transac
 
   // Fetch custom categories and payment methods from DB
   const loadCustomOptions = useCallback(async () => {
-    if (!user) return
+    if (!user) {
+      setCustomCategories([])
+      setCustomPaymentMethods([])
+      return
+    }
     setLoadingCustomData(true)
     try {
       let catQuery = supabase.from('user_categories').select('id, name, type')
@@ -472,7 +476,22 @@ export function TransactionForm({ onSuccess, initialData, prefillDate }: Transac
       })
       return
     }
-    if (!user) return
+    if (!user) {
+      // No modo demo, salva apenas em memória local
+      setCustomCategories((prev) => [
+        ...prev,
+        {
+          id: `demo_cat_${Date.now()}`,
+          name: trimmed,
+          type: categoryId === 'VARIAVEL' ? 'variable' : 'fixed',
+        },
+      ])
+      toast({ title: 'Sucesso', description: 'Subcategoria adicionada no modo demonstração!' })
+      form.setValue('subcategoryId', trimmed)
+      setNewSubcategoryDialogOpen(false)
+      setNewSubcategoryName('')
+      return
+    }
 
     setSavingSubcategory(true)
     try {
@@ -518,7 +537,15 @@ export function TransactionForm({ onSuccess, initialData, prefillDate }: Transac
       })
       return
     }
-    if (!user) return
+    if (!user) {
+      // No modo demo, salva apenas em memória local
+      setCustomPaymentMethods((prev) => [...prev, { id: `demo_pm_${Date.now()}`, name: trimmed }])
+      toast({ title: 'Sucesso', description: 'Meio de pagamento adicionado no modo demonstração!' })
+      form.setValue('paymentMethodId', trimmed)
+      setNewPaymentMethodDialogOpen(false)
+      setNewPaymentMethodName('')
+      return
+    }
 
     setSavingPaymentMethod(true)
     try {

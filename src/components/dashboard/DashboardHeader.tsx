@@ -133,13 +133,16 @@ export function DashboardHeader() {
         <Tooltip>
           <TooltipTrigger asChild>
             {isDemo ? (
-              <Link
-                to="/login"
+              <button
+                onClick={() => {
+                  financeStore.setIsDemoMode(false)
+                  window.location.href = '/login'
+                }}
                 className="p-2 hover:bg-blue-100 dark:hover:bg-blue-900/30 rounded-md text-blue-600 transition-colors flex items-center gap-1 font-semibold text-xs"
                 title="Acessar Login"
               >
                 <LogOut className="w-5 h-5" />
-              </Link>
+              </button>
             ) : (
               <button
                 onClick={() => signOut()}

@@ -21,12 +21,22 @@ type GroupedData = {
   despesas_total: number
 }
 
+import { useAuth } from '@/hooks/use-auth'
+import { useFinanceStore } from '@/stores/financeStore'
+
 export default function DataAudit() {
+  const { user } = useAuth()
+  const { isDemoMode } = useFinanceStore()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [data, setData] = useState<GroupedData[]>([])
 
   const fetchData = async () => {
+    if (!user && isDemoMode) {
+      setData([])
+      setLoading(false)
+      return
+    }
     try {
       setLoading(true)
       setError(null)

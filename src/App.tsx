@@ -2,7 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { Toaster } from '@/components/ui/toaster'
 import { Toaster as Sonner } from '@/components/ui/sonner'
 import { TooltipProvider } from '@/components/ui/tooltip'
-import { FinanceProvider } from '@/stores/financeStore'
+import { FinanceProvider, useFinanceStore } from '@/stores/financeStore'
 import { AuthProvider, useAuth } from '@/hooks/use-auth'
 import { ThemeProvider } from '@/components/ThemeProvider'
 import Index from './pages/Index'
@@ -45,6 +45,12 @@ const ProtectedRoute = ({
     canManageUsers: userCanManage,
     canViewStrategic,
   } = useAuth()
+  const { isDemoMode } = useFinanceStore()
+
+  // Se estiver em modo demo, permite visualizar rotas internas sem login nem checagens de perfil restrito
+  if (isDemoMode) {
+    return <>{children}</>
+  }
 
   if (loading) {
     return (

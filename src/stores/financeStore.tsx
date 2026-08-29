@@ -41,6 +41,7 @@ interface FinanceFilters {
 
 interface FinanceContextType {
   isDemoMode: boolean
+  setIsDemoMode: (val: boolean) => void
   hasUserSettings: boolean | null
   loadDemoData: () => void
   completeOnboarding: () => Promise<void>
@@ -192,19 +193,28 @@ const ensureUtcNoon = (dateStr: string) => {
 
 export function FinanceProvider({ children }: { children: React.ReactNode }) {
   const { user, profile } = useAuth()
-  const isDemoModeRef = React.useRef(false)
   const [isDemoMode, setIsDemoModeState] = useState(() => {
     if (typeof window !== 'undefined') {
+      const stored = sessionStorage.getItem('finance_demo_mode')
+      if (stored === 'true') return true
       return window.location.pathname.startsWith('/demo')
     }
     return false
   })
+  const isDemoModeRef = React.useRef(isDemoMode)
   const [hasUserSettings, setHasUserSettings] = useState<boolean | null>(null)
 
-  const setIsDemoMode = (val: boolean) => {
+  const setIsDemoMode = React.useCallback((val: boolean) => {
     isDemoModeRef.current = val
     setIsDemoModeState(val)
-  }
+    if (typeof window !== 'undefined') {
+      if (val) {
+        sessionStorage.setItem('finance_demo_mode', 'true')
+      } else {
+        sessionStorage.removeItem('finance_demo_mode')
+      }
+    }
+  }, [])
 
   const loadDemoData = React.useCallback(() => {
     import('@/lib/demo-data').then(({ generateDemoData }) => {
@@ -216,7 +226,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
       setHasUserSettings(true)
       setLoadingData(false)
     })
-  }, [])
+  }, [setIsDemoMode])
 
   const completeOnboarding = async () => {
     setHasUserSettings(true)
@@ -264,10 +274,16 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
     profile?.role === 'Administrador'
 
   useEffect(() => {
-    if (
+    const isCurrentlyDemo =
       isDemoModeRef.current ||
-      (typeof window !== 'undefined' && window.location.pathname.startsWith('/demo'))
-    ) {
+      (typeof window !== 'undefined' &&
+        (window.location.pathname.startsWith('/demo') ||
+          sessionStorage.getItem('finance_demo_mode') === 'true'))
+
+    if (isCurrentlyDemo) {
+      if (!isDemoModeRef.current) {
+        setIsDemoMode(true)
+      }
       loadDemoData()
     } else if (user && (profile || isMasterUser) && projectId) {
       fetchData()
@@ -277,7 +293,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
       setAccounts(ACCOUNTS)
       setLoadingData(false)
     }
-  }, [user, profile?.app_name, projectId, isMasterUser, loadDemoData])
+  }, [user, profile?.app_name, projectId, isMasterUser, loadDemoData, setIsDemoMode])
 
   const fetchData = async (force: boolean = false) => {
     if (isDemoModeRef.current) return
@@ -1052,6 +1068,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
         editingTransaction,
         setEditingTransaction,
         isDemoMode,
+        setIsDemoMode,
         hasUserSettings,
         completeOnboarding,
         loadDemoData,

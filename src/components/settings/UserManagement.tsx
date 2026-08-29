@@ -46,7 +46,7 @@ import {
 export function UserManagement() {
   const { profile: currentProfile } = useAuth()
   const [users, setUsers] = useState<UserProfile[]>([])
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(() => (!currentProfile ? false : true))
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [newEmail, setNewEmail] = useState('')
   const [newPassword, setNewPassword] = useState('')
@@ -67,7 +67,11 @@ export function UserManagement() {
   const isMasterEmail = currentProfile?.email === 'farmaciaeickhoff@terra.com.br'
 
   const fetchUsers = async () => {
-    if (!currentProfile) return
+    if (!currentProfile) {
+      setUsers([])
+      setLoading(false)
+      return
+    }
     setLoading(true)
     const targetApp = currentProfile.app_name || currentProfile.id
     let query = supabase.from('profiles').select('*').order('email')
