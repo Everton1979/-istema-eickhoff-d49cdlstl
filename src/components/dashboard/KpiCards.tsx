@@ -20,6 +20,7 @@ export function useKpiMetrics() {
     let despesasPrevistas = 0
     let custoVariavelTotal = 0
     let custosFixos = 0
+    let investimentosRealizados = 0
     let receitasRealizadas = 0
 
     transactions.forEach((tx) => {
@@ -47,6 +48,8 @@ export function useKpiMetrics() {
           }
         } else if (tx.type === 'INCOME') {
           receitasRealizadas += tx.amount
+        } else if (tx.type === 'INVESTIMENTO') {
+          investimentosRealizados += tx.amount
         }
       } else if (tx.status === 'PREVISTO' || tx.status === 'VENCIDO') {
         if (tx.type === 'EXPENSE') {
@@ -57,7 +60,7 @@ export function useKpiMetrics() {
 
     const receitas = receitasRealizadas
     const margem = receitas - custoVariavelTotal
-    const lucro = receitas - despesasFluxo
+    const lucro = receitas - despesasFluxo - investimentosRealizados
     const ebitda = margem - custosFixos
     const indiceMargem = receitas > 0 ? margem / receitas : 0
     const pontoEquilibrio = indiceMargem > 0 ? custosFixos / indiceMargem : 0
@@ -67,6 +70,7 @@ export function useKpiMetrics() {
       receitas,
       despesas: despesasFluxo,
       despesasPrevistas,
+      investimentos: investimentosRealizados,
       margem,
       lucro,
       ebitda,
@@ -133,10 +137,22 @@ export function OperationalKpis() {
     {
       id: 'lucro-liquido',
       title: 'LUCRO LÍQUIDO REALIZADO',
-      tooltip: 'Resultado final de caixa (Receitas Realizadas - Despesas Realizadas).',
+      tooltip:
+        'Resultado final de caixa (Receitas Realizadas - Despesas Realizadas - Investimentos).',
       value: formatCurrency(metrics.lucro),
       bg:
         metrics.lucro >= 0
+          ? 'bg-emerald-100/90 border-emerald-300'
+          : 'bg-red-100/90 border-red-300',
+      isLight: false,
+    },
+    {
+      id: 'ebitda',
+      title: 'EBITDA',
+      tooltip: 'Geração de caixa operacional (Margem de Contribuição - Custos Fixos).',
+      value: formatCurrency(metrics.ebitda),
+      bg:
+        metrics.ebitda >= 0
           ? 'bg-emerald-100/90 border-emerald-300'
           : 'bg-red-100/90 border-red-300',
       isLight: false,
@@ -152,7 +168,7 @@ export function OperationalKpis() {
   ]
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
       {kpis.map((kpi, i) => (
         <KpiCard key={i} kpi={kpi} />
       ))}

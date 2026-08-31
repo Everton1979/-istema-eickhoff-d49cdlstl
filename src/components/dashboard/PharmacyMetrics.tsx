@@ -344,13 +344,6 @@ export function PharmacyMetrics() {
     dynamicTooltip?: string
   }> = [
     {
-      id: 'ebitda',
-      title: 'EBITDA',
-      tooltip: 'Geração de caixa operacional (Margem de Contribuição - Custos Fixos).',
-      value: formatCurrencyWhole(metrics.ebitda),
-      color: metrics.ebitda >= 0 ? 'text-emerald-600' : 'text-red-600',
-    },
-    {
       id: 'margem-de-contribuicao',
       title: 'Margem de Contribuição',
       tooltip: 'Receita bruta menos os custos variáveis totais das transações.',

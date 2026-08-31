@@ -374,11 +374,11 @@ const GLOSSARY_TERMS = [
     id: 'lucro-liquido',
     title: 'Lucro Líquido Realizado',
     definition: 'Resultado final de caixa no período analisado (em valores absolutos).',
-    calculation: 'Receitas Realizadas - Despesas Realizadas.',
+    calculation: 'Receitas Realizadas - Despesas Realizadas - Investimentos/Equipamentos.',
     example:
-      'Você teve R$ 120.000 de entradas e R$ 90.000 de contas pagas no mês. O Lucro Líquido Realizado (o dinheiro que efetivamente sobrou livre para o dono ou para reinvestimento) é de R$ 30.000.',
+      'Você teve R$ 120.000 de entradas, R$ 85.000 de contas pagas e R$ 5.000 em investimentos no mês. O Lucro Líquido Realizado (o dinheiro que efetivamente sobrou livre) é de R$ 30.000.',
     reference:
-      'Indica se a empresa gerou caixa excedente após pagar todas as obrigações no período.',
+      'Indica se a empresa gerou caixa excedente após pagar todas as obrigações e investimentos no período.',
     category: 'Painel Geral (Cards)',
     trend: 'up',
   },
