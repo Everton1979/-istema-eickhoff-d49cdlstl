@@ -81,13 +81,40 @@ export function StrategicPerformanceReportDialog() {
       .flatMap((y) => localMonths.map((m) => `${y}-${String(m).padStart(2, '0')}`))
       .sort()
 
+    const COGS_SUBCATEGORIES = [
+      'materia_prima',
+      'embalagens',
+      'medicamentos_drogaria',
+      'insumos e ativos',
+      'frascos, potes, rótulos e caixas',
+      'produtos para revenda',
+    ]
+
     return periods.map((p) => {
       let totalInc = 0
       let totalExp = 0
+      let cfaTotal = 0
+      let insumosTotal = 0
+
       transactions.forEach((t) => {
         if (t.date.startsWith(p) && t.status === 'REALIZADO') {
           if (t.type === 'INCOME') totalInc += Number(t.amount)
-          if (t.type === 'EXPENSE') totalExp += Number(t.amount)
+          if (t.type === 'EXPENSE') {
+            const amount = Number(t.amount) || 0
+            totalExp += amount
+            if (
+              t.categoryId === 'FIXA' ||
+              String(t.category).toUpperCase() === 'FIXA' ||
+              String(t.category).toUpperCase() === 'DESPESAS FIXAS' ||
+              String(t.category).toUpperCase() === 'CUSTO FIXO'
+            ) {
+              cfaTotal += amount
+            }
+            const sub = (t.subcategoryId || (t as any).subcategory || '').toLowerCase().trim()
+            if (COGS_SUBCATEGORIES.includes(sub)) {
+              insumosTotal += amount
+            }
+          }
         }
       })
 
@@ -109,6 +136,28 @@ export function StrategicPerformanceReportDialog() {
       const ebitda = lucroLiquido
       const valuation = ebitda * 12 * 4
 
+      const vendasCaps = m?.vendas_capsulas || 0
+      const vendasDerm = m?.vendas_dermato || 0
+      const vendasRevenda = m?.vendas_revenda || 0
+      const totalRev = vendasCaps + vendasDerm + vendasRevenda
+      const numCaps = m?.num_formulas_capsulas || 0
+      const numDerm = m?.num_formulas_dermato || 0
+
+      // Custo Fixo rateado por fórmula (método PharmacyMetrics)
+      const pesoCapsulas = totalSystemSales > 0 ? vendasCaps / totalSystemSales : 0.5
+      const pesoDermato = totalSystemSales > 0 ? vendasDerm / totalSystemSales : 0.5
+      const cfaCapsulas = cfaTotal * pesoCapsulas
+      const cfaDermato = cfaTotal * pesoDermato
+      const custoFixoCapsulas = numCaps > 0 ? cfaCapsulas / numCaps : 0
+      const custoFixoDermato = numDerm > 0 ? cfaDermato / numDerm : 0
+
+      // Piso de Segurança por fórmula (método PricingAssistant / Blindagem Operacional)
+      const netExpense = totalExp - insumosTotal
+      const propCaps = totalRev > 0 ? vendasCaps / totalRev : 0.5
+      const propDerm = totalRev > 0 ? vendasDerm / totalRev : 0.5
+      const blindagemCaps = numCaps > 0 ? (netExpense * propCaps) / numCaps : 0
+      const blindagemDerm = numDerm > 0 ? (netExpense * propDerm) / numDerm : 0
+
       return {
         period: `${monthNames[parseInt(p.split('-')[1]) - 1]}/${p.split('-')[0].slice(2)}`,
         rawPeriod: p,
@@ -118,9 +167,21 @@ export function StrategicPerformanceReportDialog() {
         markup,
         ticket,
         valuation,
+        custoFixoCapsulas,
+        custoFixoDermato,
+        pisoSegurancaCapsulas: blindagemCaps,
+        pisoSegurancaDermato: blindagemDerm,
+        ebitda,
         totalSystemSales,
         rawMaterialCosts,
         ordersCount,
+        numCaps,
+        numDerm,
+        cfaCapsulas,
+        cfaDermato,
+        netExpense,
+        propCaps,
+        propDerm,
       }
     })
   }, [localYears, localMonths, transactions, monthlyMetrics])
@@ -135,6 +196,11 @@ export function StrategicPerformanceReportDialog() {
       markup: 0,
       ticket: 0,
       valuation: 0,
+      custoFixoCapsulas: 0,
+      custoFixoDermato: 0,
+      pisoSegurancaCapsulas: 0,
+      pisoSegurancaDermato: 0,
+      ebitda: 0,
       totalSystemSales: 0,
       rawMaterialCosts: 0,
       ordersCount: 0,
@@ -144,13 +210,30 @@ export function StrategicPerformanceReportDialog() {
       sum.entradas += p.entradas
       sum.despesas += p.despesas
       sum.lucroLiquido += p.lucroLiquido
+      sum.custoFixoCapsulas += p.custoFixoCapsulas
+      sum.custoFixoDermato += p.custoFixoDermato
+      sum.pisoSegurancaCapsulas += p.pisoSegurancaCapsulas
+      sum.pisoSegurancaDermato += p.pisoSegurancaDermato
+      sum.ebitda += p.ebitda
       sum.totalSystemSales += p.totalSystemSales
       sum.rawMaterialCosts += p.rawMaterialCosts
       sum.ordersCount += p.ordersCount
     })
 
     if (dataMonthsCount === 0)
-      return { entradas: 0, despesas: 0, lucroLiquido: 0, markup: 0, ticket: 0, valuation: 0 }
+      return {
+        entradas: 0,
+        despesas: 0,
+        lucroLiquido: 0,
+        markup: 0,
+        ticket: 0,
+        valuation: 0,
+        custoFixoCapsulas: 0,
+        custoFixoDermato: 0,
+        pisoSegurancaCapsulas: 0,
+        pisoSegurancaDermato: 0,
+        ebitda: 0,
+      }
 
     sum.entradas /= dataMonthsCount
     sum.despesas /= dataMonthsCount
@@ -158,6 +241,11 @@ export function StrategicPerformanceReportDialog() {
     sum.markup = sum.rawMaterialCosts > 0 ? sum.totalSystemSales / sum.rawMaterialCosts : 0
     sum.ticket = sum.ordersCount > 0 ? sum.totalSystemSales / sum.ordersCount : 0
     sum.valuation = sum.lucroLiquido * 12 * 4
+    sum.custoFixoCapsulas /= dataMonthsCount
+    sum.custoFixoDermato /= dataMonthsCount
+    sum.pisoSegurancaCapsulas /= dataMonthsCount
+    sum.pisoSegurancaDermato /= dataMonthsCount
+    sum.ebitda /= dataMonthsCount
 
     return sum
   }, [periodsData])
@@ -359,6 +447,31 @@ export function StrategicPerformanceReportDialog() {
                   '#c4b5fd',
                 )}
                 {renderSection('Ticket Médio', 'ticket', formatCurrency, '#fcd34d')}
+                {renderSection(
+                  'Custo Fixo / Fórm (Cápsulas)',
+                  'custoFixoCapsulas',
+                  formatCurrency,
+                  '#ea580c',
+                )}
+                {renderSection(
+                  'Custo Fixo / Fórm (Dermato)',
+                  'custoFixoDermato',
+                  formatCurrency,
+                  '#f97316',
+                )}
+                {renderSection(
+                  'Piso de Segurança das Cápsulas',
+                  'pisoSegurancaCapsulas',
+                  formatCurrency,
+                  '#0284c7',
+                )}
+                {renderSection(
+                  'Piso de Segurança da Dermato',
+                  'pisoSegurancaDermato',
+                  formatCurrency,
+                  '#38bdf8',
+                )}
+                {renderSection('EBITDA', 'ebitda', formatCurrency, '#10b981')}
                 {renderSection('Valuation', 'valuation', formatCurrency, '#94a3b8')}
               </div>
             )}
