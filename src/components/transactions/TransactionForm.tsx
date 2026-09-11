@@ -132,7 +132,7 @@ const formSchema = z
       .min(1, 'A data é obrigatória')
       .regex(/^\d{4}-\d{2}-\d{2}$/, 'Formato inválido (YYYY-MM-DD)'),
     description: z.string().optional(),
-    amount: z.coerce.number().min(0.01, 'Valor deve ser maior que zero'),
+    amount: z.number().min(0.01, 'Valor deve ser maior que zero'),
     type: z.enum(['INCOME', 'EXPENSE', 'CORTESIA', 'PARTNER_WITHDRAWAL', 'INVESTIMENTO']),
     categoryId: z.string().optional(),
     subcategoryId: z.string().optional(),
@@ -426,23 +426,36 @@ export function TransactionForm({ onSuccess, initialData, prefillDate }: Transac
   // Auto-categorização inteligente de despesas
   const autoSuggestion = useExpenseAutoCategorize(transactions, description, type, initialData?.id)
 
+  // Histórico de descrições únicas de despesas para sugestão rápida (autocomplete)
+  const expenseDescriptionsHistory = useMemo(() => {
+    if (type !== 'EXPENSE') return []
+    const set = new Set<string>()
+    for (const tx of transactions) {
+      if (tx.type === 'EXPENSE' && tx.description && tx.description.trim().length >= 2) {
+        set.add(tx.description.trim().toUpperCase())
+      }
+    }
+    return Array.from(set).sort((a, b) => a.localeCompare(b, 'pt-BR'))
+  }, [transactions, type])
+
   // Guarda qual descrição acionou a auto-sugestão mais recente aplicada
   const [appliedSuggestionDesc, setAppliedSuggestionDesc] = useState<string | null>(null)
   // Flag que indica se a sugestão aplicada ainda está ativa (não sobrescrita pelo usuário para algo diferente)
   const [isSuggestionApplied, setIsSuggestionApplied] = useState(false)
+  // Registra se o usuário confirmou explicitamente a sugestão (feedback visual de confirmação)
+  const [isSuggestionConfirmed, setIsSuggestionConfirmed] = useState(false)
 
   // Efeito para sugerir e pré-preencher automaticamente quando houver 2+ lançamentos prévios (3º+)
   useEffect(() => {
     if (type !== 'EXPENSE') {
       setIsSuggestionApplied(false)
       setAppliedSuggestionDesc(null)
+      setIsSuggestionConfirmed(false)
       return
     }
 
     if (autoSuggestion) {
       const currentNormDesc = normalizeDescription(description)
-      // Só auto-aplica se for uma nova descrição que ainda não aplicou automaticamente
-      // ou se o formulário não tem categoria/subcategoria preenchida ainda
       const currentCat = form.getValues('categoryId')
       const currentSub = form.getValues('subcategoryId')
 
@@ -460,11 +473,13 @@ export function TransactionForm({ onSuccess, initialData, prefillDate }: Transac
       }
 
       if (appliedSuggestionDesc !== currentNormDesc) {
-        // Se mudou a descrição, pré-preenche com a sugestão mais frequente/recente
+        // Se mudou a descrição para uma repetida com 2+ ocorrências prévias,
+        // pré-preenche automaticamente com a mais recente/usada
         form.setValue('categoryId', autoSuggestion.categoryId, { shouldValidate: true })
         form.setValue('subcategoryId', autoSuggestion.subcategoryId, { shouldValidate: true })
         setAppliedSuggestionDesc(currentNormDesc)
         setIsSuggestionApplied(true)
+        setIsSuggestionConfirmed(false)
       } else {
         // Mantém status de sugestão ativa se os valores atuais conferem com a sugestão
         if (
@@ -477,10 +492,11 @@ export function TransactionForm({ onSuccess, initialData, prefillDate }: Transac
     } else {
       setIsSuggestionApplied(false)
       setAppliedSuggestionDesc(null)
+      setIsSuggestionConfirmed(false)
     }
-  }, [autoSuggestion, description, type, form, appliedSuggestionDesc])
+  }, [autoSuggestion, description, type, form, appliedSuggestionDesc, initialData])
 
-  // Desativa indicador de sugestão quando usuário manualmente alterar categoria ou subcategoria
+  // Desativa indicador de sugestão quando usuário manualmente alterar categoria ou subcategoria para algo diferente
   useEffect(() => {
     if (autoSuggestion && isSuggestionApplied) {
       if (
@@ -488,6 +504,7 @@ export function TransactionForm({ onSuccess, initialData, prefillDate }: Transac
         subcategoryId !== autoSuggestion.subcategoryId
       ) {
         setIsSuggestionApplied(false)
+        setIsSuggestionConfirmed(false)
       }
     }
   }, [categoryId, subcategoryId, autoSuggestion, isSuggestionApplied])
@@ -868,19 +885,29 @@ export function TransactionForm({ onSuccess, initialData, prefillDate }: Transac
                   <span className="text-red-500">*</span>
                 </FormLabel>
                 <FormControl>
-                  <Input
-                    placeholder={
-                      type === 'CORTESIA' || type === 'PARTNER_WITHDRAWAL'
-                        ? 'EX: DR. JOÃO SILVA / AMOSTRA OU JOÃO (SÓCIO)'
-                        : type === 'INVESTIMENTO'
-                          ? 'EX: COMPRA DE EQUIPAMENTO / REFORMA'
-                          : 'EX: CONTA DE LUZ / COMPRA DE INSUMO'
-                    }
-                    {...field}
-                    value={field.value || ''}
-                    onChange={(e) => field.onChange(e.target.value.toUpperCase())}
-                    className="h-12 sm:h-10 text-base sm:text-sm"
-                  />
+                  <>
+                    <Input
+                      list={type === 'EXPENSE' ? 'expense-descriptions-list' : undefined}
+                      placeholder={
+                        type === 'CORTESIA' || type === 'PARTNER_WITHDRAWAL'
+                          ? 'EX: DR. JOÃO SILVA / AMOSTRA OU JOÃO (SÓCIO)'
+                          : type === 'INVESTIMENTO'
+                            ? 'EX: COMPRA DE EQUIPAMENTO / REFORMA'
+                            : 'EX: CONTA DE LUZ / COMPRA DE INSUMO'
+                      }
+                      {...field}
+                      value={field.value || ''}
+                      onChange={(e) => field.onChange(e.target.value.toUpperCase())}
+                      className="h-12 sm:h-10 text-base sm:text-sm"
+                    />
+                    {type === 'EXPENSE' && expenseDescriptionsHistory.length > 0 && (
+                      <datalist id="expense-descriptions-list">
+                        {expenseDescriptionsHistory.map((item) => (
+                          <option key={item} value={item} />
+                        ))}
+                      </datalist>
+                    )}
+                  </>
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -893,21 +920,72 @@ export function TransactionForm({ onSuccess, initialData, prefillDate }: Transac
             <div className="animate-in fade-in slide-in-from-top-2 duration-300 space-y-4">
               {/* Notificação / Badge de Sugestão Automática Inteligente */}
               {autoSuggestion && isSuggestionApplied && (
-                <div className="bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800 rounded-lg p-2.5 flex items-center justify-between gap-2 text-emerald-900 dark:text-emerald-200 text-xs animate-in fade-in slide-in-from-top-1">
-                  <div className="flex items-center gap-1.5 font-medium">
-                    <Sparkles className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
-                    <span>
-                      SUGESTÃO AUTOMÁTICA INTELIGENTE ({autoSuggestion.count}º+ LANÇAMENTO):
-                      Categoria e subcategoria pré-preenchidas com base no seu histórico. Você pode
-                      alterar antes de salvar.
-                    </span>
+                <div className="bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-300 dark:border-emerald-700 rounded-lg p-3 text-emerald-900 dark:text-emerald-100 text-xs animate-in fade-in slide-in-from-top-1 shadow-sm">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <div className="flex items-start sm:items-center gap-2">
+                      <Sparkles className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5 sm:mt-0" />
+                      <div>
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="font-bold tracking-wide uppercase text-emerald-950 dark:text-emerald-200">
+                            SUGESTÃO AUTOMÁTICA
+                          </span>
+                          <Badge
+                            variant="outline"
+                            className="border-emerald-400 bg-emerald-100 dark:bg-emerald-900/60 text-emerald-900 dark:text-emerald-200 text-[10px] font-bold tracking-wider uppercase px-1.5 py-0"
+                          >
+                            {autoSuggestion.count}º+ LANÇAMENTO
+                          </Badge>
+                        </div>
+                        <p className="text-[11px] text-emerald-800 dark:text-emerald-300 mt-0.5">
+                          {isSuggestionConfirmed
+                            ? 'SUGESTÃO CONFIRMADA PARA ESTE LANÇAMENTO. VOCÊ AINDA PODE ALTERAR ANTES DE SALVAR.'
+                            : 'CATEGORIA E SUBCATEGORIA PRÉ-PREENCHIDAS COM BASE NO HISTÓRICO MAIS RECENTE. VOCÊ PODE CONFIRMAR OU ALTERAR.'}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-1.5 shrink-0 self-end sm:self-center">
+                      {!isSuggestionConfirmed ? (
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant="outline"
+                          onClick={() => {
+                            setIsSuggestionConfirmed(true)
+                            toast({
+                              title: 'SUGESTÃO CONFIRMADA',
+                              description:
+                                'CATEGORIA E SUBCATEGORIA MANTIDAS PARA ESTE LANÇAMENTO.',
+                            })
+                          }}
+                          className="h-7 px-2.5 text-[11px] font-bold border-emerald-400 bg-white dark:bg-emerald-900/40 text-emerald-800 dark:text-emerald-100 hover:bg-emerald-100 dark:hover:bg-emerald-900/80 uppercase"
+                        >
+                          CONFIRMAR
+                        </Button>
+                      ) : (
+                        <Badge
+                          variant="secondary"
+                          className="bg-emerald-200 dark:bg-emerald-800 text-emerald-900 dark:text-emerald-100 text-[10px] font-bold uppercase"
+                        >
+                          CONFIRMADO
+                        </Badge>
+                      )}
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => {
+                          setIsSuggestionApplied(false)
+                          setIsSuggestionConfirmed(false)
+                          form.setValue('categoryId', '')
+                          form.setValue('subcategoryId', '')
+                        }}
+                        className="h-7 px-2 text-[11px] text-emerald-700 dark:text-emerald-300 hover:text-emerald-900 hover:bg-emerald-100/60 dark:hover:bg-emerald-900/40 uppercase"
+                      >
+                        ALTERAR
+                      </Button>
+                    </div>
                   </div>
-                  <Badge
-                    variant="outline"
-                    className="border-emerald-300 bg-emerald-100/70 text-emerald-800 text-[10px] whitespace-nowrap"
-                  >
-                    AUTO
-                  </Badge>
                 </div>
               )}
 
@@ -923,9 +1001,13 @@ export function TransactionForm({ onSuccess, initialData, prefillDate }: Transac
                       {autoSuggestion &&
                         isSuggestionApplied &&
                         field.value === autoSuggestion.categoryId && (
-                          <span className="text-[10px] font-semibold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
-                            <Sparkles className="w-3 h-3" /> Sugerida automaticamente
-                          </span>
+                          <Badge
+                            variant="outline"
+                            className="border-emerald-300 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 text-[10px] font-bold uppercase flex items-center gap-1"
+                          >
+                            <Sparkles className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
+                            SUGESTÃO AUTOMÁTICA
+                          </Badge>
                         )}
                     </div>
                     <Select onValueChange={field.onChange} value={field.value || undefined}>
@@ -960,9 +1042,13 @@ export function TransactionForm({ onSuccess, initialData, prefillDate }: Transac
                         {autoSuggestion &&
                           isSuggestionApplied &&
                           field.value === autoSuggestion.subcategoryId && (
-                            <span className="text-[10px] font-semibold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
-                              <Sparkles className="w-3 h-3" /> Sugerida automaticamente
-                            </span>
+                            <Badge
+                              variant="outline"
+                              className="border-emerald-300 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 text-[10px] font-bold uppercase flex items-center gap-1"
+                            >
+                              <Sparkles className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
+                              SUGESTÃO AUTOMÁTICA
+                            </Badge>
                           )}
                       </div>
                       <Select
