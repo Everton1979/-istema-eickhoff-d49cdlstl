@@ -32,7 +32,9 @@ import { useToast } from '@/hooks/use-toast'
 import { useDraft } from '@/hooks/use-draft'
 import { useEffect, useState, useMemo, forwardRef, useRef, useCallback } from 'react'
 import { Transaction } from '@/types/finance'
-import { Tag as TagIcon, Lightbulb, PlusCircle, Loader2, Search } from 'lucide-react'
+import { Tag as TagIcon, Lightbulb, PlusCircle, Loader2, Search, Sparkles } from 'lucide-react'
+import { Badge } from '@/components/ui/badge'
+import { useExpenseAutoCategorize, normalizeDescription } from '@/hooks/use-expense-auto-categorize'
 
 // Opções de Categorias e Subcategorias com ordenação alfabética e labels em MAIÚSCULAS
 const EXPENSE_CATEGORIES = [
@@ -414,10 +416,81 @@ export function TransactionForm({ onSuccess, initialData, prefillDate }: Transac
 
   const type = form.watch('type')
   const categoryId = form.watch('categoryId')
+  const description = form.watch('description')
+  const subcategoryId = form.watch('subcategoryId')
   const [prevType, setPrevType] = useState(initialData?.type || form.getValues('type'))
   const [prevCategoryId, setPrevCategoryId] = useState<string>(
     initialData?.categoryId || form.getValues('categoryId') || '',
   )
+
+  // Auto-categorização inteligente de despesas
+  const autoSuggestion = useExpenseAutoCategorize(transactions, description, type, initialData?.id)
+
+  // Guarda qual descrição acionou a auto-sugestão mais recente aplicada
+  const [appliedSuggestionDesc, setAppliedSuggestionDesc] = useState<string | null>(null)
+  // Flag que indica se a sugestão aplicada ainda está ativa (não sobrescrita pelo usuário para algo diferente)
+  const [isSuggestionApplied, setIsSuggestionApplied] = useState(false)
+
+  // Efeito para sugerir e pré-preencher automaticamente quando houver 2+ lançamentos prévios (3º+)
+  useEffect(() => {
+    if (type !== 'EXPENSE') {
+      setIsSuggestionApplied(false)
+      setAppliedSuggestionDesc(null)
+      return
+    }
+
+    if (autoSuggestion) {
+      const currentNormDesc = normalizeDescription(description)
+      // Só auto-aplica se for uma nova descrição que ainda não aplicou automaticamente
+      // ou se o formulário não tem categoria/subcategoria preenchida ainda
+      const currentCat = form.getValues('categoryId')
+      const currentSub = form.getValues('subcategoryId')
+
+      // Em modo de edição de transação já salva, se a categoria já está definida e o usuário não mudou a descrição,
+      // preservamos o valor existente
+      if (initialData && appliedSuggestionDesc === null) {
+        setAppliedSuggestionDesc(currentNormDesc)
+        if (
+          currentCat === autoSuggestion.categoryId &&
+          currentSub === autoSuggestion.subcategoryId
+        ) {
+          setIsSuggestionApplied(true)
+        }
+        return
+      }
+
+      if (appliedSuggestionDesc !== currentNormDesc) {
+        // Se mudou a descrição, pré-preenche com a sugestão mais frequente/recente
+        form.setValue('categoryId', autoSuggestion.categoryId, { shouldValidate: true })
+        form.setValue('subcategoryId', autoSuggestion.subcategoryId, { shouldValidate: true })
+        setAppliedSuggestionDesc(currentNormDesc)
+        setIsSuggestionApplied(true)
+      } else {
+        // Mantém status de sugestão ativa se os valores atuais conferem com a sugestão
+        if (
+          currentCat === autoSuggestion.categoryId &&
+          currentSub === autoSuggestion.subcategoryId
+        ) {
+          setIsSuggestionApplied(true)
+        }
+      }
+    } else {
+      setIsSuggestionApplied(false)
+      setAppliedSuggestionDesc(null)
+    }
+  }, [autoSuggestion, description, type, form, appliedSuggestionDesc])
+
+  // Desativa indicador de sugestão quando usuário manualmente alterar categoria ou subcategoria
+  useEffect(() => {
+    if (autoSuggestion && isSuggestionApplied) {
+      if (
+        categoryId !== autoSuggestion.categoryId ||
+        subcategoryId !== autoSuggestion.subcategoryId
+      ) {
+        setIsSuggestionApplied(false)
+      }
+    }
+  }, [categoryId, subcategoryId, autoSuggestion, isSuggestionApplied])
 
   // Merged subcategory options based on active category
   const activeSubcategories = useMemo(() => {
@@ -600,11 +673,15 @@ export function TransactionForm({ onSuccess, initialData, prefillDate }: Transac
 
   useEffect(() => {
     if (categoryId !== prevCategoryId) {
-      form.setValue('subcategoryId', '')
+      // Se a alteração de categoria veio de uma sugestão automática ou já tem uma subcategoria válida,
+      // não limpamos a subcategoria caso ela pertença à sugestão ativa
+      if (!autoSuggestion || !isSuggestionApplied || categoryId !== autoSuggestion.categoryId) {
+        form.setValue('subcategoryId', '')
+      }
       setSubcategorySearch('')
       setPrevCategoryId(categoryId || '')
     }
-  }, [categoryId, form, prevCategoryId])
+  }, [categoryId, form, prevCategoryId, autoSuggestion, isSuggestionApplied])
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
@@ -814,14 +891,43 @@ export function TransactionForm({ onSuccess, initialData, prefillDate }: Transac
         <div className="grid grid-cols-1 gap-4 transition-all duration-300 min-h-[80px]">
           {type === 'EXPENSE' && (
             <div className="animate-in fade-in slide-in-from-top-2 duration-300 space-y-4">
+              {/* Notificação / Badge de Sugestão Automática Inteligente */}
+              {autoSuggestion && isSuggestionApplied && (
+                <div className="bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800 rounded-lg p-2.5 flex items-center justify-between gap-2 text-emerald-900 dark:text-emerald-200 text-xs animate-in fade-in slide-in-from-top-1">
+                  <div className="flex items-center gap-1.5 font-medium">
+                    <Sparkles className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
+                    <span>
+                      SUGESTÃO AUTOMÁTICA INTELIGENTE ({autoSuggestion.count}º+ LANÇAMENTO):
+                      Categoria e subcategoria pré-preenchidas com base no seu histórico. Você pode
+                      alterar antes de salvar.
+                    </span>
+                  </div>
+                  <Badge
+                    variant="outline"
+                    className="border-emerald-300 bg-emerald-100/70 text-emerald-800 text-[10px] whitespace-nowrap"
+                  >
+                    AUTO
+                  </Badge>
+                </div>
+              )}
+
               <FormField
                 control={form.control}
                 name="categoryId"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>
-                      Categoria <span className="text-red-500">*</span>
-                    </FormLabel>
+                    <div className="flex items-center justify-between">
+                      <FormLabel>
+                        Categoria <span className="text-red-500">*</span>
+                      </FormLabel>
+                      {autoSuggestion &&
+                        isSuggestionApplied &&
+                        field.value === autoSuggestion.categoryId && (
+                          <span className="text-[10px] font-semibold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
+                            <Sparkles className="w-3 h-3" /> Sugerida automaticamente
+                          </span>
+                        )}
+                    </div>
                     <Select onValueChange={field.onChange} value={field.value || undefined}>
                       <FormControl>
                         <SelectTrigger className="h-12 sm:h-10 text-base sm:text-sm">
@@ -847,9 +953,18 @@ export function TransactionForm({ onSuccess, initialData, prefillDate }: Transac
                   name="subcategoryId"
                   render={({ field }) => (
                     <FormItem className="animate-in fade-in slide-in-from-top-2 duration-300">
-                      <FormLabel>
-                        Subcategoria <span className="text-red-500">*</span>
-                      </FormLabel>
+                      <div className="flex items-center justify-between">
+                        <FormLabel>
+                          Subcategoria <span className="text-red-500">*</span>
+                        </FormLabel>
+                        {autoSuggestion &&
+                          isSuggestionApplied &&
+                          field.value === autoSuggestion.subcategoryId && (
+                            <span className="text-[10px] font-semibold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
+                              <Sparkles className="w-3 h-3" /> Sugerida automaticamente
+                            </span>
+                          )}
+                      </div>
                       <Select
                         onValueChange={(val) => {
                           if (val === '__NEW_SUBCATEGORY__') {
