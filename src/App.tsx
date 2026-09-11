@@ -114,7 +114,7 @@ const ProtectedRoute = ({
 
 const App = () => (
   <ThemeProvider defaultTheme="light" storageKey="app-theme">
-    <BrowserRouter future={{ v7_startTransition: false, v7_relativeSplatPath: false }}>
+    <BrowserRouter>
       <AuthProvider>
         <FinanceProvider>
           <TooltipProvider delayDuration={100}>

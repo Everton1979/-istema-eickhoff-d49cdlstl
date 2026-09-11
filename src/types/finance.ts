@@ -31,6 +31,7 @@ export interface Transaction {
   amount: number
   type: TransactionType
   categoryId: string
+  category?: string
   subcategoryId?: string
   accountId: string
   paymentMethodId?: string

@@ -114,7 +114,10 @@ export function PerformanceEvolutionChart() {
             tickFormatter={(val) => (val >= 1000 ? `R$ ${(val / 1000).toFixed(0)}k` : `R$ ${val}`)}
             width={55}
           />
-          <Tooltip content={<ChartTooltipContent />} cursor={{ fill: '#f3f4f6', opacity: 0.4 }} />
+          <Tooltip
+            content={(props: any) => <ChartTooltipContent {...props} />}
+            cursor={{ fill: '#f3f4f6', opacity: 0.4 }}
+          />
           <Legend wrapperStyle={{ fontSize: '10px', paddingTop: '10px' }} iconType="circle" />
 
           <Bar

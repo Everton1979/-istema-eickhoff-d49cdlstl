@@ -27,14 +27,10 @@ export function MonthlyClosingDialog() {
   const { toast } = useToast()
 
   const currentMonth = (
-    filters.months?.[0]?.toString() ||
-    filters.month?.toString() ||
-    (new Date().getMonth() + 1).toString()
+    (filters as any)?.months?.[0]?.toString() || (new Date().getMonth() + 1).toString()
   ).padStart(2, '0')
   const currentYear =
-    filters.years?.[0]?.toString() ||
-    filters.year?.toString() ||
-    new Date().getFullYear().toString()
+    (filters as any)?.years?.[0]?.toString() || new Date().getFullYear().toString()
 
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)

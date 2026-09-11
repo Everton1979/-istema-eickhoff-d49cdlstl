@@ -291,9 +291,11 @@ export function StrategicPerformanceReportDialog() {
                 }
               />
               <RechartsTooltip
-                content={<ChartTooltipContent formatter={(v) => fmt(v as number)} />}
+                content={(props: any) => (
+                  <ChartTooltipContent {...props} formatter={(v) => fmt(v as number)} />
+                )}
                 cursor={{ fill: '#f8fafc' }}
-              />
+              />{' '}
               <Bar
                 dataKey={key}
                 fill={`var(--color-${key})`}

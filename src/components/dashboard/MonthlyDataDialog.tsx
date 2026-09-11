@@ -293,7 +293,7 @@ export function MonthlyDataDialog() {
     const isDifferent = JSON.stringify(formData) !== JSON.stringify(expectedData)
 
     if (isDifferent) {
-      saveDraft((prev) => ({
+      saveDraft((prev: any) => ({
         ...prev,
         isDirty: false,
         formData: expectedData,
@@ -357,12 +357,14 @@ export function MonthlyDataDialog() {
 
     setLoading(true)
     try {
+      const existing = monthlyMetrics.find((m) => m.month === month && m.year === year)
       const payload = {
         month: month,
         year: year,
         orders_count: orders_count,
         total_system_sales: total_system_sales,
         raw_material_costs: raw_material_costs,
+        sales_target: existing ? existing.sales_target : 0,
         num_formulas_capsulas: Number(formData.num_formulas_capsulas) || 0,
         vendas_capsulas: parseCurrency(formData.vendas_capsulas as string | number),
         custo_mp_emb_capsulas: parseCurrency(formData.custo_mp_emb_capsulas as string | number),

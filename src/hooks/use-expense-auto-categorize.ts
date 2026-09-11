@@ -90,18 +90,29 @@ export function useExpenseAutoCategorize(
       }
     }
 
-    // Se o usuário corrigiu/alterou a categoria/subcategoria em lançamentos recentes dessa mesma descrição,
-    // a escolha mais recente deve prevalecer (o sistema aprende com a correção).
-    // O primeiro item de sortedExpenses é a despesa mais recente registrada com essa descrição.
-    const mostRecentTx = sortedExpenses[0]
-    const mostRecentKey = `${mostRecentTx.categoryId}:::${mostRecentTx.subcategoryId}`
-    const mostRecentItem = frequencyMap.get(mostRecentKey)
+    // Seleciona a combinação mais usada (maior frequência).
+    // Em caso de empate de frequência, a ocorrência com data mais recente prevalece.
+    let chosenPair: {
+      categoryId: string
+      subcategoryId: string
+      count: number
+      latestDate: number
+    } | null = null
 
-    const chosenPair = mostRecentItem || {
-      categoryId: mostRecentTx.categoryId,
-      subcategoryId: mostRecentTx.subcategoryId,
-      count: 1,
-      latestDate: new Date(mostRecentTx.date).getTime(),
+    for (const item of frequencyMap.values()) {
+      if (!chosenPair) {
+        chosenPair = item
+        continue
+      }
+      if (item.count > chosenPair.count) {
+        chosenPair = item
+      } else if (item.count === chosenPair.count && item.latestDate > chosenPair.latestDate) {
+        chosenPair = item
+      }
+    }
+
+    if (!chosenPair) {
+      return null
     }
 
     return {

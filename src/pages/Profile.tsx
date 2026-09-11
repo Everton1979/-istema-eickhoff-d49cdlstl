@@ -17,6 +17,7 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { toast } from 'sonner'
 import { supabase } from '@/lib/supabase/client'
+import { useFinanceStore } from '@/stores/financeStore'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Link } from 'react-router-dom'
 import {
@@ -183,8 +184,9 @@ export default function Profile() {
 
       if (profile?.id) {
         // Registra log de auditoria formal da solicitação de exclusão LGPD
-        await supabase.from('audit_logs').insert({
+        await (supabase.from('audit_logs') as any).insert({
           user_id: profile.id,
+          project_id: profile.app_name || profile.id,
           action: 'SOLICITACAO_EXCLUSAO_LGPD',
           entity: 'Perfil e Dados do Usuário',
           entity_id: profile.id,

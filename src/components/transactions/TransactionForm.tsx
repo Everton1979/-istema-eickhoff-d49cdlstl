@@ -445,7 +445,7 @@ export function TransactionForm({ onSuccess, initialData, prefillDate }: Transac
   // Registra se o usuário confirmou explicitamente a sugestão (feedback visual de confirmação)
   const [isSuggestionConfirmed, setIsSuggestionConfirmed] = useState(false)
 
-  // Efeito para sugerir e pré-preencher automaticamente quando houver 2+ lançamentos prévios (3º+)
+  // Efeito para sugerir e pré-preencher automaticamente quando houver 2+ lançamentos prévios (a partir do 3º)
   useEffect(() => {
     if (type !== 'EXPENSE') {
       setIsSuggestionApplied(false)
@@ -459,7 +459,7 @@ export function TransactionForm({ onSuccess, initialData, prefillDate }: Transac
       const currentCat = form.getValues('categoryId')
       const currentSub = form.getValues('subcategoryId')
 
-      // Em modo de edição de transação já salva, se a categoria já está definida e o usuário não mudou a descrição,
+      // Em modo de edição de transação já salva, se a categoria já está definida e o usuário ainda não mudou a descrição,
       // preservamos o valor existente
       if (initialData && appliedSuggestionDesc === null) {
         setAppliedSuggestionDesc(currentNormDesc)
@@ -473,8 +473,8 @@ export function TransactionForm({ onSuccess, initialData, prefillDate }: Transac
       }
 
       if (appliedSuggestionDesc !== currentNormDesc) {
-        // Se mudou a descrição para uma repetida com 2+ ocorrências prévias,
-        // pré-preenche automaticamente com a mais recente/usada
+        // Se mudou a descrição para uma repetida com 2+ ocorrências prévias (3º+ lançamento),
+        // pré-preenche automaticamente com a categoria e subcategoria mais usadas
         form.setValue('categoryId', autoSuggestion.categoryId, { shouldValidate: true })
         form.setValue('subcategoryId', autoSuggestion.subcategoryId, { shouldValidate: true })
         setAppliedSuggestionDesc(currentNormDesc)
