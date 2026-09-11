@@ -442,15 +442,12 @@ export function TransactionForm({ onSuccess, initialData, prefillDate }: Transac
   const [appliedSuggestionDesc, setAppliedSuggestionDesc] = useState<string | null>(null)
   // Flag que indica se a sugestão aplicada ainda está ativa (não sobrescrita pelo usuário para algo diferente)
   const [isSuggestionApplied, setIsSuggestionApplied] = useState(false)
-  // Registra se o usuário confirmou explicitamente a sugestão (feedback visual de confirmação)
-  const [isSuggestionConfirmed, setIsSuggestionConfirmed] = useState(false)
 
   // Efeito para sugerir e pré-preencher automaticamente quando houver 2+ lançamentos prévios (a partir do 3º)
   useEffect(() => {
     if (type !== 'EXPENSE') {
       setIsSuggestionApplied(false)
       setAppliedSuggestionDesc(null)
-      setIsSuggestionConfirmed(false)
       return
     }
 
@@ -479,7 +476,6 @@ export function TransactionForm({ onSuccess, initialData, prefillDate }: Transac
         form.setValue('subcategoryId', autoSuggestion.subcategoryId, { shouldValidate: true })
         setAppliedSuggestionDesc(currentNormDesc)
         setIsSuggestionApplied(true)
-        setIsSuggestionConfirmed(false)
       } else {
         // Mantém status de sugestão ativa se os valores atuais conferem com a sugestão
         if (
@@ -492,7 +488,6 @@ export function TransactionForm({ onSuccess, initialData, prefillDate }: Transac
     } else {
       setIsSuggestionApplied(false)
       setAppliedSuggestionDesc(null)
-      setIsSuggestionConfirmed(false)
     }
   }, [autoSuggestion, description, type, form, appliedSuggestionDesc, initialData])
 
@@ -504,7 +499,6 @@ export function TransactionForm({ onSuccess, initialData, prefillDate }: Transac
         subcategoryId !== autoSuggestion.subcategoryId
       ) {
         setIsSuggestionApplied(false)
-        setIsSuggestionConfirmed(false)
       }
     }
   }, [categoryId, subcategoryId, autoSuggestion, isSuggestionApplied])
@@ -937,46 +931,19 @@ export function TransactionForm({ onSuccess, initialData, prefillDate }: Transac
                           </Badge>
                         </div>
                         <p className="text-[11px] text-emerald-800 dark:text-emerald-300 mt-0.5">
-                          {isSuggestionConfirmed
-                            ? 'SUGESTÃO CONFIRMADA PARA ESTE LANÇAMENTO. VOCÊ AINDA PODE ALTERAR ANTES DE SALVAR.'
-                            : 'CATEGORIA E SUBCATEGORIA PRÉ-PREENCHIDAS COM BASE NO HISTÓRICO MAIS RECENTE. VOCÊ PODE CONFIRMAR OU ALTERAR.'}
+                          CATEGORIA E SUBCATEGORIA PRÉ-PREENCHIDAS COM BASE NO HISTÓRICO MAIS
+                          RECENTE. VOCÊ PODE ALTERAR SE DESEJAR.
                         </p>
                       </div>
                     </div>
 
                     <div className="flex items-center gap-1.5 shrink-0 self-end sm:self-center">
-                      {!isSuggestionConfirmed ? (
-                        <Button
-                          type="button"
-                          size="sm"
-                          variant="outline"
-                          onClick={() => {
-                            setIsSuggestionConfirmed(true)
-                            toast({
-                              title: 'SUGESTÃO CONFIRMADA',
-                              description:
-                                'CATEGORIA E SUBCATEGORIA MANTIDAS PARA ESTE LANÇAMENTO.',
-                            })
-                          }}
-                          className="h-7 px-2.5 text-[11px] font-bold border-emerald-400 bg-white dark:bg-emerald-900/40 text-emerald-800 dark:text-emerald-100 hover:bg-emerald-100 dark:hover:bg-emerald-900/80 uppercase"
-                        >
-                          CONFIRMAR
-                        </Button>
-                      ) : (
-                        <Badge
-                          variant="secondary"
-                          className="bg-emerald-200 dark:bg-emerald-800 text-emerald-900 dark:text-emerald-100 text-[10px] font-bold uppercase"
-                        >
-                          CONFIRMADO
-                        </Badge>
-                      )}
                       <Button
                         type="button"
                         size="sm"
                         variant="ghost"
                         onClick={() => {
                           setIsSuggestionApplied(false)
-                          setIsSuggestionConfirmed(false)
                           form.setValue('categoryId', '')
                           form.setValue('subcategoryId', '')
                         }}
