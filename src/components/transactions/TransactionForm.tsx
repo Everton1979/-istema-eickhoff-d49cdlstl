@@ -32,7 +32,15 @@ import { useToast } from '@/hooks/use-toast'
 import { useDraft } from '@/hooks/use-draft'
 import { useEffect, useState, useMemo, forwardRef, useRef, useCallback } from 'react'
 import { Transaction } from '@/types/finance'
-import { Tag as TagIcon, Lightbulb, PlusCircle, Loader2, Search, Sparkles } from 'lucide-react'
+import {
+  Tag as TagIcon,
+  Lightbulb,
+  PlusCircle,
+  Loader2,
+  Search,
+  Sparkles,
+  AlertTriangle,
+} from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { useExpenseAutoCategorize, normalizeDescription } from '@/hooks/use-expense-auto-categorize'
 
@@ -203,6 +211,10 @@ interface TransactionFormProps {
   onSuccess: () => void
   initialData?: Transaction | null
   prefillDate?: string
+  prefillDescription?: string
+  prefillAmount?: number
+  prefillCategoryId?: string
+  prefillSubcategoryId?: string
 }
 
 const CurrencyFieldInput = forwardRef<HTMLInputElement, any>(
@@ -275,7 +287,15 @@ const CurrencyFieldInput = forwardRef<HTMLInputElement, any>(
   },
 )
 
-export function TransactionForm({ onSuccess, initialData, prefillDate }: TransactionFormProps) {
+export function TransactionForm({
+  onSuccess,
+  initialData,
+  prefillDate,
+  prefillDescription,
+  prefillAmount,
+  prefillCategoryId,
+  prefillSubcategoryId,
+}: TransactionFormProps) {
   const { transactions, addTransaction, updateTransaction } = useFinanceStore()
   const { user, profile } = useAuth()
   const { toast } = useToast()
@@ -360,17 +380,17 @@ export function TransactionForm({ onSuccess, initialData, prefillDate }: Transac
   const defaultEmptyValues = useMemo(
     () => ({
       date: prefillDate || new Date().toISOString().split('T')[0],
-      description: '',
-      amount: '' as unknown as number,
+      description: prefillDescription ? prefillDescription.toUpperCase() : '',
+      amount: (prefillAmount !== undefined ? prefillAmount : '') as unknown as number,
       type: 'EXPENSE' as const,
       status: 'REALIZADO' as const,
-      categoryId: '',
-      subcategoryId: '',
+      categoryId: prefillCategoryId || '',
+      subcategoryId: prefillSubcategoryId || '',
       paymentMethodId: '',
       accountId: 'conta_principal',
       tags: '',
     }),
-    [],
+    [prefillDate, prefillDescription, prefillAmount, prefillCategoryId, prefillSubcategoryId],
   )
 
   const { draft, saveDraft, clearDraft } = useDraft<any>(
@@ -394,11 +414,13 @@ export function TransactionForm({ onSuccess, initialData, prefillDate }: Transac
         accountId: initialData.accountId || 'conta_principal',
         tags: initialData.tags ? initialData.tags.toUpperCase() : '',
       }
-    : {
-        ...draft,
-        tags: draft?.tags ? draft.tags.toUpperCase() : '',
-        date: prefillDate || draft.date || new Date().toISOString().split('T')[0],
-      }
+    : prefillDescription
+      ? defaultEmptyValues
+      : {
+          ...draft,
+          tags: draft?.tags ? draft.tags.toUpperCase() : '',
+          date: prefillDate || draft.date || new Date().toISOString().split('T')[0],
+        }
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -418,6 +440,7 @@ export function TransactionForm({ onSuccess, initialData, prefillDate }: Transac
   const categoryId = form.watch('categoryId')
   const description = form.watch('description')
   const subcategoryId = form.watch('subcategoryId')
+  const amount = form.watch('amount')
   const [prevType, setPrevType] = useState(initialData?.type || form.getValues('type'))
   const [prevCategoryId, setPrevCategoryId] = useState<string>(
     initialData?.categoryId || form.getValues('categoryId') || '',
@@ -425,6 +448,77 @@ export function TransactionForm({ onSuccess, initialData, prefillDate }: Transac
 
   // Auto-categorização inteligente de despesas
   const autoSuggestion = useExpenseAutoCategorize(transactions, description, type, initialData?.id)
+
+  // Histórico de descrições únicas de despesas com categoria e subcategoria mais frequentes (para autocomplete inteligente)
+  const expenseDescriptionsMap = useMemo(() => {
+    if (type !== 'EXPENSE') return new Map<string, { categoryId: string; subcategoryId: string }>()
+    // Mapa: descNormalizada -> { rawDesc, count, categoryId, subcategoryId }
+    const stats = new Map<
+      string,
+      {
+        rawDesc: string
+        pairs: Map<
+          string,
+          { categoryId: string; subcategoryId: string; count: number; latestDate: number }
+        >
+      }
+    >()
+
+    for (const tx of transactions) {
+      if (tx.type !== 'EXPENSE' || !tx.description || tx.description.trim().length < 2) continue
+      const norm = normalizeDescription(tx.description)
+      if (!norm) continue
+
+      let entry = stats.get(norm)
+      if (!entry) {
+        entry = { rawDesc: tx.description.trim().toUpperCase(), pairs: new Map() }
+        stats.set(norm, entry)
+      }
+
+      if (tx.categoryId && tx.subcategoryId) {
+        const pairKey = `${tx.categoryId}:::${tx.subcategoryId}`
+        const dateTs = new Date(tx.date).getTime()
+        const p = entry.pairs.get(pairKey)
+        if (p) {
+          p.count += 1
+          if (dateTs > p.latestDate) p.latestDate = dateTs
+        } else {
+          entry.pairs.set(pairKey, {
+            categoryId: tx.categoryId,
+            subcategoryId: tx.subcategoryId,
+            count: 1,
+            latestDate: dateTs,
+          })
+        }
+      }
+    }
+
+    const result = new Map<string, { categoryId: string; subcategoryId: string }>()
+    for (const [norm, data] of stats.entries()) {
+      let bestPair: {
+        categoryId: string
+        subcategoryId: string
+        count: number
+        latestDate: number
+      } | null = null
+      for (const pair of data.pairs.values()) {
+        if (!bestPair) {
+          bestPair = pair
+        } else if (pair.count > bestPair.count) {
+          bestPair = pair
+        } else if (pair.count === bestPair.count && pair.latestDate > bestPair.latestDate) {
+          bestPair = pair
+        }
+      }
+      if (bestPair) {
+        result.set(data.rawDesc, {
+          categoryId: bestPair.categoryId,
+          subcategoryId: bestPair.subcategoryId,
+        })
+      }
+    }
+    return result
+  }, [transactions, type])
 
   // Histórico de descrições únicas de despesas para sugestão rápida (autocomplete)
   const expenseDescriptionsHistory = useMemo(() => {
@@ -437,6 +531,64 @@ export function TransactionForm({ onSuccess, initialData, prefillDate }: Transac
     }
     return Array.from(set).sort((a, b) => a.localeCompare(b, 'pt-BR'))
   }, [transactions, type])
+
+  // Função disparada ao alterar a descrição (pela digitação ou ao selecionar sugestão do histórico)
+  const handleDescriptionChange = (newVal: string) => {
+    const upperVal = newVal.toUpperCase()
+    form.setValue('description', upperVal, { shouldValidate: true })
+
+    // Se for despesa e o valor digitado/selecionado corresponder exatamente a um item com categoria/subcategoria do histórico
+    if (type === 'EXPENSE' && upperVal.trim().length >= 2) {
+      const known = expenseDescriptionsMap.get(upperVal.trim())
+      if (known) {
+        form.setValue('categoryId', known.categoryId, { shouldValidate: true })
+        form.setValue('subcategoryId', known.subcategoryId, { shouldValidate: true })
+        setAppliedSuggestionDesc(normalizeDescription(upperVal))
+        setIsSuggestionApplied(true)
+      }
+    }
+  }
+
+  // Detecção de despesa fora do padrão:
+  // - Aplica SOMENTE a despesas FIXAS e recorrentes
+  // - Valor ≥ 50% acima da média histórica
+  // - Mínimo de 2 lançamentos anteriores com a mesma descrição
+  const expenseOutlierAlert = useMemo(() => {
+    if (type !== 'EXPENSE') return null
+    if (categoryId !== 'FIXA') return null
+    const numAmount = Number(amount)
+    if (!numAmount || numAmount <= 0) return null
+
+    const normDesc = normalizeDescription(description)
+    if (!normDesc || normDesc.length < 2) return null
+
+    // Busca todas as despesas anteriores com a mesma descrição (excluindo a atual em caso de edição)
+    const matching = transactions.filter((tx) => {
+      if (initialData?.id && tx.id === initialData.id) return false
+      if (tx.type !== 'EXPENSE') return false
+      return normalizeDescription(tx.description) === normDesc
+    })
+
+    if (matching.length < 2) return null
+
+    const totalAmount = matching.reduce((acc, tx) => acc + (Number(tx.amount) || 0), 0)
+    const avgAmount = totalAmount / matching.length
+
+    if (avgAmount <= 0) return null
+
+    // Limiar: valor atual ≥ 1.5x a média (50% acima)
+    const percentAbove = ((numAmount - avgAmount) / avgAmount) * 100
+
+    if (percentAbove >= 50) {
+      return {
+        avgAmount,
+        percentAbove: Math.round(percentAbove),
+        count: matching.length,
+      }
+    }
+
+    return null
+  }, [type, categoryId, amount, description, transactions, initialData?.id])
 
   // Guarda qual descrição acionou a auto-sugestão mais recente aplicada
   const [appliedSuggestionDesc, setAppliedSuggestionDesc] = useState<string | null>(null)
@@ -891,7 +1043,13 @@ export function TransactionForm({ onSuccess, initialData, prefillDate }: Transac
                       }
                       {...field}
                       value={field.value || ''}
-                      onChange={(e) => field.onChange(e.target.value.toUpperCase())}
+                      onChange={(e) => {
+                        if (type === 'EXPENSE') {
+                          handleDescriptionChange(e.target.value)
+                        } else {
+                          field.onChange(e.target.value.toUpperCase())
+                        }
+                      }}
                       className="h-12 sm:h-10 text-base sm:text-sm"
                     />
                     {type === 'EXPENSE' && expenseDescriptionsHistory.length > 0 && (
@@ -912,6 +1070,41 @@ export function TransactionForm({ onSuccess, initialData, prefillDate }: Transac
         <div className="grid grid-cols-1 gap-4 transition-all duration-300 min-h-[80px]">
           {type === 'EXPENSE' && (
             <div className="animate-in fade-in slide-in-from-top-2 duration-300 space-y-4">
+              {/* Detecção de Despesa Fora do Padrão (Fixa / Recorrente com valor ≥ 50% da média histórica) */}
+              {expenseOutlierAlert && (
+                <div className="bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-700/80 rounded-lg p-3 text-amber-900 dark:text-amber-100 text-xs animate-in fade-in slide-in-from-top-1 shadow-sm">
+                  <div className="flex items-start gap-2.5">
+                    <AlertTriangle className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="font-bold tracking-wide uppercase text-amber-950 dark:text-amber-200">
+                          DESPESA FORA DO PADRÃO
+                        </span>
+                        <Badge
+                          variant="outline"
+                          className="border-amber-400 bg-amber-100 dark:bg-amber-900/60 text-amber-900 dark:text-amber-200 text-[10px] font-bold tracking-wider uppercase px-1.5 py-0"
+                        >
+                          +{expenseOutlierAlert.percentAbove}% ACIMA DA MÉDIA
+                        </Badge>
+                      </div>
+                      <p className="text-[11px] text-amber-800 dark:text-amber-300 mt-0.5 leading-relaxed">
+                        Essa despesa está{' '}
+                        <strong>
+                          {expenseOutlierAlert.percentAbove}% acima da média histórica
+                        </strong>{' '}
+                        (R${' '}
+                        {expenseOutlierAlert.avgAmount.toLocaleString('pt-BR', {
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2,
+                        })}{' '}
+                        com base em {expenseOutlierAlert.count} lançamentos anteriores). O
+                        lançamento é permitido normalmente.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               {/* Notificação / Badge de Sugestão Automática Inteligente */}
               {autoSuggestion && isSuggestionApplied && (
                 <div className="bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-300 dark:border-emerald-700 rounded-lg p-3 text-emerald-900 dark:text-emerald-100 text-xs animate-in fade-in slide-in-from-top-1 shadow-sm">

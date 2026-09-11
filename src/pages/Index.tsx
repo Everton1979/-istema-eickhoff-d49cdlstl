@@ -16,6 +16,8 @@ import { PrintableReport } from '@/components/dashboard/PrintableReport'
 import { PendingUsersAlert } from '@/components/dashboard/PendingUsersAlert'
 import { PlanExpirationBanner } from '@/components/dashboard/PlanExpirationBanner'
 import { WelcomeBanner } from '@/components/dashboard/WelcomeBanner'
+import { ForgottenExpensesAlert } from '@/components/dashboard/ForgottenExpensesAlert'
+import type { ForgottenExpenseItem } from '@/hooks/use-forgotten-expenses'
 import { useState, useEffect, useRef } from 'react'
 import {
   AlertTriangle,
@@ -48,6 +50,9 @@ export default function Index() {
     editingTransaction,
     setEditingTransaction,
   } = useFinanceStore()
+
+  const [prefillForgottenExpense, setPrefillForgottenExpense] =
+    useState<ForgottenExpenseItem | null>(null)
 
   const lancamentosRef = useRef<HTMLElement>(null)
   const dashboardKpisRef = useRef<HTMLElement>(null)
@@ -119,6 +124,7 @@ export default function Index() {
               if (lancamentosRef.current) {
                 lancamentosRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' })
               }
+              setPrefillForgottenExpense(null)
               setEditingTransaction(null)
               setTransactionSheetOpen(true)
             }}
@@ -132,6 +138,25 @@ export default function Index() {
               o layout e as funcionalidades do sistema.
             </p>
           </div>
+
+          {/* Alerta de Lançamento Esquecido — no topo do Dashboard, discreto (amarelo), acima dos indicadores/cards */}
+          <ForgottenExpensesAlert
+            onAddTransactionWithDescription={(item) => {
+              setPrefillForgottenExpense(item)
+              setEditingTransaction({
+                id: '',
+                date: new Date().toISOString().split('T')[0],
+                description: item.description,
+                amount: item.lastMonthAmount || 0,
+                type: 'EXPENSE',
+                categoryId: item.categoryId || 'FIXA',
+                subcategoryId: item.subcategoryId || '',
+                accountId: 'conta_principal',
+                status: 'REALIZADO',
+              })
+              setTransactionSheetOpen(true)
+            }}
+          />
 
           <PlanExpirationBanner />
           <PendingUsersAlert />
@@ -337,21 +362,41 @@ export default function Index() {
         open={isTransactionSheetOpen}
         onOpenChange={(open) => {
           setTransactionSheetOpen(open)
-          if (!open) setEditingTransaction(null)
+          if (!open) {
+            setEditingTransaction(null)
+            setPrefillForgottenExpense(null)
+          }
         }}
       >
         <SheetContent className="overflow-y-auto w-full sm:max-w-md p-4 sm:p-6">
           <SheetHeader>
             <SheetTitle>
-              {editingTransaction ? 'Editar Transação' : 'Adicionar Transação'}
+              {editingTransaction && editingTransaction.id
+                ? 'Editar Transação'
+                : prefillForgottenExpense
+                  ? 'Lançar Despesa Pendente'
+                  : 'Adicionar Transação'}
             </SheetTitle>
           </SheetHeader>
           <TransactionForm
             onSuccess={() => {
               setTransactionSheetOpen(false)
               setEditingTransaction(null)
+              setPrefillForgottenExpense(null)
             }}
-            initialData={editingTransaction}
+            initialData={editingTransaction && editingTransaction.id ? editingTransaction : null}
+            prefillDescription={
+              prefillForgottenExpense ? prefillForgottenExpense.description : undefined
+            }
+            prefillAmount={
+              prefillForgottenExpense ? prefillForgottenExpense.lastMonthAmount : undefined
+            }
+            prefillCategoryId={
+              prefillForgottenExpense ? prefillForgottenExpense.categoryId : undefined
+            }
+            prefillSubcategoryId={
+              prefillForgottenExpense ? prefillForgottenExpense.subcategoryId : undefined
+            }
           />
         </SheetContent>
       </Sheet>
