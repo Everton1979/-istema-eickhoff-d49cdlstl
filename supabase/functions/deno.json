@@ -1,9 +1,9 @@
 {
   "_versions": {
-    "manage-users": 51,
-    "notify-new-user": 36,
-    "abacatepay-webhook": 36,
-    "create-checkout": 47,
-    "create-subscription": 26
+    "manage-users": 52,
+    "notify-new-user": 37,
+    "abacatepay-webhook": 37,
+    "create-checkout": 48,
+    "create-subscription": 27
   }
 }
