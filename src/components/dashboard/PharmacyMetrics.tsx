@@ -3,6 +3,7 @@ import { useMemo } from 'react'
 import { Card, CardContent } from '@/components/ui/card'
 import { useKpiMetrics } from '@/components/dashboard/KpiCards'
 import { cn } from '@/lib/utils'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { HelpCircle } from 'lucide-react'
 import { Link } from 'react-router-dom'
@@ -334,7 +335,7 @@ export function PharmacyMetrics() {
   const fatColabGeralPerf = getPerformanceStatus(metrics.fatPorColabGeral, 'fat-colab-geral')
   const fatColabVendasPerf = getPerformanceStatus(metrics.fatPorColabVendas, 'fat-colab-vendas')
 
-  const items: Array<{
+  interface MetricItem {
     id: string
     title: string
     tooltip: string
@@ -342,170 +343,264 @@ export function PharmacyMetrics() {
     color: string
     statusText?: string
     dynamicTooltip?: string
-  }> = [
-    {
-      id: 'margem-de-contribuicao',
-      title: 'Margem de Contribuição',
-      tooltip: 'Receita bruta menos os custos variáveis totais das transações.',
-      value: formatCurrencyWhole(metrics.margem),
-      color: 'text-blue-600',
-    },
-    {
-      id: 'ponto-de-equilibrio',
-      title: 'Ponto de Equilíbrio',
-      tooltip: 'Faturamento necessário para cobrir a parcela fixa de custos.',
-      value: formatCurrencyWhole(metrics.pontoEquilibrio),
-      color: 'text-slate-600',
-    },
-    {
-      id: 'cma',
-      title: 'CMA',
-      tooltip: 'Contribuição média por fórmula/pedido (Margem / Qtde Pedidos).',
-      value: formatCurrencyWhole(metrics.cma),
-      color: 'text-orange-600',
-    },
-    {
-      id: 'ticket-medio',
-      title: 'Ticket Médio Manipulação',
-      tooltip: 'Valor médio por venda (Faturamento / Número de pedidos).',
-      value: formatCurrency(metrics.ticketMedio),
-      color: 'text-indigo-600',
-    },
-    {
-      id: 'lucro-liquido-pct',
-      title: 'Lucro Líquido Real (%)',
-      tooltip: 'Percentual de lucro líquido em relação ao valor de referência total. Meta: > 15%.',
-      value: `${metrics.lucroLiquidoPct.toFixed(1)}%`,
-      color: lucroLiquidoPerf?.color || 'text-slate-600',
-      statusText: lucroLiquidoPerf?.text,
-    },
-    {
-      id: 'despesas-fixas-pct',
-      title: 'Despesas Fixas (%)',
-      tooltip: 'Despesas Fixas em relação ao valor de referência total. Meta: < 35%.',
-      value: `${metrics.despesasFixasPct.toFixed(1)}%`,
-      color:
-        getPerformanceStatus(metrics.despesasFixasPct, 'despesas-fixas-pct')?.color ||
-        'text-slate-600',
-      statusText: getPerformanceStatus(metrics.despesasFixasPct, 'despesas-fixas-pct')?.text,
-    },
-    {
-      id: 'despesas-variaveis-pct',
-      title: 'Despesas Variáveis (%)',
-      tooltip: 'Despesas Variáveis em relação ao valor de referência total. Meta: < 40%.',
-      value: `${metrics.despesasVariaveisPct.toFixed(1)}%`,
-      color:
-        getPerformanceStatus(metrics.despesasVariaveisPct, 'despesas-variaveis-pct')?.color ||
-        'text-slate-600',
-      statusText: getPerformanceStatus(metrics.despesasVariaveisPct, 'despesas-variaveis-pct')
-        ?.text,
-    },
-    {
-      id: 'markup-realizado',
-      title: 'Mark-up Praticado',
-      tooltip: 'Multiplicador realizado no período (Faturamento / Custo MP/Emb).',
-      value: formatDecimal(metrics.mkpRealizado),
-      color: markupPerf?.color || 'text-slate-600',
-      statusText: markupPerf?.text,
-    },
-    {
-      id: 'lo-colaborador',
-      title: 'LO / Colaborador',
-      tooltip: 'Lucro Operacional (EBITDA) gerado por cada membro da equipe.',
-      value: formatCurrency(metrics.loPorColab),
-      color: loColabPerf?.color || 'text-slate-600',
-      statusText: loColabPerf?.text,
-    },
-    {
-      id: 'valuation',
-      title: 'Valuation Estimado',
-      tooltip: 'Estimativa de valor de mercado (EBITDA Anualizado x 4).',
-      value: formatCurrency(metrics.valuationEstimado),
-      color: 'text-blue-600',
-    },
-    {
-      id: 'regra-70',
-      title: 'Regra dos 70%',
-      tooltip: 'Aumento do Custo Fixo / Aumento das Vendas. Ideal < 70%.',
-      value: metrics.regra70Value,
-      statusText: (() => {
-        if (metrics.regra70Value === 'N/A') return ''
-        if (metrics.regra70Value === 'Atenção') return 'Péssimo'
+  }
 
-        const parsed = parseFloat(metrics.regra70Value.replace('%', '').replace(',', '.'))
-        if (!isNaN(parsed)) {
-          return getPerformanceStatus(parsed, 'regra-70')?.text || 'Atenção'
-        }
+  const tabMetrics = useMemo(() => {
+    const eficiencia: MetricItem[] = [
+      {
+        id: 'custo-fixo-capsulas',
+        title: 'CUSTO FIXO / FÓRM (CÁPS)',
+        tooltip: 'Custo Fixo rateado por fórmula de Cápsulas.',
+        value: formatCurrency(metrics.custoFixoPorFormulaCaps),
+        color: 'text-orange-600',
+      },
+      {
+        id: 'custo-fixo-dermato',
+        title: 'CUSTO FIXO / FÓRM (DERM)',
+        tooltip: 'Custo Fixo rateado por fórmula de Dermato.',
+        value: formatCurrency(metrics.custoFixoPorFormulaDerm),
+        color: 'text-orange-600',
+      },
+      {
+        id: 'despesas-fixas-pct',
+        title: 'DESPESAS FIXAS (%)',
+        tooltip: 'Despesas Fixas em relação ao valor de referência total. Meta: < 35%.',
+        value: `${metrics.despesasFixasPct.toFixed(1)}%`,
+        color:
+          getPerformanceStatus(metrics.despesasFixasPct, 'despesas-fixas-pct')?.color ||
+          'text-slate-600',
+        statusText: getPerformanceStatus(metrics.despesasFixasPct, 'despesas-fixas-pct')?.text,
+      },
+      {
+        id: 'despesas-variaveis-pct',
+        title: 'DESPESAS VARIÁVEIS (%)',
+        tooltip: 'Despesas Variáveis em relação ao valor de referência total. Meta: < 40%.',
+        value: `${metrics.despesasVariaveisPct.toFixed(1)}%`,
+        color:
+          getPerformanceStatus(metrics.despesasVariaveisPct, 'despesas-variaveis-pct')?.color ||
+          'text-slate-600',
+        statusText: getPerformanceStatus(metrics.despesasVariaveisPct, 'despesas-variaveis-pct')
+          ?.text,
+      },
+      {
+        id: 'regra-70',
+        title: 'REGRA DOS 70%',
+        tooltip: 'Aumento do Custo Fixo / Aumento das Vendas. Ideal < 70%.',
+        value: metrics.regra70Value,
+        statusText: (() => {
+          if (metrics.regra70Value === 'N/A') return ''
+          if (metrics.regra70Value === 'Atenção') return 'Péssimo'
 
-        return metrics.regra70Text
-      })(),
-      color: (() => {
-        if (metrics.regra70Value === 'N/A') return 'text-slate-500'
-        if (metrics.regra70Value === 'Atenção') return 'text-red-600'
+          const parsed = parseFloat(metrics.regra70Value.replace('%', '').replace(',', '.'))
+          if (!isNaN(parsed)) {
+            return getPerformanceStatus(parsed, 'regra-70')?.text || 'Atenção'
+          }
 
-        const parsed = parseFloat(metrics.regra70Value.replace('%', '').replace(',', '.'))
-        if (!isNaN(parsed)) {
-          return getPerformanceStatus(parsed, 'regra-70')?.color || 'text-red-600'
-        }
+          return metrics.regra70Text
+        })(),
+        color: (() => {
+          if (metrics.regra70Value === 'N/A') return 'text-slate-500'
+          if (metrics.regra70Value === 'Atenção') return 'text-red-600'
 
-        return 'text-slate-500'
-      })(),
-      dynamicTooltip: (() => {
-        if (metrics.regra70Value === 'Atenção')
-          return 'Custo Fixo subiu em um cenário desfavorável de vendas.'
+          const parsed = parseFloat(metrics.regra70Value.replace('%', '').replace(',', '.'))
+          if (!isNaN(parsed)) {
+            return getPerformanceStatus(parsed, 'regra-70')?.color || 'text-red-600'
+          }
 
-        const parsed = parseFloat(metrics.regra70Value.replace('%', '').replace(',', '.'))
-        if (!isNaN(parsed) && parsed > 70) {
-          return 'Valor de magnitude superior a 70% (critério de alerta atingido).'
-        }
-        return undefined
-      })(),
-    },
-    {
-      id: 'pm-ideal-capsulas',
-      title: 'Ticket-médio Cápsulas',
-      tooltip: 'Preço Médio (Ticket Médio) exclusivo do setor de Cápsulas.',
-      value: formatCurrency(metrics.pmIdealCaps),
-      color: 'text-blue-600',
-    },
-    {
-      id: 'pm-ideal-dermato',
-      title: 'Ticket-médio Dermato',
-      tooltip: 'Preço Médio (Ticket Médio) exclusivo do setor de Dermato.',
-      value: formatCurrency(metrics.pmIdealDerm),
-      color: 'text-blue-600',
-    },
-    {
-      id: 'custo-fixo-capsulas',
-      title: 'Custo Fixo / Fórm (Cáps)',
-      tooltip: 'Custo Fixo rateado por fórmula de Cápsulas.',
-      value: formatCurrency(metrics.custoFixoPorFormulaCaps),
-      color: 'text-orange-600',
-    },
-    {
-      id: 'custo-fixo-dermato',
-      title: 'Custo Fixo / Fórm (Derm)',
-      tooltip: 'Custo Fixo rateado por fórmula de Dermato.',
-      value: formatCurrency(metrics.custoFixoPorFormulaDerm),
-      color: 'text-orange-600',
-    },
-    {
-      id: 'fat-colab-geral',
-      title: 'Fat / Colab (Geral)',
-      tooltip: 'Faturamento total dividido pelo número médio de colaboradores totais.',
-      value: formatCurrency(metrics.fatPorColabGeral),
-      color: fatColabGeralPerf?.color || 'text-slate-600',
-      statusText: fatColabGeralPerf?.text,
-    },
-    {
-      id: 'fat-colab-vendas',
-      title: 'Fat / Colab (Vendas)',
-      tooltip: 'Faturamento total dividido pelo número médio de colaboradores de vendas.',
-      value: formatCurrency(metrics.fatPorColabVendas),
-      color: fatColabVendasPerf?.color || 'text-slate-600',
-      statusText: fatColabVendasPerf?.text,
-    },
-  ]
+          return 'text-slate-500'
+        })(),
+        dynamicTooltip: (() => {
+          if (metrics.regra70Value === 'Atenção')
+            return 'Custo Fixo subiu em um cenário desfavorável de vendas.'
+
+          const parsed = parseFloat(metrics.regra70Value.replace('%', '').replace(',', '.'))
+          if (!isNaN(parsed) && parsed > 70) {
+            return 'Valor de magnitude superior a 70% (critério de alerta atingido).'
+          }
+          return undefined
+        })(),
+      },
+    ].sort((a, b) => a.title.localeCompare(b.title, 'pt-BR'))
+
+    const produtividade: MetricItem[] = [
+      {
+        id: 'cma',
+        title: 'CMA (CONTRIBUIÇÃO MÉDIA/PEDIDO)',
+        tooltip: 'Contribuição média por fórmula/pedido (Margem / Qtde Pedidos).',
+        value: formatCurrencyWhole(metrics.cma),
+        color: 'text-orange-600',
+      },
+      {
+        id: 'ticket-medio',
+        title: 'TICKET MÉDIO GERAL',
+        tooltip: 'Valor médio por venda (Faturamento / Número de pedidos).',
+        value: formatCurrency(metrics.ticketMedio),
+        color: 'text-indigo-600',
+      },
+      {
+        id: 'pm-ideal-capsulas',
+        title: 'TICKET MÉDIO CÁPSULAS',
+        tooltip: 'Preço Médio (Ticket Médio) exclusivo do setor de Cápsulas.',
+        value: formatCurrency(metrics.pmIdealCaps),
+        color: 'text-blue-600',
+      },
+      {
+        id: 'pm-ideal-dermato',
+        title: 'TICKET MÉDIO DERMATO',
+        tooltip: 'Preço Médio (Ticket Médio) exclusivo do setor de Dermato.',
+        value: formatCurrency(metrics.pmIdealDerm),
+        color: 'text-blue-600',
+      },
+    ].sort((a, b) => a.title.localeCompare(b.title, 'pt-BR'))
+
+    const rentabilidade: MetricItem[] = [
+      {
+        id: 'lucro-liquido-pct',
+        title: 'LUCRO LÍQUIDO REAL (%)',
+        tooltip:
+          'Percentual de lucro líquido em relação ao valor de referência total. Meta: > 15%.',
+        value: `${metrics.lucroLiquidoPct.toFixed(1)}%`,
+        color: lucroLiquidoPerf?.color || 'text-slate-600',
+        statusText: lucroLiquidoPerf?.text,
+      },
+      {
+        id: 'margem-de-contribuicao',
+        title: 'MARGEM DE CONTRIBUIÇÃO',
+        tooltip: 'Receita bruta menos os custos variáveis totais das transações.',
+        value: formatCurrencyWhole(metrics.margem),
+        color: 'text-blue-600',
+      },
+      {
+        id: 'markup-realizado',
+        title: 'MARK-UP PRATICADO',
+        tooltip: 'Multiplicador realizado no período (Faturamento / Custo MP/Emb).',
+        value: formatDecimal(metrics.mkpRealizado),
+        color: markupPerf?.color || 'text-slate-600',
+        statusText: markupPerf?.text,
+      },
+      {
+        id: 'ponto-de-equilibrio',
+        title: 'PONTO DE EQUILÍBRIO',
+        tooltip: 'Faturamento necessário para cobrir a parcela fixa de custos.',
+        value: formatCurrencyWhole(metrics.pontoEquilibrio),
+        color: 'text-slate-600',
+      },
+      {
+        id: 'valuation',
+        title: 'VALUATION ESTIMADO',
+        tooltip: 'Estimativa de valor de mercado (EBITDA Anualizado x 4).',
+        value: formatCurrency(metrics.valuationEstimado),
+        color: 'text-blue-600',
+      },
+    ].sort((a, b) => a.title.localeCompare(b.title, 'pt-BR'))
+
+    const perCapita: MetricItem[] = [
+      {
+        id: 'fat-colab-geral',
+        title: 'FATURAMENTO / COLABORADOR (GERAL)',
+        tooltip: 'Faturamento total dividido pelo número médio de colaboradores totais.',
+        value: formatCurrency(metrics.fatPorColabGeral),
+        color: fatColabGeralPerf?.color || 'text-slate-600',
+        statusText: fatColabGeralPerf?.text,
+      },
+      {
+        id: 'fat-colab-vendas',
+        title: 'FATURAMENTO / COLABORADOR (VENDAS)',
+        tooltip: 'Faturamento total dividido pelo número médio de colaboradores de vendas.',
+        value: formatCurrency(metrics.fatPorColabVendas),
+        color: fatColabVendasPerf?.color || 'text-slate-600',
+        statusText: fatColabVendasPerf?.text,
+      },
+      {
+        id: 'lo-colaborador',
+        title: 'LUCRO OPERACIONAL / COLABORADOR',
+        tooltip: 'Lucro Operacional (EBITDA) gerado por cada membro da equipe.',
+        value: formatCurrency(metrics.loPorColab),
+        color: loColabPerf?.color || 'text-slate-600',
+        statusText: loColabPerf?.text,
+      },
+    ].sort((a, b) => a.title.localeCompare(b.title, 'pt-BR'))
+
+    return {
+      eficiencia,
+      produtividade,
+      rentabilidade,
+      perCapita,
+    }
+  }, [metrics, lucroLiquidoPerf, markupPerf, loColabPerf, fatColabGeralPerf, fatColabVendasPerf])
+
+  const renderCards = (items: MetricItem[]) => (
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mt-4">
+      {items.map((item) => (
+        <Card
+          key={item.id}
+          className="rounded-xl shadow-sm border border-slate-300 bg-slate-50/80 hover:bg-slate-100 transition-all"
+        >
+          <CardContent className="p-4 sm:p-5 text-center flex flex-col justify-between h-full min-h-[120px]">
+            <h4 className="text-xs font-bold text-slate-700 uppercase tracking-wide leading-snug mb-2 flex items-center justify-center gap-1.5 flex-wrap">
+              <span>{item.title}</span>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Link to={`/glossario#${item.id}`}>
+                    <HelpCircle className="w-3.5 h-3.5 text-slate-400 hover:text-slate-800 cursor-pointer shrink-0" />
+                  </Link>
+                </TooltipTrigger>
+                <TooltipContent className="max-w-[240px] text-center" side="top">
+                  <p className="text-xs">{item.tooltip}</p>
+                </TooltipContent>
+              </Tooltip>
+            </h4>
+
+            <div className="my-auto py-1">
+              {item.dynamicTooltip ? (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div className="cursor-help group inline-flex flex-col items-center">
+                      <p className="text-xl sm:text-2xl font-black tracking-tight text-slate-900 decoration-dashed underline-offset-4 decoration-slate-400 group-hover:underline">
+                        {item.value}
+                      </p>
+                      {item.statusText && (
+                        <span
+                          className={cn(
+                            'text-xs font-extrabold uppercase mt-1 px-2 py-0.5 rounded-full bg-white/80 border border-slate-200',
+                            item.color,
+                          )}
+                        >
+                          {item.statusText}
+                        </span>
+                      )}
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent
+                    side="bottom"
+                    className="max-w-[240px] text-center bg-red-50 text-red-900 border-red-200"
+                  >
+                    <p className="text-xs font-medium">{item.dynamicTooltip}</p>
+                  </TooltipContent>
+                </Tooltip>
+              ) : (
+                <div className="inline-flex flex-col items-center">
+                  <p className="text-xl sm:text-2xl font-black tracking-tight text-slate-900">
+                    {item.value}
+                  </p>
+                  {item.statusText && (
+                    <span
+                      className={cn(
+                        'text-xs font-extrabold uppercase mt-1 px-2 py-0.5 rounded-full bg-white/80 border border-slate-200',
+                        item.color,
+                      )}
+                    >
+                      {item.statusText}
+                    </span>
+                  )}
+                </div>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      ))}
+    </div>
+  )
 
   return (
     <div className="bg-white p-5 rounded-xl shadow-sm border border-slate-300">
@@ -515,63 +610,51 @@ export function PharmacyMetrics() {
           Inteligência Analítica
         </h3>
       </div>
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3.5">
-        {items.map((item) => (
-          <Card
-            key={item.id}
-            className="rounded-lg shadow-sm border border-slate-300 bg-slate-50 hover:bg-slate-100/80 transition-all"
+
+      <Tabs defaultValue="eficiencia" className="w-full">
+        <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 h-auto p-1 bg-slate-100 border border-slate-200 rounded-lg gap-1">
+          <TabsTrigger
+            value="eficiencia"
+            className="uppercase font-bold text-xs py-2 data-[state=active]:bg-white data-[state=active]:text-indigo-700 data-[state=active]:shadow-sm"
           >
-            <CardContent className="p-3 text-center flex flex-col justify-center h-full min-h-[90px]">
-              <h4 className="text-[11px] sm:text-xs font-bold text-slate-700 uppercase leading-tight mb-1.5 flex items-center justify-center gap-1">
-                <span className="truncate max-w-[160px] sm:max-w-none">{item.title}</span>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Link to={`/glossario#${item.id}`}>
-                      <HelpCircle className="w-3.5 h-3.5 text-slate-400 hover:text-slate-800 cursor-pointer shrink-0" />
-                    </Link>
-                  </TooltipTrigger>
-                  <TooltipContent className="max-w-[220px] text-center" side="top">
-                    <p className="text-xs">{item.tooltip}</p>
-                  </TooltipContent>
-                </Tooltip>
-              </h4>
-              {item.dynamicTooltip ? (
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <div className="cursor-help group flex flex-col items-center">
-                      <p className="text-base sm:text-lg font-black tracking-tight text-slate-900 decoration-dashed underline-offset-4 decoration-slate-400 group-hover:underline">
-                        {item.value}
-                      </p>
-                      {item.statusText && (
-                        <p className={cn('text-[11px] font-bold mt-0.5', item.color)}>
-                          {item.statusText}
-                        </p>
-                      )}
-                    </div>
-                  </TooltipTrigger>
-                  <TooltipContent
-                    side="bottom"
-                    className="max-w-[220px] text-center bg-red-50 text-red-900 border-red-200"
-                  >
-                    <p className="text-xs font-medium">{item.dynamicTooltip}</p>
-                  </TooltipContent>
-                </Tooltip>
-              ) : (
-                <>
-                  <p className="text-base sm:text-lg font-black tracking-tight text-slate-900">
-                    {item.value}
-                  </p>
-                  {item.statusText && (
-                    <p className={cn('text-[11px] font-bold mt-0.5', item.color)}>
-                      {item.statusText}
-                    </p>
-                  )}
-                </>
-              )}
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+            EFICIÊNCIA ({tabMetrics.eficiencia.length})
+          </TabsTrigger>
+          <TabsTrigger
+            value="produtividade"
+            className="uppercase font-bold text-xs py-2 data-[state=active]:bg-white data-[state=active]:text-indigo-700 data-[state=active]:shadow-sm"
+          >
+            PRODUTIVIDADE ({tabMetrics.produtividade.length})
+          </TabsTrigger>
+          <TabsTrigger
+            value="rentabilidade"
+            className="uppercase font-bold text-xs py-2 data-[state=active]:bg-white data-[state=active]:text-indigo-700 data-[state=active]:shadow-sm"
+          >
+            RENTABILIDADE ({tabMetrics.rentabilidade.length})
+          </TabsTrigger>
+          <TabsTrigger
+            value="per-capita"
+            className="uppercase font-bold text-xs py-2 data-[state=active]:bg-white data-[state=active]:text-indigo-700 data-[state=active]:shadow-sm"
+          >
+            PER CAPITA ({tabMetrics.perCapita.length})
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="eficiencia" className="mt-2 focus-visible:outline-none">
+          {renderCards(tabMetrics.eficiencia)}
+        </TabsContent>
+
+        <TabsContent value="produtividade" className="mt-2 focus-visible:outline-none">
+          {renderCards(tabMetrics.produtividade)}
+        </TabsContent>
+
+        <TabsContent value="rentabilidade" className="mt-2 focus-visible:outline-none">
+          {renderCards(tabMetrics.rentabilidade)}
+        </TabsContent>
+
+        <TabsContent value="per-capita" className="mt-2 focus-visible:outline-none">
+          {renderCards(tabMetrics.perCapita)}
+        </TabsContent>
+      </Tabs>
     </div>
   )
 }

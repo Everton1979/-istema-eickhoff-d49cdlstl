@@ -69,6 +69,9 @@ export function ExpenseDistribution() {
     pctLucro,
     cfaTotal,
     varExpenses,
+    totalDespesasOperacionais,
+    pctTotalDespesas,
+    investimentosTotal,
     lucroTotal,
     receitasTotal,
     fixasData,
@@ -126,9 +129,16 @@ export function ExpenseDistribution() {
       }))
       .sort((a, b) => b.value - a.value)
 
+    const totalDespesasOperacionais = cfaTotal + varExpenses
+    const pctTotalDespesas = receitasTotal > 0 ? (totalDespesasOperacionais / base) * 100 : 0
+    const investimentosTotal = kpiMetrics.investimentos || 0
+
     return {
       cfaTotal,
       varExpenses,
+      totalDespesasOperacionais,
+      pctTotalDespesas,
+      investimentosTotal,
       lucroTotal,
       receitasTotal,
       pctFixa: receitasTotal > 0 ? (cfaTotal / base) * 100 : 0,
@@ -214,6 +224,27 @@ export function ExpenseDistribution() {
             <span className="text-[10px] font-bold text-gray-400 mt-0.5">
               {receitasTotal > 0 ? ((lucroTotal / receitasTotal) * 100).toFixed(1) : 0}%
             </span>
+          </div>
+        </div>
+
+        {/* Linha de resumo em destaque */}
+        <div className="mt-3 pt-2.5 px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-xs font-bold text-slate-700">
+          <div className="flex items-center gap-1.5 flex-wrap">
+            <span className="text-slate-500 uppercase tracking-wide">
+              TOTAL DAS DESPESAS OPERACIONAIS:
+            </span>
+            <span className="text-slate-900 font-black">
+              {formatCurrency(totalDespesasOperacionais)}
+            </span>
+            <span className="text-slate-600 font-semibold">
+              ({pctTotalDespesas.toFixed(1).replace('.', ',')}% DA RECEITA)
+            </span>
+          </div>
+          <div className="flex items-center gap-1.5 flex-wrap">
+            <span className="text-slate-500 uppercase tracking-wide">
+              INVESTIMENTOS/EQUIPAMENTOS:
+            </span>
+            <span className="text-slate-900 font-black">{formatCurrency(investimentosTotal)}</span>
           </div>
         </div>
       </div>
