@@ -64,6 +64,56 @@ export function AccountBalances() {
   const formatCurrency = (val: number) =>
     new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val)
 
+  const formatCompactCurrency = (val: number) => {
+    if (val >= 1_000_000) {
+      const millions = val / 1_000_000
+      return `R$ ${millions.toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 })} MI`
+    }
+    if (val >= 10_000) {
+      const thousands = val / 1000
+      return `R$ ${thousands.toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 })} MIL`
+    }
+    return formatCurrency(val)
+  }
+
+  const renderCustomBarLabel = (props: any) => {
+    const { x, y, width, index } = props
+    const entry = breakdowns[index]
+    if (!entry) return null
+
+    const formattedVal = formatCompactCurrency(entry.amount)
+    const formattedPct = `${entry.percentage.toFixed(1)}%`
+    const centerX = Number(x) + Number(width) / 2
+    const baseY = Number(y)
+
+    return (
+      <g>
+        <text
+          x={centerX}
+          y={baseY - 17}
+          textAnchor="middle"
+          fill="#0f172a"
+          fontSize={10}
+          fontWeight={800}
+          className="uppercase tracking-tight select-none"
+        >
+          {formattedVal}
+        </text>
+        <text
+          x={centerX}
+          y={baseY - 5}
+          textAnchor="middle"
+          fill="#047857"
+          fontSize={9}
+          fontWeight={700}
+          className="uppercase tracking-tight select-none"
+        >
+          {formattedPct}
+        </text>
+      </g>
+    )
+  }
+
   return (
     <div className="bg-white rounded-xl border border-slate-300 shadow-sm flex flex-col h-full overflow-hidden">
       <div className="bg-blue-50 border-b border-blue-200 text-slate-900 text-xs font-bold py-2.5 px-3.5 flex justify-between items-center shrink-0">
@@ -75,10 +125,10 @@ export function AccountBalances() {
       <div className="p-4 flex-1 bg-white">
         {breakdowns && breakdowns.length > 0 ? (
           <div className="flex flex-col gap-4">
-            {/* Gráfico de Colunas no mesmo padrão visual do ExpenseDistribution com tons verde/azul */}
-            <div className="h-[250px] w-full">
+            {/* Gráfico de Colunas com valor e % exibidos acima de cada coluna */}
+            <div className="h-[290px] w-full">
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={breakdowns} margin={{ top: 10, right: 10, left: 0, bottom: 25 }}>
+                <BarChart data={breakdowns} margin={{ top: 32, right: 10, left: 0, bottom: 25 }}>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
                   <XAxis
                     dataKey="name"
@@ -112,7 +162,7 @@ export function AccountBalances() {
                     itemStyle={{ color: '#0f172a', fontWeight: 600 }}
                     cursor={{ fill: '#f8fafc' }}
                   />
-                  <Bar dataKey="value" radius={[4, 4, 0, 0]}>
+                  <Bar dataKey="value" radius={[4, 4, 0, 0]} label={renderCustomBarLabel}>
                     {breakdowns.map((entry, index) => (
                       <Cell
                         key={`income-cell-${entry.id || index}`}
@@ -122,37 +172,6 @@ export function AccountBalances() {
                   </Bar>
                 </BarChart>
               </ResponsiveContainer>
-            </div>
-
-            {/* Resumo com os mesmos valores e percentuais por forma de pagamento */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2.5 pt-2 border-t border-slate-100">
-              {breakdowns.map((item, index) => (
-                <div
-                  key={item.id}
-                  className="bg-slate-50/70 border border-slate-200 rounded-lg p-2.5 flex flex-col justify-center items-center text-center hover:border-emerald-400 hover:shadow-sm transition-all"
-                >
-                  <div className="flex items-center gap-1.5 w-full justify-center mb-1">
-                    <span
-                      className="w-2 h-2 rounded-full shrink-0"
-                      style={{
-                        backgroundColor: INCOME_COLORS[index % INCOME_COLORS.length],
-                      }}
-                    />
-                    <span
-                      className="text-[10px] text-slate-600 font-bold uppercase truncate"
-                      title={item.name}
-                    >
-                      {item.name}
-                    </span>
-                  </div>
-                  <span className="text-xs sm:text-sm font-black text-slate-900">
-                    {formatCurrency(item.amount)}
-                  </span>
-                  <span className="text-[10px] text-emerald-800 font-bold bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full mt-1.5">
-                    {item.percentage.toFixed(1)}%
-                  </span>
-                </div>
-              ))}
             </div>
           </div>
         ) : (
