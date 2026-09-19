@@ -40,9 +40,12 @@ import {
   Search,
   Sparkles,
   AlertTriangle,
+  CalendarDays,
+  ArrowRight,
 } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { useExpenseAutoCategorize, normalizeDescription } from '@/hooks/use-expense-auto-categorize'
+import { checkNonWorkingDay } from '@/lib/holidays'
 
 // Opções de Categorias e Subcategorias com ordenação alfabética e labels em MAIÚSCULAS
 const EXPENSE_CATEGORIES = [
@@ -441,6 +444,8 @@ export function TransactionForm({
   const description = form.watch('description')
   const subcategoryId = form.watch('subcategoryId')
   const amount = form.watch('amount')
+  const dateValue = form.watch('date')
+  const statusValue = form.watch('status')
   const [prevType, setPrevType] = useState(initialData?.type || form.getValues('type'))
   const [prevCategoryId, setPrevCategoryId] = useState<string>(
     initialData?.categoryId || form.getValues('categoryId') || '',
@@ -589,6 +594,25 @@ export function TransactionForm({
 
     return null
   }, [type, categoryId, amount, description, transactions, initialData?.id])
+
+  // Validação de dias úteis para transações PREVISTAS (futuras)
+  // Se a data de uma transação prevista cair em sábado, domingo ou feriado nacional:
+  // Mostra aviso discreto com botão para ajustar automaticamente para o próximo dia útil,
+  // permitindo manter a data se o usuário preferir (sem bloquear salvamento).
+  const nonWorkingDayAlert = useMemo(() => {
+    // Aplica-se exclusivamente a transações PREVISTAS
+    if (statusValue !== 'PREVISTO') return null
+    if (!dateValue || !/^\d{4}-\d{2}-\d{2}$/.test(dateValue)) return null
+
+    // Deve ser data futura (maior que a data atual do calendário local YYYY-MM-DD)
+    const todayYMD = new Date().toLocaleDateString('en-CA') // YYYY-MM-DD no fuso local
+    if (dateValue <= todayYMD) return null
+
+    const check = checkNonWorkingDay(dateValue)
+    if (!check.isNonWorking) return null
+
+    return check
+  }, [statusValue, dateValue])
 
   // Guarda qual descrição acionou a auto-sugestão mais recente aplicada
   const [appliedSuggestionDesc, setAppliedSuggestionDesc] = useState<string | null>(null)
@@ -980,6 +1004,58 @@ export function TransactionForm({
                 />
               </FormControl>
               <FormMessage />
+
+              {/* Aviso discreto de dia não útil para transação prevista com ajuste em 1 clique */}
+              {nonWorkingDayAlert && (
+                <div className="mt-2 bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-700/80 rounded-lg p-2.5 text-amber-900 dark:text-amber-100 text-xs animate-in fade-in slide-in-from-top-1 shadow-sm">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <div className="flex items-start sm:items-center gap-2">
+                      <CalendarDays className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5 sm:mt-0" />
+                      <div>
+                        <div className="flex items-center gap-1.5 flex-wrap">
+                          <span className="font-bold tracking-wide uppercase text-amber-950 dark:text-amber-200">
+                            DATA PREVISTA EM DIA NÃO ÚTIL
+                          </span>
+                          <Badge
+                            variant="outline"
+                            className="border-amber-400 bg-amber-100 dark:bg-amber-900/60 text-amber-900 dark:text-amber-200 text-[10px] font-bold tracking-wider uppercase px-1.5 py-0"
+                          >
+                            {nonWorkingDayAlert.reason}
+                          </Badge>
+                        </div>
+                        <p className="text-[11px] text-amber-800 dark:text-amber-300 mt-0.5 leading-snug">
+                          A DATA {nonWorkingDayAlert.currentDateFormatted} NÃO É UM DIA ÚTIL
+                          BANCÁRIO. VOCÊ PODE AJUSTAR AUTOMATICAMENTE PARA O PRÓXIMO DIA ÚTIL (
+                          {nonWorkingDayAlert.nextWorkingDateFormatted}) OU MANTER A DATA ORIGINAL
+                          SE PREFERIR.
+                        </p>
+                      </div>
+                    </div>
+
+                    {nonWorkingDayAlert.nextWorkingDate && (
+                      <div className="flex items-center gap-1.5 shrink-0 self-end sm:self-center">
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant="outline"
+                          onClick={() => {
+                            if (nonWorkingDayAlert.nextWorkingDate) {
+                              form.setValue('date', nonWorkingDayAlert.nextWorkingDate, {
+                                shouldValidate: true,
+                                shouldDirty: true,
+                              })
+                            }
+                          }}
+                          className="h-7 px-2.5 text-[11px] font-bold border-amber-400 text-amber-950 dark:text-amber-100 bg-amber-100/70 hover:bg-amber-200/80 dark:bg-amber-900/50 dark:hover:bg-amber-900/80 uppercase shadow-none flex items-center gap-1"
+                        >
+                          <ArrowRight className="w-3 h-3" />
+                          AJUSTAR PARA {nonWorkingDayAlert.nextWorkingDateFormatted}
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
             </FormItem>
           )}
         />

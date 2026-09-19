@@ -16,45 +16,147 @@ export function getEaster(year: number): Date {
   return new Date(year, month, day)
 }
 
-export function isHoliday(date: Date): boolean {
+export interface HolidayInfo {
+  name: string
+}
+
+export function getHolidayInfo(date: Date): HolidayInfo | null {
   const day = date.getDate()
   const month = date.getMonth()
   const year = date.getFullYear()
 
-  // Fixed Brazilian National Holidays
-  const fixedHolidays = [
-    [1, 0], // 01/01 - Confraternização Universal
-    [21, 3], // 21/04 - Tiradentes
-    [1, 4], // 01/05 - Dia do Trabalho
-    [7, 8], // 07/09 - Independência
-    [12, 9], // 12/10 - Nossa Sra Aparecida
-    [2, 10], // 02/11 - Finados
-    [15, 10], // 15/11 - Proclamação da República
-    [25, 11], // 25/12 - Natal
+  // Feriados Nacionais Fixos do Brasil
+  const fixedHolidays: { day: number; month: number; name: string }[] = [
+    { day: 1, month: 0, name: 'CONFRATERNIZAÇÃO UNIVERSAL' }, // 01/01
+    { day: 21, month: 3, name: 'TIRADENTES' }, // 21/04
+    { day: 1, month: 4, name: 'DIA DO TRABALHO' }, // 01/05
+    { day: 7, month: 8, name: 'INDEPENDÊNCIA DO BRASIL' }, // 07/09
+    { day: 12, month: 9, name: 'NOSSA SENHORA APARECIDA' }, // 12/10
+    { day: 2, month: 10, name: 'FINADOS' }, // 02/11
+    { day: 15, month: 10, name: 'PROCLAMAÇÃO DA REPÚBLICA' }, // 15/11
+    { day: 25, month: 11, name: 'NATAL' }, // 25/12
   ]
 
-  if (fixedHolidays.some((h) => h[0] === day && h[1] === month)) {
-    return true
+  const fixed = fixedHolidays.find((h) => h.day === day && h.month === month)
+  if (fixed) {
+    return { name: fixed.name }
   }
 
-  // Floating holidays
+  // Feriados Nacionais Móveis (baseados no algoritmo de Páscoa)
   const easter = getEaster(year)
-
-  const carnaval = new Date(easter)
-  carnaval.setDate(easter.getDate() - 47)
-
-  const sextaSanta = new Date(easter)
-  sextaSanta.setDate(easter.getDate() - 2)
-
-  const corpusChristi = new Date(easter)
-  corpusChristi.setDate(easter.getDate() + 60)
 
   const isSameDate = (d1: Date, d2: Date) =>
     d1.getDate() === d2.getDate() && d1.getMonth() === d2.getMonth()
 
-  return (
-    isSameDate(date, carnaval) || isSameDate(date, sextaSanta) || isSameDate(date, corpusChristi)
-  )
+  // Carnaval (Terça-feira de Carnaval: Páscoa - 47 dias)
+  const carnaval = new Date(easter)
+  carnaval.setDate(easter.getDate() - 47)
+  if (isSameDate(date, carnaval)) {
+    return { name: 'CARNAVAL' }
+  }
+
+  // Sexta-feira Santa / Paixão de Cristo (Páscoa - 2 dias)
+  const sextaSanta = new Date(easter)
+  sextaSanta.setDate(easter.getDate() - 2)
+  if (isSameDate(date, sextaSanta)) {
+    return { name: 'SEXTA-FEIRA SANTA (PAIXÃO DE CRISTO)' }
+  }
+
+  // Corpus Christi (Páscoa + 60 dias)
+  const corpusChristi = new Date(easter)
+  corpusChristi.setDate(easter.getDate() + 60)
+  if (isSameDate(date, corpusChristi)) {
+    return { name: 'CORPUS CHRISTI' }
+  }
+
+  return null
+}
+
+export function isHoliday(date: Date): boolean {
+  return getHolidayInfo(date) !== null
+}
+
+export interface NonWorkingDayCheck {
+  isNonWorking: boolean
+  isWeekend: boolean
+  isHoliday: boolean
+  reason?: string
+  nextWorkingDate?: string // YYYY-MM-DD
+  nextWorkingDateFormatted?: string // DD/MM/YYYY
+  currentDateFormatted?: string // DD/MM/YYYY
+}
+
+export function parseLocalDate(dateStr: string): Date | null {
+  if (!dateStr || !/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) return null
+  const [y, m, d] = dateStr.split('-').map(Number)
+  return new Date(y, m - 1, d)
+}
+
+export function formatDateToYMD(date: Date): string {
+  const y = date.getFullYear()
+  const m = String(date.getMonth() + 1).padStart(2, '0')
+  const d = String(date.getDate()).padStart(2, '0')
+  return `${y}-${m}-${d}`
+}
+
+export function formatDateToBR(date: Date): string {
+  const d = String(date.getDate()).padStart(2, '0')
+  const m = String(date.getMonth() + 1).padStart(2, '0')
+  const y = date.getFullYear()
+  return `${d}/${m}/${y}`
+}
+
+export function getNextWorkingDay(dateStr: string): { ymd: string; formatted: string } {
+  const current = parseLocalDate(dateStr)
+  if (!current) return { ymd: dateStr, formatted: dateStr }
+
+  const next = new Date(current)
+  // Avança até o próximo dia útil (não sábado, não domingo e não feriado nacional)
+  do {
+    next.setDate(next.getDate() + 1)
+  } while (next.getDay() === 0 || next.getDay() === 6 || isHoliday(next))
+
+  return {
+    ymd: formatDateToYMD(next),
+    formatted: formatDateToBR(next),
+  }
+}
+
+export function checkNonWorkingDay(dateStr: string): NonWorkingDayCheck {
+  const date = parseLocalDate(dateStr)
+  if (!date) {
+    return { isNonWorking: false, isWeekend: false, isHoliday: false }
+  }
+
+  const dayOfWeek = date.getDay()
+  const isWeekend = dayOfWeek === 0 || dayOfWeek === 6
+  const holidayInfo = getHolidayInfo(date)
+  const isHol = !!holidayInfo
+
+  if (!isWeekend && !isHol) {
+    return { isNonWorking: false, isWeekend: false, isHoliday: false }
+  }
+
+  let reason = ''
+  if (isHol && holidayInfo) {
+    reason = `FERIADO NACIONAL (${holidayInfo.name})`
+  } else if (dayOfWeek === 6) {
+    reason = 'SÁBADO'
+  } else if (dayOfWeek === 0) {
+    reason = 'DOMINGO'
+  }
+
+  const nextWorking = getNextWorkingDay(dateStr)
+
+  return {
+    isNonWorking: true,
+    isWeekend,
+    isHoliday: isHol,
+    reason,
+    nextWorkingDate: nextWorking.ymd,
+    nextWorkingDateFormatted: nextWorking.formatted,
+    currentDateFormatted: formatDateToBR(date),
+  }
 }
 
 export function getWorkingDays(year: number, month: number): number {
