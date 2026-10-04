@@ -128,12 +128,15 @@
 }
 
 @media print {
+  html,
   body {
     background-color: white !important;
     height: auto !important;
-    overflow: auto !important;
+    min-height: 100% !important;
+    overflow: visible !important;
   }
   @page {
-    margin: 1cm;
+    margin: 1.2cm;
+    size: auto;
   }
 }

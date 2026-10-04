@@ -154,7 +154,515 @@ export function ExportReportDialog({ onExport }: { onExport?: (filters: any) => 
   }
 
   const handlePrint = () => {
-    window.print()
+    if (!previewData) return
+
+    const escapeHtml = (str: string) =>
+      str
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;')
+
+    const rowsHtml = previewData.data
+      .map((tx) => {
+        const typeBadgeClass =
+          tx.type === 'INCOME'
+            ? 'badge-income'
+            : tx.type === 'INVESTIMENTO'
+              ? 'badge-invest'
+              : 'badge-expense'
+        const typeLabel =
+          tx.type === 'INCOME' ? 'Receita' : tx.type === 'INVESTIMENTO' ? 'Investimento' : 'Despesa'
+        const valueClass = tx.type === 'INCOME' ? 'text-income' : 'text-expense'
+        const catName =
+          (tx.category as any) || (tx as any).categoryId || (tx as any).subcategoryId || '-'
+
+        return `
+          <tr>
+            <td class="nowrap">${formatDate(tx.date)}</td>
+            <td class="bold">${escapeHtml(tx.description || '-')}</td>
+            <td class="text-muted">${escapeHtml(tx.tags || '-')}</td>
+            <td class="text-muted">${escapeHtml(catName)}</td>
+            <td><span class="badge ${typeBadgeClass}">${typeLabel}</span></td>
+            <td class="text-muted">${escapeHtml(tx.status || 'REALIZADO')}</td>
+            <td class="amount ${valueClass}">${formatCurrency(tx.amount)}</td>
+          </tr>
+        `
+      })
+      .join('')
+
+    const printHtml = `<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>RELATÓRIO FINANCEIRO - SISTEMA EICKHOFF</title>
+  <style>
+    @page {
+      size: A4 portrait;
+      margin: 14mm 10mm 14mm 10mm;
+      @top-center {
+        content: "SISTEMA EICKHOFF • RELATÓRIO FINANCEIRO • PERÍODO: ${formatDate(previewData.startStr)} A ${formatDate(previewData.endStr)}";
+        font-family: Arial, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        font-size: 8pt;
+        font-weight: bold;
+        color: #64748b;
+        text-transform: uppercase;
+        border-bottom: 1px solid #cbd5e1;
+        padding-bottom: 4px;
+        margin-bottom: 6px;
+      }
+      @bottom-left {
+        content: "EMITIDO EM: " attr(data-date);
+        font-family: Arial, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        font-size: 8pt;
+        color: #94a3b8;
+        text-transform: uppercase;
+      }
+      @bottom-right {
+        content: "PÁGINA " counter(page) " DE " counter(pages);
+        font-family: Arial, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        font-size: 8pt;
+        font-weight: bold;
+        color: #475569;
+        text-transform: uppercase;
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: #ffffff !important;
+      color: #0f172a;
+      font-family: Arial, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-size: 9.5pt;
+      line-height: 1.35;
+    }
+
+    /* Layout em tabela mestra para garantir cabeçalho e rodapé repetidos em todos os motores */
+    table.master-layout {
+      width: 100%;
+      border-collapse: collapse;
+      border: none;
+    }
+
+    thead.master-header {
+      display: table-header-group;
+    }
+
+    tfoot.master-footer {
+      display: table-footer-group;
+    }
+
+    tbody.master-body {
+      display: table-row-group;
+    }
+
+    .master-header-cell {
+      padding: 0 0 10px 0;
+      border: none;
+    }
+
+    .master-footer-cell {
+      padding: 8px 0 0 0;
+      border: none;
+    }
+
+    .master-content-cell {
+      padding: 0;
+      border: none;
+    }
+
+    /* Cabeçalho do documento */
+    .doc-running-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1.5px solid #0f172a;
+      padding-bottom: 6px;
+      margin-bottom: 8px;
+    }
+
+    .doc-brand {
+      font-size: 9pt;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      color: #0f172a;
+      text-transform: uppercase;
+    }
+
+    .doc-period-tag {
+      font-size: 8pt;
+      font-weight: 700;
+      color: #334155;
+      background: #f1f5f9;
+      padding: 3px 8px;
+      border-radius: 4px;
+      border: 1px solid #cbd5e1;
+      text-transform: uppercase;
+    }
+
+    /* Rodapé do documento */
+    .doc-running-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid #cbd5e1;
+      padding-top: 6px;
+      margin-top: 6px;
+      font-size: 7.5pt;
+      color: #64748b;
+      text-transform: uppercase;
+    }
+
+    .page-number-native::after {
+      content: "PÁGINA " counter(page);
+      font-weight: 700;
+      color: #334155;
+    }
+
+    /* Seções principais com quebra inteligente */
+    .section-title-box {
+      background: #1e293b;
+      color: #ffffff;
+      padding: 8px 12px;
+      border-radius: 6px;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      break-after: avoid;
+      page-break-after: avoid;
+    }
+
+    .section-title-box h1 {
+      margin: 0;
+      font-size: 13pt;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .section-title-box .badge-white {
+      background: rgba(255, 255, 255, 0.2);
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 8pt;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-bottom: 14px;
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+
+    .card-kpi {
+      border: 1px solid #cbd5e1;
+      background: #f8fafc;
+      border-radius: 6px;
+      padding: 8px 10px;
+      text-align: left;
+    }
+
+    .card-kpi .kpi-label {
+      font-size: 7pt;
+      font-weight: 800;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      margin-bottom: 3px;
+    }
+
+    .card-kpi .kpi-value {
+      font-size: 11pt;
+      font-weight: 900;
+      letter-spacing: -0.2px;
+    }
+
+    .info-strip {
+      border: 1px solid #e2e8f0;
+      background: #ffffff;
+      border-radius: 6px;
+      padding: 8px 12px;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 8.5pt;
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+
+    .info-strip strong {
+      text-transform: uppercase;
+      color: #1e293b;
+    }
+
+    /* Tabela de Lançamentos */
+    .table-section {
+      width: 100%;
+      margin-top: 4px;
+    }
+
+    .section-heading {
+      font-size: 10pt;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #0f172a;
+      margin: 0 0 6px 0;
+      padding-bottom: 4px;
+      border-bottom: 1px solid #e2e8f0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      break-after: avoid;
+      page-break-after: avoid;
+    }
+
+    table.data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 8pt;
+    }
+
+    table.data-table thead {
+      display: table-header-group;
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+
+    table.data-table thead th {
+      background: #f1f5f9;
+      color: #334155;
+      font-weight: 800;
+      text-transform: uppercase;
+      padding: 6px 6px;
+      border-bottom: 1.5px solid #cbd5e1;
+      border-top: 1px solid #cbd5e1;
+      text-align: left;
+      font-size: 7.5pt;
+      letter-spacing: 0.3px;
+    }
+
+    table.data-table thead th.amount {
+      text-align: right;
+    }
+
+    table.data-table tbody tr {
+      break-inside: avoid;
+      page-break-inside: avoid;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    table.data-table tbody tr:nth-child(even) {
+      background: #fbfcfe;
+    }
+
+    table.data-table td {
+      padding: 5px 6px;
+      vertical-align: middle;
+      color: #1e293b;
+    }
+
+    table.data-table td.amount {
+      text-align: right;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .nowrap {
+      white-space: nowrap;
+    }
+
+    .bold {
+      font-weight: 700;
+    }
+
+    .text-muted {
+      color: #64748b;
+      font-size: 7.5pt;
+    }
+
+    .text-income {
+      color: #15803d;
+    }
+
+    .text-expense {
+      color: #b91c1c;
+    }
+
+    .text-invest {
+      color: #4338ca;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 1.5px 5px;
+      border-radius: 3px;
+      font-size: 6.5pt;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      white-space: nowrap;
+    }
+
+    .badge-income {
+      background: #dcfce7;
+      color: #15803d;
+      border: 1px solid #86efac;
+    }
+
+    .badge-expense {
+      background: #fee2e2;
+      color: #b91c1c;
+      border: 1px solid #fca5a5;
+    }
+
+    .badge-invest {
+      background: #e0e7ff;
+      color: #4338ca;
+      border: 1px solid #a5b4fc;
+    }
+  </style>
+</head>
+<body>
+  <table class="master-layout">
+    <thead class="master-header">
+      <tr>
+        <td class="master-header-cell">
+          <div class="doc-running-header">
+            <div class="doc-brand">SISTEMA EICKHOFF • GESTÃO FINANCEIRA</div>
+            <div class="doc-period-tag">PERÍODO: ${formatDate(previewData.startStr)} A ${formatDate(previewData.endStr)}</div>
+          </div>
+        </td>
+      </tr>
+    </thead>
+
+    <tfoot class="master-footer">
+      <tr>
+        <td class="master-footer-cell">
+          <div class="doc-running-footer">
+            <div>SISTEMA EICKHOFF • DOCUMENTO CONFIDENCIAL</div>
+            <div class="page-number-native"></div>
+          </div>
+        </td>
+      </tr>
+    </tfoot>
+
+    <tbody class="master-body">
+      <tr>
+        <td class="master-content-cell">
+          <!-- CABEÇALHO DA 1ª PÁGINA COM IDENTIFICAÇÃO E KPIs -->
+          <div class="section-title-box">
+            <h1>RELATÓRIO FINANCEIRO DE ENTRADAS E SAÍDAS</h1>
+            <span class="badge-white">${escapeHtml(typeLabel.toUpperCase())}</span>
+          </div>
+
+          <div class="info-strip">
+            <div>
+              <strong>PERÍODO SELECIONADO:</strong> ${formatDate(previewData.startStr)} A ${formatDate(previewData.endStr)}
+            </div>
+            <div>
+              <strong>TOTAL DE LANÇAMENTOS:</strong> ${previewData.data.length} ITENS
+            </div>
+          </div>
+
+          <div class="summary-grid">
+            <div class="card-kpi">
+              <div class="kpi-label">TOTAL RECEITAS</div>
+              <div class="kpi-value text-income">${formatCurrency(totalReceitas)}</div>
+            </div>
+            <div class="card-kpi">
+              <div class="kpi-label">DESPESAS OPERACIONAIS</div>
+              <div class="kpi-value text-expense">${formatCurrency(totalDespesas)}</div>
+            </div>
+            <div class="card-kpi">
+              <div class="kpi-label">INVESTIMENTOS</div>
+              <div class="kpi-value text-invest">${formatCurrency(totalInvestimentos)}</div>
+            </div>
+            <div class="card-kpi">
+              <div class="kpi-label">SALDO FINAL (CAIXA)</div>
+              <div class="kpi-value ${saldo >= 0 ? 'text-income' : 'text-expense'}">${formatCurrency(saldo)}</div>
+            </div>
+          </div>
+
+          <!-- DETALHAMENTO DE TRANSAÇÕES COMPLETO -->
+          <div class="table-section">
+            <div class="section-heading">
+              <span>DETALHAMENTO DE LANÇAMENTOS DO PERÍODO</span>
+              <span class="text-muted">${previewData.data.length} REGISTROS (DO PRIMEIRO AO ÚLTIMO DIA)</span>
+            </div>
+
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th style="width: 75px;">DATA</th>
+                  <th>DESCRIÇÃO</th>
+                  <th style="width: 120px;">OBSERVAÇÕES</th>
+                  <th style="width: 110px;">CATEGORIA</th>
+                  <th style="width: 80px;">TIPO</th>
+                  <th style="width: 75px;">STATUS</th>
+                  <th class="amount" style="width: 90px;">VALOR</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${rowsHtml}
+              </tbody>
+            </table>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</body>
+</html>`
+
+    const printFrameId = '__eickhoff_print_iframe__'
+    let iframe = document.getElementById(printFrameId) as HTMLIFrameElement | null
+    if (!iframe) {
+      iframe = document.createElement('iframe')
+      iframe.id = printFrameId
+      iframe.style.position = 'fixed'
+      iframe.style.right = '0'
+      iframe.style.bottom = '0'
+      iframe.style.width = '0'
+      iframe.style.height = '0'
+      iframe.style.border = 'none'
+      iframe.style.visibility = 'hidden'
+      document.body.appendChild(iframe)
+    }
+
+    const frameDoc = iframe.contentWindow?.document || iframe.contentDocument
+    if (!frameDoc || !iframe.contentWindow) {
+      window.print()
+      return
+    }
+
+    frameDoc.open()
+    frameDoc.write(printHtml)
+    frameDoc.close()
+
+    setTimeout(() => {
+      try {
+        iframe?.contentWindow?.focus()
+        iframe?.contentWindow?.print()
+      } catch (err) {
+        console.error('Erro ao acionar impressão via iframe:', err)
+        window.print()
+      }
+    }, 400)
   }
 
   const handleExport = async (formatType: 'pdf' | 'excel') => {
@@ -243,12 +751,14 @@ export function ExportReportDialog({ onExport }: { onExport?: (filters: any) => 
     <>
       <style>{`
       @media print {
+        html, body {
+          overflow: visible !important;
+          height: auto !important;
+        }
         body * { visibility: hidden; }
         .printable-area, .printable-area * { visibility: visible; }
         .printable-area {
-          position: absolute !important;
-          left: 0 !important;
-          top: 0 !important;
+          position: static !important;
           width: 100% !important;
           height: auto !important;
           margin: 0 !important;
@@ -285,70 +795,99 @@ export function ExportReportDialog({ onExport }: { onExport?: (filters: any) => 
           {previewData ? (
             <>
               <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 border-b bg-slate-50 dark:bg-slate-900 rounded-t-xl print:hidden shrink-0">
-                <DialogTitle className="text-lg font-bold text-slate-800 dark:text-slate-100">
-                  Visualização do Relatório
-                </DialogTitle>
+                <div>
+                  <DialogTitle className="text-lg font-bold text-slate-800 dark:text-slate-100 uppercase tracking-wide">
+                    Visualização do Relatório Financeiro
+                  </DialogTitle>
+                  <p className="text-xs text-slate-500 mt-0.5 font-medium">
+                    PERÍODO: {formatDate(previewData.startStr)} A {formatDate(previewData.endStr)} •{' '}
+                    {previewData.data.length} LANÇAMENTOS
+                  </p>
+                </div>
                 <div className="flex items-center gap-2 w-full sm:w-auto">
                   <Button
                     variant="outline"
                     onClick={() => setPreviewData(null)}
-                    className="flex-1 sm:flex-none"
+                    className="flex-1 sm:flex-none uppercase text-xs font-bold"
                   >
                     Voltar
                   </Button>
                   <Button
                     onClick={handlePrint}
-                    className="flex-1 sm:flex-none bg-blue-600 hover:bg-blue-700 text-white gap-2 font-bold shadow-sm"
+                    className="flex-1 sm:flex-none bg-blue-600 hover:bg-blue-700 text-white gap-2 font-bold shadow-sm uppercase text-xs tracking-wide"
                   >
                     <Printer className="w-4 h-4" />
-                    Imprimir / Salvar PDF
+                    Salvar PDF / Imprimir
                   </Button>
                 </div>
               </div>
 
               <div className="flex-1 overflow-auto p-6 sm:p-8 bg-white text-black printable-area">
-                <div className="max-w-[800px] mx-auto">
-                  <div className="border-b-2 border-slate-200 pb-4 mb-6">
-                    <h1 className="text-2xl font-bold text-slate-900">Relatório Financeiro</h1>
+                <div className="max-w-[850px] mx-auto">
+                  <div className="border-b-2 border-slate-900 pb-3 mb-6 flex flex-col sm:flex-row justify-between sm:items-end gap-2">
+                    <div>
+                      <span className="text-[10px] font-extrabold tracking-widest text-slate-500 uppercase">
+                        SISTEMA EICKHOFF • GESTÃO FINANCEIRA
+                      </span>
+                      <h1 className="text-2xl font-black text-slate-900 uppercase tracking-tight">
+                        Relatório Financeiro de Entradas e Saídas
+                      </h1>
+                    </div>
+                    <div className="text-right">
+                      <span className="inline-block px-3 py-1 bg-slate-900 text-white text-xs font-black uppercase rounded">
+                        {typeLabel.toUpperCase()}
+                      </span>
+                    </div>
                   </div>
 
-                  <div className="flex flex-col sm:flex-row gap-6 mb-8 p-4 bg-slate-50 rounded-lg border border-slate-200 break-inside-avoid">
-                    <div className="flex-1">
-                      <h3 className="text-sm font-bold text-slate-500 uppercase mb-2">Período</h3>
-                      <p className="text-sm text-slate-800 font-medium">
+                  <div className="flex flex-col sm:flex-row gap-6 mb-6 p-4 bg-slate-50 rounded-lg border border-slate-200">
+                    <div className="flex-1 border-r border-slate-200 pr-4">
+                      <h3 className="text-xs font-black text-slate-600 uppercase tracking-wider mb-2">
+                        Período Selecionado
+                      </h3>
+                      <p className="text-base text-slate-900 font-extrabold">
                         {formatDate(previewData.startStr)} a {formatDate(previewData.endStr)}
                       </p>
-                      <p className="text-sm text-slate-600 mt-1">
+                      <p className="text-xs text-slate-600 mt-1 uppercase">
                         <strong>Tipo:</strong> {typeLabel}
+                      </p>
+                      <p className="text-xs text-slate-600 mt-0.5 uppercase">
+                        <strong>Lançamentos:</strong> {previewData.data.length} registros
                       </p>
                     </div>
                     <div className="flex-1">
-                      <h3 className="text-sm font-bold text-slate-500 uppercase mb-2">Resumo</h3>
+                      <h3 className="text-xs font-black text-slate-600 uppercase tracking-wider mb-2">
+                        Resumo Consolidado
+                      </h3>
                       <div className="space-y-1">
-                        <p className="text-sm text-slate-600 flex justify-between">
-                          <span>Total Receitas:</span>
-                          <span className="text-green-600 font-medium">
+                        <p className="text-xs text-slate-700 flex justify-between">
+                          <span className="font-semibold uppercase">Total Receitas:</span>
+                          <span className="text-green-700 font-bold">
                             {formatCurrency(totalReceitas)}
                           </span>
                         </p>
-                        <p className="text-sm text-slate-600 flex justify-between">
-                          <span>Total Despesas Operacionais:</span>
-                          <span className="text-red-600 font-medium">
+                        <p className="text-xs text-slate-700 flex justify-between">
+                          <span className="font-semibold uppercase">Despesas Operacionais:</span>
+                          <span className="text-red-700 font-bold">
                             {formatCurrency(totalDespesas)}
                           </span>
                         </p>
                         {totalInvestimentos > 0 && (
-                          <p className="text-sm text-slate-600 flex justify-between">
-                            <span>Investimentos:</span>
-                            <span className="text-orange-600 font-medium">
+                          <p className="text-xs text-slate-700 flex justify-between">
+                            <span className="font-semibold uppercase">Investimentos:</span>
+                            <span className="text-indigo-700 font-bold">
                               {formatCurrency(totalInvestimentos)}
                             </span>
                           </p>
                         )}
                         <div className="h-px bg-slate-200 my-1"></div>
-                        <p className="text-sm text-slate-800 font-bold flex justify-between">
-                          <span>Saldo Final (Caixa):</span>
-                          <span className={saldo >= 0 ? 'text-blue-600' : 'text-red-600'}>
+                        <p className="text-xs text-slate-900 font-black flex justify-between">
+                          <span className="uppercase">Saldo Final (Caixa):</span>
+                          <span
+                            className={
+                              saldo >= 0 ? 'text-green-700 font-black' : 'text-red-700 font-black'
+                            }
+                          >
                             {formatCurrency(saldo)}
                           </span>
                         </p>
@@ -356,25 +895,38 @@ export function ExportReportDialog({ onExport }: { onExport?: (filters: any) => 
                     </div>
                   </div>
 
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-sm border-collapse">
+                  <div className="mb-3 flex justify-between items-center">
+                    <h3 className="text-xs font-black text-slate-800 uppercase tracking-wider">
+                      Detalhamento Completo ({previewData.data.length} Lançamentos)
+                    </h3>
+                    <span className="text-[11px] text-slate-500 font-semibold uppercase">
+                      Do primeiro ao último dia
+                    </span>
+                  </div>
+
+                  <div className="overflow-x-auto border border-slate-200 rounded-lg">
+                    <table className="w-full text-xs border-collapse">
                       <thead>
-                        <tr className="border-b-2 border-slate-200 bg-slate-50">
-                          <th className="py-2 px-3 text-left font-bold text-slate-700 whitespace-nowrap">
+                        <tr className="border-b-2 border-slate-300 bg-slate-100">
+                          <th className="py-2.5 px-3 text-left font-black text-slate-700 whitespace-nowrap uppercase">
                             Data
                           </th>
-                          <th className="py-2 px-3 text-left font-bold text-slate-700">
+                          <th className="py-2.5 px-3 text-left font-black text-slate-700 uppercase">
                             Descrição
                           </th>
-                          <th className="py-2 px-3 text-left font-bold text-slate-700">
+                          <th className="py-2.5 px-3 text-left font-black text-slate-700 uppercase">
                             Observações
                           </th>
-                          <th className="py-2 px-3 text-left font-bold text-slate-700">
+                          <th className="py-2.5 px-3 text-left font-black text-slate-700 uppercase">
                             Categoria
                           </th>
-                          <th className="py-2 px-3 text-left font-bold text-slate-700">Tipo</th>
-                          <th className="py-2 px-3 text-left font-bold text-slate-700">Status</th>
-                          <th className="py-2 px-3 text-right font-bold text-slate-700 whitespace-nowrap">
+                          <th className="py-2.5 px-3 text-left font-black text-slate-700 uppercase">
+                            Tipo
+                          </th>
+                          <th className="py-2.5 px-3 text-left font-black text-slate-700 uppercase">
+                            Status
+                          </th>
+                          <th className="py-2.5 px-3 text-right font-black text-slate-700 whitespace-nowrap uppercase">
                             Valor
                           </th>
                         </tr>
@@ -382,23 +934,26 @@ export function ExportReportDialog({ onExport }: { onExport?: (filters: any) => 
                       <tbody className="divide-y divide-slate-100">
                         {previewData.data.map((tx) => (
                           <tr key={tx.id} className="hover:bg-slate-50/50">
-                            <td className="py-2 px-3 text-slate-600 whitespace-nowrap">
+                            <td className="py-2 px-3 text-slate-700 whitespace-nowrap font-medium">
                               {formatDate(tx.date)}
                             </td>
-                            <td className="py-2 px-3 text-slate-800">{tx.description}</td>
+                            <td className="py-2 px-3 text-slate-900 font-bold">{tx.description}</td>
                             <td className="py-2 px-3 text-slate-600">{tx.tags || '-'}</td>
                             <td className="py-2 px-3 text-slate-600">
-                              {(tx.category as any) || (tx as any).categoryId || '-'}
+                              {(tx.category as any) ||
+                                (tx as any).categoryId ||
+                                (tx as any).subcategoryId ||
+                                '-'}
                             </td>
                             <td className="py-2 px-3">
                               <span
                                 className={cn(
-                                  'inline-flex px-2 py-0.5 rounded text-[11px] font-medium',
+                                  'inline-flex px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider',
                                   tx.type === 'INCOME'
-                                    ? 'bg-green-100 text-green-700'
+                                    ? 'bg-green-100 text-green-800'
                                     : tx.type === 'INVESTIMENTO'
-                                      ? 'bg-indigo-100 text-indigo-700'
-                                      : 'bg-red-100 text-red-700',
+                                      ? 'bg-indigo-100 text-indigo-800'
+                                      : 'bg-red-100 text-red-800',
                                 )}
                               >
                                 {tx.type === 'INCOME'
@@ -408,11 +963,13 @@ export function ExportReportDialog({ onExport }: { onExport?: (filters: any) => 
                                     : 'Despesa'}
                               </span>
                             </td>
-                            <td className="py-2 px-3 text-slate-600 text-[12px]">{tx.status}</td>
+                            <td className="py-2 px-3 text-slate-600 text-[11px] font-medium uppercase">
+                              {tx.status}
+                            </td>
                             <td
                               className={cn(
-                                'py-2 px-3 text-right font-medium whitespace-nowrap',
-                                tx.type === 'INCOME' ? 'text-green-600' : 'text-red-600',
+                                'py-2 px-3 text-right font-bold whitespace-nowrap',
+                                tx.type === 'INCOME' ? 'text-green-700' : 'text-red-700',
                               )}
                             >
                               {formatCurrency(tx.amount)}
