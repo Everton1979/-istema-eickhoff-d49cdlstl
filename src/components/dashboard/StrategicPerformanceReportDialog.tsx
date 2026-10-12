@@ -11,7 +11,14 @@ import {
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { useFinanceStore } from '@/stores/financeStore'
-import { Presentation, Filter, BarChart3 } from 'lucide-react'
+import { Presentation, Filter, BarChart3, Printer, FileText, Download } from 'lucide-react'
+import {
+  StrategicPeriodMetric,
+  StrategicAverages,
+  StrategicSectionConfig,
+  buildStrategicReportHtml,
+  printStrategicReportHtml,
+} from './strategic-report-print'
 import {
   Table,
   TableBody,
@@ -38,6 +45,7 @@ export function StrategicPerformanceReportDialog() {
   const [open, setOpen] = useState(false)
   const [localYears, setLocalYears] = useState<string[]>([])
   const [localMonths, setLocalMonths] = useState<string[]>([])
+  const [showPreviewModal, setShowPreviewModal] = useState(false)
 
   useEffect(() => {
     if (open) {
@@ -75,6 +83,48 @@ export function StrategicPerformanceReportDialog() {
   ]
   const formatCurrency = (val: number) =>
     new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val || 0)
+
+  const strategicSections: StrategicSectionConfig[] = useMemo(
+    () => [
+      { title: 'Entradas', key: 'entradas', fmt: formatCurrency, color: '#93c5fd' },
+      { title: 'Despesas', key: 'despesas', fmt: formatCurrency, color: '#fca5a5' },
+      { title: 'Lucro Líquido Real', key: 'lucroLiquido', fmt: formatCurrency, color: '#86efac' },
+      {
+        title: 'Mark-up Manip.',
+        key: 'markup',
+        fmt: (val: number) => `${val.toFixed(2)}x`,
+        color: '#c4b5fd',
+      },
+      { title: 'Ticket Médio', key: 'ticket', fmt: formatCurrency, color: '#fcd34d' },
+      {
+        title: 'Custo Fixo / Fórm (Cápsulas)',
+        key: 'custoFixoCapsulas',
+        fmt: formatCurrency,
+        color: '#ea580c',
+      },
+      {
+        title: 'Custo Fixo / Fórm (Dermato)',
+        key: 'custoFixoDermato',
+        fmt: formatCurrency,
+        color: '#f97316',
+      },
+      {
+        title: 'Piso de Segurança das Cápsulas',
+        key: 'pisoSegurancaCapsulas',
+        fmt: formatCurrency,
+        color: '#0284c7',
+      },
+      {
+        title: 'Piso de Segurança da Dermato',
+        key: 'pisoSegurancaDermato',
+        fmt: formatCurrency,
+        color: '#38bdf8',
+      },
+      { title: 'EBITDA', key: 'ebitda', fmt: formatCurrency, color: '#10b981' },
+      { title: 'Valuation', key: 'valuation', fmt: formatCurrency, color: '#94a3b8' },
+    ],
+    [],
+  )
 
   const periodsData = useMemo(() => {
     const periods = localYears
@@ -250,6 +300,32 @@ export function StrategicPerformanceReportDialog() {
     return sum
   }, [periodsData])
 
+  const periodLabelText = useMemo(() => {
+    if (!periodsData.length) return 'NENHUM PERÍODO SELECIONADO'
+    const first = periodsData[0].rawPeriod // 'YYYY-MM'
+    const last = periodsData[periodsData.length - 1].rawPeriod
+    const [y1, m1] = first.split('-')
+    const [y2, m2] = last.split('-')
+
+    const dateStart = new Date(parseInt(y1), parseInt(m1) - 1, 1)
+    const dateEnd = new Date(parseInt(y2), parseInt(m2), 0)
+
+    const fmtD = (d: Date) =>
+      `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`
+    return `${fmtD(dateStart)} A ${fmtD(dateEnd)}`
+  }, [periodsData])
+
+  const handleTriggerPrint = () => {
+    if (!periodsData.length || !averages) return
+    const html = buildStrategicReportHtml({
+      periodLabel: periodLabelText,
+      periodsData,
+      averages,
+      sections: strategicSections,
+    })
+    printStrategicReportHtml(html)
+  }
+
   const renderSection = (
     title: string,
     key: keyof typeof averages,
@@ -365,25 +441,47 @@ export function StrategicPerformanceReportDialog() {
               abaixo.
             </DialogDescription>
           </div>
-          <Button
-            onClick={() => {
-              setOpen(false)
-              navigate('/dashboard')
-            }}
-            variant="outline"
-            className="shrink-0 mt-1"
-          >
-            Sair
-          </Button>
+          <div className="flex items-center gap-2 shrink-0 mt-1">
+            <Button
+              onClick={() => setShowPreviewModal(true)}
+              disabled={periodsData.length === 0}
+              className="bg-blue-600 hover:bg-blue-700 text-white gap-2 font-bold shadow-sm uppercase text-xs tracking-wide"
+            >
+              <FileText className="w-4 h-4" />
+              Exportar PDF
+            </Button>
+            <Button
+              onClick={() => {
+                setOpen(false)
+                navigate('/dashboard')
+              }}
+              variant="outline"
+            >
+              Sair
+            </Button>
+          </div>
         </DialogHeader>
         <ScrollArea className="flex-1 w-full p-4 md:p-6">
           <div className="max-w-7xl mx-auto pb-8">
             <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-5 mb-8">
-              <div className="flex items-center gap-2 mb-4 text-slate-800">
-                <Filter className="w-4 h-4" />
-                <h3 className="font-semibold text-sm uppercase tracking-wide">
-                  Filtro de Período Local
-                </h3>
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2 text-slate-800">
+                  <Filter className="w-4 h-4" />
+                  <h3 className="font-semibold text-sm uppercase tracking-wide">
+                    Filtro de Período Local
+                  </h3>
+                </div>
+                {periodsData.length > 0 && (
+                  <Button
+                    onClick={() => setShowPreviewModal(true)}
+                    variant="outline"
+                    size="sm"
+                    className="gap-2 font-bold text-xs uppercase text-blue-600 border-blue-200 hover:bg-blue-50"
+                  >
+                    <Download className="w-3.5 h-3.5" />
+                    Exportar PDF do Período
+                  </Button>
+                )}
               </div>
               <div className="flex flex-col md:flex-row gap-6">
                 <div className="flex-1">
@@ -439,46 +537,214 @@ export function StrategicPerformanceReportDialog() {
               </div>
             ) : (
               <div className="space-y-6 animate-fade-in">
-                {renderSection('Entradas', 'entradas', formatCurrency, '#93c5fd')}
-                {renderSection('Despesas', 'despesas', formatCurrency, '#fca5a5')}
-                {renderSection('Lucro Líquido Real', 'lucroLiquido', formatCurrency, '#86efac')}
-                {renderSection(
-                  'Mark-up Manip.',
-                  'markup',
-                  (val) => `${val.toFixed(2)}x`,
-                  '#c4b5fd',
+                {strategicSections.map((sec) =>
+                  renderSection(sec.title, sec.key, sec.fmt, sec.color),
                 )}
-                {renderSection('Ticket Médio', 'ticket', formatCurrency, '#fcd34d')}
-                {renderSection(
-                  'Custo Fixo / Fórm (Cápsulas)',
-                  'custoFixoCapsulas',
-                  formatCurrency,
-                  '#ea580c',
-                )}
-                {renderSection(
-                  'Custo Fixo / Fórm (Dermato)',
-                  'custoFixoDermato',
-                  formatCurrency,
-                  '#f97316',
-                )}
-                {renderSection(
-                  'Piso de Segurança das Cápsulas',
-                  'pisoSegurancaCapsulas',
-                  formatCurrency,
-                  '#0284c7',
-                )}
-                {renderSection(
-                  'Piso de Segurança da Dermato',
-                  'pisoSegurancaDermato',
-                  formatCurrency,
-                  '#38bdf8',
-                )}
-                {renderSection('EBITDA', 'ebitda', formatCurrency, '#10b981')}
-                {renderSection('Valuation', 'valuation', formatCurrency, '#94a3b8')}
               </div>
             )}
           </div>
         </ScrollArea>
+
+        {/* Modal de Pré-visualização e Ação de Impressão / Salvar PDF */}
+        <Dialog open={showPreviewModal} onOpenChange={setShowPreviewModal}>
+          <DialogContent className="w-[95vw] sm:w-[90vw] max-w-5xl h-[90vh] p-0 flex flex-col rounded-xl overflow-hidden bg-white">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 border-b bg-slate-50 shrink-0">
+              <div>
+                <DialogTitle className="text-lg font-bold text-slate-800 uppercase tracking-wide">
+                  Visualização do Relatório Estratégico Consolidado
+                </DialogTitle>
+                <p className="text-xs text-slate-500 mt-0.5 font-medium uppercase">
+                  PERÍODO: {periodLabelText} • {periodsData.length} MESES SELECIONADOS
+                </p>
+              </div>
+              <div className="flex items-center gap-2 w-full sm:w-auto">
+                <Button
+                  variant="outline"
+                  onClick={() => setShowPreviewModal(false)}
+                  className="flex-1 sm:flex-none uppercase text-xs font-bold"
+                >
+                  Voltar
+                </Button>
+                <Button
+                  onClick={handleTriggerPrint}
+                  className="flex-1 sm:flex-none bg-blue-600 hover:bg-blue-700 text-white gap-2 font-bold shadow-sm uppercase text-xs tracking-wide"
+                >
+                  <Printer className="w-4 h-4" />
+                  Salvar PDF / Imprimir
+                </Button>
+              </div>
+            </div>
+
+            <div className="flex-1 overflow-auto p-6 sm:p-8 bg-white text-black">
+              <div className="max-w-[850px] mx-auto space-y-6">
+                <div className="border-b-2 border-slate-900 pb-3 flex flex-col sm:flex-row justify-between sm:items-end gap-2">
+                  <div>
+                    <span className="text-[10px] font-extrabold tracking-widest text-slate-500 uppercase">
+                      SISTEMA EICKHOFF • GESTÃO ESTRATÉGICA
+                    </span>
+                    <h1 className="text-2xl font-black text-slate-900 uppercase tracking-tight">
+                      Relatório Estratégico Consolidado
+                    </h1>
+                  </div>
+                  <div className="text-right">
+                    <span className="inline-block px-3 py-1 bg-slate-900 text-white text-xs font-black uppercase rounded">
+                      COMPARATIVO MENSAL
+                    </span>
+                  </div>
+                </div>
+
+                <div className="flex flex-col sm:flex-row gap-6 p-4 bg-slate-50 rounded-lg border border-slate-200">
+                  <div className="flex-1 border-r border-slate-200 pr-4">
+                    <h3 className="text-xs font-black text-slate-600 uppercase tracking-wider mb-2">
+                      Período Consolidado
+                    </h3>
+                    <p className="text-base text-slate-900 font-extrabold">{periodLabelText}</p>
+                    <p className="text-xs text-slate-600 mt-1 uppercase">
+                      <strong>Meses Selecionados:</strong> {periodsData.length} meses
+                    </p>
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-xs font-black text-slate-600 uppercase tracking-wider mb-2">
+                      Resumo Médio Estratégico
+                    </h3>
+                    <div className="space-y-1">
+                      <p className="text-xs text-slate-700 flex justify-between">
+                        <span className="font-semibold uppercase">Média Entradas:</span>
+                        <span className="text-green-700 font-bold">
+                          {formatCurrency(averages?.entradas || 0)}
+                        </span>
+                      </p>
+                      <p className="text-xs text-slate-700 flex justify-between">
+                        <span className="font-semibold uppercase">Média Despesas:</span>
+                        <span className="text-red-700 font-bold">
+                          {formatCurrency(averages?.despesas || 0)}
+                        </span>
+                      </p>
+                      <p className="text-xs text-slate-700 flex justify-between">
+                        <span className="font-semibold uppercase">Média Lucro Real:</span>
+                        <span className="text-blue-700 font-bold">
+                          {formatCurrency(averages?.lucroLiquido || 0)}
+                        </span>
+                      </p>
+                      <p className="text-xs text-slate-700 flex justify-between">
+                        <span className="font-semibold uppercase">Média EBITDA:</span>
+                        <span className="text-emerald-700 font-bold">
+                          {formatCurrency(averages?.ebitda || 0)}
+                        </span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-6">
+                  {strategicSections.map((sec) => (
+                    <Card key={sec.title} className="shadow-sm border-slate-200 overflow-hidden">
+                      <div className="bg-slate-50 border-b border-slate-200 px-4 py-2.5 flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <span
+                            className="w-2.5 h-2.5 rounded-sm"
+                            style={{ backgroundColor: sec.color }}
+                          />
+                          <h4 className="font-bold text-slate-800 uppercase tracking-wide text-xs">
+                            {sec.title}
+                          </h4>
+                        </div>
+                        <div className="text-xs font-semibold text-slate-500 uppercase">
+                          Média:{' '}
+                          <span className="text-slate-800 font-bold">
+                            {averages ? sec.fmt(averages[sec.key]) : sec.fmt(0)}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="p-3 bg-white border-b border-slate-100">
+                        <ChartContainer
+                          config={{ [sec.key]: { label: sec.title, color: sec.color } }}
+                          className="h-[180px] w-full"
+                        >
+                          <ResponsiveContainer width="100%" height="100%">
+                            <BarChart
+                              data={periodsData}
+                              margin={{ top: 10, right: 10, left: 10, bottom: 0 }}
+                            >
+                              <CartesianGrid
+                                strokeDasharray="3 3"
+                                vertical={false}
+                                stroke="#f1f5f9"
+                              />
+                              <XAxis
+                                dataKey="period"
+                                stroke="#94a3b8"
+                                fontSize={11}
+                                tickLine={false}
+                                axisLine={false}
+                                dy={6}
+                              />
+                              <YAxis
+                                stroke="#94a3b8"
+                                fontSize={11}
+                                tickLine={false}
+                                axisLine={false}
+                                tickFormatter={(v) =>
+                                  sec.key === 'markup'
+                                    ? `${v}x`
+                                    : new Intl.NumberFormat('pt-BR', {
+                                        notation: 'compact',
+                                      }).format(v)
+                                }
+                              />
+                              <Bar
+                                dataKey={sec.key}
+                                fill={`var(--color-${sec.key})`}
+                                radius={[3, 3, 0, 0]}
+                                maxBarSize={45}
+                              />
+                            </BarChart>
+                          </ResponsiveContainer>
+                        </ChartContainer>
+                      </div>
+                      <Table className="w-full text-xs">
+                        <TableHeader>
+                          <TableRow className="bg-slate-50/50">
+                            <TableHead className="font-bold text-slate-700">Período</TableHead>
+                            {periodsData.map((p) => (
+                              <TableHead
+                                key={p.rawPeriod}
+                                className="text-right whitespace-nowrap font-bold text-slate-700"
+                              >
+                                {p.period}
+                              </TableHead>
+                            ))}
+                            <TableHead className="text-right font-black text-slate-900 bg-slate-100">
+                              Média
+                            </TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          <TableRow>
+                            <TableCell className="font-semibold text-slate-700">
+                              {sec.title}
+                            </TableCell>
+                            {periodsData.map((p) => (
+                              <TableCell
+                                key={p.rawPeriod}
+                                className="text-right whitespace-nowrap font-medium"
+                              >
+                                {sec.fmt(p[sec.key] as number)}
+                              </TableCell>
+                            ))}
+                            <TableCell className="text-right font-bold bg-slate-50 text-slate-900">
+                              {averages ? sec.fmt(averages[sec.key]) : sec.fmt(0)}
+                            </TableCell>
+                          </TableRow>
+                        </TableBody>
+                      </Table>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
       </DialogContent>
     </Dialog>
   )
