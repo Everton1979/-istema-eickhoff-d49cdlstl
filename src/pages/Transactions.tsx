@@ -40,6 +40,8 @@ import {
 } from 'lucide-react'
 import { cn, getTagColor } from '@/lib/utils'
 import { Transaction } from '@/types/finance'
+import { getDaysInMonth, getMonthDayOptions } from '@/lib/calendar'
+
 const MONTHS_PT = [
   'Janeiro',
   'Fevereiro',
@@ -84,11 +86,30 @@ export default function Transactions() {
 
   const setDayFilter = (val: string) => setFilter('dayFilter', val)
 
+  // O seletor de dias segue o calendário civil do Brasil: o mês/ano selecionado
+  // define quantos dias aparecem (ex: novembro vai até 30, fevereiro até 28/29).
+  const selectedMonth = filters.months?.[0] || String(new Date().getMonth() + 1)
+  const selectedYear = filters.years?.[0] || String(new Date().getFullYear())
+  const maxDayInSelectedMonth = getDaysInMonth(selectedMonth, selectedYear)
+
+  // Se o dia selecionado fica fora do mês/ano recém-escolhido (ex: dia 31 em
+  // novembro), ajusta automaticamente para o último dia válido desse mês.
+  useEffect(() => {
+    if (dayFilter !== 'ALL' && parseInt(dayFilter, 10) > maxDayInSelectedMonth) {
+      setFilter('dayFilter', String(maxDayInSelectedMonth))
+    }
+  }, [dayFilter, maxDayInSelectedMonth, setFilter])
+
   const prefillDate = useMemo(() => {
     const month = filters.months?.[0]
     const year = filters.years?.[0]
     if (dayFilter !== 'ALL' && month && year) {
-      return `${year}-${month}-${dayFilter.padStart(2, '0')}`
+      // O dia do filtro deve respeitar o calendário: se o seletor de dias
+      // estava limitado ao último dia do mês, usamos exatamente esse dia.
+      const lastDay = getDaysInMonth(month, year)
+      const dayNum = parseInt(dayFilter, 10)
+      const day = Number.isFinite(dayNum) ? Math.min(Math.max(dayNum, 1), lastDay) : dayFilter
+      return `${year}-${month}-${String(day).padStart(2, '0')}`
     }
     return new Date().toISOString().split('T')[0]
   }, [dayFilter, filters.months, filters.years])
@@ -362,7 +383,10 @@ export default function Transactions() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="ALL">Todos os dias</SelectItem>
-                {Array.from({ length: 31 }, (_, i) => i + 1).map((d) => (
+                {getMonthDayOptions(
+                  filters.months?.[0] || String(new Date().getMonth() + 1),
+                  filters.years?.[0] || String(new Date().getFullYear()),
+                ).map((d) => (
                   <SelectItem key={d} value={d.toString()}>
                     Dia {d.toString().padStart(2, '0')}
                   </SelectItem>
