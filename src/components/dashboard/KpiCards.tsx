@@ -58,6 +58,13 @@ export function useKpiMetrics() {
       }
     })
 
+    const vendasTotais = filteredMonthlyMetrics.reduce(
+      (sum, m) =>
+        sum + (m.vendas_capsulas || 0) + (m.vendas_dermato || 0) + (m.vendas_revenda || 0),
+      0,
+    )
+    const conciliacaoVendas = receitasRealizadas - vendasTotais
+
     const receitas = receitasRealizadas
     const margem = receitas - custoVariavelTotal
     const lucro = receitas - despesasFluxo - investimentosRealizados
@@ -77,6 +84,8 @@ export function useKpiMetrics() {
       pontoEquilibrio,
       cmv: totalRawMaterial,
       cma,
+      vendasTotais,
+      conciliacaoVendas,
     }
   }, [transactions, filteredMonthlyMetrics, categories, filters])
 }
@@ -165,10 +174,22 @@ export function OperationalKpis() {
       bg: 'bg-amber-100/90 border-amber-300',
       isLight: true,
     },
+    {
+      id: 'conciliacao-vendas',
+      title: 'CONCILIAÇÃO DE VENDAS',
+      tooltip:
+        'Receitas Realizadas - Vendas Totais (somatório dos setores Cápsulas + Dermato + Revenda).',
+      value: formatCurrency(metrics.conciliacaoVendas),
+      bg:
+        metrics.conciliacaoVendas >= 0
+          ? 'bg-emerald-100/90 border-emerald-300'
+          : 'bg-red-100/90 border-red-300',
+      isLight: false,
+    },
   ]
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
       {kpis.map((kpi, i) => (
         <KpiCard key={i} kpi={kpi} />
       ))}

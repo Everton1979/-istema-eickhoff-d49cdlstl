@@ -46,6 +46,19 @@ const GLOSSARY_TERMS = [
     trend: 'neutral',
   },
   {
+    id: 'conciliacao-vendas',
+    title: 'Conciliação de Vendas',
+    definition:
+      'Compara o total de receitas recebidas no período (dinheiro que entrou de fato) com o total vendido no mesmo período, somando os setores Cápsulas + Dermato + Revenda. Valor positivo indica que entrou mais dinheiro do que foi vendido no período (recebimentos antecipados ou de períodos anteriores). Valor negativo indica que vendeu mais do que recebeu (vendas a receber, prazos de cartão/boleto ou lançamentos faltantes).',
+    calculation: 'Receitas Realizadas - Vendas Totais (Cápsulas + Dermato + Revenda).',
+    example:
+      'No mês, as vendas somaram R$ 100.000 (Cápsulas + Dermato + Revenda), mas entraram apenas R$ 90.000 no caixa. A Conciliação de Vendas fica em -R$ 10.000, indicando R$ 10.000 vendidos e ainda não recebidos (ou lançamentos de receita esquecidos).',
+    reference:
+      'Ajuda a identificar vendas não recebidas ou lançamentos de receita esquecidos: um valor negativo merece conferência das vendas a receber e dos lançamentos do período.',
+    category: 'Painel Geral (Cards)',
+    trend: 'neutral',
+  },
+  {
     id: 'cfa-total',
     title: 'CFA Total (Custos Fixos Administrativos)',
     definition:
