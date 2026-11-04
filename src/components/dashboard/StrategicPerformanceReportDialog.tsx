@@ -122,6 +122,12 @@ export function StrategicPerformanceReportDialog() {
       },
       { title: 'EBITDA', key: 'ebitda', fmt: formatCurrency, color: '#10b981' },
       { title: 'Valuation', key: 'valuation', fmt: formatCurrency, color: '#94a3b8' },
+      {
+        title: 'Conciliação de Vendas',
+        key: 'conciliacaoVendas',
+        fmt: formatCurrency,
+        color: '#059669',
+      },
     ],
     [],
   )
@@ -190,6 +196,8 @@ export function StrategicPerformanceReportDialog() {
       const vendasDerm = m?.vendas_dermato || 0
       const vendasRevenda = m?.vendas_revenda || 0
       const totalRev = vendasCaps + vendasDerm + vendasRevenda
+      // Conciliação de Vendas (mesma fórmula do card do painel geral): Receitas Realizadas - Vendas Totais
+      const conciliacaoVendas = entradas - totalRev
       const numCaps = m?.num_formulas_capsulas || 0
       const numDerm = m?.num_formulas_dermato || 0
 
@@ -222,6 +230,7 @@ export function StrategicPerformanceReportDialog() {
         pisoSegurancaCapsulas: blindagemCaps,
         pisoSegurancaDermato: blindagemDerm,
         ebitda,
+        conciliacaoVendas,
         totalSystemSales,
         rawMaterialCosts,
         ordersCount,
@@ -251,6 +260,7 @@ export function StrategicPerformanceReportDialog() {
       pisoSegurancaCapsulas: 0,
       pisoSegurancaDermato: 0,
       ebitda: 0,
+      conciliacaoVendas: 0,
       totalSystemSales: 0,
       rawMaterialCosts: 0,
       ordersCount: 0,
@@ -265,6 +275,7 @@ export function StrategicPerformanceReportDialog() {
       sum.pisoSegurancaCapsulas += p.pisoSegurancaCapsulas
       sum.pisoSegurancaDermato += p.pisoSegurancaDermato
       sum.ebitda += p.ebitda
+      sum.conciliacaoVendas += p.conciliacaoVendas
       sum.totalSystemSales += p.totalSystemSales
       sum.rawMaterialCosts += p.rawMaterialCosts
       sum.ordersCount += p.ordersCount
@@ -283,6 +294,7 @@ export function StrategicPerformanceReportDialog() {
         pisoSegurancaCapsulas: 0,
         pisoSegurancaDermato: 0,
         ebitda: 0,
+        conciliacaoVendas: 0,
       }
 
     sum.entradas /= dataMonthsCount
@@ -296,6 +308,7 @@ export function StrategicPerformanceReportDialog() {
     sum.pisoSegurancaCapsulas /= dataMonthsCount
     sum.pisoSegurancaDermato /= dataMonthsCount
     sum.ebitda /= dataMonthsCount
+    sum.conciliacaoVendas /= dataMonthsCount
 
     return sum
   }, [periodsData])
@@ -314,6 +327,11 @@ export function StrategicPerformanceReportDialog() {
       `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`
     return `${fmtD(dateStart)} A ${fmtD(dateEnd)}`
   }, [periodsData])
+
+  const saldoAcumuladoConciliacao = useMemo(
+    () => periodsData.reduce((sum, p) => sum + (p.conciliacaoVendas || 0), 0),
+    [periodsData],
+  )
 
   const handleTriggerPrint = () => {
     if (!periodsData.length || !averages) return
@@ -342,6 +360,21 @@ export function StrategicPerformanceReportDialog() {
           Média: <span className="text-slate-800">{averages ? fmt(averages[key]) : fmt(0)}</span>
         </div>
       </div>
+      {key === 'conciliacaoVendas' && (
+        <div
+          className="mx-4 mt-3 mb-3 px-3 py-2 rounded-md border border-slate-200 flex items-center justify-between"
+          style={{ backgroundColor: saldoAcumuladoConciliacao >= 0 ? '#f0fdf4' : '#fef2f2' }}
+        >
+          <span className="text-xs font-bold text-slate-700 uppercase tracking-wide">
+            Saldo Acumulado dos {periodsData.length} Meses Selecionados:
+          </span>
+          <span
+            className={`text-sm font-black ${saldoAcumuladoConciliacao >= 0 ? 'text-green-700' : 'text-red-700'}`}
+          >
+            {fmt(saldoAcumuladoConciliacao)}
+          </span>
+        </div>
+      )}
       <div className="p-4 bg-white border-b border-slate-100">
         <ChartContainer config={{ [key]: { label: title, color } }} className="h-[250px] w-full">
           <ResponsiveContainer width="100%" height="100%">
@@ -418,6 +451,24 @@ export function StrategicPerformanceReportDialog() {
               {averages ? fmt(averages[key]) : fmt(0)}
             </TableCell>
           </TableRow>
+          {key === 'conciliacaoVendas' && (
+            <TableRow className="border-none hover:bg-transparent">
+              <TableCell className="font-bold text-slate-800 uppercase bg-white sticky left-0 z-20 border-b border-slate-100 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]">
+                Saldo Acumulado do Período
+              </TableCell>
+              <TableCell
+                colSpan={periodsData.length}
+                className={`text-right whitespace-nowrap font-black border-b border-slate-100 bg-white ${
+                  saldoAcumuladoConciliacao >= 0 ? 'text-green-700' : 'text-red-700'
+                }`}
+              >
+                {fmt(saldoAcumuladoConciliacao)}
+              </TableCell>
+              <TableCell className="text-right font-bold bg-slate-50 whitespace-nowrap text-slate-400 sticky right-0 z-30 border-b border-slate-100 shadow-[-2px_0_5px_-2px_rgba(0,0,0,0.1)]">
+                —
+              </TableCell>
+            </TableRow>
+          )}
         </TableBody>
       </Table>
     </Card>
@@ -736,6 +787,22 @@ export function StrategicPerformanceReportDialog() {
                               {averages ? sec.fmt(averages[sec.key]) : sec.fmt(0)}
                             </TableCell>
                           </TableRow>
+                          {sec.key === 'conciliacaoVendas' && (
+                            <TableRow>
+                              <TableCell className="font-bold text-slate-800 uppercase">
+                                Saldo Acumulado do Período
+                              </TableCell>
+                              <TableCell
+                                colSpan={periodsData.length}
+                                className={`text-right font-black ${saldoAcumuladoConciliacao >= 0 ? 'text-green-700' : 'text-red-700'}`}
+                              >
+                                {sec.fmt(saldoAcumuladoConciliacao)}
+                              </TableCell>
+                              <TableCell className="text-right font-bold bg-slate-50 text-slate-400">
+                                —
+                              </TableCell>
+                            </TableRow>
+                          )}
                         </TableBody>
                       </Table>
                     </Card>

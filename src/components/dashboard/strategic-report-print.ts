@@ -22,6 +22,7 @@ export interface StrategicPeriodMetric {
   netExpense?: number
   propCaps?: number
   propDerm?: number
+  conciliacaoVendas: number
 }
 
 export type StrategicMetricKey =
@@ -36,6 +37,7 @@ export type StrategicMetricKey =
   | 'pisoSegurancaCapsulas'
   | 'pisoSegurancaDermato'
   | 'ebitda'
+  | 'conciliacaoVendas'
 
 export interface StrategicAverages {
   entradas: number
@@ -49,6 +51,7 @@ export interface StrategicAverages {
   pisoSegurancaCapsulas: number
   pisoSegurancaDermato: number
   ebitda: number
+  conciliacaoVendas: number
   totalSystemSales?: number
   rawMaterialCosts?: number
   ordersCount?: number
@@ -138,10 +141,11 @@ function renderBarChartSvg(
     const barTop = Math.min(zeroY, yVal)
     const barHeight = Math.max(2, Math.abs(zeroY - yVal))
     const formattedLabel = fmt(val)
+    const fillColor = key === 'conciliacaoVendas' && val < 0 ? '#fca5a5' : color
 
     barsHtml += `
       <g>
-        <rect x="${bx.toFixed(1)}" y="${barTop.toFixed(1)}" width="${barW.toFixed(1)}" height="${barHeight.toFixed(1)}" rx="3" fill="${color}" stroke="#0f172a" stroke-opacity="0.1" stroke-width="0.5" />
+        <rect x="${bx.toFixed(1)}" y="${barTop.toFixed(1)}" width="${barW.toFixed(1)}" height="${barHeight.toFixed(1)}" rx="3" fill="${fillColor}" stroke="#0f172a" stroke-opacity="0.1" stroke-width="0.5" />
         <text x="${cx.toFixed(1)}" y="${(barTop - 6).toFixed(1)}" font-family="Arial, sans-serif" font-size="9" font-weight="700" fill="#1e293b" text-anchor="middle">${escapeHtml(formattedLabel)}</text>
         <text x="${cx.toFixed(1)}" y="${(height - padBottom + 16).toFixed(1)}" font-family="Arial, sans-serif" font-size="9.5" font-weight="600" fill="#475569" text-anchor="middle">${escapeHtml(d.period)}</text>
       </g>
@@ -173,6 +177,7 @@ export function buildStrategicReportHtml({
       const avgVal = averages ? averages[sec.key] : 0
       const formattedAvg = sec.fmt(avgVal)
       const chartSvg = renderBarChartSvg(periodsData, sec.key, sec.color, sec.fmt)
+      const totalConciliacao = periodsData.reduce((sum, p) => sum + (p.conciliacaoVendas || 0), 0)
 
       const headerCells = periodsData
         .map(
@@ -202,6 +207,14 @@ export function buildStrategicReportHtml({
               MÉDIA DO PERÍODO: <strong>${escapeHtml(formattedAvg)}</strong>
             </div>
           </div>
+          ${
+            sec.key === 'conciliacaoVendas'
+              ? `<div class="section-balance-strip" style="background-color: ${totalConciliacao >= 0 ? '#f0fdf4' : '#fef2f2'};">
+            <span class="section-balance-label">SALDO ACUMULADO DOS ${periodsData.length} MESES SELECIONADOS:</span>
+            <span class="section-balance-value" style="color: ${totalConciliacao >= 0 ? '#15803d' : '#b91c1c'};">${escapeHtml(sec.fmt(totalConciliacao))}</span>
+          </div>`
+              : ''
+          }
           
           <div class="section-chart-container">
             ${chartSvg}
@@ -222,6 +235,15 @@ export function buildStrategicReportHtml({
                   ${valueCells}
                   <td class="cell-avg-val">${escapeHtml(formattedAvg)}</td>
                 </tr>
+                ${
+                  sec.key === 'conciliacaoVendas'
+                    ? `<tr>
+                  <td class="cell-indicator-name">SALDO ACUMULADO DO PERÍODO</td>
+                  <td class="cell-val cell-total" colspan="${periodsData.length}">${escapeHtml(sec.fmt(totalConciliacao))}</td>
+                  <td class="cell-avg-val">${escapeHtml(formattedAvg)}</td>
+                </tr>`
+                    : ''
+                }
               </tbody>
             </table>
           </div>
@@ -473,6 +495,31 @@ export function buildStrategicReportHtml({
       font-weight: 900;
     }
 
+    .section-balance-strip {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 12px;
+      margin: 0 12px 10px 12px;
+      border-radius: 6px;
+      border: 1px solid #e2e8f0;
+      font-size: 9pt;
+      text-transform: uppercase;
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+
+    .section-balance-label {
+      font-weight: 800;
+      color: #334155;
+      letter-spacing: 0.3px;
+    }
+
+    .section-balance-value {
+      font-weight: 900;
+      font-size: 11pt;
+    }
+
     .section-chart-container {
       padding: 10px 14px 6px 14px;
       background: #ffffff;
@@ -528,6 +575,13 @@ export function buildStrategicReportHtml({
     table.section-table td.cell-val {
       font-weight: 600;
       color: #1e293b;
+    }
+
+    table.section-table td.cell-total {
+      font-weight: 900;
+      color: #0f172a;
+      background: #f8fafc;
+      text-align: center;
     }
 
     table.section-table th.cell-avg,
