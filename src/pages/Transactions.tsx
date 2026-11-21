@@ -144,7 +144,22 @@ export function Transactions() {
       }
     }
 
-    return list.sort((a, b) => a.date.localeCompare(b.date))
+    // Regra permanente: previstos (não realizados) SEMPRE no topo da lista;
+    // ao serem realizados, migram para baixo. A ordenação (data ou valor)
+    // é aplicada DENTRO de cada grupo, nunca misturando previstos/realizados.
+    // Com um dia específico selecionado (filtros ativos), ordena por valor
+    // crescente ignorando o sinal (módulo): -100 antes de -500.
+    // Sem dia específico, mantém a ordenação atual por data.
+    const isPending = (tx: Transaction) => tx.status !== 'REALIZADO'
+    const sortByValue = Boolean(day)
+    return list.sort((a, b) => {
+      if (isPending(a) !== isPending(b)) return isPending(a) ? -1 : 1
+      if (sortByValue) {
+        const diff = Math.abs(a.amount) - Math.abs(b.amount)
+        if (diff !== 0) return diff
+      }
+      return a.date.localeCompare(b.date)
+    })
   }, [
     transactions,
     selectedYear,
