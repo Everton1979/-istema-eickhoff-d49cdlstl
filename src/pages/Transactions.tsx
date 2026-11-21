@@ -647,6 +647,12 @@ export function Transactions() {
               setEditingTx(null)
             }}
             initialData={editingTx ?? null}
+            // Nova transação com dia selecionado nos filtros nasce nesse dia.
+            prefillDate={
+              !editingTx && day && !allMonthsActive
+                ? `${selectedYear}-${selectedMonth}-${day}`
+                : undefined
+            }
           />
         </DialogContent>
       </Dialog>
