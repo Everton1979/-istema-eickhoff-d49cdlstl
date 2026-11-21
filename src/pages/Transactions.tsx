@@ -17,42 +17,42 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Badge } from '@/components/ui/badge'
-import { cn, formatCurrencyInput, parseCurrencyInput, getTagColor } from '@/lib/utils'
+import { cn, getTagColor } from '@/lib/utils'
 import { useFinanceStore } from '@/stores/financeStore'
 import { DeleteTransactionDialog } from '@/components/transactions/DeleteTransactionDialog'
 import { TransactionForm } from '@/components/transactions/TransactionForm'
 import { useAuth } from '@/hooks/use-auth'
 import { Input } from '@/components/ui/input'
-import { getDaysInMonth, getMonthDayOptions, clampDateToMonth } from '@/lib/calendar'
-import { ALL_MONTHS_SENTINEL } from '@/lib/calendar'
+import { getMonthDayOptions } from '@/lib/calendar'
+import { Transaction } from '@/types/finance'
+
+// Valor local à página: seleção "TODOS OS MESES" NÃO é gravada nos filtros globais
+// da store (compartilhados com Dashboard/DRE/metas).
+const ALL_MONTHS = 'ALL'
 
 export function Transactions() {
-  const {
-    transactions,
-    categories,
-    accounts,
-    filters,
-    setFilters,
-    loadingData,
-    deleteTransaction,
-    fetchTransactions,
-    visibleYears,
-  } = useFinanceStore()
+  const { transactions, categories, accounts, loadingData, fetchData } = useFinanceStore()
 
-  const { user } = useAuth()
-  const isColaborador = user?.profile === 'COLABORADOR'
+  const { isColaborador } = useAuth()
 
+  const currentYear = new Date().getFullYear().toString()
+  const currentMonth = String(new Date().getMonth() + 1).padStart(2, '0')
+
+  const [selectedYear, setSelectedYear] = useState(currentYear)
+  const [selectedMonth, setSelectedMonth] = useState<string>(currentMonth)
+  const [day, setDay] = useState('')
   const [search, setSearch] = useState('')
   const [quickFilter, setQuickFilter] = useState<string | null>(null)
-  const [editingTx, setEditingTx] = useState<any>(null)
+  const [editingTx, setEditingTx] = useState<Transaction | null>(null)
   const [deletingId, setDeletingId] = useState<string | null>(null)
   const [formOpen, setFormOpen] = useState(false)
 
-  const allMonthsActive = filters.month === ALL_MONTHS_SENTINEL
+  const allMonthsActive = selectedMonth === ALL_MONTHS
 
   const months = [
-    { value: ALL_MONTHS_SENTINEL, label: 'TODOS OS MESES' },
+    { value: ALL_MONTHS, label: 'TODOS OS MESES' },
     { value: '01', label: 'Janeiro' },
     { value: '02', label: 'Fevereiro' },
     { value: '03', label: 'Março' },
@@ -67,63 +67,43 @@ export function Transactions() {
     { value: '12', label: 'Dezembro' },
   ]
 
-  const years = visibleYears()
+  const years = useMemo(() => {
+    const set = new Set<string>()
+    transactions.forEach((tx) => {
+      if (tx?.date) set.add(tx.date.split('T')[0].split('-')[0])
+    })
+    if (set.size === 0) set.add(currentYear)
+    return Array.from(set).sort((a, b) => b.localeCompare(a))
+  }, [transactions, currentYear])
 
   useEffect(() => {
-    fetchTransactions()
+    fetchData(false)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  // Ao voltar de TODOS OS MESES para um mês específico, garante que o dia
+  // selecionado exista no mês/ano escolhidos (clamp para o último dia válido).
   useEffect(() => {
-    if (allMonthsActive) return
-    const currentDay = filters.day ? Number(filters.day) : null
-    if (!currentDay) return
-    const daysInSelectedMonth = getDaysInMonth(Number(filters.year), Number(filters.month))
-    if (currentDay > daysInSelectedMonth) {
-      setFilters({ day: String(daysInSelectedMonth).padStart(2, '0') })
-    }
-  }, [allMonthsActive, filters.year, filters.month, filters.day, setFilters])
+    if (allMonthsActive || !day) return
+    const maxDay = getMonthDayOptions(Number(selectedMonth), Number(selectedYear)).length
+    if (Number(day) > maxDay) setDay(String(maxDay).padStart(2, '0'))
+  }, [allMonthsActive, day, selectedMonth, selectedYear])
 
   const filteredData = useMemo(() => {
-    let list = transactions
+    let list = [...transactions]
 
-    // Filtro de período: mês específico do seletor, ou o ano inteiro com TODOS OS MESES
-    if (allMonthsActive) {
-      list = list.filter((tx) => tx.date.startsWith(String(filters.year)))
-    } else {
-      list = list.filter((tx) => tx.date.startsWith(`${filters.year}-${filters.month}`))
-    }
-
-    // Dia: só se aplica quando um mês específico está ativo
-    if (!allMonthsActive && filters.day) {
-      list = list.filter((tx) =>
-        tx.date.startsWith(`${filters.year}-${filters.month}-${filters.day}`),
-      )
+    // Período: mês específico ou o ano inteiro com TODOS OS MESES
+    list = list.filter((tx) => tx.date.startsWith(`${selectedYear}-`))
+    if (!allMonthsActive) {
+      list = list.filter((tx) => tx.date.startsWith(`${selectedYear}-${selectedMonth}`))
+      if (day) {
+        list = list.filter((tx) => tx.date.startsWith(`${selectedYear}-${selectedMonth}-${day}`))
+      }
     }
 
-    if (filters.type) {
-      list = list.filter((tx) => tx.type === filters.type)
-    }
-    if (filters.categoryId) {
-      list = list.filter((tx) => tx.categoryId === filters.categoryId)
-    }
-    if (filters.status) {
-      list = list.filter((tx) => tx.status === filters.status)
-    }
-    if (filters.accountId) {
-      list = list.filter((tx) => tx.accountId === filters.accountId)
-    }
-    if (filters.tag) {
-      list = list.filter((tx) => (tx.tags ?? '').includes(filters.tag!))
-    }
     if (search) {
       const s = search.toLowerCase()
-      list = list.filter(
-        (tx) =>
-          tx.description.toLowerCase().includes(s) ||
-          (tx.notes ?? '').toLowerCase().includes(s) ||
-          (tx.tags ?? '').toLowerCase().includes(s),
-      )
+      list = list.filter((tx) => tx.description.toLowerCase().includes(s))
     }
     if (quickFilter) {
       switch (quickFilter) {
@@ -165,7 +145,16 @@ export function Transactions() {
     }
 
     return list.sort((a, b) => a.date.localeCompare(b.date))
-  }, [transactions, filters, search, quickFilter, categories, allMonthsActive])
+  }, [
+    transactions,
+    selectedYear,
+    selectedMonth,
+    day,
+    allMonthsActive,
+    search,
+    quickFilter,
+    categories,
+  ])
 
   const visibleBalance = filteredData
     .filter((tx) => tx.status === 'REALIZADO')
@@ -179,7 +168,7 @@ export function Transactions() {
     return type === 'EXPENSE' ? `-${abs}` : type === 'PARTNER_WITHDRAWAL' ? `-${abs}` : abs
   }
 
-  const getCategoryName = (tx: any) => {
+  const getCategoryName = (tx: Transaction) => {
     const cat = categories.find((c) => c.id === tx.categoryId)
     return cat?.name ?? '—'
   }
@@ -190,7 +179,7 @@ export function Transactions() {
     return acc?.name ?? '—'
   }
 
-  const handleEdit = (tx: any) => {
+  const handleEdit = (tx: Transaction) => {
     setEditingTx(tx)
     setFormOpen(true)
   }
@@ -222,9 +211,10 @@ export function Transactions() {
             <div className="space-y-1">
               <label className="text-xs font-medium text-slate-600 uppercase">Mês</label>
               <Select
-                value={filters.month}
+                value={selectedMonth}
                 onValueChange={(v) => {
-                  setFilters({ month: v, day: '' })
+                  setSelectedMonth(v)
+                  setDay('')
                 }}
               >
                 <SelectTrigger className="w-full">
@@ -241,7 +231,7 @@ export function Transactions() {
             </div>
             <div className="space-y-1">
               <label className="text-xs font-medium text-slate-600 uppercase">Ano</label>
-              <Select value={filters.year} onValueChange={(v) => setFilters({ year: v })}>
+              <Select value={selectedYear} onValueChange={(v) => setSelectedYear(v)}>
                 <SelectTrigger className="w-full">
                   <SelectValue placeholder="Ano" />
                 </SelectTrigger>
@@ -258,16 +248,16 @@ export function Transactions() {
               <div className="space-y-1">
                 <label className="text-xs font-medium text-slate-600 uppercase">Dia</label>
                 <Select
-                  value={filters.day || undefined}
-                  onValueChange={(v) => setFilters({ day: v === 'all' ? '' : v })}
+                  value={day || undefined}
+                  onValueChange={(v) => setDay(v === 'all' ? '' : v)}
                 >
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="Todos os dias" />
                   </SelectTrigger>
                   <SelectContent>
-                    {getMonthDayOptions(Number(filters.year), Number(filters.month)).map((d) => (
-                      <SelectItem key={d.value} value={d.value}>
-                        {d.label}
+                    {getMonthDayOptions(Number(selectedMonth), Number(selectedYear)).map((d) => (
+                      <SelectItem key={d} value={String(d).padStart(2, '0')}>
+                        {String(d).padStart(2, '0')}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -277,7 +267,7 @@ export function Transactions() {
             <div className="space-y-1">
               <label className="text-xs font-medium text-slate-600 uppercase">Descrição</label>
               <Input
-                placeholder="Buscar por descrição, observações ou tags..."
+                placeholder="Buscar por descrição ou tags..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
               />
@@ -481,22 +471,26 @@ export function Transactions() {
                     </TableCell>
                     <TableCell className="text-center">
                       <div className="flex justify-center gap-1">
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-8 w-8 text-slate-400 hover:text-blue-600 hover:bg-blue-50"
-                          onClick={() => handleEdit(tx)}
-                        >
-                          <Pencil className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-8 w-8 text-slate-400 hover:text-red-600 hover:bg-red-50"
-                          onClick={() => setDeletingId(tx.id)}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
+                        {!isColaborador && (
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8 text-slate-400 hover:text-blue-600 hover:bg-blue-50"
+                            onClick={() => handleEdit(tx)}
+                          >
+                            <Pencil className="h-4 w-4" />
+                          </Button>
+                        )}
+                        {!isColaborador && (
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8 text-slate-400 hover:text-red-600 hover:bg-red-50"
+                            onClick={() => setDeletingId(tx.id)}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        )}
                       </div>
                     </TableCell>
                   </TableRow>
@@ -509,7 +503,9 @@ export function Transactions() {
 
       <div className="flex justify-between items-center mt-4 pt-2 border-t text-sm">
         <div className="text-muted-foreground text-xs hidden sm:block">
-          Role a tabela para ver mais lançamentos se houver.
+          {allMonthsActive
+            ? `Exibindo TODOS OS MESES de ${selectedYear} (${filteredData.length} lançamentos).`
+            : 'Role a tabela para ver mais lançamentos se houver.'}
         </div>
         <div className="flex flex-wrap gap-2 sm:gap-4 items-center ml-auto">
           {quickFilter === 'CORTESIA' && (
@@ -619,7 +615,28 @@ export function Transactions() {
         onOpenChange={(open) => !open && setDeletingId(null)}
       />
 
-      <TransactionForm open={formOpen} onOpenChange={setFormOpen} editingTransaction={editingTx} />
+      <Dialog
+        open={formOpen}
+        onOpenChange={(open) => {
+          setFormOpen(open)
+          if (!open) setEditingTx(null)
+        }}
+      >
+        <DialogContent className="overflow-y-auto max-h-[90vh] w-full sm:max-w-lg">
+          <DialogHeader>
+            <DialogTitle>{editingTx ? 'Editar Transação' : 'Adicionar Transação'}</DialogTitle>
+          </DialogHeader>
+          <TransactionForm
+            onSuccess={() => {
+              setFormOpen(false)
+              setEditingTx(null)
+            }}
+            initialData={editingTx ?? null}
+          />
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
+
+export default Transactions
