@@ -31,6 +31,13 @@ import { Transaction } from '@/types/finance'
 // Valor local à página: seleção "TODOS OS MESES" NÃO é gravada nos filtros globais
 // da store (compartilhados com Dashboard/DRE/metas).
 const ALL_MONTHS = 'ALL'
+// Valor local à página para "TODOS OS ANOS" (mesma ideia de ALL_MONTHS).
+const ALL_YEARS = 'ALL'
+// Valor local para "TODOS OS DIAS" no seletor de dias (equivale a não selecionar dia).
+const ALL_DAYS = 'all'
+// Ano de referência para montar a lista de dias quando "TODOS OS ANOS" está ativo
+// (ano bissexto, para que 29/02 continue disponível).
+const LEAP_REFERENCE_YEAR = '2000'
 
 export function Transactions() {
   const { transactions, categories, accounts, loadingData, fetchData } = useFinanceStore()
@@ -40,7 +47,7 @@ export function Transactions() {
   const currentYear = new Date().getFullYear().toString()
   const currentMonth = String(new Date().getMonth() + 1).padStart(2, '0')
 
-  const [selectedYear, setSelectedYear] = useState(currentYear)
+  const [selectedYear, setSelectedYear] = useState<string>(currentYear)
   const [selectedMonth, setSelectedMonth] = useState<string>(currentMonth)
   const [day, setDay] = useState('')
   const [search, setSearch] = useState('')
@@ -50,6 +57,9 @@ export function Transactions() {
   const [formOpen, setFormOpen] = useState(false)
 
   const allMonthsActive = selectedMonth === ALL_MONTHS
+  const allYearsActive = selectedYear === ALL_YEARS
+  // Ano usado para calcular os dias do mês (calendário real).
+  const dayReferenceYear = allYearsActive ? LEAP_REFERENCE_YEAR : selectedYear
 
   const months = [
     { value: ALL_MONTHS, label: 'TODOS OS MESES' },
@@ -85,21 +95,22 @@ export function Transactions() {
   // selecionado exista no mês/ano escolhidos (clamp para o último dia válido).
   useEffect(() => {
     if (allMonthsActive || !day) return
-    const maxDay = getMonthDayOptions(Number(selectedMonth), Number(selectedYear)).length
+    const maxDay = getMonthDayOptions(Number(selectedMonth), Number(dayReferenceYear)).length
     if (Number(day) > maxDay) setDay(String(maxDay).padStart(2, '0'))
-  }, [allMonthsActive, day, selectedMonth, selectedYear])
+  }, [allMonthsActive, day, selectedMonth, dayReferenceYear])
 
   const filteredData = useMemo(() => {
     let list = [...transactions]
 
-    // Período: mês específico ou o ano inteiro com TODOS OS MESES
-    list = list.filter((tx) => tx.date.startsWith(`${selectedYear}-`))
-    if (!allMonthsActive) {
-      list = list.filter((tx) => tx.date.startsWith(`${selectedYear}-${selectedMonth}`))
-      if (day) {
-        list = list.filter((tx) => tx.date.startsWith(`${selectedYear}-${selectedMonth}-${day}`))
-      }
-    }
+    // Período: ano específico ou TODOS OS ANOS; mês específico ou TODOS OS MESES;
+    // dia específico ou TODOS OS DIAS (sem dia).
+    list = list.filter((tx) => {
+      const [y, m, d] = tx.date.split('T')[0].split('-')
+      if (!allYearsActive && y !== selectedYear) return false
+      if (allMonthsActive) return true
+      if (m !== selectedMonth) return false
+      return !day || d === day
+    })
 
     if (search) {
       const s = search.toLowerCase()
@@ -166,10 +177,18 @@ export function Transactions() {
     selectedMonth,
     day,
     allMonthsActive,
+    allYearsActive,
     search,
     quickFilter,
     categories,
   ])
+
+  const periodLabel = [
+    allYearsActive ? 'TODOS OS ANOS' : selectedYear,
+    allMonthsActive ? 'TODOS OS MESES' : null,
+  ]
+    .filter(Boolean)
+    .join(' · ')
 
   const visibleBalance = filteredData
     .filter((tx) => tx.status === 'REALIZADO')
@@ -251,6 +270,7 @@ export function Transactions() {
                   <SelectValue placeholder="Ano" />
                 </SelectTrigger>
                 <SelectContent>
+                  <SelectItem value={ALL_YEARS}>TODOS OS ANOS</SelectItem>
                   {years.map((y) => (
                     <SelectItem key={y} value={y}>
                       {y}
@@ -263,18 +283,21 @@ export function Transactions() {
               <div className="space-y-1">
                 <label className="text-xs font-medium text-slate-600 uppercase">Dia</label>
                 <Select
-                  value={day || undefined}
-                  onValueChange={(v) => setDay(v === 'all' ? '' : v)}
+                  value={day || ALL_DAYS}
+                  onValueChange={(v) => setDay(v === ALL_DAYS ? '' : v)}
                 >
                   <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Todos os dias" />
+                    <SelectValue placeholder="TODOS OS DIAS" />
                   </SelectTrigger>
                   <SelectContent>
-                    {getMonthDayOptions(Number(selectedMonth), Number(selectedYear)).map((d) => (
-                      <SelectItem key={d} value={String(d).padStart(2, '0')}>
-                        {String(d).padStart(2, '0')}
-                      </SelectItem>
-                    ))}
+                    <SelectItem value={ALL_DAYS}>TODOS OS DIAS</SelectItem>
+                    {getMonthDayOptions(Number(selectedMonth), Number(dayReferenceYear)).map(
+                      (d) => (
+                        <SelectItem key={d} value={String(d).padStart(2, '0')}>
+                          {String(d).padStart(2, '0')}
+                        </SelectItem>
+                      ),
+                    )}
                   </SelectContent>
                 </Select>
               </div>
@@ -518,8 +541,8 @@ export function Transactions() {
 
       <div className="flex justify-between items-center mt-4 pt-2 border-t text-sm">
         <div className="text-muted-foreground text-xs hidden sm:block">
-          {allMonthsActive
-            ? `Exibindo TODOS OS MESES de ${selectedYear} (${filteredData.length} lançamentos).`
+          {allMonthsActive || allYearsActive
+            ? `Exibindo ${periodLabel} (${filteredData.length} lançamentos).`
             : 'Role a tabela para ver mais lançamentos se houver.'}
         </div>
         <div className="flex flex-wrap gap-2 sm:gap-4 items-center ml-auto">
@@ -647,9 +670,9 @@ export function Transactions() {
               setEditingTx(null)
             }}
             initialData={editingTx ?? null}
-            // Nova transação com dia selecionado nos filtros nasce nesse dia.
+            // Nova transação com dia específico selecionado nos filtros nasce nesse dia.
             prefillDate={
-              !editingTx && day && !allMonthsActive
+              !editingTx && day && !allMonthsActive && !allYearsActive
                 ? `${selectedYear}-${selectedMonth}-${day}`
                 : undefined
             }
